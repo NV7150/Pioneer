@@ -22,14 +22,17 @@ namespace character{
 
 		//経験値を取得します
 		public void addExp(int val){
-			if (!0 < val)
-				return new ArgumentException ("You tried to add wrong value in addExp.");
+			if (!(0 < val))
+				throw new ArgumentException ("You tried to add wrong value in addExp.");
 			exp += val;
 		}
 
 		//経験値を返します
 		public int getExp(){
 			return exp;
+		}
+
+		public Playable(BattleableBaseBuilder builder) : base(builder){
 		}
 	}
 }

@@ -58,7 +58,7 @@ namespace character{
 		public void dammage (int dammage,SkillType type){
 			//弱点属性は攻撃力1.5倍
 			if(type == WEAK_TYPE)
-				dammage = (int) dammage * 1.5f;
+				dammage = (int)(dammage * 1.5f);
 			setHp (getHp () - dammage);
 			if (getHp () < 0)
 				setHp (0);
@@ -186,6 +186,16 @@ namespace character{
 
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
 		public abstract int getDodgeNess();
+
+		#region Character implementation
+
+		public abstract GameObject getModel ();
+
+		public abstract void act ();
+
+		public abstract void death ();
+
+		#endregion
 	}
 }
 

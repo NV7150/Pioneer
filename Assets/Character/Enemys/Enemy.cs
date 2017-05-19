@@ -1,7 +1,7 @@
 ﻿using item;
 
 namespace character{
-	public abstract class Enemy : BattleableBase, NonPlayerCharacter{
+	public abstract class Enemy : BattleableBase{
 	    //エンカウントし、戦闘に突入します
 	    public abstract void encount();
 
@@ -10,5 +10,8 @@ namespace character{
 
 	    //このEnemyのドロップアイテムを取得します。ない場合はnullを返します
 	    public abstract Item getDrop();
+
+		public Enemy(BattleableBaseBuilder builder) : base(builder){
+		}
 	}
 }

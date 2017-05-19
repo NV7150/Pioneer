@@ -12,17 +12,17 @@ using System;
 namespace character{
 	public class Hero :Playable {
 
-		public Hero(){
+		public Hero(BattleableBaseBuilder builder) : base(builder){
 		}
 
 		#region Character implementation
-		public GameObject getModel () {
+		public override GameObject getModel () {
 			throw new NotImplementedException ();
 		}
-		public void act () {
+		public override void act () {
 			throw new NotImplementedException ();
 		}
-		public void death () {
+		public override void death () {
 			throw new NotImplementedException ();
 		}
 		#endregion

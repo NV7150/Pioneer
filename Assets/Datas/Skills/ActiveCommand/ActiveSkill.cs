@@ -29,14 +29,14 @@ namespace skill{
 	public class SkillSuporter{
 		private SkillSuporter(){}
 		public static int getUseAbility(BattleableBase user){
-			switch(user.getAttackType()){
-			case AttackType.MELEE:
-				return user.getMft ();
-			case AttackType.FAR:
-				return user.getFft ();
-			case AttackType.MAGIC:
-				return user.getMgp ();
-			}
+//			switch(user.getAttackType()){
+//			case AttackType.MELEE:
+//				return user.getMft ();
+//			case AttackType.FAR:
+//				return user.getFft ();
+//			case AttackType.MAGIC:
+//				return user.getMgp ();
+//			}
 			throw new System.Exception ("不正な引数");
 		}
 	}

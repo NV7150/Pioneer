@@ -30,7 +30,7 @@ namespace character{
 			return maxHp;
 		}
 		public void setMaxHp(int maxHp) {
-			if (!0 < maxHp)
+			if (!(0 < maxHp))
 				throw new ArgumentException ("maxHp in builder is worng.");
 			this.maxHp = maxHp;
 		}
@@ -38,7 +38,7 @@ namespace character{
 			return maxMp;
 		}
 		public void setMaxMp(int maxMp) {
-			if (!0 < maxMp)
+			if (!(0 < maxMp))
 				throw new ArgumentException ("maxMp in builder is worng");
 			this.maxMp = maxMp;
 		}
@@ -46,7 +46,7 @@ namespace character{
 			return mft;
 		}
 		public void setMft(int mft) {
-			if (!0 <= mft)
+			if (!(0 <= mft))
 				throw new ArgumentException ("mft in builder is worng");
 			this.mft = mft;
 		}
@@ -54,7 +54,7 @@ namespace character{
 			return fft;
 		}
 		public void setFft(int fft) {
-			if (!0 <= fft)
+			if (!(0 <= fft))
 				throw new ArgumentException ("fft in builder is worng");
 			this.fft = fft;
 		}
@@ -62,7 +62,7 @@ namespace character{
 			return mgp;
 		}
 		public void setMgp(int mgp) {
-			if (!0 <= mgp)
+			if (!(0 <= mgp))
 				throw new ArgumentException ("mgp in builder is worng");
 			this.mgp = mgp;
 		}
@@ -70,7 +70,7 @@ namespace character{
 			return agi;
 		}
 		public void setAgi(int agi) {
-			if (!0 <= agi)
+			if (!(0 <= agi))
 				throw new ArgumentException ("agi in builder is worng");
 			this.agi = agi;
 		}
@@ -78,7 +78,7 @@ namespace character{
 			return phy;
 		}
 		public void setPhy(int phy) {
-			if (!0 <= phy)
+			if (!(0 <= phy))
 				throw new ArgumentException ("phy in builder is worng");
 			this.phy = phy;
 		}
@@ -86,7 +86,7 @@ namespace character{
 			return level;
 		}
 		public void setLevel(int level) {
-			if (!0 <= level)
+			if (!(0 <= level))
 				throw new ArgumentException ("level in builder is worng");
 			this.level = level;
 		}

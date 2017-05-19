@@ -12,13 +12,13 @@ public class ContainerTest : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		BattleManager.getInstance ().StartNewBattle ((heroCon.transform.position + enemyCOn.transform.position) / 2);
-		Hero hero = new Hero (new Civil(),new Tester(),new Test(),heroCon);
-		Enemy enemy = new Goblin(enemyCOn);
-		heroCon.setCharacter (hero);
-		enemyCOn.setCharacter (enemy);
-		hero.encount ();
-		enemy.encount ();
+//		BattleManager.getInstance ().StartNewBattle ((heroCon.transform.position + enemyCOn.transform.position) / 2);
+//		Hero hero = new Hero (new Civil(),new Tester(),new Test(),heroCon);
+//		Enemy enemy = new Goblin(enemyCOn);
+//		heroCon.setCharacter (hero);
+//		enemyCOn.setCharacter (enemy);
+//		hero.encount ();
+//		enemy.encount ();
 	}
 	
 	// Update is called once per frame

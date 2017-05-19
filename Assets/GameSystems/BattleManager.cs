@@ -13,7 +13,7 @@ using skill;
 namespace battleSystem{
 	public class BattleManager{
 		private static readonly BattleManager INSTANCE = new BattleManager();
-		private Dictionary<FiealdPosition,List<BattleableBase>> joinedCharacter = new Dictionary<FiealdPosition,List<Battleable>>();
+		private Dictionary<FiealdPosition,List<BattleableBase>> joinedCharacter = new Dictionary<FiealdPosition,List<BattleableBase>>();
 		private BattleField field;
 
 
