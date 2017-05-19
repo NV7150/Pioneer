@@ -127,7 +127,7 @@ namespace character{
 			return DEF;
 		}
 
-		float Battleable.getDelay (ActiveSkill skill) {
+		public float BattleableBase.getDelay (ActiveSkill skill) {
 			return skill.getDelay (this,0.5f);
 		}
 
@@ -163,7 +163,7 @@ namespace character{
 			return 0;
 		}
 
-		public List<Battleable> target (List<Battleable> bals) {
+		public List<BattleableBase> target (List<BattleableBase> bals) {
 			return bals;
 		}
 
@@ -221,7 +221,7 @@ namespace character{
 
 		#endregion
 
-		void Battleable.syncronizePositioin (Vector3 vector) {
+		public void BattleableBase.syncronizePositioin (Vector3 vector) {
 			container.getModel ().transform.position = vector;
 		}
 

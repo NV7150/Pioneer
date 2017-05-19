@@ -13,7 +13,7 @@ using skill;
 namespace battleSystem{
 	public class BattleManager{
 		private static readonly BattleManager INSTANCE = new BattleManager();
-		private Dictionary<FiealdPosition,List<Battleable>> joinedCharacter = new Dictionary<FiealdPosition,List<Battleable>>();
+		private Dictionary<FiealdPosition,List<BattleableBase>> joinedCharacter = new Dictionary<FiealdPosition,List<Battleable>>();
 		private BattleField field;
 
 
@@ -24,7 +24,7 @@ namespace battleSystem{
 
 		private BattleManager(){
 			foreach(FiealdPosition pos in System.Enum.GetValues(typeof(FiealdPosition))){
-				joinedCharacter.Add (pos, new List<Battleable> ());
+				joinedCharacter.Add (pos, new List<BattleableBase> ());
 			}
 		}
 
@@ -39,7 +39,7 @@ namespace battleSystem{
 		 * Battleable bal 戦闘に参加させたいオブジェクト
 		 * FiealdPosition pos 初期の戦闘参加位置
 		*/
-		public IEnumerator joinBattle(Battleable bal,FiealdPosition pos){
+		public IEnumerator joinBattle(BattleableBase bal,FiealdPosition pos){
 			Debug.Log ("called joined");
 			bal.setIsBattling (true);
 			joinedCharacter [pos].Add (bal);
@@ -51,7 +51,7 @@ namespace battleSystem{
 		}
 
 		//攻撃・スキル使用を行います。
-		private float actionCommand(Battleable bal,FiealdPosition pos){
+		private float actionCommand(BattleableBase bal,FiealdPosition pos){
 			Debug.Log ("melee" + bal.getMft());
 //			Debug.Log (joinedCharacter[FiealdPosition.ZERO].Count);
 //			if(bal.getMft() == 101)
@@ -60,7 +60,7 @@ namespace battleSystem{
 //			Debug.Log ("end decide");
 			int range = bal.getRange (useSkill);
 //			Debug.Log ("end range");
-			List<Battleable> list = new List<Battleable> ();
+			List<BattleableBase> list = new List<BattleableBase> ();
 //			Debug.Log ("end list");
 			for (int i = 0; i < range + 1; i++) {
 				list.AddRange (joinedCharacter[pos + i]);
@@ -68,18 +68,17 @@ namespace battleSystem{
 			}
 			int hitness = bal.getHitness (useSkill);
 //			Debug.Log ("end hitness");
-			List<Battleable> targets = bal.target (list);
+			List<BattleableBase> targets = bal.decideTarget (list);
 //			Debug.Log ("end targets");
-			foreach(Battleable target in targets){
-				PassiveSkill reaction = target.decidePassive ();
+			foreach(BattleableBase target in targets){
+				PassiveSkill reaction = target.decidePassiveSkill ();
 //				Debug.Log ("end passive");
 				reaction.use (target);
 //				Debug.Log ("end passive use");
-				int dodgeSucess = target.dodgeSuccessed ();
 //				Debug.Log ("end dodge");
-				if (hitness > target.dodgeSuccessed ()) {
+				if (hitness > target.getDodgeNess()) {
 //					Debug.Log ("end suc");
-					target.dammage (bal.buttleAction (useSkill), useSkill.getSkillType ());
+					target.dammage (bal.battleAction (useSkill), useSkill.getSkillType ());
 				}
 //				Debug.Log ("end all");
 			}
@@ -87,7 +86,7 @@ namespace battleSystem{
 		}
 			
 		//現在位置から移動します
-		private float moveCommand(Battleable bal,ref FiealdPosition pos){
+		private float moveCommand(BattleableBase bal,ref FiealdPosition pos){
 //			Debug.Log ("moveCommand" + pos);
 			int moveness = bal.move ();
 			Debug.Log ("end move");
@@ -117,7 +116,7 @@ namespace battleSystem{
 		}
 
 		//対象は戦闘から離脱します
-		private float escapeCommand(Battleable bal,FiealdPosition pos){
+		private float escapeCommand(BattleableBase bal,FiealdPosition pos){
 			if(!removeBalFromJoinedCharacter (bal, pos))
 				throw new Exception ("balオブジェクトの情報が不正です");
 			bal.setIsBattling (false);
@@ -125,7 +124,7 @@ namespace battleSystem{
 		}
 
 		//渡された位置にある渡されたbalオブジェクトをjoinedCharacterディクショナリから削除します
-		private bool removeBalFromJoinedCharacter(Battleable bal,FiealdPosition pos){
+		private bool removeBalFromJoinedCharacter(BattleableBase bal,FiealdPosition pos){
 			if (joinedCharacter [pos].Contains (bal)) {
 				joinedCharacter [pos].Remove (bal);
 				return true;
@@ -138,7 +137,7 @@ namespace battleSystem{
 		 * Battleable bal 処理したいBattleableオブジェクト
 		 * FiealdPosition pos 対象の位置
 		*/
-		private float decideCommand(Battleable bal,ref FiealdPosition pos){
+		private float decideCommand(BattleableBase bal,ref FiealdPosition pos){
 			Debug.Log ("DecideCommand "  + pos);
 			switch (bal.decideCommand ()) {
 				case BattleCommand.ACTION:

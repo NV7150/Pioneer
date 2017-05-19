@@ -1,14 +1,14 @@
 ﻿using item;
 
 namespace character{
-	public interface Enemy : Battleable, NonPlayerCharacter{
+	public abstract class Enemy : BattleableBase, NonPlayerCharacter{
 	    //エンカウントし、戦闘に突入します
-	    void encount();
+	    public abstract void encount();
 
 	    //このEnemyが与える経験値を取得します
-	    int getGiveExp();
+	    public abstract int getGiveExp();
 
 	    //このEnemyのドロップアイテムを取得します。ない場合はnullを返します
-	    Item getDrop();
+	    public abstract Item getDrop();
 	}
 }

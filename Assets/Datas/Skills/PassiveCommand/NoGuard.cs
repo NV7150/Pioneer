@@ -14,7 +14,7 @@ namespace skill{
 		public string getDescription () {
 			return DESCRIPTION;
 		}
-		public int use (character.Battleable user) {
+		public int use (character.BattleableBase user) {
 			return 0;
 		}
 		#endregion

@@ -14,15 +14,15 @@ namespace skill {
 			return TYPE;
 		}
 
-		public int getRange (Battleable user,int basicRange) {
+		public int getRange (BattleableBase user,int basicRange) {
 			return basicRange;
 		}
 
-		public int getSuccessRate (Battleable user) {
+		public int getSuccessRate (BattleableBase user) {
 			return SkillSuporter.getUseAbility (user);
 		}
 
-		float ActiveSkill.getDelay (Battleable user, float basicDelay) {
+		float ActiveSkill.getDelay (BattleableBase user, float basicDelay) {
 			return basicDelay;
 		}
 		#endregion
@@ -33,7 +33,7 @@ namespace skill {
 		public string getDescription () {
 			return DESCRIPTION;
 		}
-		public int use (Battleable user) {
+		public int use (BattleableBase user) {
 			return SkillSuporter.getUseAbility (user);
 		}
 
