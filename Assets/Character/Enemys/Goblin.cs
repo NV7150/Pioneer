@@ -7,7 +7,7 @@ using battleSystem;
 using skill;
 
 namespace character{
-	public class Goblin : Enemy {
+	public class Goblin : EnemyBase {
 		#region implemented abstract members of BattleableBase
 
 		public override GameObject getModel () {
@@ -25,7 +25,7 @@ namespace character{
 		public override int getDef () {
 			throw new System.NotImplementedException ();
 		}
-		public override float getDelay (ActiveSkill skill) {
+		public override float getDelay (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
 		public override int move () {
@@ -37,22 +37,22 @@ namespace character{
 		public override BattleCommand decideCommand () {
 			throw new System.NotImplementedException ();
 		}
-		public override ActiveSkill decideSkill () {
+		public override IActiveSkill decideSkill () {
 			throw new System.NotImplementedException ();
 		}
-		public override int getRange (ActiveSkill skill) {
+		public override int getRange (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
 		public override List<BattleableBase> decideTarget (List<BattleableBase> bals) {
 			throw new System.NotImplementedException ();
 		}
-		public override int getHitness (ActiveSkill skill) {
+		public override int getHitness (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public override int battleAction (ActiveSkill skill) {
+		public override int battleAction (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public override PassiveSkill decidePassiveSkill () {
+		public override IPassiveSkill decidePassiveSkill () {
 			throw new System.NotImplementedException ();
 		}
 		public override int getDodgeNess () {
@@ -66,7 +66,7 @@ namespace character{
 		public override int getGiveExp () {
 			throw new System.NotImplementedException ();
 		}
-		public override item.Item getDrop () {
+		public override item.IItem getDrop () {
 			throw new System.NotImplementedException ();
 		}
 		#endregion

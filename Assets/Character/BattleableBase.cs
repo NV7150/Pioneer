@@ -10,7 +10,7 @@ using battleSystem;
 
 namespace character{
 	//抽象クラスにつき、必ず仮想変数をオーバーライドしてください。
-	public abstract class BattleableBase : Character{
+	public abstract class BattleableBase : ICharacter{
 
 		//HPを表します。必ず0 =< hp =< maxHpが成り立ちます。
 		protected int hp;
@@ -155,7 +155,7 @@ namespace character{
 		public abstract int getDef();
 
 		//ディレイ値を返します
-		public abstract float getDelay(ActiveSkill skill);
+		public abstract float getDelay(IActiveSkill skill);
 
 		//移動する量を決定します。isButtlingがtrue時のみ呼びだされます。
 		public abstract int move();
@@ -167,22 +167,22 @@ namespace character{
 		public abstract BattleCommand decideCommand();
 
 		//攻撃するSkillを決定し、そのスキルを返します。
-		public abstract ActiveSkill decideSkill();
+		public abstract IActiveSkill decideSkill();
 
 		//対象のスキルの射程を算出します。isButtlingがtrue時のみ呼びだされます。
-		public abstract int getRange(ActiveSkill skill);
+		public abstract int getRange(IActiveSkill skill);
 
 		//攻撃の対象を決定します。isButtlingがtrue時のみ呼び出されます。
 		public abstract List<BattleableBase> decideTarget(List<BattleableBase> bals);
 
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
-		public abstract int getHitness(ActiveSkill skill);
+		public abstract int getHitness(IActiveSkill skill);
 
 		//攻撃やスキルを使用し、ダメージを返します。isButtlingがtrue時のみ呼び出されます。
-		public abstract int battleAction(ActiveSkill skill);
+		public abstract int battleAction(IActiveSkill skill);
 
 		//受動の行動を決定します。isBattlingがtrue時のみ呼びだされます。
-		public abstract PassiveSkill decidePassiveSkill();
+		public abstract IPassiveSkill decidePassiveSkill();
 
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
 		public abstract int getDodgeNess();

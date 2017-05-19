@@ -6,7 +6,7 @@ using character;
 using battleSystem;
 
 namespace skill{
-	public interface ActiveSkill : Skill{
+	public interface IActiveSkill : Skill{
 		//スキルの属性を決定します
 		SkillType getSkillType();
 

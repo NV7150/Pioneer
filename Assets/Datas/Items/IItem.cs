@@ -1,7 +1,7 @@
 ﻿using character;
 
 namespace item {
-    public interface Item {
+    public interface IItem {
         //アイテム名を取得します
         string getName();
 
@@ -9,7 +9,7 @@ namespace item {
         string getDescription();
 
         //アイテムを使用します
-		void use(Playable use);
+		void use(PlayableBase use);
 
         //アイテムの重量を表します
         int getMass();

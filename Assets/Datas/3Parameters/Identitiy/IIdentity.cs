@@ -1,5 +1,5 @@
 namespace parameter{﻿
-	public interface Identity {
+	public interface IIdentity {
 		//Identitiy名を返します
 		string getName();
 

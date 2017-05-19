@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 namespace parameter{
-	public class Civil : Job{
+	public class Civil : IJob{
 		public string getName (){
 			return "一般市民";
 		}

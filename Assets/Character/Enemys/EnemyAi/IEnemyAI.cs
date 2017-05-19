@@ -7,18 +7,18 @@ using skill;
 using battleSystem;
 
 namespace AI {
-	public interface EnemyAI {
+	public interface IEnemyAI {
 		//与えられたデータを元に、行動を決めます
 		BattleCommand decideCommand();
 
 		//与えられたデータを元に、使うスキルを判断します
-		ActiveSkill decideSkill();
+		IActiveSkill decideSkill();
 
 		//スキルテーブルを設定します
-		void setSkillTable(Dictionary<SkillCategory,ActiveSkill> skillTable);
+		void setSkillTable(Dictionary<SkillCategory,IActiveSkill> skillTable);
 
 		//与えられたデータを元に、攻撃する敵を判断します
-		List<BattleableBase> decideTarget (List<BattleableBase> targets,ActiveSkill useSkill);
+		List<BattleableBase> decideTarget (List<BattleableBase> targets,IActiveSkill useSkill);
 
 		//与えられたデータを元に、移動量を決定します
 		int getMove();

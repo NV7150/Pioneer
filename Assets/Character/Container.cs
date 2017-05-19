@@ -5,7 +5,7 @@ using UnityEngine;
 namespace character{
 	public class Container : MonoBehaviour {
 		public GameObject model;
-		Character chara;
+		ICharacter chara;
 
 		// Use this for initialization
 		void Start () {
@@ -28,7 +28,7 @@ namespace character{
 		}
 
 		//containerにcharacterを設定します
-		public void setCharacter(Character character){
+		public void setCharacter(ICharacter character){
 			chara = character;
 		}
 	}

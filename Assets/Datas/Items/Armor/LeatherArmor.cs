@@ -2,7 +2,7 @@
 using character;
 
 namespace item {
-	public class LeatherArmor : Armor{
+	public class LeatherArmor : ArmorBase{
 		private readonly int DEF = 1;
 		private readonly int DODGE_BONUS = 0;
 		private readonly int NEED_PHY = 0;
@@ -18,7 +18,7 @@ namespace item {
 		public override int getDodgeBonus () {
 			return DODGE_BONUS;
 		}
-		protected override bool canEquip (Playable user) {
+		protected override bool canEquip (PlayableBase user) {
 			return user.getPhy () >= NEED_PHY;
 		}
 

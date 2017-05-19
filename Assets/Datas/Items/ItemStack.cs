@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace item{
 	public class ItemStack {
-		private Stack<Item> stack = new Stack<Item>();
-		public Item take(){
+		private Stack<IItem> stack = new Stack<IItem>();
+		public IItem take(){
 			return stack.Pop();
 		}
 
-		public void add(Item item){
+		public void add(IItem item){
 			stack.Push (item);
 		}
 	}

@@ -1,7 +1,7 @@
 ﻿using item;
 
 namespace character{
-	public abstract class Enemy : BattleableBase{
+	public abstract class EnemyBase : BattleableBase{
 	    //エンカウントし、戦闘に突入します
 	    public abstract void encount();
 
@@ -9,9 +9,9 @@ namespace character{
 	    public abstract int getGiveExp();
 
 	    //このEnemyのドロップアイテムを取得します。ない場合はnullを返します
-	    public abstract Item getDrop();
+	    public abstract IItem getDrop();
 
-		public Enemy(BattleableBaseBuilder builder) : base(builder){
+		public EnemyBase(BattleableBaseBuilder builder) : base(builder){
 		}
 	}
 }

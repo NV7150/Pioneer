@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using character;
 
 namespace item{
-	public class ShortSword : Wepon {
+	public class ShortSword : WeponBase {
 		private readonly int ATTACK = 1;
 		private readonly int RANGE = 0;
 		private readonly WeponType TYPE = WeponType.SWORD;
@@ -27,7 +27,7 @@ namespace item{
 			return TYPE;
 		}
 			
-		protected override bool canEquip (Playable user) {
+		protected override bool canEquip (PlayableBase user) {
 			return user.getFft () >= NEED_MFT;
 		}
 

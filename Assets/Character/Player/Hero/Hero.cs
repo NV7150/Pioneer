@@ -10,7 +10,7 @@ using battleSystem;
 using System;
 
 namespace character{
-	public class Hero :Playable {
+	public class Hero :PlayableBase {
 
 		public Hero(BattleableBaseBuilder builder) : base(builder){
 		}
@@ -30,7 +30,7 @@ namespace character{
 		public override int getDef () {
 			throw new System.NotImplementedException ();
 		}
-		public override float getDelay (ActiveSkill skill) {
+		public override float getDelay (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
 		public override int move () {
@@ -42,22 +42,22 @@ namespace character{
 		public override BattleCommand decideCommand () {
 			throw new System.NotImplementedException ();
 		}
-		public override ActiveSkill decideSkill () {
+		public override IActiveSkill decideSkill () {
 			throw new System.NotImplementedException ();
 		}
-		public override int getRange (ActiveSkill skill) {
+		public override int getRange (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
 		public override List<BattleableBase> decideTarget (List<BattleableBase> bals) {
 			throw new System.NotImplementedException ();
 		}
-		public override int getHitness (ActiveSkill skill) {
+		public override int getHitness (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public override int battleAction (ActiveSkill skill) {
+		public override int battleAction (IActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public override PassiveSkill decidePassiveSkill () {
+		public override IPassiveSkill decidePassiveSkill () {
 			throw new System.NotImplementedException ();
 		}
 		public override int getDodgeNess () {
@@ -65,10 +65,10 @@ namespace character{
 		}
 		#endregion
 		#region implemented abstract members of Playable
-		public override void equipWepon (Wepon wepon) {
+		public override void equipWepon (WeponBase wepon) {
 			throw new System.NotImplementedException ();
 		}
-		public override void equipArmor (Armor armor) {
+		public override void equipArmor (ArmorBase armor) {
 			throw new System.NotImplementedException ();
 		}
 		public override void levelUp () {

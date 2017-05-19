@@ -56,7 +56,7 @@ namespace battleSystem{
 //			Debug.Log (joinedCharacter[FiealdPosition.ZERO].Count);
 //			if(bal.getMft() == 101)
 //				Debug.Log (bal.ToString());
-			ActiveSkill useSkill = bal.decideSkill();
+			IActiveSkill useSkill = bal.decideSkill();
 //			Debug.Log ("end decide");
 			int range = bal.getRange (useSkill);
 //			Debug.Log ("end range");
@@ -71,7 +71,7 @@ namespace battleSystem{
 			List<BattleableBase> targets = bal.decideTarget (list);
 //			Debug.Log ("end targets");
 			foreach(BattleableBase target in targets){
-				PassiveSkill reaction = target.decidePassiveSkill ();
+				IPassiveSkill reaction = target.decidePassiveSkill ();
 //				Debug.Log ("end passive");
 				reaction.use (target);
 //				Debug.Log ("end passive use");

@@ -7,7 +7,7 @@ namespace character{
 	 *Characterは内部的処理を行います。
 	 *Containerは外面的処理を行います。また、全ての具象のContainerクラスはMonoBehaviourを継承しています。
 	*/
-	public interface Character{
+	public interface ICharacter{
 		//外面を取得します
 		GameObject getModel();
 

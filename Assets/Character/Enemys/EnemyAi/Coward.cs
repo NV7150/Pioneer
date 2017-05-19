@@ -8,7 +8,7 @@ using battleSystem;
 
 namespace AI {
 	/*臆病なAIで、弱い敵を積極的に攻撃します*/
-	public class Coward :EnemyAI{
+	public class Coward :IEnemyAI{
 		private Dictionary<SkillCategory,int> probalityTable = new Dictionary<SkillCategory, int>(){
 			{ SkillCategory.NORMAL, 10 },
 			{ SkillCategory.CAUTION, 1 },
@@ -19,7 +19,7 @@ namespace AI {
 			{ SkillCategory.HEAL, 10 }
 		};
 
-		private Dictionary<SkillCategory,ActiveSkill> skillTable = new Dictionary<SkillCategory, ActiveSkill>();
+		private Dictionary<SkillCategory,IActiveSkill> skillTable = new Dictionary<SkillCategory, IActiveSkill>();
 
 		private readonly int maxHp;
 		private readonly int maxMp;
@@ -54,7 +54,7 @@ namespace AI {
 			return BattleCommand.ACTION;
 		}
 			
-		public ActiveSkill decideSkill () {
+		public IActiveSkill decideSkill () {
 			Dictionary<SkillCategory,int> probalityBonus = new Dictionary<SkillCategory, int> ();
 
 			//HPが50%以下の場合、caution可能性値を+20します
@@ -91,12 +91,12 @@ namespace AI {
 			throw new Exception ("exception state in cowardAI");
 		}
 
-		public void setSkillTable (Dictionary<SkillCategory, ActiveSkill> skillTable) {
+		public void setSkillTable (Dictionary<SkillCategory, IActiveSkill> skillTable) {
 			foreach(SkillCategory category in skillTable.Keys){
 				this.skillTable.Add (category,skillTable [category]);
 			}
 		}
-		public List<BattleableBase> decideTarget (List<BattleableBase> targets, ActiveSkill useSkill) {
+		public List<BattleableBase> decideTarget (List<BattleableBase> targets, IActiveSkill useSkill) {
 			switch (useSkill.isFriendly ()) {
 				case true:
 					return this.decideFriendlyTarget (targets, useSkill);
@@ -107,12 +107,12 @@ namespace AI {
 			}
 		}
 
-		private List<BattleableBase> decideFriendlyTarget(List<BattleableBase> targets,ActiveSkill useSkill){
+		private List<BattleableBase> decideFriendlyTarget(List<BattleableBase> targets,IActiveSkill useSkill){
 			// とりあえずreturnがなかったので
 			return new List<BattleableBase>();
 		}
 
-		private List<BattleableBase> decideHostileTarget(List<BattleableBase> targets,ActiveSkill useSkill){
+		private List<BattleableBase> decideHostileTarget(List<BattleableBase> targets,IActiveSkill useSkill){
 			// とりあえずreturnがなかったので
 			return new List<BattleableBase>();
 		}

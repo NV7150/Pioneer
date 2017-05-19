@@ -3,7 +3,7 @@ using character;
 using battleSystem;
 
 namespace skill {
-	public class NormalAttack: ActiveSkill{
+	public class NormalAttack: IActiveSkill{
 		private readonly SkillType TYPE = SkillType.PHYGICAL;
 		private readonly string NAME = "normal_attack";
 		private readonly string DESCRIPTION = "攻撃します";
@@ -22,7 +22,7 @@ namespace skill {
 			return SkillSuporter.getUseAbility (user);
 		}
 
-		float ActiveSkill.getDelay (BattleableBase user, float basicDelay) {
+		float IActiveSkill.getDelay (BattleableBase user, float basicDelay) {
 			return basicDelay;
 		}
 		#endregion
@@ -37,7 +37,7 @@ namespace skill {
 			return SkillSuporter.getUseAbility (user);
 		}
 
-		bool ActiveSkill.isFriendly () {
+		bool IActiveSkill.isFriendly () {
 			return IS_FRIENDLY;
 		}
 		#endregion

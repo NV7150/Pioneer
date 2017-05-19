@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace skill{
-	public class NoGuard : PassiveSkill {
+	public class NoGuard : IPassiveSkill {
 		private readonly string NAME = "No_Guard";
 		private readonly string DESCRIPTION = "ガードせず、攻撃を受けます";
 
