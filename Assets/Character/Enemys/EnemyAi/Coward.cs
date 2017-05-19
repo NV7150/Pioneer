@@ -108,11 +108,13 @@ namespace AI {
 		}
 
 		private List<Battleable> decideFriendlyTarget(List<Battleable> targets,ActiveSkill useSkill){
-			
+			// とりあえずreturnがなかったので
+			return new List<Battleable>();
 		}
 
 		private List<Battleable> decideHostileTarget(List<Battleable> targets,ActiveSkill useSkill){
-			
+			// とりあえずreturnがなかったので
+			return new List<Battleable>();
 		}
 
 		private Battleable decideHostileSkingleTarget(List<Battleable> targets){
