@@ -3,6 +3,7 @@ using item;
 using parameter;
 
 using System;
+using System.Collections.Generic;
 
 namespace character{
 	public abstract class PlayableBase : BattleableBase{
@@ -32,7 +33,7 @@ namespace character{
 			return exp;
 		}
 
-		public PlayableBase(BattleableBaseBuilder builder) : base(builder){
+		public PlayableBase(Dictionary<Ability,int> parameters) : base(parameters){
 		}
 	}
 }

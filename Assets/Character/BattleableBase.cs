@@ -8,6 +8,7 @@ using skill;
 using item;
 using battleSystem;
 
+using parameter;
 namespace character{
 	//抽象クラスにつき、必ず仮想変数をオーバーライドしてください。
 	public abstract class BattleableBase : ICharacter{
@@ -45,8 +46,15 @@ namespace character{
 		//カウンターを行うかを表します。初期値はfalseです。
 		protected bool doCounter = false;
 
-		public BattleableBase(BattleableBaseBuilder builder){
-			
+		public BattleableBase(Dictionary<Ability,int> parameters){
+			maxHp = parameters [Ability.HP];
+			maxMp = parameters [Ability.MP];
+			mft = parameters [Ability.MFT];
+			fft = parameters [Ability.FFT];
+			mgp = parameters [Ability.MGP];
+			agi = parameters [Ability.AGI];
+			phy = parameters [Ability.PHY];
+			level = parameters [Ability.LV];
 		}
 
 		//HPを返します

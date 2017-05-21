@@ -12,7 +12,7 @@ using System;
 namespace character{
 	public class Hero :PlayableBase {
 
-		public Hero(BattleableBaseBuilder builder) : base(builder){
+		public Hero(Dictionary<Ability,int> parameters) : base(parameters){
 		}
 
 		#region Character implementation

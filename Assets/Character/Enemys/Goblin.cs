@@ -5,9 +5,10 @@ using UnityEngine;
 using character;
 using battleSystem;
 using skill;
+using parameter;
 
 namespace character{
-	public class Goblin : EnemyBase {
+	public class Goblin : Enemy {
 		#region implemented abstract members of BattleableBase
 
 		public override GameObject getModel () {
@@ -71,7 +72,7 @@ namespace character{
 		}
 		#endregion
 
-		public Goblin(BattleableBaseBuilder builder) : base(builder){
+		public Goblin(Dictionary<Ability,int> parameters) : base(parameters){
 		}
 
 	}
