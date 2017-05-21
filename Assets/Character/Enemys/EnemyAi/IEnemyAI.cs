@@ -18,7 +18,7 @@ namespace AI {
 		void setSkillTable(Dictionary<SkillCategory,IActiveSkill> skillTable);
 
 		//与えられたデータを元に、攻撃する敵を判断します
-		List<BattleableBase> decideTarget (List<BattleableBase> targets,IActiveSkill useSkill);
+		List<IBattleable> decideTarget (List<IBattleable> targets,IActiveSkill useSkill);
 
 		//与えられたデータを元に、移動量を決定します
 		int getMove();

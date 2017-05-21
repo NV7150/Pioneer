@@ -11,13 +11,13 @@ namespace skill{
 		SkillType getSkillType();
 
 		//スキルの射程を取得します
-		int getRange(BattleableBase user,int basicRange);
+		int getRange(IBattleable user,int basicRange);
 
 		//スキルの成功率を算出します
-		int getSuccessRate(BattleableBase user);
+		int getSuccessRate(IBattleable user);
 
 		//スキルのディレイを表します
-		float getDelay(BattleableBase user,float basicDelay);
+		float getDelay(IBattleable user,float basicDelay);
 
 		//友好的なスキルであるかを返します
 		bool isFriendly();
@@ -28,7 +28,7 @@ namespace skill{
 
 	public class SkillSuporter{
 		private SkillSuporter(){}
-		public static int getUseAbility(BattleableBase user){
+		public static int getUseAbility(IBattleable user){
 //			switch(user.getAttackType()){
 //			case AttackType.MELEE:
 //				return user.getMft ();

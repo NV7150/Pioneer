@@ -9,6 +9,6 @@ namespace skill {
         string getDescription();
 
 		//スキルを使用します
-		int use(BattleableBase user);
+		int use(IBattleable user);
     }
 }

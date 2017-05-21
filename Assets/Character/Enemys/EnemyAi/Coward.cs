@@ -96,7 +96,7 @@ namespace AI {
 				this.skillTable.Add (category,skillTable [category]);
 			}
 		}
-		public List<BattleableBase> decideTarget (List<BattleableBase> targets, IActiveSkill useSkill) {
+		public List<IBattleable> decideTarget (List<IBattleable> targets, IActiveSkill useSkill) {
 			switch (useSkill.isFriendly ()) {
 				case true:
 					return this.decideFriendlyTarget (targets, useSkill);
@@ -107,23 +107,23 @@ namespace AI {
 			}
 		}
 
-		private List<BattleableBase> decideFriendlyTarget(List<BattleableBase> targets,IActiveSkill useSkill){
+		private List<IBattleable> decideFriendlyTarget(List<IBattleable> targets,IActiveSkill useSkill){
 			// とりあえずreturnがなかったので
-			return new List<BattleableBase>();
+			return new List<IBattleable>();
 		}
 
-		private List<BattleableBase> decideHostileTarget(List<BattleableBase> targets,IActiveSkill useSkill){
+		private List<IBattleable> decideHostileTarget(List<IBattleable> targets,IActiveSkill useSkill){
 			// とりあえずreturnがなかったので
-			return new List<BattleableBase>();
+			return new List<IBattleable>();
 		}
 
-		private BattleableBase decideHostileSkingleTarget(List<BattleableBase> targets){
+		private IBattleable decideHostileSkingleTarget(List<IBattleable> targets){
 			int sumLevel = 0;
-			foreach (BattleableBase target in targets) {
+			foreach (IBattleable target in targets) {
 				sumLevel += target.getLevel ();
 			}
 			int choose = rand.Next (0, sumLevel);
-			foreach (BattleableBase target in targets) {
+			foreach (IBattleable target in targets) {
 				if (( sumLevel - target.getLevel () )>= choose)
 					return target;
 				choose -= ( sumLevel - target.getLevel () );

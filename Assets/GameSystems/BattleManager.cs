@@ -13,7 +13,7 @@ using skill;
 namespace battleSystem{
 	public class BattleManager{
 		private static readonly BattleManager INSTANCE = new BattleManager();
-		private Dictionary<FiealdPosition,List<BattleableBase>> joinedCharacter = new Dictionary<FiealdPosition,List<BattleableBase>>();
+		private Dictionary<FiealdPosition,List<IBattleable>> joinedCharacter = new Dictionary<FiealdPosition,List<IBattleable>>();
 		private BattleField field;
 
 
@@ -24,7 +24,7 @@ namespace battleSystem{
 
 		private BattleManager(){
 			foreach(FiealdPosition pos in System.Enum.GetValues(typeof(FiealdPosition))){
-				joinedCharacter.Add (pos, new List<BattleableBase> ());
+				joinedCharacter.Add (pos, new List<IBattleable> ());
 			}
 		}
 
@@ -39,7 +39,7 @@ namespace battleSystem{
 		 * Battleable bal 戦闘に参加させたいオブジェクト
 		 * FiealdPosition pos 初期の戦闘参加位置
 		*/
-		public IEnumerator joinBattle(BattleableBase bal,FiealdPosition pos){
+		public IEnumerator joinBattle(IBattleable bal,FiealdPosition pos){
 			Debug.Log ("called joined");
 			bal.setIsBattling (true);
 			joinedCharacter [pos].Add (bal);
@@ -51,7 +51,7 @@ namespace battleSystem{
 		}
 
 		//攻撃・スキル使用を行います。
-		private float actionCommand(BattleableBase bal,FiealdPosition pos){
+		private float actionCommand(IBattleable bal,FiealdPosition pos){
 			Debug.Log ("melee" + bal.getMft());
 //			Debug.Log (joinedCharacter[FiealdPosition.ZERO].Count);
 //			if(bal.getMft() == 101)
@@ -60,7 +60,7 @@ namespace battleSystem{
 //			Debug.Log ("end decide");
 			int range = bal.getRange (useSkill);
 //			Debug.Log ("end range");
-			List<BattleableBase> list = new List<BattleableBase> ();
+			List<IBattleable> list = new List<IBattleable> ();
 //			Debug.Log ("end list");
 			for (int i = 0; i < range + 1; i++) {
 				list.AddRange (joinedCharacter[pos + i]);
@@ -68,15 +68,15 @@ namespace battleSystem{
 			}
 			int hitness = bal.getHitness (useSkill);
 //			Debug.Log ("end hitness");
-			List<BattleableBase> targets = bal.decideTarget (list);
+			List<IBattleable> targets = bal.decideTarget (list);
 //			Debug.Log ("end targets");
-			foreach(BattleableBase target in targets){
+			foreach(IBattleable target in targets){
 				IPassiveSkill reaction = target.decidePassiveSkill ();
 //				Debug.Log ("end passive");
 				reaction.use (target);
 //				Debug.Log ("end passive use");
 //				Debug.Log ("end dodge");
-				if (hitness > target.getDodgeNess()) {
+				if (hitness > target.getDodgeness()) {
 //					Debug.Log ("end suc");
 					target.dammage (bal.battleAction (useSkill), useSkill.getSkillType ());
 				}
@@ -86,7 +86,7 @@ namespace battleSystem{
 		}
 			
 		//現在位置から移動します
-		private float moveCommand(BattleableBase bal,ref FiealdPosition pos){
+		private float moveCommand(IBattleable bal,ref FiealdPosition pos){
 //			Debug.Log ("moveCommand" + pos);
 			int moveness = bal.move ();
 			Debug.Log ("end move");
@@ -116,7 +116,7 @@ namespace battleSystem{
 		}
 
 		//対象は戦闘から離脱します
-		private float escapeCommand(BattleableBase bal,FiealdPosition pos){
+		private float escapeCommand(IBattleable bal,FiealdPosition pos){
 			if(!removeBalFromJoinedCharacter (bal, pos))
 				throw new Exception ("balオブジェクトの情報が不正です");
 			bal.setIsBattling (false);
@@ -124,7 +124,7 @@ namespace battleSystem{
 		}
 
 		//渡された位置にある渡されたbalオブジェクトをjoinedCharacterディクショナリから削除します
-		private bool removeBalFromJoinedCharacter(BattleableBase bal,FiealdPosition pos){
+		private bool removeBalFromJoinedCharacter(IBattleable bal,FiealdPosition pos){
 			if (joinedCharacter [pos].Contains (bal)) {
 				joinedCharacter [pos].Remove (bal);
 				return true;
@@ -137,7 +137,7 @@ namespace battleSystem{
 		 * Battleable bal 処理したいBattleableオブジェクト
 		 * FiealdPosition pos 対象の位置
 		*/
-		private float decideCommand(BattleableBase bal,ref FiealdPosition pos){
+		private float decideCommand(IBattleable bal,ref FiealdPosition pos){
 			Debug.Log ("DecideCommand "  + pos);
 			switch (bal.decideCommand ()) {
 				case BattleCommand.ACTION:
