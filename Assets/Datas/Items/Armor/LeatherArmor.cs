@@ -18,7 +18,7 @@ namespace item {
 		public override int getDodgeBonus () {
 			return DODGE_BONUS;
 		}
-		protected override bool canEquip (PlayableBase user) {
+		protected override bool canEquip (IPlayable user) {
 			return user.getPhy () >= NEED_PHY;
 		}
 

@@ -9,13 +9,13 @@ namespace item {
 		public abstract int getDodgeBonus();
 
 		//武器が装備可能かを確認します
-		protected abstract bool canEquip(PlayableBase user);
+		protected abstract bool canEquip(IPlayable user);
 
 		//装備条件を文章として返します
 		public abstract string getNeedAbility ();
 
 		//武器を装備します
-		public void use(PlayableBase user){
+		public void use(IPlayable user){
 			if (canEquip (user)) {
 				user.equipArmor (this);
 			}

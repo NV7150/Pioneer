@@ -27,7 +27,7 @@ namespace item{
 			return TYPE;
 		}
 			
-		protected override bool canEquip (PlayableBase user) {
+		protected override bool canEquip (IPlayable user) {
 			return user.getFft () >= NEED_MFT;
 		}
 
