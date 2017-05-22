@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace AssemblyCSharp {
-	public interface Friendly {
+namespace character {
+	public interface  IFriendly {
+		int getSpc();
+		void talk(IFriendly friendly);
 	}
 }
 
