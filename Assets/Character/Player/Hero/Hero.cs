@@ -66,7 +66,7 @@ namespace character{
 		//このキャラクターの攻撃へのボーナスを表します
 		private int atkBonus = 0;
 		//カウンターを行うかを表します
-		private bool doCounter;
+		private bool isReadyToCounter;
 
 		public Hero(Dictionary<Ability,int> parameters){
 			setMaxHp (parameters[Ability.HP]);
@@ -250,15 +250,15 @@ namespace character{
 			atkBonus = bonus;
 		}
 
-		public void setDoCounter (bool flag) {
-			doCounter = flag;
+		public void setIsReadyToCounter (bool flag) {
+			isReadyToCounter = flag;
 		}
 
 		public void resetBonus () {
 			defBonus = 0;
 			dodgeBonus = 0;
 			atkBonus = 0;
-			doCounter = false;
+			isReadyToCounter = false;
 		}
 
 		public int getLevel () {

@@ -1,11 +1,49 @@
 ﻿using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 using item;
 using parameter;
+using AI;
 
 namespace character{
 	public class Enemy : IBattleable{
+		[SerializeField]
+		private int
+			id,
+			aiId,
+			maxHp,
+			maxMp,
+			mft,
+			fft,
+			phy,
+			mgp,
+			agi,
+			def,
+			level;
+
+		[SerializeField]
+		private string name;
+
+		[SerializeField]
+		private IItem
+			normalDrop,
+			rareDrop;
+
+		private int hp;
+		private int mp;
+		private int defBonus = 0;
+		private int dodgeBonus = 0;
+		private int atkBonus = 0;
+
+		private bool isBattling = false;
+		private bool isReadyToCounter = false;
+
+		private Container container;
+
+		private IEnemyAI ai;
+
+
 	    //エンカウントし、戦闘に突入します
 		public void encount(){
 			throw new NotSupportedException ();
@@ -28,41 +66,43 @@ namespace character{
 			throw new System.NotImplementedException ();
 		}
 
-
-
 		#region IBattleable implementation
 		public int getHp () {
-			throw new System.NotImplementedException ();
+			return hp;
 		}
 		public void dammage (int dammage, skill.SkillType type) {
 			throw new System.NotImplementedException ();
 		}
 		public int getMp () {
-			throw new System.NotImplementedException ();
+			return mp;
 		}
 		public void setHp (int hp) {
-			throw new System.NotImplementedException ();
+			if (hp < 0)
+				throw new ArgumentException ("invlid hp");
+			this.hp = hp;
 		}
 		public void setMp (int mp) {
-			throw new System.NotImplementedException ();
+			if (mp < 0)
+				throw new ArgumentException ("invlid mp");
+			this.mp = mp;
 		}
 		public int getMft () {
-			throw new System.NotImplementedException ();
+			return mft;
 		}
 		public int getFft () {
-			throw new System.NotImplementedException ();
+			return fft;
 		}
 		public int getMgp () {
-			throw new System.NotImplementedException ();
+			return mgp;
 		}
 		public int getAgi () {
-			throw new System.NotImplementedException ();
+			return agi;
 		}
 		public int getPhy () {
-			throw new System.NotImplementedException ();
+			return phy;
 		}
 		public int getDef () {
-			throw new System.NotImplementedException ();
+			return def;
 		}
 		public float getDelay (skill.IActiveSkill skill) {
 			throw new System.NotImplementedException ();
@@ -71,13 +111,13 @@ namespace character{
 			throw new System.NotImplementedException ();
 		}
 		public void setIsBattling (bool boolean) {
-			throw new System.NotImplementedException ();
+			isBattling = boolean;
 		}
 		public int move () {
 			throw new System.NotImplementedException ();
 		}
 		public void syncronizePositioin (UnityEngine.Vector3 vector) {
-			throw new System.NotImplementedException ();
+			container.getModel ().transform.position = vector;
 		}
 		public battleSystem.BattleCommand decideCommand () {
 			throw new System.NotImplementedException ();
@@ -101,22 +141,25 @@ namespace character{
 			throw new System.NotImplementedException ();
 		}
 		public void setDefBonus (int bonus) {
-			throw new System.NotImplementedException ();
+			defBonus = bonus;
 		}
 		public void setDodBonus (int bonus) {
-			throw new System.NotImplementedException ();
+			dodgeBonus = bonus;
 		}
 		public void setAtkBonus (int bonus) {
-			throw new System.NotImplementedException ();
+			atkBonus = bonus;
 		}
-		public void setDoCounter (bool flag) {
-			throw new System.NotImplementedException ();
+		public void setIsReadyToCounter (bool flag) {
+			isReadyToCounter = flag;
 		}
 		public void resetBonus () {
-			throw new System.NotImplementedException ();
+			defBonus = 0;
+			dodgeBonus = 0;
+			atkBonus = 0;
+			isReadyToCounter = false;
 		}
 		public int getLevel () {
-			throw new System.NotImplementedException ();
+			return level;
 		}
 		List<IBattleable> IBattleable.decideTarget (List<IBattleable> bals) {
 			throw new System.NotImplementedException ();
@@ -125,7 +168,7 @@ namespace character{
 		#endregion
 		#region ICharacter implementation
 		public UnityEngine.GameObject getModel () {
-			throw new System.NotImplementedException ();
+			return container.getModel ();
 		}
 		public void act () {
 			throw new System.NotImplementedException ();

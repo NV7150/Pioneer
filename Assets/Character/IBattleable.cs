@@ -98,7 +98,7 @@ namespace character{
 		void setAtkBonus(int bonus);
 
 		//カウンターを行うかどうかのフラグを設定します。isButtlingがtrue時のみ呼びだされます。
-		void setDoCounter(bool flag);
+		void setIsReadyToCounter(bool flag);
 
 		//ボーナスをリセットします。isButtlingがtrue時のみ呼びだされます。
 		void resetBonus();
