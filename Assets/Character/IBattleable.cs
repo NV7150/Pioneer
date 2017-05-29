@@ -20,10 +20,16 @@ namespace character{
 		int getMp();
 
 		//HPを設定します
-		int setHp(int hp);
+		void setHp(int hp);
 
 		//MPを設定します
-		int setMp(int mp);
+		void setMp(int mp);
+
+		//最大HPを返します
+		int getMaxHp();
+
+		//最大MPを返します
+		int getMaxMp();
 
 		//白兵戦闘能力(melee fighting)を返します
 		int getMft();

@@ -8,11 +8,17 @@ using System.Collections.Generic;
 namespace character{
 	public interface IPlayable : IBattleable,IFriendly{
 		
-		//対象(武器)を装備します
-		void equipWepon(WeponBase wepon);
+		//対象(武器)を装備します。装備不能の場合はfalseを返します
+		bool equipWepon(Wepon wepon);
+
+		//対象(武器)を取得します。装備不能の場合はfalseを返します
+		Wepon getWepon();
 
 		//対象(防具)を装備します
-		void equipArmor(ArmorBase armor);
+		bool equipArmor(Armor armor);
+
+		//対象(防具)を取得します
+		Armor getArmor();
 
 		//レベルアップし、能力値を成長させます
 		void levelUp();

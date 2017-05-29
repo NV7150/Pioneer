@@ -1,19 +1,32 @@
 ﻿using System.Collections.Generic;
+using System;
 
 using item;
 using parameter;
 
 namespace character{
-	public abstract class Enemy : IBattleable{
+	public class Enemy : IBattleable{
 	    //エンカウントし、戦闘に突入します
-	    public abstract void encount();
+		public void encount(){
+			throw new NotSupportedException ();
+		}
 
 	    //このEnemyが与える経験値を取得します
-	    public abstract int getGiveExp();
+		public int getGiveExp(){
+			throw new NotSupportedException ();
+		}
 
 	    //このEnemyのドロップアイテムを取得します。ない場合はnullを返します
-	    public abstract IItem getDrop();
+		public IItem getDrop(){
+			throw new NotSupportedException ();
+		}
 
+		public int getMaxHp () {
+			throw new System.NotImplementedException ();
+		}
+		public int getMaxMp () {
+			throw new System.NotImplementedException ();
+		}
 
 
 
@@ -27,10 +40,10 @@ namespace character{
 		public int getMp () {
 			throw new System.NotImplementedException ();
 		}
-		public int setHp (int hp) {
+		public void setHp (int hp) {
 			throw new System.NotImplementedException ();
 		}
-		public int setMp (int mp) {
+		public void setMp (int mp) {
 			throw new System.NotImplementedException ();
 		}
 		public int getMft () {
