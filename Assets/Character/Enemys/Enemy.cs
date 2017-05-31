@@ -7,6 +7,7 @@ using parameter;
 using AI;
 
 namespace character{
+	[System.SerializableAttribute]
 	public class Enemy : IBattleable{
 		[SerializeField]
 		private int
@@ -20,15 +21,15 @@ namespace character{
 			mgp,
 			agi,
 			def,
-			level;
+			level,
+			normalDropId,
+			rareDropId,
+			skillSetId;
 
 		[SerializeField]
-		private string name;
-
-		[SerializeField]
-		private IItem
-			normalDrop,
-			rareDrop;
+		private string 
+			name,
+			modelName;
 
 		private int hp;
 		private int mp;
@@ -43,6 +44,12 @@ namespace character{
 
 		private IEnemyAI ai;
 
+		public Enemy(string[] data){
+			setParameterFromCSV (data);
+//			container = new Container ((GameObject)Resources.Load(modelName),this);
+			GameObject gameobject = (GameObject)Resources.Load(modelName);
+//			this.container = gameobject.GetComponent<Container> ();
+		}
 
 	    //エンカウントし、戦闘に突入します
 		public void encount(){
@@ -59,12 +66,7 @@ namespace character{
 			throw new NotSupportedException ();
 		}
 
-		public int getMaxHp () {
-			throw new System.NotImplementedException ();
-		}
-		public int getMaxMp () {
-			throw new System.NotImplementedException ();
-		}
+
 
 		#region IBattleable implementation
 		public int getHp () {
@@ -85,6 +87,12 @@ namespace character{
 			if (mp < 0)
 				throw new ArgumentException ("invlid mp");
 			this.mp = mp;
+		}
+		public int getMaxHp () {
+			return maxHp;
+		}
+		public int getMaxMp () {
+			return maxMp;
 		}
 		public int getMft () {
 			return mft;
@@ -171,11 +179,60 @@ namespace character{
 			return container.getModel ();
 		}
 		public void act () {
-			throw new System.NotImplementedException ();
+			Debug.Log ("Succesed");
 		}
 		public void death () {
 			throw new System.NotImplementedException ();
 		}
 		#endregion
+
+		private void setParameterFromCSV(string[] parameters){
+			id = int.Parse (parameters [0]);
+			name = parameters [1];
+			aiId = int.Parse (parameters [2]);
+			maxHp = int.Parse (parameters [3]);
+			maxMp = int.Parse (parameters [4]);
+			mft = int.Parse (parameters[5]);
+			fft = int.Parse (parameters [6]);
+			phy = int.Parse (parameters [7]);
+			mgp = int.Parse (parameters [8]);
+			agi = int.Parse (parameters [9]);
+			def = int.Parse (parameters [10]);
+			level = int.Parse (parameters [11]);
+			normalDropId = int.Parse (parameters [12]);
+			rareDropId = int.Parse (parameters [13]);
+			skillSetId = int.Parse (parameters [14]);
+			modelName = "Models/" + parameters [15];
+		}
+
+		public Enemy Clone(){
+			Enemy en = new Enemy (
+				new string[] {
+					"" + id,
+					name,
+					"" + aiId,
+					"" + maxHp,
+					"" + maxMp,
+					"" + maxMp,
+					"" + mft,
+					"" + fft,
+					"" + phy,
+					"" + mgp,
+					"" + agi,
+					"" + def,
+					"" + level,
+					"" + normalDropId,
+					"" + rareDropId,
+					"" + skillSetId,
+					modelName.Remove(0,7)
+				}
+			);
+			MonoBehaviour.Instantiate (en.getModel());
+			return en;
+		}
+
+		public int getId(){
+			return this.id;
+		}
 	}
 }

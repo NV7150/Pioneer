@@ -5,11 +5,15 @@ using UnityEngine;
 namespace character{
 	public class Container : MonoBehaviour {
 		public GameObject model;
-		ICharacter chara;
+		private ICharacter chara;
 
 		// Use this for initialization
 		void Start () {
 
+		}
+		public Container(GameObject model,ICharacter character){
+			this.model = model;
+			this.chara = character;
 		}
 
 		// Update is called once per frame
@@ -25,11 +29,6 @@ namespace character{
 		//MonoBehaviourの機能を動作させるExecutorを返します
 		public MonoBehaviour getExcecutor(){
 			return this;
-		}
-
-		//containerにcharacterを設定します
-		public void setCharacter(ICharacter character){
-			chara = character;
 		}
 	}
 }
