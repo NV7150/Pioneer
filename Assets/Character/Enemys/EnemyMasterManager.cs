@@ -8,32 +8,30 @@ using character;
 
 namespace masterData{
 	[System.SerializableAttribute]
-	public class EnemyMasterManager : MonoBehaviour {
+	public class EnemyMasterManager : MasterDataManagerBase{
 		[SerializeField]
-		private List<Enemy> dataTable = new List<Enemy> ();
+		private List<EnemyBuilder> dataTable = new List<EnemyBuilder> ();
 
 		private void Awake(){
 			var enemyCSVText = Resources.Load("MasterDatas/EnemyMasterdata") as TextAsset;
-			var datas = CSV.CSVReader.SplitCsvGrid(enemyCSVText.text);
-			for (int i = 1; i < datas.GetLength(1) - 1 ; i++) {
-				Enemy data = new Enemy(GetRaw(datas,i));
-				dataTable.Add (data);
-			}
-		}
-
-		private string[] GetRaw (string[,] csv, int row) {
-			string[] data = new string[ csv.GetLength(0) ];
-			for (int i = 0; i < csv.GetLength(0); i++) 
-				data[i] = csv[i, row];
-			return data;
+			awakeBehaviour (enemyCSVText);
 		}
 
 		public Enemy getEnemyFromId(int id){
-			foreach(Enemy enemy in dataTable){
-				if (enemy.getId () == id)
-					return enemy.Clone();
+			foreach(EnemyBuilder builder in dataTable){
+				if (builder.getId () == id)
+					return builder.build ();
 			}
 			throw new ArgumentException ("invalit enemyId " + id);
 		}
+
+		#region implemented abstract members of MasterDataManagerBase
+
+		protected override void addToDataList (string[,] datas, int index) {
+			EnemyBuilder builder = new EnemyBuilder(GetRaw (datas, index));
+			dataTable.Add (builder);
+		}
+
+		#endregion
 	}
 }

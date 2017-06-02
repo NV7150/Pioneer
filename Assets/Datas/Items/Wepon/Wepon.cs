@@ -1,11 +1,25 @@
 ﻿using System;
+using UnityEngine;
 
 using character;
 using battleSystem;
 
 
 namespace item{
+	[System.SerializableAttribute]
 	public class  Wepon :  IItem{
+		[SerializeField]
+		private int
+			attack,
+			range,
+			needMft,
+			value;
+
+		[SerializeField]
+		private string name, description;
+
+		[SerializeField]
+		private float delay;
 
 		//攻撃力を取得します
 		public int getAttack(){

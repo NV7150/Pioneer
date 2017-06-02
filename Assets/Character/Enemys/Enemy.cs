@@ -9,7 +9,6 @@ using AI;
 namespace character{
 	[System.SerializableAttribute]
 	public class Enemy : IBattleable{
-		[SerializeField]
 		private int
 			id,
 			aiId,
@@ -26,7 +25,6 @@ namespace character{
 			rareDropId,
 			skillSetId;
 
-		[SerializeField]
 		private string 
 			name,
 			modelName;
@@ -44,8 +42,23 @@ namespace character{
 
 		private IEnemyAI ai;
 
-		public Enemy(string[] data){
-			setParameterFromCSV (data);
+		public Enemy(EnemyBuilder builder){
+			this.id = builder.getId ();
+			this.name = builder.getName ();
+			this.maxHp = builder.getMaxHp ();
+			this.maxMp = builder.getMaxMp ();
+			this.mft = builder.getMft ();
+			this.fft = builder.getFft ();
+			this.phy = builder.getPhy ();
+			this.mgp = builder.getMgp ();
+			this.agi = builder.getAgi ();
+			this.def = builder.getDef ();
+			this.level = builder.getLevel ();
+			this.normalDropId = builder.getNormalDropId ();
+			this.rareDropId = builder.getRareDropId ();
+			this.skillSetId = builder.getSkillSetId ();
+			this.modelName = builder.getModelName ();
+
 			GameObject prefab = (GameObject)Resources.Load(modelName);
 			GameObject gameobject = MonoBehaviour.Instantiate (prefab);
 			this.container = gameobject.GetComponent<Container> ();
@@ -66,9 +79,7 @@ namespace character{
 		public IItem getDrop(){
 			throw new NotSupportedException ();
 		}
-
-
-
+			
 		#region IBattleable implementation
 		public int getHp () {
 			return hp;
@@ -189,49 +200,6 @@ namespace character{
 			throw new NotImplementedException ();
 		}
 		#endregion
-
-		private void setParameterFromCSV(string[] parameters){
-			id = int.Parse (parameters [0]);
-			name = parameters [1];
-			aiId = int.Parse (parameters [2]);
-			maxHp = int.Parse (parameters [3]);
-			maxMp = int.Parse (parameters [4]);
-			mft = int.Parse (parameters[5]);
-			fft = int.Parse (parameters [6]);
-			phy = int.Parse (parameters [7]);
-			mgp = int.Parse (parameters [8]);
-			agi = int.Parse (parameters [9]);
-			def = int.Parse (parameters [10]);
-			level = int.Parse (parameters [11]);
-			normalDropId = int.Parse (parameters [12]);
-			rareDropId = int.Parse (parameters [13]);
-			skillSetId = int.Parse (parameters [14]);
-			modelName = "Models/" + parameters [15];
-		}
-
-		public Enemy Clone(){
-			string name = modelName.Remove (0, 7);
-			string[] line = new string[] {
-				"" + id,
-				this.name,
-				"" + aiId,
-				"" + maxHp,
-				"" + maxMp,
-				"" + mft,
-				"" + fft,
-				"" + phy,
-				"" + mgp,
-				"" + agi,
-				"" + def,
-				"" + level,
-				"" + normalDropId,
-				"" + rareDropId,
-				"" + skillSetId,
-				name
-			};
-			Enemy en = new Enemy (line);
-			return en;
-		}
 
 		public int getId(){
 			return this.id;

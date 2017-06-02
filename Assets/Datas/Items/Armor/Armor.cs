@@ -1,9 +1,15 @@
 ﻿using System;
+using UnityEngine;
 
 using character;
 
 namespace item {
-	public abstract class Armor : IItem{
+	[System.SerializableAttribute]
+	public class Armor : IItem{
+		[SerializeField]
+
+
+
 		//物理防御を返します
 		public int getDef(){
 			throw new NotSupportedException ();
