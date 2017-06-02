@@ -46,9 +46,10 @@ namespace character{
 
 		public Enemy(string[] data){
 			setParameterFromCSV (data);
-//			container = new Container ((GameObject)Resources.Load(modelName),this);
-			GameObject gameobject = (GameObject)Resources.Load(modelName);
-//			this.container = gameobject.GetComponent<Container> ();
+			GameObject prefab = (GameObject)Resources.Load(modelName);
+			GameObject gameobject = MonoBehaviour.Instantiate (prefab);
+			this.container = gameobject.GetComponent<Container> ();
+			container.setCharacter(this);
 		}
 
 	    //エンカウントし、戦闘に突入します
@@ -174,15 +175,18 @@ namespace character{
 		}
 
 		#endregion
-		#region ICharacter implementation
-		public UnityEngine.GameObject getModel () {
-			return container.getModel ();
+
+		#region IChracter implementation
+		public GameObject getModel () {
+			throw new NotImplementedException ();
 		}
+
 		public void act () {
 			Debug.Log ("Succesed");
 		}
+
 		public void death () {
-			throw new System.NotImplementedException ();
+			throw new NotImplementedException ();
 		}
 		#endregion
 
@@ -206,28 +210,26 @@ namespace character{
 		}
 
 		public Enemy Clone(){
-			Enemy en = new Enemy (
-				new string[] {
-					"" + id,
-					name,
-					"" + aiId,
-					"" + maxHp,
-					"" + maxMp,
-					"" + maxMp,
-					"" + mft,
-					"" + fft,
-					"" + phy,
-					"" + mgp,
-					"" + agi,
-					"" + def,
-					"" + level,
-					"" + normalDropId,
-					"" + rareDropId,
-					"" + skillSetId,
-					modelName.Remove(0,7)
-				}
-			);
-			MonoBehaviour.Instantiate (en.getModel());
+			string name = modelName.Remove (0, 7);
+			string[] line = new string[] {
+				"" + id,
+				this.name,
+				"" + aiId,
+				"" + maxHp,
+				"" + maxMp,
+				"" + mft,
+				"" + fft,
+				"" + phy,
+				"" + mgp,
+				"" + agi,
+				"" + def,
+				"" + level,
+				"" + normalDropId,
+				"" + rareDropId,
+				"" + skillSetId,
+				name
+			};
+			Enemy en = new Enemy (line);
 			return en;
 		}
 

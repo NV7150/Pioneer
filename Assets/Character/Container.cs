@@ -5,20 +5,19 @@ using UnityEngine;
 namespace character{
 	public class Container : MonoBehaviour {
 		public GameObject model;
-		private ICharacter chara;
+		public ICharacter character;
 
 		// Use this for initialization
 		void Start () {
-
-		}
-		public Container(GameObject model,ICharacter character){
-			this.model = model;
-			this.chara = character;
 		}
 
 		// Update is called once per frame
 		void Update () {
-			chara.act ();
+			if (character == null) {
+				print ("null.");
+				return;
+			}
+			character.act ();
 		}
 
 		//外面のGameObjectを返します
@@ -29,6 +28,11 @@ namespace character{
 		//MonoBehaviourの機能を動作させるExecutorを返します
 		public MonoBehaviour getExcecutor(){
 			return this;
+		}
+
+		public void setCharacter(ICharacter chara){
+			Debug.Log (chara);
+			this.character = chara;
 		}
 	}
 }

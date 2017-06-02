@@ -12,7 +12,7 @@ namespace masterData{
 		[SerializeField]
 		private List<Enemy> dataTable = new List<Enemy> ();
 
-		private void Start(){
+		private void Awake(){
 			var enemyCSVText = Resources.Load("MasterDatas/EnemyMasterdata") as TextAsset;
 			var datas = CSV.CSVReader.SplitCsvGrid(enemyCSVText.text);
 			for (int i = 1; i < datas.GetLength(1) - 1 ; i++) {
@@ -33,7 +33,7 @@ namespace masterData{
 				if (enemy.getId () == id)
 					return enemy.Clone();
 			}
-			throw new ArgumentException ("invalit enemyId");
+			throw new ArgumentException ("invalit enemyId " + id);
 		}
 	}
 }
