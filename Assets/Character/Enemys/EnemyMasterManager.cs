@@ -13,7 +13,7 @@ namespace masterData{
 		private List<EnemyBuilder> dataTable = new List<EnemyBuilder> ();
 
 		private void Awake(){
-			var enemyCSVText = Resources.Load("MasterDatas/EnemyMasterdata") as TextAsset;
+			var enemyCSVText = Resources.Load("Masterdatas/EnemyMasterdata") as TextAsset;
 			awakeBehaviour (enemyCSVText);
 		}
 

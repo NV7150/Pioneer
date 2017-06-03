@@ -5,9 +5,9 @@ using UnityEngine;
 using item;
 using parameter;
 using AI;
+using masterData;
 
 namespace character{
-	[System.SerializableAttribute]
 	public class Enemy : IBattleable{
 		private int
 			id,
@@ -193,7 +193,7 @@ namespace character{
 		}
 
 		public void act () {
-			Debug.Log ("Succesed");
+//			Debug.Log ("Succesed");
 		}
 
 		public void death () {

@@ -4,84 +4,88 @@ using UnityEngine;
 using character;
 using battleSystem;
 
+using masterData;
 
 namespace item{
-	[System.SerializableAttribute]
 	public class  Wepon :  IItem{
-		[SerializeField]
 		private int
 			attack,
 			range,
 			needMft,
-			value;
+			itemValue,
+			mass;
 
-		[SerializeField]
-		private string name, description;
+		private string 
+			name,
+			description,
+			equipdescription;
 
-		[SerializeField]
 		private float delay;
 
-		//攻撃力を取得します
-		public int getAttack(){
-			throw new NotSupportedException ();
+		private WeponType type;
+
+		public Wepon(WeponBuilder builder){
+			attack = builder.getAttack ();
+			range = builder.getRange ();
+			needMft = builder.getNeedMft ();
+			itemValue = builder.getItemValue ();
+			mass = builder.getMass ();
+			name = builder.getName ();
+			description = builder.getDescription ();
+			equipdescription = builder.getEquipDescription ();
+			type = builder.getWeponType ();
 		}
 
-		//武器の射程を取得します
-		public int getRange(){
-			throw new NotSupportedException ();
+		public int getAttack() {
+			return attack;
+		}
+
+		public int getRange() {
+			return range;
+		}
+
+		public int getNeedMft() {
+			return needMft;
+		}
+
+		public int getItemValue() {
+			return itemValue;
+		}
+
+		public int getMass(){
+			return mass;
+		}
+
+		public string getName() {
+			return name;
+		}
+
+		public string getDescription() {
+			return description;
+		}
+
+		public float getDelay() {
+			return delay;
 		}
 
 		//武器の種別を取得します
 		public WeponType getWeponType(){
-			throw new NotSupportedException ();
+			return type;
 		}
 
 		//武器が装備可能かを確認します
 		public bool canEquip(IPlayable user){
-			throw new NotSupportedException ();
+			return (needMft <= user.getMft());
 		}
 
 		//装備条件の説明を返します
-		public string getNeedAbilityDescription(){
-			throw new NotSupportedException ();
+		public string getEquipDescription(){
+			return equipdescription;
 		}
 
-		//アイテム名を取得します
-		public string getName(){
-			throw new NotSupportedException ();
-		}
-
-		//アイテム説明を取得します
-		public string getDescription(){
-			throw new NotSupportedException ();
-		}
-
-		//アイテムの重量を表します
-		public int getMass(){
-			throw new NotSupportedException ();
-		}
-
-		//アイテムの基本価格を表します
-		public int getItemValue(){
-			throw new NotSupportedException ();
-		}
-
-		//武器の基本ディレイ（攻撃後の待ち時間）を取得します
-		public float getDelay(){
-			throw new NotSupportedException ();
-		}
 
 		public void use (IPlayable use) {
 			throw new NotImplementedException ();
 		}
-	}
-
-	public enum WeponType{
-		SWORD,
-		BOW,
-		SPEAR,
-		BLUNT,
-		AX,
-		GUN
 	}
 }
