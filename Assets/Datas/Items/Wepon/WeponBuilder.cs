@@ -6,6 +6,7 @@ using System;
 using item;
 
 namespace masterData{
+	[System.SerializableAttribute]
 	public class WeponBuilder{
 		[SerializeField]
 		private int

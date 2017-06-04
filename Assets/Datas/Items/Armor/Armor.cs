@@ -2,53 +2,80 @@
 using UnityEngine;
 
 using character;
+using masterData;
 
 namespace item {
 	[System.SerializableAttribute]
 	public class Armor : IItem{
-		[SerializeField]
+		private int 
+			id,
+			def,
+			dodgeBonus,
+			needPhy,
+			mass,
+			itemValue;
 
+		private string
+			name,
+			descpription,
+			equipDescription;
 
+		private float delayBonus;
+
+		public Armor(ArmorBuilder builder){
+			this.id = builder.getId ();
+			this.def = builder.getDef ();
+			this.dodgeBonus = builder.getDodgeBonus ();
+			this.needPhy = builder.getNeedPhy ();
+			this.name = builder.getName ();
+			this.descpription = builder.getDescription ();
+			this.equipDescription = builder.getEquipDescription ();
+			this.delayBonus = builder.getDelayBonus ();
+		}
 
 		//物理防御を返します
 		public int getDef(){
-			throw new NotSupportedException ();
+			return def;
 		}
 
 		//回避修正を返します
 		public int getDodgeBonus(){
-			throw new NotSupportedException ();
+			return dodgeBonus;
 		}
 
 		//武器が装備可能かを確認します
 		public bool canEquip(IPlayable user){
-			throw new NotSupportedException ();
+			return (user.getPhy () >= needPhy);
 		}
 
 		//装備条件を文章として返します
-		public string getNeedAbility (){
-			throw new NotSupportedException ();
-			
+		public string getEquipDescription (){
+			return equipDescription;
 		}
 
 		//アイテム名を取得します
 		public string getName(){
-			throw new NotSupportedException ();
+			return name;
 		}
 
 		//アイテム説明を取得します
 		public string getDescription(){
-			throw new NotSupportedException ();
+			return descpription;
 		}
 
 		//アイテムの重量を表します
 		public int getMass(){
-			throw new NotSupportedException ();
+			return mass;
 		}
 
 		//アイテムの基本価格を表します
 		public int getItemValue(){
-			throw new NotSupportedException ();
+			return itemValue;
+		}
+
+		//アイテムのidを返します
+		public int getId(){
+			return id;
 		}
 
 		public void use (IPlayable use) {

@@ -5,11 +5,11 @@ using System;
 
 using item;
 
-namespace masterData{
+namespace masterData {
 	[System.SerializableAttribute]
-	public class WeponMasterManager : MasterDataManagerBase {
+	public class WeponMasterManager :MasterDataManagerBase {
 		[SerializeField]
-		private List<WeponBuilder> dataSet = new List<WeponBuilder> ();
+		List<WeponBuilder> dataSet = new List<WeponBuilder>();
 
 		void Awake(){
 			var weponCSVText = Resources.Load("Masterdatas/WeponMasterdata") as TextAsset;

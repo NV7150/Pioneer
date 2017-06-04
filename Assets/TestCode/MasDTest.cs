@@ -12,6 +12,9 @@ public class MasDTest : MonoBehaviour {
 	public WeponMasterManager wManager;
 	public Wepon woodenSowrd;
 	public Wepon ironSowrd;
+	public ArmorMasterManager aManager;
+	public Armor cloce;
+	public Armor leatherArmor;
 
 	// Use this for initialization
 	void Start () {
@@ -20,7 +23,10 @@ public class MasDTest : MonoBehaviour {
 
 		woodenSowrd = wManager.getWeponFromId(0);
 		ironSowrd = wManager.getWeponFromId (1);
-		Debug.Log (woodenSowrd.ToString()  + " and " + ironSowrd.ToString());
+		Debug.Log (woodenSowrd.getName() + " and " + ironSowrd.getName());
+		cloce = aManager.getArmorFromId (0);
+		leatherArmor = aManager.getArmorFromId (1);
+		Debug.Log (cloce.getName() + " and " + leatherArmor.getName());
 	}
 	
 	// Update is called once per frame
