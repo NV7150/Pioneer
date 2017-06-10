@@ -5,6 +5,7 @@ using UnityEngine;
 using masterdata;
 using character;
 using item;
+using skill;
 
 public class MasDTest : MonoBehaviour {
 	public EnemyMasterManager eManager;
@@ -15,6 +16,9 @@ public class MasDTest : MonoBehaviour {
 	public ArmorMasterManager aManager;
 	public Armor cloce;
 	public Armor leatherArmor;
+	public ActiveSkillMasterManager sManager;
+	public ActiveSkill normalMelee;
+	public ActiveSkill fire;
 
 	// Use this for initialization
 	void Start () {
@@ -26,6 +30,10 @@ public class MasDTest : MonoBehaviour {
 		cloce = aManager.getArmorFromId (0);
 		leatherArmor = aManager.getArmorFromId (1);
 		Debug.Log (cloce.getName() + " and " + leatherArmor.getName());
+		normalMelee = sManager .getActiveSkillFromId(0);
+		fire = sManager.getActiveSkillFromId (2);
+		Debug.Log (normalMelee.getName() + "and" + fire.getName());
+
 	}
 	
 	// Update is called once per frame

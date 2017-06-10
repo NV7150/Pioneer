@@ -9,8 +9,8 @@ namespace masterdata {
 	public class ActiveSkillMasterManager :MasterDataManagerBase{
 		private List<ActiveSkill> dataset = new List<ActiveSkill>();
 
-		public ActiveSkillMasterManager(){
-			var activeSkillCSVText = Resources.Load("Masterdatas/AcitveSkillMasterdata") as TextAsset;
+		private void Awake(){
+			var activeSkillCSVText = Resources.Load("Masterdatas/ActiveSkillMasterdata") as TextAsset;
 			awakeBehaviour (activeSkillCSVText);
 		}
 

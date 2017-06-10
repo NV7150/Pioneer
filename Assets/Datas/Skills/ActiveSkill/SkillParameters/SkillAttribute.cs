@@ -27,7 +27,9 @@ namespace skill {
 		//両方
 		BOTH,
 		//蘇生
-		RESURRECTITION
+		RESURRECTITION,
+		//なし
+		NONE
 	}
 }
 
