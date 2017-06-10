@@ -58,10 +58,10 @@ namespace battleSystem{
 
 		public void attackCommand(IBattleable bal,int range,int basicHitness,int attack,SkillAttribute attribute,Ability useAbility){
 			//Range内のIBattleableを検索
-			List<IBattleable> list = new List<IBattleable> ();
+			List<IBattleable> list = new List<IBattleable>();
 			FieldPosition pos =  searchCharacter(bal);
-			for (int i = 0; i < range + 1; i++) {
-				list.AddRange (joinedCharacter[pos + i]);
+			for (int i = (int) pos; i < (int)pos + range + 1; i++) {
+				list.AddRange (joinedCharacter[(FieldPosition) i]);
 			}
 			//targetの決定
 			List<IBattleable> targets = bal.decideTarget (list);
@@ -96,20 +96,15 @@ namespace battleSystem{
 
 		//対象は戦闘から離脱します
 		private float escapeCommand(IBattleable bal,FieldPosition pos){
-			if(!removeBalFromJoinedCharacter (bal, pos))
-				throw new Exception ("balオブジェクトの情報が不正です");
+			removeBalFromJoinedCharacter (bal);
 			bal.setIsBattling (false);
 			return 0;
 		}
 
 		//渡された位置にある渡されたbalオブジェクトをjoinedCharacterディクショナリから削除します
-		private bool removeBalFromJoinedCharacter(IBattleable bal,FieldPosition pos){
-			if (joinedCharacter [pos].Contains (bal)) {
-				joinedCharacter [pos].Remove (bal);
-				return true;
-			} else {
-				return false;
-			}
+		private void removeBalFromJoinedCharacter(IBattleable bal){
+			FieldPosition pos =  searchCharacter (bal);
+			joinedCharacter [pos].Remove (bal);
 		}
 
 		/*渡されたbalオブジェクトから行動のコマンドを取得し、適切に処理します
@@ -188,12 +183,12 @@ namespace battleSystem{
 
 		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
 			FieldPosition nowPos = searchCharacter (bal);
-			FieldPosition returnPos;
+			FieldPosition returnPos = nowPos;
 			int returnAreaSum = 0;
 			for(int i = (int)nowPos - range;i > (int)nowPos + range;i++){
 				int areaLevelSum = 0;
 				foreach(IBattleable target in joinedCharacter[(FieldPosition) i]){
-					if (bal.isHostility (target)) {
+					if (bal.isHostility (target.getFaction())) {
 						areaLevelSum += target.getLevel ();
 					}
 				}
@@ -214,6 +209,11 @@ namespace battleSystem{
 				}
 			}
 			throw new ArgumentException ("Don't found " + target);
+		}
+
+		//指定されたFieldPositionにいるCharacterを返します
+		public List<IBattleable> getAreaCharacter(FieldPosition pos){
+			return joinedCharacter [pos];
 		}
 	}
 

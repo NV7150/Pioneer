@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 using character;
+using parameter;
 
 namespace masterdata{
 	[System.SerializableAttribute]
@@ -27,7 +29,8 @@ namespace masterdata{
 		[SerializeField]
 		private string 
 		name,
-		modelName;
+		modelName,
+		faction;
 
 		private static int uniqeIdCount = 0;
 
@@ -97,6 +100,10 @@ namespace masterdata{
 
 		public string getModelName() {
 			return modelName;
+		}
+
+		public Faction getFaction(){
+			return (Faction) Enum.Parse (typeof(Faction),this.faction);
 		}
 
 		public Enemy build(){

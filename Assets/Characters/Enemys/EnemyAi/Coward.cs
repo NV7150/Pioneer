@@ -106,8 +106,34 @@ namespace AI {
 		}
 
 		private List<IBattleable> decideHostileTarget(List<IBattleable> targets,ActiveSkill useSkill){
-			// とりあえずreturnがなかったので
-			return new List<IBattleable>();
+			if (useSkill.getExtent () == Extent.SINGLE) {
+				//単体攻撃の場合、最もレベルが低いやつを殴ります
+				IBattleable returnObject = targets [0];
+				foreach (List<IBattleable> list in targets) {
+					foreach (IBattleable target in list) {
+						if (battleable.isHostility (target.getFaction ())) {
+							if (target.getLevel () > returnObject.getLevel ()) {
+								returnObject = target;
+							}
+						}
+					}
+				}
+				List<IBattleable> returnList = new List<IBattleable> ();
+				returnList.Add (returnObject);
+				return returnList;
+			} else if (useSkill.getExtent () == Extent.AREA) {
+				//エリア攻撃の場合、最もレベルが低いエリアを殴ります。
+				FieldPosition targetPos = BattleManager.getInstance ().whereIsMostSafePositionInRange (battleable, useSkill.getRange ());
+				return BattleManager.getInstance ().getAreaCharacter (targetPos);
+			} else if (useSkill.getExtent () == Extent.ALL) {
+				//全体の場合は無条件で全部焼き払います
+				List<IBattleable> returnList = new List<IBattleable> ();
+				foreach(List<IBattleable> list in targets){
+					returnList.AddRange (list);
+				}
+				return returnList;
+			}
+			throw new Exception ("invlit state");
 		}
 
 		private IBattleable decideHostileSkingleTarget(List<IBattleable> targets){
@@ -137,17 +163,15 @@ namespace AI {
 		private int advance(){
 			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (battleable, skills.getSkillFromSkillCategory (SkillCategory.MOVE).getRange ());
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (battleable);
-			return (int)targetPos - nowPos;
+			return ((int)targetPos) - ((int)nowPos);
 		}
 
 		//非戦的な移動を行います
 		private int recession(){
 			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (battleable, skills.getSkillFromSkillCategory (SkillCategory.MOVE).getRange ());
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (battleable);
-			return (int)targetPos - nowPos;
+			return((int)targetPos) - ((int)nowPos);
 		}
-
-			
 		#endregion
 	}
 }

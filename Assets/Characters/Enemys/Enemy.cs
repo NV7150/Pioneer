@@ -6,6 +6,7 @@ using item;
 using parameter;
 using AI;
 using masterdata;
+using battleSystem;
 
 namespace character{
 	public class Enemy : IBattleable{
@@ -44,6 +45,8 @@ namespace character{
 
 		private readonly int UNIQE_ID;
 
+		private readonly Faction FACTION;
+
 		public Enemy(EnemyBuilder builder,int uniqeId){
 			this.id = builder.getId ();
 			this.name = builder.getName ();
@@ -60,6 +63,7 @@ namespace character{
 			this.rareDropId = builder.getRareDropId ();
 			this.skillSetId = builder.getSkillSetId ();
 			this.modelName = builder.getModelName ();
+			this.FACTION = builder.getFaction ();
 
 			GameObject prefab = (GameObject)Resources.Load(modelName);
 			GameObject gameobject = MonoBehaviour.Instantiate (prefab);
@@ -186,6 +190,14 @@ namespace character{
 			throw new System.NotImplementedException ();
 		}
 
+		public Faction getFaction () {
+			return FACTION;
+		}
+
+		public bool isHostility (Faction faction) {
+			return (faction == FACTION);
+		
+		}
 		#endregion
 
 		#region IChracter implementation

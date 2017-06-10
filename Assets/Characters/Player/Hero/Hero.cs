@@ -67,6 +67,8 @@ namespace character{
 		private int atkBonus = 0;
 		//カウンターを行うかを表します
 		private bool isReadyToCounter;
+		//プレイヤーの派閥を表します
+		private Faction faction = Faction.PLAYER;
 
 		public Hero(Dictionary<Ability,int> parameters){
 			setMaxHp (parameters[Ability.HP]);
@@ -304,6 +306,14 @@ namespace character{
 			throw new NotImplementedException ();
 		}
 
+
+		public Faction getFaction () {
+			return faction;
+		}
+
+		public bool isHostility (Faction faction) {
+			return (this.faction == faction);
+		}
 		#endregion
 		#region ICharacter implementation
 		public GameObject getModel () {
