@@ -6,6 +6,7 @@ using UnityEngine;
 using skill;
 using item;
 using battleSystem;
+using parameter;
 
 namespace character{
 	public interface IBattleable : ICharacter{
@@ -14,7 +15,10 @@ namespace character{
 		int getHp();
 
 		//HPを減少させます
-		void dammage (int dammage,SkillType type);
+		void dammage (int dammage,SkillAttribute attribute);
+
+		//回復されます（受動側）
+		void healed(int heal,HealAttribute attribute);
 
 		//MPを返します
 		int getMp();
@@ -50,7 +54,7 @@ namespace character{
 		int getDef();
 
 		//ディレイ値を返します
-		float getDelay(IActiveSkill skill);
+		float getDelay(float delay);
 
 		//戦闘中かどうかを表します
 		bool getIsBattling();
@@ -59,28 +63,25 @@ namespace character{
 		void setIsBattling(bool boolean);
 
 		//移動する量を決定します。isButtlingがtrue時のみ呼びだされます。
-		int move();
+		int move(int moveAmount);
 
 		//containerの位置を現在の位置と同期させます
 		void syncronizePositioin(Vector3 vector);
 
 		//戦闘時の行動の決定を行います。isButtlingがtrue時のみ呼び出されます。
-		BattleCommand decideCommand();
+//		BattleCommand decideCommand();
 
 		//攻撃するSkillを決定し、そのスキルを返します。
-		IActiveSkill decideSkill();
+		ActiveSkill decideSkill();
 
 		//対象のスキルの射程を算出します。isButtlingがtrue時のみ呼びだされます。
-		int getRange(IActiveSkill skill);
+		int getRange(int range);
 
 		//攻撃の対象を決定します。isButtlingがtrue時のみ呼び出されます。
 		List<IBattleable> decideTarget(List<IBattleable> bals);
 
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
-		int getHitness(IActiveSkill skill);
-
-		//攻撃やスキルを使用し、ダメージを返します。isButtlingがtrue時のみ呼び出されます。
-		int battleAction(IActiveSkill skill);
+		int getHitness(int hitness);
 
 		//受動の行動を決定します。isButtlingがtrue時のみ呼びだされます。
 		IPassiveSkill decidePassiveSkill();
@@ -105,5 +106,11 @@ namespace character{
 
 		//レベルを取得します
 		int getLevel();
+
+		//攻撃を行います
+		int attack(int baseParameter,Ability useAbility);
+
+		//回復を行います（能動側）
+		int healing(int baseParameter,Ability useAbility);
 	}
 }

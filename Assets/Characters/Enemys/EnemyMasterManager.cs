@@ -6,7 +6,7 @@ using System;
 
 using character;
 
-namespace masterData{
+namespace masterdata{
 	[System.SerializableAttribute]
 	public class EnemyMasterManager : MasterDataManagerBase{
 		[SerializeField]

@@ -5,7 +5,7 @@ using System;
 
 using item;
 
-namespace masterData{
+namespace masterdata{
 	[System.SerializableAttribute]
 	public class WeponBuilder{
 		[SerializeField]

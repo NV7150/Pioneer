@@ -2,7 +2,7 @@
 using UnityEngine;
 
 using character;
-using masterData;
+using masterdata;
 
 namespace item {
 	[System.SerializableAttribute]

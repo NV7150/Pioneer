@@ -3,7 +3,7 @@ using UnityEngine;
 
 using item;
 
-namespace masterData {
+namespace masterdata {
 	[System.SerializableAttribute]
 	public class ArmorBuilder {
 		[SerializeField]

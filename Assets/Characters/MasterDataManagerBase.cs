@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace masterData{
+namespace masterdata{
 	public abstract class MasterDataManagerBase : MonoBehaviour {
 		protected string[] GetRaw (string[,] csv, int row) {
 			string[] data = new string[ csv.GetLength(0) ];

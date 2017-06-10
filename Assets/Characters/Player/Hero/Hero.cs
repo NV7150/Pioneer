@@ -186,10 +186,6 @@ namespace character{
 			return getMft () / 2 + armor.getDef (); 
 		}
 
-		public float getDelay (IActiveSkill skill) {
-			return skill.getDelay (this,wepon.getRange());
-		}
-
 		public bool getIsBattling () {
 			return isBattleing;
 		}
@@ -210,23 +206,19 @@ namespace character{
 			throw new NotImplementedException ();
 		}
 
-		public IActiveSkill decideSkill () {
+		public ActiveSkill decideSkill () {
 			throw new NotImplementedException ();
-		}
-
-		public int getRange (IActiveSkill skill) {
-			return skill.getRange (this,wepon.getRange());
 		}
 
 		public List<IBattleable> decideTarget (List<IBattleable> bals) {
 			throw new NotImplementedException ();
 		}
 
-		public int getHitness (IActiveSkill skill) {
+		public int getHitness (ActiveSkill skill) {
 			throw new NotImplementedException ();
 		}
 
-		public int battleAction (IActiveSkill skill) {
+		public int battleAction (ActiveSkill skill) {
 			throw new NotImplementedException ();
 		}
 
@@ -272,6 +264,46 @@ namespace character{
 		public int getMaxMp () {
 			return maxMp;
 		}
+
+		public void dammage (int dammage, SkillAttribute attribute) {
+			throw new NotImplementedException ();
+		}
+
+
+		public void healed (int heal, HealAttribute attribute) {
+			throw new NotImplementedException ();
+		}
+
+
+		public float getDelay (float delay) {
+			throw new NotImplementedException ();
+		}
+
+
+		public int move (int moveAmount) {
+			throw new NotImplementedException ();
+		}
+
+
+		public int getRange (int range) {
+			throw new NotImplementedException ();
+		}
+
+
+		public int getHitness (int hitness) {
+			throw new NotImplementedException ();
+		}
+
+
+		public int attack (int baseParameter, Ability useAbility) {
+			throw new NotImplementedException ();
+		}
+
+
+		public int healing (int baseParameter, Ability useAbility) {
+			throw new NotImplementedException ();
+		}
+
 		#endregion
 		#region ICharacter implementation
 		public GameObject getModel () {
@@ -339,6 +371,10 @@ namespace character{
 		}
 		private bool isntInvalitAblityParamter(int value){
 			return value >= 0;
+		}
+
+		public override bool Equals (object obj) {
+			return this == obj;
 		}
 	}
 }

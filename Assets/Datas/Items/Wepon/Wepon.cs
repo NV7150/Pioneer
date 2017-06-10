@@ -4,7 +4,7 @@ using UnityEngine;
 using character;
 using battleSystem;
 
-using masterData;
+using masterdata;
 
 namespace item{
 	public class  Wepon :  IItem{

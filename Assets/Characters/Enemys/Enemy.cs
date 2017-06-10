@@ -5,7 +5,7 @@ using UnityEngine;
 using item;
 using parameter;
 using AI;
-using masterData;
+using masterdata;
 
 namespace character{
 	public class Enemy : IBattleable{
@@ -42,7 +42,9 @@ namespace character{
 
 		private IEnemyAI ai;
 
-		public Enemy(EnemyBuilder builder){
+		private readonly int UNIQE_ID;
+
+		public Enemy(EnemyBuilder builder,int uniqeId){
 			this.id = builder.getId ();
 			this.name = builder.getName ();
 			this.maxHp = builder.getMaxHp ();
@@ -63,6 +65,8 @@ namespace character{
 			GameObject gameobject = MonoBehaviour.Instantiate (prefab);
 			this.container = gameobject.GetComponent<Container> ();
 			container.setCharacter(this);
+
+			this.UNIQE_ID = uniqeId;
 		}
 
 	    //エンカウントし、戦闘に突入します
@@ -83,9 +87,6 @@ namespace character{
 		#region IBattleable implementation
 		public int getHp () {
 			return hp;
-		}
-		public void dammage (int dammage, skill.SkillType type) {
-			throw new System.NotImplementedException ();
 		}
 		public int getMp () {
 			return mp;
@@ -124,7 +125,7 @@ namespace character{
 		public int getDef () {
 			return def;
 		}
-		public float getDelay (skill.IActiveSkill skill) {
+		public float getDelay (skill.ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
 		public bool getIsBattling () {
@@ -142,16 +143,16 @@ namespace character{
 		public battleSystem.BattleCommand decideCommand () {
 			throw new System.NotImplementedException ();
 		}
-		public skill.IActiveSkill decideSkill () {
+		public skill.ActiveSkill decideSkill () {
 			throw new System.NotImplementedException ();
 		}
-		public int getRange (skill.IActiveSkill skill) {
+		public int getRange (skill.ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public int getHitness (skill.IActiveSkill skill) {
+		public int getHitness (skill.ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public int battleAction (skill.IActiveSkill skill) {
+		public int battleAction (skill.ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
 		public skill.IPassiveSkill decidePassiveSkill () {
@@ -203,6 +204,52 @@ namespace character{
 
 		public int getId(){
 			return this.id;
+		}
+
+		public int getUniqeId(){
+			return UNIQE_ID;
+		}
+
+		public override bool Equals (object obj) {
+			//Enemyであり、IDとユニークIDが同値ならば等価と判断します
+			if (!(obj == typeof(Enemy)))
+				return false;
+			Enemy target = (Enemy)obj;
+			if (target.getUniqeId () != this.getUniqeId() && target.getId() != this.getId())
+				return false;
+			return true;
+		}
+
+		public void dammage (int dammage, skill.SkillAttribute attribute) {
+			throw new NotImplementedException ();
+		}
+
+		public void healed (int heal, skill.HealAttribute attribute) {
+			throw new NotImplementedException ();
+		}
+
+		public float getDelay (float delay) {
+			throw new NotImplementedException ();
+		}
+
+		public int move (int moveAmount) {
+			throw new NotImplementedException ();
+		}
+
+		public int getRange (int range) {
+			throw new NotImplementedException ();
+		}
+
+		public int getHitness (int hitness) {
+			throw new NotImplementedException ();
+		}
+
+		public int attack (int baseParameter, Ability useAbility) {
+			throw new NotImplementedException ();
+		}
+
+		public int healing (int baseParameter, Ability useAbility) {
+			throw new NotImplementedException ();
 		}
 	}
 }

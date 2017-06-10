@@ -4,7 +4,7 @@ using UnityEngine;
 
 using character;
 
-namespace masterData{
+namespace masterdata{
 	[System.SerializableAttribute]
 	public class EnemyBuilder{
 		[SerializeField]
@@ -28,6 +28,8 @@ namespace masterData{
 		private string 
 		name,
 		modelName;
+
+		private static int uniqeIdCount = 0;
 
 		public EnemyBuilder(string[] parameters){
 			setParameterFromCSV (parameters);
@@ -98,7 +100,9 @@ namespace masterData{
 		}
 
 		public Enemy build(){
-			return new Enemy (this);
+			Enemy enemy = new Enemy (this,uniqeIdCount);
+			uniqeIdCount++;
+			return enemy;
 		}
 
 		private void setParameterFromCSV(string[] parameters){

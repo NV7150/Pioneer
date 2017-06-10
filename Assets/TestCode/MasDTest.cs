@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using masterData;
+using masterdata;
 using character;
 using item;
 
@@ -20,7 +20,6 @@ public class MasDTest : MonoBehaviour {
 	void Start () {
 		eManager.getEnemyFromId (0);
 		eManager.getEnemyFromId (1);
-
 		woodenSowrd = wManager.getWeponFromId(0);
 		ironSowrd = wManager.getWeponFromId (1);
 		Debug.Log (woodenSowrd.getName() + " and " + ironSowrd.getName());

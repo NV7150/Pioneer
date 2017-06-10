@@ -12,7 +12,7 @@ namespace battleSystem{
 			Debug.Log (STARTER_POSITON);
 		}
 
-		public Vector3 getNextPosition(FiealdPosition now,FiealdPosition going){
+		public Vector3 getNextPosition(FieldPosition now,FieldPosition going){
 			Debug.Log ((int)going - 3);
 			Debug.Log (distanceOfArea * ((int)going - 3) + Random.Range (0, 11));
 			return STARTER_POSITON + new Vector3 (Random.Range(-15,15),0,distanceOfArea * ((int) going - 3) + Random.Range(0,11) );

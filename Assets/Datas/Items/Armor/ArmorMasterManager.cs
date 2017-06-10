@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using item;
 
-namespace masterData {
+namespace masterdata {
 	[System.SerializableAttribute]
 	public class ArmorMasterManager :MasterDataManagerBase {
 		[SerializeField]
