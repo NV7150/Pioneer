@@ -112,5 +112,11 @@ namespace character{
 
 		//回復を行います（能動側）
 		int healing(int baseParameter,Ability useAbility);
+
+		//派閥を取得します
+		Faction getFaction();
+
+		//敵対派閥かを取得します
+		bool isHostility(Faction faction);
 	}
 }

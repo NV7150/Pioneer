@@ -124,9 +124,29 @@ namespace AI {
 			throw new Exception ("Cannot decideHOstileSingleTarget.");
 		}
 
+		//移動距離を決めます
 		public int decideMove () {
-			throw new NotImplementedException ();
+			if ((battleable.getHp () / battleable.getMaxHp ()) * 100 >= 50) {
+				return recession ();
+			} else {
+				return advance ();
+			}
 		}
+
+		//好戦的な移動を行います
+		private int advance(){
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (battleable, skills.getSkillFromSkillCategory (SkillCategory.MOVE).getRange ());
+			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (battleable);
+			return (int)targetPos - nowPos;
+		}
+
+		//非戦的な移動を行います
+		private int recession(){
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (battleable, skills.getSkillFromSkillCategory (SkillCategory.MOVE).getRange ());
+			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (battleable);
+			return (int)targetPos - nowPos;
+		}
+
 			
 		#endregion
 	}

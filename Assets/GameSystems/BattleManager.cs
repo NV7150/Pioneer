@@ -166,7 +166,46 @@ namespace battleSystem{
 			joinedCharacter [nowPos + moveAmount].Add (bal);
 		}
 
-		private FieldPosition searchCharacter(IBattleable target){
+		//指定されたキャラクターの指定された範囲でもっとも危険な（敵対キャラクターのレベル合計が高い）ポジションを返します
+		public FieldPosition whereIsMostDengerPositionInRange(IBattleable bal,int range){
+			//暫定最大危険ポジションのレベル合計より現在のポジションのレベル合計が高い
+			Func<int[],bool> function = (int[] list) =>{
+				return list[0] > list[1];
+			};
+
+			return judgePosition (function, bal, range);
+		}
+
+		//指定されたキャラクターの指定された範囲でもっとも安全な（敵対キャラクターのレベル合計が低い）ポジションを返します
+		public FieldPosition whereIsMostSafePositionInRange(IBattleable bal,int range ){
+			//暫定最大安全ポジションのレベル合計より現在のポジションのレベル合計が低いor暫定が0
+			Func<int[],bool> function = (int[] list) =>{
+				return list[0] < list[1] || list[1] == 0;
+			};
+
+			return judgePosition (function, bal, range);
+		}
+
+		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
+			FieldPosition nowPos = searchCharacter (bal);
+			FieldPosition returnPos;
+			int returnAreaSum = 0;
+			for(int i = (int)nowPos - range;i > (int)nowPos + range;i++){
+				int areaLevelSum = 0;
+				foreach(IBattleable target in joinedCharacter[(FieldPosition) i]){
+					if (bal.isHostility (target)) {
+						areaLevelSum += target.getLevel ();
+					}
+				}
+				if (function(new int[]{areaLevelSum,returnAreaSum})) {
+					returnAreaSum = areaLevelSum;
+					returnPos = (FieldPosition)i;
+				}
+			}
+			return returnPos;
+		}
+
+		public FieldPosition searchCharacter(IBattleable target){
 			foreach (FieldPosition pos in joinedCharacter.Keys) {
 				foreach (IBattleable character in joinedCharacter[pos]) {
 					if (character.Equals (target)) {
@@ -184,4 +223,7 @@ namespace battleSystem{
 
 	//戦闘コマンドを表します。ACTION:攻撃・スキルorアイテムの使用 MOVE:戦闘エリアの移動 RUN:逃走
 	public enum BattleCommand{ACTION,MOVE,ESCAPE};
+
+	//方向を表します便宜上、等しいを意味するドローも含まれます
+	public enum Direction{PLUS = 1,MINUS = -1,DRAW = 0}
 }
