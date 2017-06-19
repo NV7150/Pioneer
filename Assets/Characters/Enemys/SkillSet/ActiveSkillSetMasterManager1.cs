@@ -5,7 +5,7 @@ using System;
 
 using AI;
 
-namespace masterdata{
+namespace MasterData{
 	public class ActiveSkillSetMasterManager1 : MasterDataManagerBase{
 		List<ActiveSkillSetBuilder> dataset = new List<ActiveSkillSetBuilder>();
 

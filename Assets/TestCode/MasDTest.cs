@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using masterdata;
-using character;
-using item;
-using skill;
+using MasterData;
+using Character;
+using Item;
+using Skill;
 
 public class MasDTest : MonoBehaviour {
 	public EnemyMasterManager eManager;

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace character{
+namespace Character{
 
 	/*Characterインタフェースはこのゲームに登場する全てのキャラクターの実体を表します。
 	 *キャラクターはそれぞれ外面(Container)と実体(Character)を持ちます。

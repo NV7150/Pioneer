@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace character{
+namespace Character{
 	public class Container : MonoBehaviour {
 		public GameObject model;
 		public ICharacter character;

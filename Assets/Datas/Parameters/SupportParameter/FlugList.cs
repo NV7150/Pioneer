@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace parameter{
+namespace Parameter{
 	public class FlugList{
 		//現在のレベルを表します
 		private int level;

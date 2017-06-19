@@ -1,10 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-using character;
-using masterdata;
+using Character;
+using MasterData;
 
-namespace item {
+namespace Item {
 	[System.SerializableAttribute]
 	public class Armor : IItem{
 		private int 

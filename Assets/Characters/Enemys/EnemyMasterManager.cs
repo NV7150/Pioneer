@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CSV;
+using MasterData;
 using System;
 
-using character;
+using Character;
 
-namespace masterdata{
+namespace MasterData{
 	[System.SerializableAttribute]
 	public class EnemyMasterManager : MasterDataManagerBase{
 		[SerializeField]

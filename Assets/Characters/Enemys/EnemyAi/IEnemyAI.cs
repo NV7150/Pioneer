@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using character;
-using skill;
-using battleSystem;
+using Character;
+using Skill;
+using BattleSystem;
 
 namespace AI {
 	public interface IEnemyAI {

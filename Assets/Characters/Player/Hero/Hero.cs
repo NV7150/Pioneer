@@ -3,12 +3,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-using item;
-using skill;
-using parameter;
-using battleSystem;
+using Item;
+using Skill;
+using Parameter;
+using BattleSystem;
 
-namespace character{
+namespace Character{
 	public class Hero :IPlayable {
 		//このキャラクターのHPを表します
 		private int hp;
@@ -25,7 +25,7 @@ namespace character{
 		//使命達成用のflugリストです。
 		private FlugList flugs;
 		//このキャラクターの職業を表します
-		private IJob job;
+		private Job job;
 		//このキャラクターの個性を表します
 		private IIdentity identity;
 		//このキャラクターの使命を表します
@@ -55,7 +55,7 @@ namespace character{
 		//このキャラクターのunipueIdを表します
 		private long UNIQUE_ID;
 
-		public Hero(IJob job,Container con){
+		public Hero(Job job,Container con){
 			Dictionary<Ability,int> parameters = job.defaultSetting ();
 
 			setMft (parameters[Ability.MFT]);

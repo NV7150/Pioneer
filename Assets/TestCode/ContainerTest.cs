@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using character;
-using parameter;
-using battleSystem;
+using Character;
+using Parameter;
+using BattleSystem;
 
 public class ContainerTest : MonoBehaviour {
 	public Container heroCon;

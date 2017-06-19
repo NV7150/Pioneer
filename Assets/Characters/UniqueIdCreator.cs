@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace character {
+namespace Character {
 	public class UniqueIdCreator {
 		private static long nowNumber = 0;
 

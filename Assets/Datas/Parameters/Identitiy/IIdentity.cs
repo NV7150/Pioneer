@@ -1,4 +1,4 @@
-namespace parameter{﻿
+namespace Parameter{﻿
 	public interface IIdentity {
 		//Identitiy名を返します
 		string getName();

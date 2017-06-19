@@ -1,14 +1,14 @@
-﻿using character;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using skill;
-using item;
-using battleSystem;
-using parameter;
+using Skill;
+using Item;
+using BattleSystem;
+using Parameter;
+using Character;
 
-namespace character{
+namespace Character{
 	public interface IBattleable : ICharacter{
 
 		//HPを返します

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-using character;
-using parameter;
+using Character;
+using Parameter;
 
-namespace masterdata{
+namespace MasterData{
 	[System.SerializableAttribute]
 	public class EnemyBuilder{
 		[SerializeField]

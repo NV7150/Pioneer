@@ -1,12 +1,12 @@
-﻿using character;
-using item;
-using parameter;
-using skill;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace character{
+using Character;
+using Item;
+using Parameter;
+using Skill;
+
+namespace Character{
 	public interface IPlayable : IBattleable,IFriendly{
 		
 		//対象(武器)を装備します。装備不能の場合はfalseを返します

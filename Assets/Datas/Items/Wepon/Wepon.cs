@@ -1,12 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-using character;
-using battleSystem;
+using Character;
+using BattleSystem;
 
-using masterdata;
+using MasterData;
 
-namespace item{
+namespace Item{
 	public class  Wepon :  IItem{
 		private int
 			attack,

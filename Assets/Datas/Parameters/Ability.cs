@@ -1,4 +1,4 @@
-﻿namespace parameter{
+﻿namespace Parameter{
 	public enum Ability{
 		//最大HP
 		HP,

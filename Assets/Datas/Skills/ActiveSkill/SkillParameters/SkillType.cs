@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace skill {
+namespace Skill {
 	public enum SkillType{
 		//攻撃もしくは回復等
 		ACTION,

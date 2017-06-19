@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace skill {
+namespace Skill {
 	public enum Extent{
 		//単体
 		SINGLE,

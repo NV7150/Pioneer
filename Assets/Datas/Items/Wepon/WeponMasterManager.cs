@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-using item;
+using Item;
 
-namespace masterdata {
+namespace MasterData {
 	[System.SerializableAttribute]
 	public class WeponMasterManager :MasterDataManagerBase {
 		[SerializeField]

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace item{
+namespace Item{
 	public class ItemStack {
 		private Stack<IItem> stack = new Stack<IItem>();
 		public IItem take(){

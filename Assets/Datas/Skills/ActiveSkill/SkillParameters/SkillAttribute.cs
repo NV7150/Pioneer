@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace skill {
+namespace Skill {
 	public enum SkillAttribute{
 		//物理
 		PHYSICAL,

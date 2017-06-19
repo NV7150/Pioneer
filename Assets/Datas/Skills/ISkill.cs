@@ -1,6 +1,6 @@
-﻿using character;
+﻿using Character;
 
-namespace skill {
+namespace Skill {
     public interface ISkill {
         //スキル名を取得します
         string getName();

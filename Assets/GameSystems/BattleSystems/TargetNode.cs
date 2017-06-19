@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-using character;
+using Character;
 
-namespace battleSystem{
+namespace BattleSystem{
 	public class TargetNode : MonoBehaviour {
 		public Text textObject;
 		List<IBattleable> targets;

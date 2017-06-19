@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using skill;
+using Skill;
 using AI;
 
-namespace masterdata{
+namespace MasterData{
 	public class ActiveSkillSetBuilder{
 		private int
 			id,

@@ -1,5 +1,5 @@
 
-namespace parameter{
+namespace Parameter{
 	public interface Mission{
 		//Mission名を返します
 		string getName ();

@@ -1,6 +1,6 @@
-﻿using character;
+﻿using Character;
 
-namespace item {
+namespace Item {
     public interface IItem {
         //アイテム名を取得します
         string getName();

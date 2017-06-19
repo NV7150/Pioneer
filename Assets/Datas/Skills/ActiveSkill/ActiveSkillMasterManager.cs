@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using skill;
+using Skill;
 
-namespace masterdata {
+namespace MasterData {
 	public class ActiveSkillMasterManager :MasterDataManagerBase{
 		private List<ActiveSkill> dataset = new List<ActiveSkill>();
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace battleSystem{
+namespace BattleSystem{
 	public class BattleField{
 		private readonly Vector3 STARTER_POSITON;
 		private static readonly int distanceOfArea = 10;

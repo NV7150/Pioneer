@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace masterdata{
+namespace MasterData{
 	public abstract class MasterDataManagerBase : MonoBehaviour {
 		protected string[] GetRaw (string[,] csv, int row) {
 			string[] data = new string[ csv.GetLength(0) ];
@@ -12,7 +12,7 @@ namespace masterdata{
 		}
 
 		protected void awakeBehaviour(TextAsset csvAsset){
-			var datas = CSV.CSVReader.SplitCsvGrid(csvAsset.text);
+			var datas = CSVReader.SplitCsvGrid(csvAsset.text);
 			for (int i = 1; i < datas.GetLength(1) - 1 ; i++) {
 				addToDataList (datas,i);
 			}

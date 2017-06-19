@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using skill;
-using character;
+using Skill;
+using Character;
 
-namespace battleSystem{
+namespace BattleSystem{
 	public class BattleNodeController : MonoBehaviour {
 		private List<BattleTask> tasks = new List<BattleTask>();
 		public GameObject contents;

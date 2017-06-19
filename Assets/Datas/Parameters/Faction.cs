@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace parameter {
+namespace Parameter {
 	public enum Faction {
 		PLAYER,ENEMY
 	}

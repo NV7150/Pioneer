@@ -14,7 +14,7 @@ using UnityEngine;
 using System.Collections;
 using System.Linq; 
 
-namespace CSV{
+namespace MasterData{
 	public class CSVReader : MonoBehaviour 
 	{
 		public TextAsset csvFile; 

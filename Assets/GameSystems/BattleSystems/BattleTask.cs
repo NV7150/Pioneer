@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using skill;
-using character;
+using Skill;
+using Character;
 
-namespace battleSystem{
+namespace BattleSystem{
 	public class BattleTask {
 		private readonly string name;
 		private readonly ActiveSkill SKILL;

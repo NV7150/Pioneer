@@ -2,13 +2,14 @@
 using System;
 using UnityEngine;
 
-using item;
-using parameter;
+using Item;
+using Parameter;
 using AI;
-using masterdata;
-using battleSystem;
+using MasterData;
+using BattleSystem;
+using Skill;
 
-namespace character{
+namespace Character{
 	public class Enemy : IBattleable{
 		private int
 			id,
@@ -130,7 +131,7 @@ namespace character{
 		public int getDef () {
 			return def;
 		}
-		public float getDelay (skill.ActiveSkill skill) {
+		public float getDelay (ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
 		public bool getIsBattling () {
@@ -145,22 +146,22 @@ namespace character{
 		public void syncronizePositioin (UnityEngine.Vector3 vector) {
 			container.getModel ().transform.position = vector;
 		}
-		public battleSystem.BattleCommand decideCommand () {
+		public BattleCommand decideCommand () {
 			throw new System.NotImplementedException ();
 		}
-		public skill.ActiveSkill decideSkill () {
+		public ActiveSkill decideSkill () {
 			throw new System.NotImplementedException ();
 		}
-		public int getRange (skill.ActiveSkill skill) {
+		public int getRange (ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public int getHitness (skill.ActiveSkill skill) {
+		public int getHitness (ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public int battleAction (skill.ActiveSkill skill) {
+		public int battleAction (ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public skill.IPassiveSkill decidePassiveSkill () {
+		public IPassiveSkill decidePassiveSkill () {
 			throw new System.NotImplementedException ();
 		}
 		public int getDodgeness () {
@@ -237,11 +238,11 @@ namespace character{
 			return true;
 		}
 
-		public void dammage (int dammage, skill.SkillAttribute attribute) {
+		public void dammage (int dammage, SkillAttribute attribute) {
 			throw new NotImplementedException ();
 		}
 
-		public void healed (int heal, skill.HealAttribute attribute) {
+		public void healed (int heal, HealAttribute attribute) {
 			throw new NotImplementedException ();
 		}
 

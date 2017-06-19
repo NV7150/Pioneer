@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-using character;
-using battleSystem;
-using parameter;
+using Character;
+using BattleSystem;
+using Parameter;
 
-namespace skill{
+namespace Skill{
 	[System.SerializableAttribute]
 	public class ActiveSkill : ISkill{
 		[SerializeField]

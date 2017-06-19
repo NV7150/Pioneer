@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-using character;
-using skill;
-using parameter;
+using Character;
+using Skill;
+using Parameter;
 
 /*BattleManagerクラス
  * 戦闘処理の仲介や戦闘状態の管理などを行います
 */
-namespace battleSystem{
+namespace BattleSystem{
 	public class BattleManager{
 		private static readonly BattleManager INSTANCE = new BattleManager();
 		private Dictionary<FieldPosition,List<IBattleable>> joinedCharacter = new Dictionary<FieldPosition,List<IBattleable>>();

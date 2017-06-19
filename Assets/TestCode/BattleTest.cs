@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using character;
-using battleSystem;
-using masterdata;
-using parameter;
+using Character;
+using BattleSystem;
+using MasterData;
+using Parameter;
+
 
 public class BattleTest : MonoBehaviour {
 	public Hero hero;
@@ -13,11 +14,12 @@ public class BattleTest : MonoBehaviour {
 	public EnemyMasterManager manager;
 	public Container con;
 	public Container con2;
+	public JobMasterManager jma;
 
 	// Use this for initialization
 	void Start () {
 		en = manager.getEnemyFromId (0);
-		hero = new Hero (new Civil(),con);
+		hero = new Hero (jma.getJobFromId(0),con);
 		Debug.Log ("cleared" + hero.getName() + en.getName());
 
 		con.setCharacter (hero);

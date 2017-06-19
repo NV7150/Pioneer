@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-using item;
+using Item;
 
-namespace masterdata {
+namespace MasterData {
 	[System.SerializableAttribute]
 	public class ArmorBuilder {
 		[SerializeField]

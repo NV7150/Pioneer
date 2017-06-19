@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using skill;
-using battleSystem;
+using Skill;
 
-public class ActiveSkillNode : MonoBehaviour {
-	public Text textObject;
-	private ActiveSkill skill;
-	private BattleNodeController controller;
+namespace BattleSystem{
+	public class ActiveSkillNode : MonoBehaviour {
+		public Text textObject;
+		private ActiveSkill skill;
+		private BattleNodeController controller;
 
-	public void setState(BattleNodeController controller,ActiveSkill skill){
-		this.controller = controller;
-		this.skill = skill;
-		textObject.text = skill.getName ();
-	}
+		public void setState(BattleNodeController controller,ActiveSkill skill){
+			this.controller = controller;
+			this.skill = skill;
+			textObject.text = skill.getName ();
+		}
 
-	public void chosen(){
-		controller.skillChose (skill);
+		public void chosen(){
+			controller.skillChose (skill);
+		}
 	}
 }

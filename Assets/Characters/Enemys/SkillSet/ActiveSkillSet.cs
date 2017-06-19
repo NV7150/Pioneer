@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using skill;
+using Skill;
 using AI;
-using parameter;
-using masterdata;
+using Parameter;
+using MasterData;
 
 namespace AI {
 	public class ActiveSkillSet {
