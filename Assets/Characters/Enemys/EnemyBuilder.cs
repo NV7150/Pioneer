@@ -32,8 +32,6 @@ namespace masterdata{
 		modelName,
 		faction;
 
-		private static int uniqeIdCount = 0;
-
 		public EnemyBuilder(string[] parameters){
 			setParameterFromCSV (parameters);
 		}
@@ -107,9 +105,7 @@ namespace masterdata{
 		}
 
 		public Enemy build(){
-			Enemy enemy = new Enemy (this,uniqeIdCount);
-			uniqeIdCount++;
-			return enemy;
+			return new Enemy (this);
 		}
 
 		private void setParameterFromCSV(string[] parameters){
@@ -128,7 +124,8 @@ namespace masterdata{
 			normalDropId = int.Parse (parameters [12]);
 			rareDropId = int.Parse (parameters [13]);
 			skillSetId = int.Parse (parameters [14]);
-			modelName = "Models/" + parameters [15];
+			faction = parameters [15];
+			modelName = "Models/" + parameters [16];
 		}
 	}
 }

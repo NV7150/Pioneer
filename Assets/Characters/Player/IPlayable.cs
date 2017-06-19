@@ -1,6 +1,7 @@
 ﻿using character;
 using item;
 using parameter;
+using skill;
 
 using System;
 using System.Collections.Generic;
@@ -31,5 +32,9 @@ namespace character{
 
 		//器用さを取得します
 		int getDex();
+
+		List<ActiveSkill> getActiveSkills ();
+
+		List<IPassiveSkill> getPassiveSKills();
 	}
 }

@@ -37,17 +37,18 @@ namespace character{
 		private int atkBonus = 0;
 
 		private bool isBattling = false;
+
 		private bool isReadyToCounter = false;
 
 		private Container container;
 
 		private IEnemyAI ai;
 
-		private readonly int UNIQE_ID;
+		private readonly long UNIQE_ID;
 
 		private readonly Faction FACTION;
 
-		public Enemy(EnemyBuilder builder,int uniqeId){
+		public Enemy(EnemyBuilder builder){
 			this.id = builder.getId ();
 			this.name = builder.getName ();
 			this.maxHp = builder.getMaxHp ();
@@ -70,12 +71,12 @@ namespace character{
 			this.container = gameobject.GetComponent<Container> ();
 			container.setCharacter(this);
 
-			this.UNIQE_ID = uniqeId;
+			this.UNIQE_ID = UniqueIdCreator.creatUniqueId ();
 		}
 
 	    //エンカウントし、戦闘に突入します
 		public void encount(){
-			throw new NotSupportedException ();
+			container.getExcecutor().StartCoroutine (BattleManager.getInstance().joinBattle(this,FieldPosition.ONE));
 		}
 
 	    //このEnemyが与える経験値を取得します
@@ -133,7 +134,7 @@ namespace character{
 			throw new System.NotImplementedException ();
 		}
 		public bool getIsBattling () {
-			throw new System.NotImplementedException ();
+			return isBattling;
 		}
 		public void setIsBattling (bool boolean) {
 			isBattling = boolean;
@@ -198,6 +199,14 @@ namespace character{
 			return (faction == FACTION);
 		
 		}
+
+		public string getName () {
+			return this.name;
+		}
+
+		public long getUniqueId () {
+			return this.UNIQE_ID;
+		}
 		#endregion
 
 		#region IChracter implementation
@@ -206,7 +215,7 @@ namespace character{
 		}
 
 		public void act () {
-//			Debug.Log ("Succesed");
+			
 		}
 
 		public void death () {
@@ -218,16 +227,12 @@ namespace character{
 			return this.id;
 		}
 
-		public int getUniqeId(){
-			return UNIQE_ID;
-		}
-
 		public override bool Equals (object obj) {
 			//Enemyであり、IDとユニークIDが同値ならば等価と判断します
 			if (!(obj == typeof(Enemy)))
 				return false;
 			Enemy target = (Enemy)obj;
-			if (target.getUniqeId () != this.getUniqeId() && target.getId() != this.getId())
+			if (target.getUniqueId () != this.getUniqueId() && target.getId() != this.getId())
 				return false;
 			return true;
 		}

@@ -95,7 +95,7 @@ namespace skill{
 		}
 
 		private void attack(IBattleable bal){
-			BattleManager.getInstance ().attackCommand (bal,RANGE,HIT,ATK,ATTRIBUTE,USE_ABILITY);
+			BattleManager.getInstance ().attackCommand (bal,BattleManager.getInstance().getTaskFromUniqueId(bal.getUniqueId()).getTargets(),HIT,ATK,ATTRIBUTE,USE_ABILITY);
 		}
 
 		private void heal(IBattleable bal){

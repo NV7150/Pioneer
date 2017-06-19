@@ -31,7 +31,6 @@ namespace character{
 		}
 
 		public void setCharacter(ICharacter chara){
-			Debug.Log (chara);
 			this.character = chara;
 		}
 	}

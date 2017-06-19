@@ -68,14 +68,8 @@ namespace character{
 		//containerの位置を現在の位置と同期させます
 		void syncronizePositioin(Vector3 vector);
 
-		//戦闘時の行動の決定を行います。isButtlingがtrue時のみ呼び出されます。
-//		BattleCommand decideCommand();
-
 		//攻撃するSkillを決定し、そのスキルを返します。
 		ActiveSkill decideSkill();
-
-		//対象のスキルの射程を算出します。isButtlingがtrue時のみ呼びだされます。
-		int getRange(int range);
 
 		//攻撃の対象を決定します。isButtlingがtrue時のみ呼び出されます。
 		List<IBattleable> decideTarget(List<IBattleable> bals);
@@ -118,5 +112,9 @@ namespace character{
 
 		//敵対派閥かを取得します
 		bool isHostility(Faction faction);
+
+		string getName();
+
+		void encount();
 	}
 }

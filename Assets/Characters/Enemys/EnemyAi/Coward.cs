@@ -20,7 +20,7 @@ namespace AI {
 			{ SkillCategory.MOVE,0}
 		};
 
-		private ActiveSkillSet skills = new ActiveSkillSet();
+		private ActiveSkillSet skills;
 
 		private readonly IBattleable battleable;
 

@@ -17,7 +17,9 @@ namespace skill {
 		//魔法（無）
 		NEUTRAL,
 		//貫通
-		PENETRATION
+		PENETRATION,
+		//なし
+		NONE
 	}
 	public enum HealAttribute{
 		//HP回復

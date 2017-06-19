@@ -16,5 +16,8 @@ namespace character{
 
 		//いなくなります
 		void death();
+
+		//キャラクターそれぞれが固有に持つIDを取得します
+		long getUniqueId();
 	}	
 }

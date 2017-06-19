@@ -15,7 +15,7 @@ namespace battleSystem{
 		private static readonly BattleManager INSTANCE = new BattleManager();
 		private Dictionary<FieldPosition,List<IBattleable>> joinedCharacter = new Dictionary<FieldPosition,List<IBattleable>>();
 		private BattleField field;
-
+		private Dictionary<long,List<BattleTask>> entriedTasks; 
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -40,31 +40,51 @@ namespace battleSystem{
 		 * FiealdPosition pos 初期の戦闘参加位置
 		*/
 		public IEnumerator joinBattle(IBattleable bal,FieldPosition pos){
-			Debug.Log ("called joined");
+			Debug.Log (bal.getName() + " is joined!");
+
 			bal.setIsBattling (true);
 			joinedCharacter [pos].Add (bal);
-			FieldPosition position = pos;
+
+			List<BattleTask> tasks = new List<BattleTask> ();
+
 			while (bal.getIsBattling()) {
-				yield return new WaitForSeconds( actionCommand(bal));
+				WaitForSeconds seconds = new WaitForSeconds (action (bal, tasks));
+				yield return seconds;
 			}
 			joinedCharacter [pos].Remove (bal);
 		}
 
-		//攻撃・スキル使用を行います。
-		private float actionCommand(IBattleable bal){
-			ActiveSkill useSkill = bal.decideSkill();
-			return useSkill.use (bal);
+		public IEnumerator joinBattle(IPlayable player,FieldPosition pos){
+			Debug.Log (player.getName() + " is joined!");
+
+			player.setIsBattling (true);
+			joinedCharacter [pos].Add (player);
+
+			GameObject view = (GameObject) MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/BattleNodeController"));
+			view.GetComponent<BattleNodeController> ();
+			List<BattleTask> tasks = view.GetComponent<BattleNodeController> ().getTasks();
+
+			while (player.getIsBattling()) {
+				WaitForSeconds seconds = new WaitForSeconds (action (player, tasks));
+
+				yield return seconds;
+			}
+			joinedCharacter [pos].Remove (player);
 		}
 
-		public void attackCommand(IBattleable bal,int range,int basicHitness,int attack,SkillAttribute attribute,Ability useAbility){
-			//Range内のIBattleableを検索
-			List<IBattleable> list = new List<IBattleable>();
-			FieldPosition pos =  searchCharacter(bal);
-			for (int i = (int) pos; i < (int)pos + range + 1; i++) {
-				list.AddRange (joinedCharacter[(FieldPosition) i]);
+		//攻撃・スキル使用を行います。
+		private float action(IBattleable bal,List<BattleTask> tasks){
+			if (tasks.Count <= 0) {
+				return 0f;
+			} else {
+				ActiveSkill useSkill = tasks [0].getSkill ();
+				float delay =  useSkill.use (bal);
+				tasks.Remove (tasks[0]);
+				return delay;
 			}
-			//targetの決定
-			List<IBattleable> targets = bal.decideTarget (list);
+		}
+
+		public void attackCommand(IBattleable bal,List<IBattleable> targets,int basicHitness,int attack,SkillAttribute attribute,Ability useAbility){
 			//命中値を求める
 			int hitness = bal.getHitness (basicHitness);
 			foreach(IBattleable target in targets){
@@ -78,6 +98,17 @@ namespace battleSystem{
 				}
 			}
 		}
+
+		public List<IBattleable> getCharacterInRange(IBattleable bal,int range){
+			//Range内のIBattleableを検索
+			List<IBattleable> list = new List<IBattleable>();
+			FieldPosition pos =  searchCharacter(bal);
+			for (int i = (int) pos; i < (int)pos + range + 1; i++) {
+				list.AddRange (joinedCharacter[(FieldPosition) i]);
+			}
+			return list;
+		}
+
 		//回復処理をします
 		public void healCommand(IBattleable bal,int range,int basicHealRate,HealAttribute attribute,Ability useAbility){
 			//Range内のIBattleableを検索
@@ -107,25 +138,7 @@ namespace battleSystem{
 			joinedCharacter [pos].Remove (bal);
 		}
 
-		/*渡されたbalオブジェクトから行動のコマンドを取得し、適切に処理します
-		 * Battleable bal 処理したいBattleableオブジェクト
-		 * FiealdPosition pos 対象の位置
-		*/
-//		private float decideCommand(IBattleable bal,ref FieldPosition pos){
-//			Debug.Log ("DecideCommand "  + pos);
-//			switch (bal.decideCommand ()) {
-//				case BattleCommand.ACTION:
-//					return actionCommand (bal, pos);
-//
-//				case BattleCommand.MOVE:
-//					return moveCommand (bal, ref pos);
-//
-//				case BattleCommand.ESCAPE:
-//					return escapeCommand (bal, pos);
-//			}
-//			throw new Exception ("invit 引数");
-//		}
-
+		//与えられたキャラの位置から与えられた範囲のバトル参加中のキャラクターの数を返します。
 		public int sumFromAreaTo(IBattleable bal,int range){
 			FieldPosition area = searchCharacter (bal);
 			int count = 0;
@@ -135,6 +148,7 @@ namespace battleSystem{
 			return count;
 		}
 
+		//全てのバトル参加中キャラクターの数の合計を返します
 		public int sumAll(){
 			int returnValue = 0;
 			foreach(FieldPosition pos in joinedCharacter.Keys){
@@ -143,6 +157,16 @@ namespace battleSystem{
 			return returnValue;
 		}
 
+		//全ての戦闘に参加しているIBattleableキャラクターを取得します
+		public List<IBattleable> getJoinedBattleCharacter(){
+			List<IBattleable> returnList = new List<IBattleable> ();
+			foreach(FieldPosition pos in joinedCharacter.Keys){
+				returnList.AddRange (joinedCharacter[pos]);
+			}
+			return returnList;
+		}
+
+		//動きます
 		public void moveCommand(IBattleable bal,int basicMoveAmount){
 			//引数に渡されたIBattleableキャラの位置を検索
 			FieldPosition nowPos = searchCharacter (bal);
@@ -181,6 +205,7 @@ namespace battleSystem{
 			return judgePosition (function, bal, range);
 		}
 
+		//与えられた関数似合う条件の場所を検索します。
 		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
 			FieldPosition nowPos = searchCharacter (bal);
 			FieldPosition returnPos = nowPos;
@@ -200,6 +225,7 @@ namespace battleSystem{
 			return returnPos;
 		}
 
+		//与えられたIBattleableオブジェクトを検索し位置を返します
 		public FieldPosition searchCharacter(IBattleable target){
 			foreach (FieldPosition pos in joinedCharacter.Keys) {
 				foreach (IBattleable character in joinedCharacter[pos]) {
@@ -214,6 +240,11 @@ namespace battleSystem{
 		//指定されたFieldPositionにいるCharacterを返します
 		public List<IBattleable> getAreaCharacter(FieldPosition pos){
 			return joinedCharacter [pos];
+		}
+
+		//ユニークIDからタスクを読み込みます
+		public BattleTask getTaskFromUniqueId(long uniqueId){
+			return entriedTasks [uniqueId][0];
 		}
 	}
 

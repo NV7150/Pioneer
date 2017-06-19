@@ -1,46 +1,27 @@
-﻿
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 using item;
 using skill;
 using parameter;
 using battleSystem;
 
-using System;
-
 namespace character{
 	public class Hero :IPlayable {
 		//このキャラクターのHPを表します
 		private int hp;
-		//このキャラクターの最大HPを表します
-		private int maxHp;
 		//このキャラクターのMPを表します
 		private int mp;
-		//このキャラクターの最大MPを表します
-		private int maxMp;
 		//ゲームスコアを表します
 		private int score;
-		//キャラクターのレベルを表します
-		private int level;
 		//キャタクターの経験値を表します
 		private int exp;
-		//キャラクターの白兵戦闘能力を表します(melee fighting)
-		private int mft;
-		//このキャラクターの遠戦闘能力を表します(far fighting)
-		private int fft;
-		//このキャラクターの魔力を表します(magic power)
-		private int mgp;
-		//このキャラクターの敏捷性を表します(agility)
-		private int agi;
-		//このキャラクターの体力を表します(physical)
-		private int phy;
-		//このキャラクターの器用さを表します(dexerity)
-		private int dex;
-		//このキャラクターの話術を表します(speech)
-		private int spc;
+		//キャラクターの各種パラメータを表します
+		Dictionary<Ability,int> abilities = new Dictionary<Ability, int>();
 		//このキャラクターの所持金(metal)を表します
-		private int mt;
+		private int mt = 0;
 		//使命達成用のflugリストです。
 		private FlugList flugs;
 		//このキャラクターの職業を表します
@@ -69,10 +50,14 @@ namespace character{
 		private bool isReadyToCounter;
 		//プレイヤーの派閥を表します
 		private Faction faction = Faction.PLAYER;
+		//プレイヤーの苦手属性を表します
+		private SkillAttribute weakAttribute;
+		//このキャラクターのunipueIdを表します
+		private long UNIQUE_ID;
 
-		public Hero(Dictionary<Ability,int> parameters){
-			setMaxHp (parameters[Ability.HP]);
-			setMaxMp (parameters [Ability.MP]);
+		public Hero(IJob job,Container con){
+			Dictionary<Ability,int> parameters = job.defaultSetting ();
+
 			setMft (parameters[Ability.MFT]);
 			setFft (parameters [Ability.FFT]);
 			setMgp (parameters [Ability.MGP]);
@@ -80,6 +65,16 @@ namespace character{
 			setAgi (parameters [Ability.AGI]);
 			setDex (parameters [Ability.DEX]);
 			setSpc (parameters [Ability.SPC]);
+			abilities [Ability.LV] = 1;
+
+			setMaxHp (abilities[Ability.PHY]);
+			setMaxMp (abilities[Ability.MGP]);
+			hp = abilities [Ability.HP];
+			mp = abilities [Ability.MP];
+
+			this.container = con;
+
+			UNIQUE_ID = UniqueIdCreator.creatUniqueId ();
 		}
 
 		#region IPlayable implementation
@@ -129,12 +124,12 @@ namespace character{
 		}
 
 		public int getDex () {
-			return dex;
+			return abilities[Ability.DEX];
 		}
 		#endregion
 		#region IFriendly implementation
 		public int getSpc () {
-			return spc;
+			return abilities[Ability.SPC];
 		}
 
 		public void talk (IFriendly friendly) {
@@ -146,12 +141,38 @@ namespace character{
 			return hp;
 		}
 
-		public void dammage (int dammage, SkillType type) {
-			throw new NotImplementedException ();
-		}
-
 		public int getMp () {
 			return mp;
+		}
+
+		public void dammage (int dammage, SkillAttribute attribute) {
+			if (dammage < 0 || attribute == SkillAttribute.NONE)
+				throw new ArgumentException ("invlit dammage");
+
+			if (attribute == SkillAttribute.PHYSICAL)
+				dammage -= getDef ();
+			if(attribute == weakAttribute)
+				dammage = (int)( dammage * 1.5f );
+			
+			this.hp -= dammage;
+		}
+
+
+		public void healed (int heal, HealAttribute attribute) {
+			if (heal < 0 || attribute == HealAttribute.NONE)
+				throw new ArgumentException ("invlit heal");
+
+			if (attribute == HealAttribute.HP_HEAL || attribute == HealAttribute.BOTH) {
+				if (this.hp != 0)
+					this.hp += heal;
+			}
+			if (attribute == HealAttribute.MP_HEAL || attribute == HealAttribute.BOTH) {
+				this.mp += heal;
+			}
+			if (attribute == HealAttribute.RESURRECTITION) {
+				if(this.hp == 0)
+					this.hp += heal;
+			}
 		}
 
 		public void setHp (int hp) {
@@ -165,27 +186,31 @@ namespace character{
 		}
 
 		public int getMft () {
-			return mft;
+			return abilities[Ability.MFT];
 		}
 
 		public int getFft () {
-			return fft;
+			return abilities[Ability.FFT];
 		}
 
 		public int getMgp () {
-			return mgp;
+			return abilities[Ability.MGP];
 		}
 
 		public int getAgi () {
-			return agi;
+			return abilities[Ability.AGI];
 		}
 
 		public int getPhy () {
-			return phy;
+			return abilities[Ability.PHY];
 		}
 
 		public int getDef () {
 			return getMft () / 2 + armor.getDef (); 
+		}
+
+		public float getDelay (float delay) {
+			throw new NotImplementedException ();
 		}
 
 		public bool getIsBattling () {
@@ -196,18 +221,14 @@ namespace character{
 			isBattleing = boolean;
 		}
 
-		public int move () {
+		public int move (int moveAmount) {
 			throw new NotImplementedException ();
 		}
 
 		public void syncronizePositioin (Vector3 vector) {
 			container.getModel ().transform.position = vector;
 		}
-
-		public BattleCommand decideCommand () {
-			throw new NotImplementedException ();
-		}
-
+			
 		public ActiveSkill decideSkill () {
 			throw new NotImplementedException ();
 		}
@@ -216,11 +237,7 @@ namespace character{
 			throw new NotImplementedException ();
 		}
 
-		public int getHitness (ActiveSkill skill) {
-			throw new NotImplementedException ();
-		}
-
-		public int battleAction (ActiveSkill skill) {
+		public int getHitness (int hitness) {
 			throw new NotImplementedException ();
 		}
 
@@ -229,7 +246,7 @@ namespace character{
 		}
 
 		public int getDodgeness () {
-			return agi;
+			return getAgi();
 		}
 
 		public void setDefBonus (int bonus) {
@@ -256,54 +273,24 @@ namespace character{
 		}
 
 		public int getLevel () {
-			return level;
+			return abilities [Ability.LV];
 		}
 
 		public int getMaxHp () {
-			return maxHp;
+			return abilities[Ability.HP];
 		}
 
 		public int getMaxMp () {
-			return maxMp;
+			return abilities[Ability.MP];
 		}
-
-		public void dammage (int dammage, SkillAttribute attribute) {
-			throw new NotImplementedException ();
-		}
-
-
-		public void healed (int heal, HealAttribute attribute) {
-			throw new NotImplementedException ();
-		}
-
-
-		public float getDelay (float delay) {
-			throw new NotImplementedException ();
-		}
-
-
-		public int move (int moveAmount) {
-			throw new NotImplementedException ();
-		}
-
-
-		public int getRange (int range) {
-			throw new NotImplementedException ();
-		}
-
-
-		public int getHitness (int hitness) {
-			throw new NotImplementedException ();
-		}
-
 
 		public int attack (int baseParameter, Ability useAbility) {
-			throw new NotImplementedException ();
+			return baseParameter + abilities [useAbility];
 		}
 
 
 		public int healing (int baseParameter, Ability useAbility) {
-			throw new NotImplementedException ();
+			return baseParameter + abilities [useAbility];
 		}
 
 
@@ -314,19 +301,42 @@ namespace character{
 		public bool isHostility (Faction faction) {
 			return (this.faction == faction);
 		}
+
+		public string getName(){
+			return "hero";
+		}
+
+		List<ActiveSkill> IPlayable.getActiveSkills () {
+			throw new NotImplementedException ();
+		}
+
+
+		List<IPassiveSkill> IPlayable.getPassiveSKills () {
+			throw new NotImplementedException ();
+		}
+			
+		public void encount () {
+			container.getExcecutor().StartCoroutine (BattleManager.getInstance().joinBattle(this,FieldPosition.ONE));
+		}
 		#endregion
 		#region ICharacter implementation
 		public GameObject getModel () {
 			return container.getModel ();
 		}
+
 		public void act () {
-			throw new NotImplementedException ();
 		}
+
 		public void death () {
 			throw new NotImplementedException ();
 		}
+
+		public long getUniqueId () {
+			return UNIQUE_ID;
+		}
 		#endregion
 
+		//インベントリにアイテムを追加します
 		public void addItem(IItem item){
 			if (inventry.ContainsKey (item.getName ())) {
 				inventry [item.getName()].add (item);
@@ -336,53 +346,67 @@ namespace character{
 				inventry [item.getName ()] = stack;
 			}
 		}
+
+		//最大HPを設定します
 		private void setMaxHp(int parameter){
-			if(parameter > 0)
-				maxHp = parameter;
-		}
-		private void setMaxMp(int parameter){
-			if (parameter > 0)
-				maxMp = parameter;
-		}
-		private void setMft(int parameter){
-			if (isntInvalitAblityParamter (parameter))
-				mft = parameter;
-			throw new ArgumentException ("invalit parameter");
-		}
-		private void setFft(int parameter){
-			if (isntInvalitAblityParamter (parameter))
-				fft = parameter;
-			throw new ArgumentException ("invalit parameter");
-		}
-		private void setMgp(int parameter){
-			if (isntInvalitAblityParamter(parameter))
-				mgp = parameter;
-			throw new ArgumentException ("invalit parameter");
-		}
-		private void setSpc(int parameter){
-			if (isntInvalitAblityParamter(parameter))
-				spc = parameter;
-			throw new ArgumentException ("invalit parameter");
-		}
-		private void setDex(int parameter){
-			if (isntInvalitAblityParamter(parameter))
-				dex = parameter;
-			throw new ArgumentException ("invalit parameter");
-		}
-		private void setPhy(int parameter){
-			if (isntInvalitAblityParamter (parameter))
-				phy = parameter;
-			throw new ArgumentException ("invalit parameter");
-		}
-		private void setAgi(int parameter){
-			if (isntInvalitAblityParamter (parameter))
-				agi = parameter;
-			throw new ArgumentException ("invalit parameter");
-		}
-		private bool isntInvalitAblityParamter(int value){
-			return value >= 0;
+			isntInvalitAblityParamter (parameter);
+			this.abilities [Ability.HP] = parameter;
 		}
 
+		//最大MPを設定します
+		private void setMaxMp(int parameter){
+			isntInvalitAblityParamter (parameter);
+			this.abilities [Ability.MP] = parameter;
+		}
+
+		//白兵戦闘力(mft)を設定します
+		private void setMft(int parameter){
+			isntInvalitAblityParamter (parameter);
+			this.abilities[Ability.MFT] = parameter;
+		}
+
+		//遠距離戦闘能力(fft)を設定します
+		private void setFft(int parameter){
+			isntInvalitAblityParamter (parameter);
+			this.abilities[Ability.FFT] = parameter;
+		}
+
+		//魔力(mgp)を設定します
+		private void setMgp(int parameter){
+			isntInvalitAblityParamter (parameter);
+			this.abilities[Ability.MGP] = parameter;
+		}
+
+		//話術(spc)を設定します
+		private void setSpc(int parameter){
+			isntInvalitAblityParamter(parameter);
+			this.abilities[Ability.SPC] = parameter;
+		}
+
+		//器用さ(dex)を設定します
+		private void setDex(int parameter){
+			isntInvalitAblityParamter (parameter);
+			this.abilities[Ability.DEX] = parameter;
+		}
+
+		//体力(phy)を設定します
+		private void setPhy(int parameter){
+			isntInvalitAblityParamter (parameter);
+			this.abilities[Ability.PHY] = parameter;
+		}
+
+		//敏捷性(agi)を設定します
+		private void setAgi(int parameter){
+			isntInvalitAblityParamter (parameter);
+			this.abilities[Ability.AGI] = parameter;
+		}
+
+		//与えられた値を検査し、不正な値の場合は例外を投げます
+		private void isntInvalitAblityParamter(int value){
+			if (value <= 0)
+				throw new ArgumentException ("invalit parameter");
+		}
+			
 		public override bool Equals (object obj) {
 			return this == obj;
 		}
