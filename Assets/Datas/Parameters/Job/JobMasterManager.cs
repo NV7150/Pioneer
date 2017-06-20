@@ -11,7 +11,7 @@ namespace MasterData{
 
 		// Use this for initialization
 		void Awake () {
-			var csv = Resources.Load ("Masterdatas/JobMasterdata") as TextAsset;
+			var csv = Resources.Load ("MasterDatas/JobMasterdata") as TextAsset;
 			awakeBehaviour (csv);
 		}
 

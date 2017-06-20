@@ -27,8 +27,9 @@ namespace BattleSystem{
 			
 		}
 
-		private void setPlayer(IPlayable player){
+		public void setPlayer(IPlayable player){
 			this.player = player;
+			inputActiveSkillList ();
 			inputActiveSkillList ();
 		}
 

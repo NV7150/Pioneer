@@ -61,7 +61,7 @@ namespace BattleSystem{
 			joinedCharacter [pos].Add (player);
 
 			GameObject view = (GameObject) MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/BattleNodeController"));
-			view.GetComponent<BattleNodeController> ();
+			view.GetComponent<BattleNodeController> ().setPlayer(player);
 			List<BattleTask> tasks = view.GetComponent<BattleNodeController> ().getTasks();
 
 			while (player.getIsBattling()) {

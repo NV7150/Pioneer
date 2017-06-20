@@ -54,6 +54,11 @@ namespace Character{
 		private SkillAttribute weakAttribute;
 		//このキャラクターのunipueIdを表します
 		private long UNIQUE_ID;
+		//このキャラクターが持つ能動スキルのリストです
+		private List<ActiveSkill> activeSkills = new List<ActiveSkill>();
+		//このキャラクターが持つ受動スキルのリストです
+		private List<IPassiveSkill> passiveSkills = new List<IPassiveSkill>();
+
 
 		public Hero(Job job,Container con){
 			Dictionary<Ability,int> parameters = job.defaultSetting ();
@@ -126,6 +131,36 @@ namespace Character{
 		public int getDex () {
 			return abilities[Ability.DEX];
 		}
+
+		List<ActiveSkill> IPlayable.getActiveSkills () {
+			List<ActiveSkill> returnSkills = new List<ActiveSkill> ();
+			foreach(ActiveSkill skill in activeSkills){
+				returnSkills.Add (skill);
+			}
+			return returnSkills;
+		}
+
+
+		List<IPassiveSkill> IPlayable.getPassiveSKills () {
+			throw new NotImplementedException ();
+		}
+
+		public void addSkill (ActiveSkill skill) {
+			if (skill != null || !activeSkills.Contains (skill)) {
+				activeSkills.Add (skill);
+			} else {
+				throw new ArgumentException ("invalid activeSkill");
+			}
+		}
+
+		public void addSkill (IPassiveSkill skill) {
+			if (skill != null || !passiveSkills.Contains (skill)) {
+				passiveSkills.Add (skill);
+			} else {
+				throw new ArgumentException ("invalid passiveSkill");
+			}
+		}
+
 		#endregion
 		#region IFriendly implementation
 		public int getSpc () {
@@ -305,15 +340,6 @@ namespace Character{
 		public string getName(){
 			return "hero";
 		}
-
-		List<ActiveSkill> IPlayable.getActiveSkills () {
-			throw new NotImplementedException ();
-		}
-
-
-		List<IPassiveSkill> IPlayable.getPassiveSKills () {
-			throw new NotImplementedException ();
-		}
 			
 		public void encount () {
 			container.getExcecutor().StartCoroutine (BattleManager.getInstance().joinBattle(this,FieldPosition.ONE));
@@ -406,6 +432,8 @@ namespace Character{
 			if (value <= 0)
 				throw new ArgumentException ("invalit parameter");
 		}
+
+
 			
 		public override bool Equals (object obj) {
 			return this == obj;
