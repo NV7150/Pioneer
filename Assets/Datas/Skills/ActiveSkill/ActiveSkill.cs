@@ -63,7 +63,7 @@ namespace Skill{
 			this.EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[15]);
 		}
 
-		public float use(IBattleable bal){
+		public void use(IBattleable bal){
 			switch(TYPE){
 				case SkillType.ACTION:
 					action (bal);
@@ -76,7 +76,6 @@ namespace Skill{
 					move (bal);
 					break;
 			}
-			return DELAY;
 		}
 
 		private void action(IBattleable bal){

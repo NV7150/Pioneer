@@ -54,7 +54,7 @@ namespace Character{
 		int getDef();
 
 		//ディレイ値を返します
-		float getDelay(float delay);
+		float getDelay();
 
 		//戦闘中かどうかを表します
 		bool getIsBattling();
@@ -78,7 +78,7 @@ namespace Character{
 		int getHitness(int hitness);
 
 		//受動の行動を決定します。isButtlingがtrue時のみ呼びだされます。
-		IPassiveSkill decidePassiveSkill();
+		PassiveSkill decidePassiveSkill();
 
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
 		int getDodgeness();

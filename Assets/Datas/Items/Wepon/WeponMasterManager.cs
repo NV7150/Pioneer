@@ -12,7 +12,7 @@ namespace MasterData {
 		List<WeponBuilder> dataSet = new List<WeponBuilder>();
 
 		void Awake(){
-			var weponCSVText = Resources.Load("Masterdatas/WeponMasterdata") as TextAsset;
+			var weponCSVText = Resources.Load("MasterDatas/WeponMasterData") as TextAsset;
 			awakeBehaviour (weponCSVText);
 		}
 

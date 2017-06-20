@@ -131,7 +131,7 @@ namespace Character{
 		public int getDef () {
 			return def;
 		}
-		public float getDelay (ActiveSkill skill) {
+		public float getDelay () {
 			throw new System.NotImplementedException ();
 		}
 		public bool getIsBattling () {
@@ -161,7 +161,7 @@ namespace Character{
 		public int battleAction (ActiveSkill skill) {
 			throw new System.NotImplementedException ();
 		}
-		public IPassiveSkill decidePassiveSkill () {
+		public PassiveSkill decidePassiveSkill () {
 			throw new System.NotImplementedException ();
 		}
 		public int getDodgeness () {

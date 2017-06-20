@@ -78,9 +78,9 @@ namespace BattleSystem{
 				return 0f;
 			} else {
 				ActiveSkill useSkill = tasks [0].getSkill ();
-				float delay =  useSkill.use (bal);
+				useSkill.use (bal);
 				tasks.Remove (tasks[0]);
-				return delay;
+				return useSkill.getDelay() + bal.getDelay();
 			}
 		}
 
@@ -89,7 +89,7 @@ namespace BattleSystem{
 			int hitness = bal.getHitness (basicHitness);
 			foreach(IBattleable target in targets){
 				//対象のリアクション
-				IPassiveSkill reaction = target.decidePassiveSkill ();
+				PassiveSkill reaction = target.decidePassiveSkill ();
 				reaction.use (target);
 				//命中判定
 				if (hitness > target.getDodgeness()) {

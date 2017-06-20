@@ -1,8 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
+using UnityEngine;
 
 namespace Parameter{
+	[System.SerializableAttribute]
 	public class Job{
+		[SerializeField]
 		private readonly int
 			ID,
 			MFT,

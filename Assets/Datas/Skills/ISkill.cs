@@ -12,6 +12,6 @@ namespace Skill {
 		int getId();
 
 		//スキルを使用し、ディレイを返します
-		float use(IBattleable user);
+		void use(IBattleable user);
     }
 }

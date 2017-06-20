@@ -57,7 +57,7 @@ namespace Character{
 		//このキャラクターが持つ能動スキルのリストです
 		private List<ActiveSkill> activeSkills = new List<ActiveSkill>();
 		//このキャラクターが持つ受動スキルのリストです
-		private List<IPassiveSkill> passiveSkills = new List<IPassiveSkill>();
+		private List<PassiveSkill> passiveSkills = new List<PassiveSkill>();
 
 
 		public Hero(Job job,Container con){
@@ -132,7 +132,7 @@ namespace Character{
 			return abilities[Ability.DEX];
 		}
 
-		List<ActiveSkill> IPlayable.getActiveSkills () {
+		public List<ActiveSkill> getActiveSkills () {
 			List<ActiveSkill> returnSkills = new List<ActiveSkill> ();
 			foreach(ActiveSkill skill in activeSkills){
 				returnSkills.Add (skill);
@@ -141,7 +141,7 @@ namespace Character{
 		}
 
 
-		List<IPassiveSkill> IPlayable.getPassiveSKills () {
+		public List<PassiveSkill> getPassiveSKills () {
 			throw new NotImplementedException ();
 		}
 
@@ -153,7 +153,7 @@ namespace Character{
 			}
 		}
 
-		public void addSkill (IPassiveSkill skill) {
+		public void addSkill (PassiveSkill skill) {
 			if (skill != null || !passiveSkills.Contains (skill)) {
 				passiveSkills.Add (skill);
 			} else {
@@ -244,7 +244,7 @@ namespace Character{
 			return getMft () / 2 + armor.getDef (); 
 		}
 
-		public float getDelay (float delay) {
+		public float getDelay () {
 			throw new NotImplementedException ();
 		}
 
@@ -276,7 +276,7 @@ namespace Character{
 			throw new NotImplementedException ();
 		}
 
-		public IPassiveSkill decidePassiveSkill () {
+		public PassiveSkill decidePassiveSkill () {
 			throw new NotImplementedException ();
 		}
 

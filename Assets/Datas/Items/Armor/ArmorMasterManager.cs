@@ -12,7 +12,7 @@ namespace MasterData {
 		List<ArmorBuilder> dataSet = new List<ArmorBuilder>();
 
 		void Awake(){
-			var armorCSVData = Resources.Load ("Masterdatas/ArmorMasterdata") as TextAsset;
+			var armorCSVData = Resources.Load ("MasterDatas/ArmorMasterData") as TextAsset;
 			awakeBehaviour (armorCSVData);
 		}
 

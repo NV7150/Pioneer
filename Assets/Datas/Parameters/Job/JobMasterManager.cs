@@ -6,12 +6,14 @@ using System;
 using Parameter;
 
 namespace MasterData{
+	[System.SerializableAttribute]
 	public class JobMasterManager : MasterDataManagerBase {
-		List<Job> dataTable = new List<Job>();
+		[SerializeField]
+		private List<Job> dataTable = new List<Job>();
 
 		// Use this for initialization
 		void Awake () {
-			var csv = Resources.Load ("MasterDatas/JobMasterdata") as TextAsset;
+			var csv = Resources.Load ("MasterDatas/JobMasterData") as TextAsset;
 			awakeBehaviour (csv);
 		}
 
