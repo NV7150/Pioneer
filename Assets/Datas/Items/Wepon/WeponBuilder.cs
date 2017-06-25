@@ -92,8 +92,8 @@ namespace MasterData{
 			return new Wepon(this);
 		}
 
-		public string ToString(){
-			return name;
+		public override string ToString(){
+			return "wepon " + name;
 		}
 	}
 }

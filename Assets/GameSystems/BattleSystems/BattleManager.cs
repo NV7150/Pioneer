@@ -6,6 +6,7 @@ using System;
 using Character;
 using Skill;
 using Parameter;
+using AI;
 
 /*BattleManagerクラス
  * 戦闘処理の仲介や戦闘状態の管理などを行います
@@ -15,7 +16,8 @@ namespace BattleSystem{
 		private static readonly BattleManager INSTANCE = new BattleManager();
 		private Dictionary<FieldPosition,List<IBattleable>> joinedCharacter = new Dictionary<FieldPosition,List<IBattleable>>();
 		private BattleField field;
-		private Dictionary<long,List<BattleTask>> entriedTasks; 
+		private Dictionary<long,IBattleTaskManager> entriedManagers = new Dictionary<long, IBattleTaskManager>();
+		private Dictionary<long,BattleTask> runningTask = new Dictionary<long, BattleTask> ();
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -39,17 +41,20 @@ namespace BattleSystem{
 		 * Battleable bal 戦闘に参加させたいオブジェクト
 		 * FiealdPosition pos 初期の戦闘参加位置
 		*/
-		public IEnumerator joinBattle(IBattleable bal,FieldPosition pos){
+		public IEnumerator joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
 			Debug.Log (bal.getName() + " is joined!");
 
 			bal.setIsBattling (true);
 			joinedCharacter [pos].Add (bal);
 
-			List<BattleTask> tasks = new List<BattleTask> ();
+			AIBattleTaskManager manager = new AIBattleTaskManager ();
+			manager.setCharacter (bal,ai);
+			entriedManagers.Add(bal.getUniqueId(),manager);
+			runningTask.Add (bal.getUniqueId(),null);
 
 			while (bal.getIsBattling()) {
-				WaitForSeconds seconds = new WaitForSeconds (action (bal, tasks));
-				yield return seconds;
+				action (bal, manager);
+				yield return new WaitForSeconds(0f);
 			}
 			joinedCharacter [pos].Remove (bal);
 		}
@@ -61,41 +66,43 @@ namespace BattleSystem{
 			joinedCharacter [pos].Add (player);
 
 			GameObject view = (GameObject) MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/BattleNodeController"));
-			view.GetComponent<BattleNodeController> ().setPlayer(player);
-			List<BattleTask> tasks = view.GetComponent<BattleNodeController> ().getTasks();
+			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
+			manager.setPlayer (player);
+			entriedManagers.Add (player.getUniqueId(),manager);
+			runningTask.Add (player.getUniqueId(),null);
 
-			while (player.getIsBattling()) {
-				WaitForSeconds seconds = new WaitForSeconds (action (player, tasks));
-
-				yield return seconds;
+			while (player.getIsBattling ()) {
+				action (player,manager);
+				yield return new WaitForSeconds(0f);
 			}
 			joinedCharacter [pos].Remove (player);
 		}
 
 		//攻撃・スキル使用を行います。
-		private float action(IBattleable bal,List<BattleTask> tasks){
-			if (tasks.Count <= 0) {
-				return 0f;
-			} else {
-				ActiveSkill useSkill = tasks [0].getSkill ();
+		private void action(IBattleable bal,IBattleTaskManager taskManager){
+			if (taskManager.isHavingTask()) {
+				BattleTask task = taskManager.getTask();
+				runningTask [bal.getUniqueId ()] = task;
+				ActiveSkill useSkill = task.getSkill ();
 				useSkill.use (bal);
-				tasks.Remove (tasks[0]);
-				return useSkill.getDelay() + bal.getDelay();
+				runningTask.Remove (bal.getUniqueId ());
 			}
 		}
 
-		public void attackCommand(IBattleable bal,List<IBattleable> targets,int basicHitness,int attack,SkillAttribute attribute,Ability useAbility){
+		public IEnumerator attackCommand(IBattleable bal,List<IBattleable> targets,ActiveSkill skill){
 			//命中値を求める
-			int hitness = bal.getHitness (basicHitness);
+			int hitness = bal.getHitness (skill.getHit());
 			foreach(IBattleable target in targets){
 				//対象のリアクション
-				PassiveSkill reaction = target.decidePassiveSkill ();
-				reaction.use (target);
-				//命中判定
-				if (hitness > target.getDodgeness()) {
-					//ダメージ処理
-					target.dammage (bal.attack(attack,useAbility),attribute);
-				}
+				entriedManagers[target.getUniqueId()].offerPassive();
+			}
+
+			//ディレイ秒リアクションを待つ
+			yield return new WaitForSeconds(bal.getDelay() + skill.getDelay());
+
+			foreach(IBattleable target in targets){
+				PassiveSkill passive = entriedManagers [target.getUniqueId ()].getPassive (bal,skill);
+				passive.use (target,bal.attack(skill.getAtk(),skill.getUseAbility()),hitness,skill.getAttribute());
 			}
 		}
 
@@ -244,7 +251,7 @@ namespace BattleSystem{
 
 		//ユニークIDからタスクを読み込みます
 		public BattleTask getTaskFromUniqueId(long uniqueId){
-			return entriedTasks [uniqueId][0];
+			return runningTask[uniqueId];
 		}
 	}
 

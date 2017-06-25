@@ -9,9 +9,9 @@ namespace BattleSystem{
 	public class ActiveSkillNode : MonoBehaviour {
 		public Text textObject;
 		private ActiveSkill skill;
-		private BattleNodeController controller;
+		private PlayerBattleTaskManager controller;
 
-		public void setState(BattleNodeController controller,ActiveSkill skill){
+		public void setState(PlayerBattleTaskManager controller,ActiveSkill skill){
 			this.controller = controller;
 			this.skill = skill;
 			textObject.text = skill.getName ();

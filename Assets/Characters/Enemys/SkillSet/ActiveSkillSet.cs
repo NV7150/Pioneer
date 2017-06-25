@@ -9,7 +9,7 @@ using MasterData;
 
 namespace AI {
 	public class ActiveSkillSet {
-		private Dictionary<SkillCategory,ActiveSkill> skillSet = new Dictionary<SkillCategory, ActiveSkill> ();
+		private Dictionary<ActiveSkillCategory,ActiveSkill> skillSet = new Dictionary<ActiveSkillCategory, ActiveSkill> ();
 		private int id;
 		private int	maxRange;
 		private string name;
@@ -18,21 +18,21 @@ namespace AI {
 			this.id = builder.getId ();
 			this.name = builder.getName ();
 
-			skillSet [SkillCategory.NORMAL] = builder.getNormalSkill ();
-			skillSet [SkillCategory.CAUTION] = builder.getCautionSkill ();
-			skillSet [SkillCategory.DANGER] = builder.getDangerSkill ();
-			skillSet [SkillCategory.POWER] = builder.getPowerSkill ();
-			skillSet [SkillCategory.FULL_POWER] = builder.getFullPowerSkill ();
-			skillSet [SkillCategory.SUPPORT] = builder.getSupportSkill ();
-			skillSet [SkillCategory.HEAL] = builder.getHealSkill ();
-			skillSet [SkillCategory.MOVE] = builder.getMoveSkill ();
+			skillSet [ActiveSkillCategory.NORMAL] = builder.getNormalSkill ();
+			skillSet [ActiveSkillCategory.CAUTION] = builder.getCautionSkill ();
+			skillSet [ActiveSkillCategory.DANGER] = builder.getDangerSkill ();
+			skillSet [ActiveSkillCategory.POWER] = builder.getPowerSkill ();
+			skillSet [ActiveSkillCategory.FULL_POWER] = builder.getFullPowerSkill ();
+			skillSet [ActiveSkillCategory.SUPPORT] = builder.getSupportSkill ();
+			skillSet [ActiveSkillCategory.HEAL] = builder.getHealSkill ();
+			skillSet [ActiveSkillCategory.MOVE] = builder.getMoveSkill ();
 
 			calculateMaxRange ();
 		}
 
 		private int calculateMaxRange(){
 			int maxRange = 0;
-			foreach(SkillCategory category in skillSet.Keys){
+			foreach(ActiveSkillCategory category in skillSet.Keys){
 				if (skillSet [category].getRange () > maxRange)
 					maxRange = skillSet [category].getRange ();
 			}
@@ -51,7 +51,7 @@ namespace AI {
 			return maxRange;
 		}
 
-		public ActiveSkill getSkillFromSkillCategory(SkillCategory category){
+		public ActiveSkill getSkillFromSkillCategory(ActiveSkillCategory category){
 			return skillSet[category];
 		}
 	}

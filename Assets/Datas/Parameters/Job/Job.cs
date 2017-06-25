@@ -30,6 +30,12 @@ namespace Parameter{
 			AGI = int.Parse (parameters[6]);
 			DEX = int.Parse (parameters[7]);
 			SPC = int.Parse (parameters[8]);
+
+			string log = "";
+			foreach (var p in parameters) {
+				log += p + ", ";
+			}
+			Debug.Log (log);
 		}
 
 		public string getName (){
@@ -53,6 +59,10 @@ namespace Parameter{
 
 		public int getId(){
 			return ID;
+		}
+
+		public override string ToString () {
+			return "Job " + name;
 		}
 	}
 }

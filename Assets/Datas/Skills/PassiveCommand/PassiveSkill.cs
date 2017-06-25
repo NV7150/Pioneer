@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 using Character;
+using AI;
 
 namespace Skill{
 	//受動的に使用するスキルです。
@@ -20,6 +22,8 @@ namespace Skill{
 		[SerializeField]
 		private readonly bool IS_READY_TO_COUNTER;
 
+		private PassiveSkillCategory CATEGORY;
+
 		public PassiveSkill(string[] datas){
 			ID = int.Parse(datas [0]);
 			NAME = datas [1];
@@ -27,6 +31,7 @@ namespace Skill{
 			DODGE_BOUNUS = int.Parse (datas[3]);
 			IS_READY_TO_COUNTER = (0 == int.Parse (datas [4]));
 			DESCRIPTION = datas [5];
+			CATEGORY = (PassiveSkillCategory) Enum.Parse (typeof(PassiveSkillCategory), datas [6]);
 		}
 
 		#region ISkill implementation
@@ -39,12 +44,32 @@ namespace Skill{
 		public int getId () {
 			return ID;
 		}
-		public void use (IBattleable user) {
-			user.setDefBonus (DEF_BOUNS);
-			user.setDodBonus (DODGE_BOUNUS);
-			user.setIsReadyToCounter (IS_READY_TO_COUNTER);
 
-		}
 		#endregion	
+
+		public void use (IBattleable user,int attack,int hit,SkillAttribute attribute) {
+
+			if (this.CATEGORY == PassiveSkillCategory.DODGE) {
+				//命中判定
+				if (hit > user.getDodgeness () + DODGE_BOUNUS)
+					//ダメージ処理
+					user.dammage (attack, attribute);
+			} else if (this.CATEGORY == PassiveSkillCategory.GUARD) {
+				int def = user.getDef () + DEF_BOUNS;
+				user.dammage (attack - def, attribute);
+			}
+		}
+
+		public int getDefBouns(){
+			return DEF_BOUNS;
+		}
+
+		public int getDodgeBouns(){
+			return DODGE_BOUNUS;
+		}
+
+		public PassiveSkillCategory getCategory(){
+			return CATEGORY;
+		}
 	}
 }

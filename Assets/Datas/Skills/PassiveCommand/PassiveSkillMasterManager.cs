@@ -7,13 +7,11 @@ using Skill;
 
 namespace MasterData{
 	[System.SerializableAttribute]
-	public class PassiveSkillMasterManager : MasterDataManagerBase {
-		[SerializeField]
-		private List<PassiveSkill> dataTable = new List<PassiveSkill> ();
+	public class PassiveSkillMasterManager : MasterDataManagerBase<PassiveSkill> {
 
-		void Awake(){
+		void Start(){
 			var csv = Resources.Load ("MasterDatas/PassiveSkillMasterData") as TextAsset;
-			awakeBehaviour (csv);
+			constractedBehaviour (csv);
 		}
 
 		public PassiveSkill getPassiveSkillFromId(int id){
@@ -26,8 +24,8 @@ namespace MasterData{
 
 		#region implemented abstract members of MasterDataManagerBase
 
-		protected override void addToDataList (string[,] datas, int index) {
-			dataTable.Add (new PassiveSkill( GetRaw(datas,index)));
+		protected override PassiveSkill getInstance (int index, string[,] args) {
+			return new PassiveSkill (GetRaw(args,index));
 		}
 
 		#endregion

@@ -7,30 +7,27 @@ using Item;
 
 namespace MasterData {
 	[System.SerializableAttribute]
-	public class ArmorMasterManager :MasterDataManagerBase {
-		[SerializeField]
-		List<ArmorBuilder> dataSet = new List<ArmorBuilder>();
+	public class ArmorMasterManager :MasterDataManagerBase<ArmorBuilder> {
 
 		void Awake(){
 			var armorCSVData = Resources.Load ("MasterDatas/ArmorMasterData") as TextAsset;
-			awakeBehaviour (armorCSVData);
+			constractedBehaviour (armorCSVData);
 		}
-
-		#region implemented abstract members of MasterDataManagerBase
-
-		protected override void addToDataList (string[,] datas, int index) {
-			ArmorBuilder builder = new ArmorBuilder (GetRaw(datas,index));
-			dataSet.Add (builder);
-		}
-
-		#endregion
 
 		public Armor getArmorFromId(int id){
-			foreach (ArmorBuilder builder in dataSet)
+			foreach (ArmorBuilder builder in dataTable)
 				if (builder.getId () == id)
 					return builder.build ();
 			throw new ArgumentException ("invlit armorID");
 		}
+
+		#region implemented abstract members of MasterDataManagerBase
+
+		protected override ArmorBuilder getInstance (int index, string[,] args) {
+			return new ArmorBuilder (GetRaw(args,index));
+		}
+
+		#endregion
 	}
 }
 

@@ -113,8 +113,10 @@ namespace Character{
 		//敵対派閥かを取得します
 		bool isHostility(Faction faction);
 
+		//名前を取得します
 		string getName();
 
+		//エンカウントし、バトルに突入します
 		void encount();
 	}
 }

@@ -342,7 +342,7 @@ namespace Character{
 		}
 			
 		public void encount () {
-			container.getExcecutor().StartCoroutine (BattleManager.getInstance().joinBattle(this,FieldPosition.ONE));
+			container.getExcecutor().StartCoroutine(BattleManager.getInstance().joinBattle(this,FieldPosition.ONE));
 		}
 		#endregion
 		#region ICharacter implementation

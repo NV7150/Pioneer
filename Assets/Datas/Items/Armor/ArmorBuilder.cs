@@ -85,6 +85,10 @@ namespace MasterData {
 		public Armor build(){
 			return new Armor (this);
 		}
+
+		public override string ToString () {
+			return "AromorBuilder " + name;
+		}
 	}
 }
 

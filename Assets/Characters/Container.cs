@@ -14,7 +14,7 @@ namespace Character{
 		// Update is called once per frame
 		void Update () {
 			if (character == null) {
-				print ("null.");
+//				print ("null.");
 				return;
 			}
 			character.act ();

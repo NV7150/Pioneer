@@ -7,20 +7,12 @@ using Skill;
 
 namespace MasterData {
 	[System.SerializableAttribute]
-	public class ActiveSkillMasterManager :MasterDataManagerBase{
-		[SerializeField]
-		private List<ActiveSkill> dataTable = new List<ActiveSkill>();
+	public class ActiveSkillMasterManager :MasterDataManagerBase<ActiveSkill>{
 
-		private void Awake(){
+		private void Start(){
 			var activeSkillCSVText = Resources.Load("MasterDatas/ActiveSkillMasterData") as TextAsset;
-			awakeBehaviour (activeSkillCSVText);
+			constractedBehaviour (activeSkillCSVText);
 		}
-
-		#region implemented abstract members of MasterDataManagerBase
-		protected override void addToDataList (string[,] datas, int index) {
-			dataTable.Add (new ActiveSkill(GetRaw(datas,index)));
-		}
-		#endregion
 
 		public ActiveSkill getActiveSkillFromId(int id){
 			foreach(ActiveSkill skill in dataTable){
@@ -29,6 +21,14 @@ namespace MasterData {
 			}
 			throw new ArgumentException ("invlit activeSkillId");
 		}
+
+		#region implemented abstract members of MasterDataManagerBase
+
+		protected override ActiveSkill getInstance (int index, string[,] args) {
+			return new ActiveSkill (GetRaw(args,index));
+		}
+
+		#endregion
 	}
 }
 

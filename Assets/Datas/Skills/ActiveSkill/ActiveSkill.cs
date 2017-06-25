@@ -61,6 +61,8 @@ namespace Skill{
 			this.ACT_TYPE = (ActType)Enum.Parse (typeof(ActType),datas[13]);
 			this.USE_ABILITY = (Ability)Enum.Parse (typeof(Ability),datas[14]);
 			this.EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[15]);
+
+
 		}
 
 		public void use(IBattleable bal){
@@ -94,7 +96,8 @@ namespace Skill{
 		}
 
 		private void attack(IBattleable bal){
-			BattleManager.getInstance ().attackCommand (bal,BattleManager.getInstance().getTaskFromUniqueId(bal.getUniqueId()).getTargets(),HIT,ATK,ATTRIBUTE,USE_ABILITY);
+			List<IBattleable> targets = BattleManager.getInstance ().getTaskFromUniqueId (bal.getUniqueId ()).getTargets ();
+			new MonoBehaviour().StartCoroutine(BattleManager.getInstance ().attackCommand (bal,targets,this));
 		}
 
 		private void heal(IBattleable bal){
@@ -167,6 +170,10 @@ namespace Skill{
 
 		public Extent getExtent() {
 			return EXTENT;
+		}
+
+		public override string ToString () {
+			return "Activeskill " + NAME;
 		}
 	}
 }

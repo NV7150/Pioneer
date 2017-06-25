@@ -6,6 +6,7 @@ using Character;
 using BattleSystem;
 using MasterData;
 using Parameter;
+using AI;
 
 
 public class BattleTest : MonoBehaviour {
@@ -19,22 +20,31 @@ public class BattleTest : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		en = manager.getEnemyFromId (0);
-		hero = new Hero (jma.getJobFromId(0),con);
-		Debug.Log ("cleared" + hero.getName() + en.getName());
-
-		hero.addSkill (sManager.getActiveSkillFromId(0));
-		hero.addSkill (sManager.getActiveSkillFromId(1));
-
-		con.setCharacter (hero);
-		con2.setCharacter (en);
-
-		hero.encount ();
-		en.encount ();
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (Input.GetKeyDown (KeyCode.S)) {
+			startBattle ();
+		}
+	}
+
+	private void startBattle(){
+		en = manager.getEnemyFromId (0);
+		hero = new Hero (jma.getJobFromId(0),con);
+		Debug.Log ("cleared" + hero.getName() + en.getName());
+
+//		hero.addSkill (sManager.getActiveSkillFromId(0));
+//		hero.addSkill (sManager.getActiveSkillFromId(1));
+//
+		con.setCharacter (hero);
+		con2.setCharacter (en);
+
+		IEnemyAI ai = EnemyAISummarizingManager.getInstance ().getAiFromId (0, en);
+		Debug.Log (ai.ToString());
+
+//		hero.encount ();
+//		en.encount ();
 	}
 }

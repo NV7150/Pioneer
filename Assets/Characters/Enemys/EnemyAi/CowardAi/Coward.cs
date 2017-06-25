@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 using Character;
 using Skill;
@@ -9,22 +10,23 @@ using BattleSystem;
 namespace AI {
 	/*臆病なAIで、弱い敵を積極的に攻撃します*/
 	public class Coward :IEnemyAI{
-		private Dictionary<SkillCategory,int> probalityTable = new Dictionary<SkillCategory, int>(){
-			{ SkillCategory.NORMAL, 10 },
-			{ SkillCategory.CAUTION, 1 },
-			{ SkillCategory.DANGER, 0 },
-			{ SkillCategory.POWER, 8 },
-			{ SkillCategory.FULL_POWER,3 },
-			{ SkillCategory.SUPPORT, 10 },
-			{ SkillCategory.HEAL, 10 },
-			{ SkillCategory.MOVE,0}
+		private Dictionary<ActiveSkillCategory,int> probalityTable = new Dictionary<ActiveSkillCategory, int>(){
+			{ ActiveSkillCategory.NORMAL, 10 },
+			{ ActiveSkillCategory.CAUTION, 1 },
+			{ ActiveSkillCategory.DANGER, 0 },
+			{ ActiveSkillCategory.POWER, 8 },
+			{ ActiveSkillCategory.FULL_POWER,3 },
+			{ ActiveSkillCategory.SUPPORT, 10 },
+			{ ActiveSkillCategory.HEAL, 10 },
+			{ ActiveSkillCategory.MOVE,0}
 		};
-
+			
 		private ActiveSkillSet skills;
+		private PassiveSkillSet pSkills;
 
 		private readonly IBattleable battleable;
 
-		private Random rand = new Random ();
+		public static readonly int ID = 0;
 
 		public Coward(IBattleable battleable){
 			this.battleable = battleable;
@@ -34,33 +36,33 @@ namespace AI {
 			
 		public ActiveSkill decideSkill () {
 			//ボーナス値のテーブルです。最終的に足されます。
-			Dictionary<SkillCategory,int> probalityBonus = new Dictionary<SkillCategory, int> ();
+			Dictionary<ActiveSkillCategory,int> probalityBonus = new Dictionary<ActiveSkillCategory, int> ();
 
 			//HPが50%以下の場合、caution可能性値を+20します
 			if (this.battleable.getHp() / this.battleable.getMaxHp() <= 0.5f)
-				probalityBonus [SkillCategory.CAUTION] += 20;
+				probalityBonus [ActiveSkillCategory.CAUTION] += 20;
 
 			//HPが20%以下の場合、danger可能性値を+30します
 			if (this.battleable.getHp() / this.battleable.getMaxHp() <= 0.2f)
-				probalityBonus [SkillCategory.DANGER] += 30;
+				probalityBonus [ActiveSkillCategory.DANGER] += 30;
 
 			//HPが70%以下の場合、攻撃する可能性値を-5、移動する可能性を+10します
 			if (this.battleable.getHp() / this.battleable.getMaxHp() <= 0.7f) {
-				probalityBonus [SkillCategory.NORMAL] -= 5;
-				probalityBonus [SkillCategory.POWER] -= 5;
-				probalityBonus [SkillCategory.FULL_POWER] -= 5;
-				probalityBonus [SkillCategory.MOVE] += 10;
+				probalityBonus [ActiveSkillCategory.NORMAL] -= 5;
+				probalityBonus [ActiveSkillCategory.POWER] -= 5;
+				probalityBonus [ActiveSkillCategory.FULL_POWER] -= 5;
+				probalityBonus [ActiveSkillCategory.MOVE] += 10;
 			}
 
 			//スキルの射程内に何もいない時、ボーナス値を使って可能性値を0にします。
-			foreach(SkillCategory category in probalityBonus.Keys){
+			foreach(ActiveSkillCategory category in probalityBonus.Keys){
 				if(BattleManager.getInstance().sumFromAreaTo(battleable,skills.getSkillFromSkillCategory(category).getRange()) <= 0){
 					probalityBonus [category] = -1 * probalityTable [category] ;
 				}
 			}
 
 			//基礎値 + ボーナス値が負の値の場合、可能性値が0になるように設定し直します
-			foreach (SkillCategory category in probalityBonus.Keys) {
+			foreach (ActiveSkillCategory category in probalityBonus.Keys) {
 				if (probalityTable [category] + probalityBonus [category] < 0) {
 					probalityBonus [category] = -1 * probalityTable [category] ;;
 				}
@@ -68,18 +70,18 @@ namespace AI {
 
 			//可能性値を合計します
 			int sum = 0;
-			foreach (SkillCategory category in probalityTable.Keys) {
+			foreach (ActiveSkillCategory category in probalityTable.Keys) {
 				sum += probalityTable [category] + probalityBonus [category];;
 			}
 
 			//合計が0の場合、攻撃不可と判断して移動します
 			if(sum <= 0){
-				return skills.getSkillFromSkillCategory (SkillCategory.MOVE);
+				return skills.getSkillFromSkillCategory (ActiveSkillCategory.MOVE);
 			}
 
 			//乱数でスキルを選択します
-			int choose = rand.Next (0, sum);
-			foreach (SkillCategory category in probalityTable.Keys) {
+			int choose = UnityEngine.Random.Range (0, sum);
+			foreach (ActiveSkillCategory category in probalityTable.Keys) {
 				if (choose < probalityTable [category] + probalityBonus [category] || choose == 0) {
 					return skills.getSkillFromSkillCategory (category);
 				}
@@ -141,7 +143,7 @@ namespace AI {
 			foreach (IBattleable target in targets) {
 				sumLevel += target.getLevel ();
 			}
-			int choose = rand.Next (0, sumLevel);
+			int choose = UnityEngine.Random.Range (0, sumLevel);
 			foreach (IBattleable target in targets) {
 				if (( sumLevel - target.getLevel () )>= choose)
 					return target;
@@ -161,18 +163,51 @@ namespace AI {
 
 		//好戦的な移動を行います
 		private int advance(){
-			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (battleable, skills.getSkillFromSkillCategory (SkillCategory.MOVE).getRange ());
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (battleable, skills.getSkillFromSkillCategory (ActiveSkillCategory.MOVE).getRange ());
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (battleable);
 			return ((int)targetPos) - ((int)nowPos);
 		}
 
 		//非戦的な移動を行います
 		private int recession(){
-			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (battleable, skills.getSkillFromSkillCategory (SkillCategory.MOVE).getRange ());
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (battleable, skills.getSkillFromSkillCategory (ActiveSkillCategory.MOVE).getRange ());
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (battleable);
 			return((int)targetPos) - ((int)nowPos);
 		}
+
+		public PassiveSkill decidePassive (IBattleable attacker, ActiveSkill skill) {
+			Dictionary<PassiveSkillCategory,float> riskTable = new Dictionary<PassiveSkillCategory,float> ();
+
+			//ダメージからのリスク:攻撃側の攻撃力/現在HP
+			float dodgeDammageRisk = (skill.getAtk ()/* + attacker.getAtk() */) / battleable.getHp () + 1.0f;
+			//命中からのリスク:命中値/回避値 - 1
+			float dodgeHitRisk = (skill.getHit ()) / (battleable.getDodgeness() + pSkills.getSkill(PassiveSkillCategory.DODGE).getDodgeBouns()) - 1;
+			//回避合計リスク
+			float dodgeRisk = dodgeHitRisk + dodgeDammageRisk;
+			if (dodgeRisk != 0)
+				dodgeRisk /= 2;
+			riskTable.Add (PassiveSkillCategory.DODGE, dodgeRisk);
+
+			//攻撃を受けるリスク
+			float guardRisk = (skill.getAtk ()/* + attacker.getAtk() */) / (battleable.getHp() + battleable.getDef());
+			riskTable.Add (PassiveSkillCategory.GUARD,guardRisk);
+
+			//乱数判定
+			float random = UnityEngine.Random.Range(0,dodgeRisk + guardRisk);
+			foreach(PassiveSkillCategory category in riskTable.Keys){
+				if (riskTable [category] <= random) {
+					return pSkills.getSkill(category);
+				} else {
+					random += riskTable [category];
+				}
+			}
+			throw new InvalidOperationException ("invalid state");
+		}
 		#endregion
+
+		public override string ToString () {
+			return "CowardID attached with " + battleable.ToString();
+		}
 	}
 }
 

@@ -7,14 +7,11 @@ using Parameter;
 
 namespace MasterData{
 	[System.SerializableAttribute]
-	public class JobMasterManager : MasterDataManagerBase {
-		[SerializeField]
-		private List<Job> dataTable = new List<Job>();
-
+	public class JobMasterManager : MasterDataManagerBase<Job> {
 		// Use this for initialization
-		void Awake () {
+		void Start () {
 			var csv = Resources.Load ("MasterDatas/JobMasterData") as TextAsset;
-			awakeBehaviour (csv);
+			constractedBehaviour (csv);
 		}
 
 		public Job getJobFromId(int id){
@@ -24,13 +21,11 @@ namespace MasterData{
 			}
 			throw new ArgumentException ("invlit jobId");
 		}
-
+			
 		#region implemented abstract members of MasterDataManagerBase
-
-		protected override void addToDataList (string[,] datas, int index) {
-			dataTable.Add (new Job(GetRaw(datas,index)));
+		protected override Job getInstance (int index, string[,] args) {
+			return new Job (GetRaw(args,index));
 		}
-
 		#endregion
 	}
 }

@@ -77,7 +77,7 @@ namespace Character{
 
 	    //エンカウントし、戦闘に突入します
 		public void encount(){
-			container.getExcecutor().StartCoroutine (BattleManager.getInstance().joinBattle(this,FieldPosition.ONE));
+			container.getExcecutor().StartCoroutine(BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai));
 		}
 
 	    //このEnemyが与える経験値を取得します

@@ -105,7 +105,8 @@ namespace MasterData{
 		}
 
 		public Enemy build(){
-			return new Enemy (this);
+			Enemy returnEnemy = new Enemy (this);
+			return returnEnemy;
 		}
 
 		private void setParameterFromCSV(string[] parameters){
@@ -126,6 +127,10 @@ namespace MasterData{
 			skillSetId = int.Parse (parameters [14]);
 			faction = parameters [15];
 			modelName = "Models/" + parameters [16];
+		}
+
+		public override string ToString () {
+			return "EnemyBuilder " + name;
 		}
 	}
 }
