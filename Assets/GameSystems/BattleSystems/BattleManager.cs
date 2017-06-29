@@ -72,6 +72,7 @@ namespace BattleSystem{
 			runningTask.Add (player.getUniqueId(),null);
 
 			while (player.getIsBattling ()) {
+				Debug.Log ("start action player");
 				action (player,manager);
 				yield return new WaitForSeconds(0f);
 			}
@@ -80,25 +81,34 @@ namespace BattleSystem{
 
 		//攻撃・スキル使用を行います。
 		private void action(IBattleable bal,IBattleTaskManager taskManager){
-			if (taskManager.isHavingTask()) {
-				BattleTask task = taskManager.getTask();
+			if (taskManager.isHavingTask ()) {
+				Debug.Log ("start getTask");
+				BattleTask task = taskManager.getTask ();
+				Debug.Log ("get Task " + task.getSkill().getName());
 				runningTask [bal.getUniqueId ()] = task;
 				ActiveSkill useSkill = task.getSkill ();
 				useSkill.use (bal);
 				runningTask.Remove (bal.getUniqueId ());
+			} else {
+//				Debug.Log ("hasn't task");
 			}
 		}
 
 		public IEnumerator attackCommand(IBattleable bal,List<IBattleable> targets,ActiveSkill skill){
 			//命中値を求める
-			int hitness = bal.getHitness (skill.getHit());
+			int hitness = bal.getHitness (skill.getUseAbility()) + skill.getHit();
+			Debug.Log ("got hitness " + hitness);
 			foreach(IBattleable target in targets){
 				//対象のリアクション
 				entriedManagers[target.getUniqueId()].offerPassive();
 			}
 
+			float time = Time.deltaTime;
+			Debug.Log ("start Delay at" + Time.deltaTime);
+			float delay = bal.getDelay () + skill.getDelay ();
 			//ディレイ秒リアクションを待つ
-			yield return new WaitForSeconds(bal.getDelay() + skill.getDelay());
+			yield return new WaitForSeconds(delay);
+			Debug.Log ("end Delay takes" + (time - Time.deltaTime) + " delay is " + delay);
 
 			foreach(IBattleable target in targets){
 				PassiveSkill passive = entriedManagers [target.getUniqueId ()].getPassive (bal,skill);
@@ -179,12 +189,12 @@ namespace BattleSystem{
 			FieldPosition nowPos = searchCharacter (bal);
 
 			//移動量を決定
-			int moveAmount = bal.move(basicMoveAmount);
+			int moveAmount = runningTask[bal.getUniqueId()].getMove();
 
 			//値が適切か判断
 			int moveAmountMax = Enum.GetNames (typeof(FieldPosition)).Length - (int)nowPos;
 			int moveAmountMin = -1 * (int)nowPos;
-			if (moveAmountMax >= basicMoveAmount||moveAmountMin <= basicMoveAmount)
+			if (moveAmountMax <= basicMoveAmount||moveAmountMin >= basicMoveAmount)
 				throw new ArgumentException ("invlit moveAmount");
 
 			//移動処理
@@ -241,7 +251,7 @@ namespace BattleSystem{
 					}
 				}
 			}
-			throw new ArgumentException ("Don't found " + target);
+			throw new ArgumentException ("Don't found " + target.ToString());
 		}
 
 		//指定されたFieldPositionにいるCharacterを返します

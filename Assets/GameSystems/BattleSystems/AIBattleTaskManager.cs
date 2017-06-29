@@ -26,8 +26,16 @@ namespace BattleSystem {
 		public BattleTask getTask () {
 			searchIsReady ();
 			ActiveSkill skill = ai.decideSkill ();
-			List<IBattleable> targets = ai.decideTarget (BattleManager.getInstance().getCharacterInRange(bal,skill.getRange()),skill);
-			return new BattleTask (bal.getUniqueId(),skill,targets);
+			switch (skill.getActiveSkillType ()) {
+				case ActiveSkillType.ACTION:
+					List<IBattleable> targets = ai.decideTarget (BattleManager.getInstance ().getCharacterInRange (bal, skill.getRange ()), skill);
+					return new BattleTask (bal.getUniqueId(),skill,targets);
+				case ActiveSkillType.MOVE:
+					int move = ai.decideMove (skill);
+					return new BattleTask(bal.getUniqueId(),skill,move);
+			}
+			throw new InvalidOperationException ("unknown skillType");
+
 		}
 
 		public void deleteTaskFromTarget (Character.IBattleable target) {/*実装する必要ないです*/}

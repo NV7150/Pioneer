@@ -9,7 +9,7 @@ using Character;
 namespace BattleSystem{
 	public class TargetNode : MonoBehaviour {
 		public Text textObject;
-		List<IBattleable> targets;
+		List<IBattleable> targets = new List<IBattleable> ();
 		PlayerBattleTaskManager controller;
 
 		public void setState(IBattleable target,PlayerBattleTaskManager controller){

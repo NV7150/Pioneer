@@ -20,10 +20,10 @@ namespace AI {
 			summarizingAI.Add (builder);
 		}
 
-		public IEnemyAI getAiFromId(int id,IBattleable bal){
+		public IEnemyAI getAiFromId(int id,IBattleable bal,ActiveSkillSet activeSkills,PassiveSkillSet passiveSkills){
 			foreach(IEnemyAIBuilder builder in summarizingAI){
 				if (builder.getId() == id)
-					return builder.build(bal);
+					return builder.build(bal,activeSkills,passiveSkills);
 			}
 			throw new ArgumentException ("invlid aiId");
 		}

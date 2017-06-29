@@ -7,7 +7,7 @@ using Character;
 
 namespace AI{
 	public interface IEnemyAIBuilder {
-		IEnemyAI build(IBattleable bal);
+		IEnemyAI build(IBattleable bal,ActiveSkillSet activeSkills,PassiveSkillSet passiveSkills);
 		int getId();
 	}
 }

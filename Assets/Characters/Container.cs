@@ -13,11 +13,12 @@ namespace Character{
 
 		// Update is called once per frame
 		void Update () {
+//			Debug.Log ("a");
 			if (character == null) {
 //				print ("null.");
-				return;
+			} else {
+				character.act ();
 			}
-			character.act ();
 		}
 
 		//外面のGameObjectを返します

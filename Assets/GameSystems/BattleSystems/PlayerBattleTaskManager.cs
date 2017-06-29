@@ -15,12 +15,11 @@ namespace BattleSystem{
 		public GameObject view;
 
 		private ActiveSkill chosenActiveSkill;
-		private List<IBattleable> chosenTargets;
 		private PassiveSkill chosenPassiveSKill;
 
 		// Use this for initialization
 		void Start () {
-			GameObject canvas = GameObject.Find ("Canvas");
+			GameObject canvas = GameObject.Find ("Canvas/BattleView");
 			view.transform.SetParent (canvas.transform);
 			passiveContents.SetActive (false);
 		}
@@ -33,7 +32,6 @@ namespace BattleSystem{
 		public void setPlayer(IPlayable player){
 			this.player = player;
 			inputActiveSkillList ();
-			inputActiveSkillList ();
 		}
 
 		private void setTask(ActiveSkill skill,List<IBattleable> targets){
@@ -42,10 +40,27 @@ namespace BattleSystem{
 
 		public void skillChose(ActiveSkill chosenSkill){
 			this.chosenActiveSkill = chosenSkill;
+			switch(chosenSkill.getActiveSkillType()){
+				case ActiveSkillType.ACTION:
+					inputTargetList ();
+					break;
+				case ActiveSkillType.MOVE:
+					inputMoveAreaList ();
+					break;
+			}
 		}
 
 		public void targetChose(List<IBattleable> targets){
-			this.chosenTargets = targets;
+			tasks.Add (new BattleTask(player.getUniqueId(),chosenActiveSkill,targets));
+			chosenActiveSkill = null;
+			inputActiveSkillList ();
+		}
+
+		public void moveAreaChose(FieldPosition pos){
+			int move = (int) (BattleManager.getInstance ().searchCharacter(player) - pos);
+			tasks.Add (new BattleTask(player.getUniqueId(),chosenActiveSkill,move));
+			chosenActiveSkill = null;
+			inputActiveSkillList ();
 		}
 
 		public void passiveChose(PassiveSkill chosenSkill){
@@ -97,6 +112,17 @@ namespace BattleSystem{
 				if ((nowPos + i) >= 0) {
 					GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/TargetNode"));
 					node.GetComponent<TargetNode> ().setState ((FieldPosition)(nowPos + i), this);
+					node.transform.SetParent (contents.transform);
+				}
+			}
+		}
+
+		private void inputMoveAreaList(){
+			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
+			for (int i = -1 * (int)nowPos; i < chosenActiveSkill.getRange (); i++) {
+				if ((nowPos + i) >= 0) {
+					GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/MoveAreaNode"));
+					node.GetComponent<MoveAreaNode> ().setState ((FieldPosition)(nowPos + i), this);
 					node.transform.SetParent (contents.transform);
 				}
 			}

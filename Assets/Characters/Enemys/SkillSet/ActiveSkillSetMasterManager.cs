@@ -6,14 +6,15 @@ using System;
 using AI;
 
 namespace MasterData{
-	public class ActiveSkillSetMasterManager : MasterDataManagerBase<ActiveSkillSetBuilder>{
+	public class ActiveSkillSetMasterManager : MasterDataManagerBase{
+		private static List<ActiveSkillSetBuilder> dataTable = new List<ActiveSkillSetBuilder>();
 
 		private void Awake(){
-			var activeSkillSetCSV = Resources.Load ("Masterdatas/ActiveSkillSetMasterdata") as TextAsset;
+			var activeSkillSetCSV = Resources.Load ("MasterDatas/ActiveSkillSetMasterData") as TextAsset;
 			constractedBehaviour (activeSkillSetCSV);
 		}
 
-		public ActiveSkillSet getActiveSkillSetFromId(int id){
+		public static ActiveSkillSet getActiveSkillSetFromId(int id){
 			foreach(ActiveSkillSetBuilder builder in dataTable){
 				if (builder.getId () == id)
 					return builder.build();
@@ -23,8 +24,8 @@ namespace MasterData{
 
 		#region implemented abstract members of MasterDataManagerBase
 
-		protected override ActiveSkillSetBuilder getInstance (int index, string[,] args) {
-			return new ActiveSkillSetBuilder (GetRaw(args,index));
+		protected override void addInstance (string[] datas) {
+			dataTable.Add (new ActiveSkillSetBuilder(datas));
 		}
 
 		#endregion

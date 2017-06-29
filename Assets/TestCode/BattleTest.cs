@@ -25,26 +25,30 @@ public class BattleTest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.S)) {
+		if (Input.GetKeyDown (KeyCode.S) && Input.GetKey(KeyCode.A)) {
 			startBattle ();
 		}
 	}
 
 	private void startBattle(){
-		en = manager.getEnemyFromId (0);
-		hero = new Hero (jma.getJobFromId(0),con);
+		en = EnemyMasterManager.getEnemyFromId (0);
+		hero = new Hero (JobMasterManager.getJobFromId(0),con);
 		Debug.Log ("cleared" + hero.getName() + en.getName());
 
-//		hero.addSkill (sManager.getActiveSkillFromId(0));
-//		hero.addSkill (sManager.getActiveSkillFromId(1));
-//
+		hero.addSkill (ActiveSkillMasterManager.getActiveSkillFromId(0));
+		hero.addSkill (ActiveSkillMasterManager.getActiveSkillFromId(1));
+
 		con.setCharacter (hero);
 		con2.setCharacter (en);
 
-		IEnemyAI ai = EnemyAISummarizingManager.getInstance ().getAiFromId (0, en);
-		Debug.Log (ai.ToString());
+		hero.encount ();
+		en.encount ();
 
-//		hero.encount ();
-//		en.encount ();
+//		ActiveSkillSet skillset = ActiveSkillSetMasterManager.getActiveSkillSetFromId (0);
+//
+//		Debug.Log (skillset.getSkillFromSkillCategory(ActiveSkillCategory.NORMAL).ToString() + "" + skillset.getSkillFromSkillCategory(ActiveSkillCategory.MOVE));
+//
+//		PassiveSkillSet pskillset = PassiveSkillSetMasterManager.getPassiveSkillSetFromId(0);
+//		Debug.Log(pskillset.getSkillFromCategory(PassiveSkillCategory.DODGE).ToString() + "" + pskillset.getSkillFromCategory(PassiveSkillCategory.DODGE).ToString());
 	}
 }

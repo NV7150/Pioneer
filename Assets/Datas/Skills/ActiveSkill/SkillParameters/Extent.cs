@@ -7,7 +7,9 @@ namespace Skill {
 		//一帯
 		AREA,
 		//全範囲
-		ALL
+		ALL,
+		//なし
+		NONE
 	}
 }
 

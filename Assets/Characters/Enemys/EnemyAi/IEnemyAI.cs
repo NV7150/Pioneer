@@ -19,7 +19,7 @@ namespace AI {
 		List<IBattleable> decideTarget (List<IBattleable> targets,ActiveSkill useSkill);
 
 		//与えられたデータを元に、移動量を決定します
-		int decideMove();
+		int decideMove(ActiveSkill useSkill);
 
 	}
 }

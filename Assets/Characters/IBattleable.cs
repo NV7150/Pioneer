@@ -50,6 +50,10 @@ namespace Character{
 		//体力(phygical)を返します
 		int getPhy();
 
+		//攻撃力(atk)を返します。属性と使用能力値が必須です
+		int getAtk(SkillAttribute attribute,Ability useAbility);
+
+
 		//防御力(defence)を返します
 		int getDef();
 
@@ -62,9 +66,6 @@ namespace Character{
 		//戦闘中かのフラグを切り替えます
 		void setIsBattling(bool boolean);
 
-		//移動する量を決定します。isButtlingがtrue時のみ呼びだされます。
-		int move(int moveAmount);
-
 		//containerの位置を現在の位置と同期させます
 		void syncronizePositioin(Vector3 vector);
 
@@ -75,7 +76,7 @@ namespace Character{
 		List<IBattleable> decideTarget(List<IBattleable> bals);
 
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
-		int getHitness(int hitness);
+		int getHitness(Ability useAbility);
 
 		//受動の行動を決定します。isButtlingがtrue時のみ呼びだされます。
 		PassiveSkill decidePassiveSkill();

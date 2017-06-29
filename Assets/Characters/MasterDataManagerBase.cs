@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 namespace MasterData{
-	public abstract class MasterDataManagerBase<T>  : MonoBehaviour {
-		protected List<T> dataTable = new List<T>();
+	public abstract class MasterDataManagerBase  : MonoBehaviour {
 
 		protected string[] GetRaw (string[,] csv, int row) {
 			string[] data = new string[ csv.GetLength(0) ];
@@ -17,12 +16,10 @@ namespace MasterData{
 		protected void constractedBehaviour(TextAsset csvAsset){
 			var datas = CSVReader.SplitCsvGrid(csvAsset.text);
 			for (int i = 1; i < datas.GetLength(1) - 1 ; i++) {
-				T instance = getInstance (i, datas);
-				Debug.Log (instance.ToString());
-				dataTable.Add (instance);
+				addInstance (GetRaw(datas,i));
 			}
 		}
 
-		protected abstract T getInstance (int index,string[,] args);
+		protected abstract void addInstance (string[] datas);
 	}
 }

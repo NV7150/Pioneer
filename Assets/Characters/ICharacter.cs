@@ -11,6 +11,9 @@ namespace Character{
 		//外面を取得します
 		GameObject getModel();
 
+		//Containerを取得します
+		Container getContainer();
+
 		//何か行動します。
 		void act();
 

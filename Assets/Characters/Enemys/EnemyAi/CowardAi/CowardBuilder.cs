@@ -18,8 +18,8 @@ namespace AI{
 		}
 
 		#region IEnemyAIBuilder implementation
-		public IEnemyAI build (IBattleable bal) {
-			return new Coward (bal);
+		public IEnemyAI build (IBattleable bal,ActiveSkillSet activeSKills,PassiveSkillSet passiveSkills) {
+			return new Coward (bal,activeSKills,passiveSkills);
 		}
 		public int getId () {
 			return Coward.ID;

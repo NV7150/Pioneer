@@ -5,6 +5,7 @@ using System;
 
 using Character;
 using Parameter;
+using AI;
 
 namespace MasterData{
 	[System.SerializableAttribute]
@@ -24,7 +25,8 @@ namespace MasterData{
 		level,
 		normalDropId,
 		rareDropId,
-		skillSetId;
+		activeSkillSetId,
+		passiveSkillSetId;
 
 		[SerializeField]
 		private string 
@@ -44,34 +46,6 @@ namespace MasterData{
 			return aiId;
 		}
 
-		public int getMaxHp() {
-			return maxHp;
-		}
-
-		public int getMaxMp() {
-			return maxMp;
-		}
-
-		public int getMft() {
-			return mft;
-		}
-
-		public int getFft() {
-			return fft;
-		}
-
-		public int getPhy() {
-			return phy;
-		}
-
-		public int getMgp() {
-			return mgp;
-		}
-
-		public int getAgi() {
-			return agi;
-		}
-
 		public int getDef() {
 			return def;
 		}
@@ -88,8 +62,12 @@ namespace MasterData{
 			return rareDropId;
 		}
 
-		public int getSkillSetId() {
-			return skillSetId;
+		public int getActiveSkillSetId() {
+			return activeSkillSetId;
+		}
+
+		public int getPassiveSkillSetId(){
+			return passiveSkillSetId;
 		}
 
 		public string getName() {
@@ -102,6 +80,18 @@ namespace MasterData{
 
 		public Faction getFaction(){
 			return (Faction) Enum.Parse (typeof(Faction),this.faction);
+		}
+
+		public Dictionary<Ability,int> getAbilities(){
+			return new Dictionary<Ability,int> {
+				{Ability.MFT,mft},
+				{Ability.FFT,fft},
+				{Ability.PHY,phy},
+				{Ability.MGP,mgp},
+				{Ability.AGI,agi},
+				{Ability.HP,maxHp},
+				{Ability.MP,maxMp}			
+			};
 		}
 
 		public Enemy build(){
@@ -124,9 +114,10 @@ namespace MasterData{
 			level = int.Parse (parameters [11]);
 			normalDropId = int.Parse (parameters [12]);
 			rareDropId = int.Parse (parameters [13]);
-			skillSetId = int.Parse (parameters [14]);
-			faction = parameters [15];
-			modelName = "Models/" + parameters [16];
+			activeSkillSetId = int.Parse (parameters [14]);
+			passiveSkillSetId = int.Parse (parameters[15]);
+			faction = parameters [16];
+			modelName = "Models/" + parameters [17];
 		}
 
 		public override string ToString () {

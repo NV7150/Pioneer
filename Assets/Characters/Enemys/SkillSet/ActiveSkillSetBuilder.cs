@@ -44,35 +44,35 @@ namespace MasterData{
 		}
 
 		public ActiveSkill getNormalSkill(){
-			return manager.getActiveSkillFromId (normalSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (normalSkillId);
 		}
 
 		public ActiveSkill getCautionSkill(){
-			return manager.getActiveSkillFromId (cautionSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (cautionSkillId);
 		}
 
 		public ActiveSkill getDangerSkill(){
-			return manager.getActiveSkillFromId (dangerSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (dangerSkillId);
 		}
 
 		public ActiveSkill getPowerSkill(){
-			return manager.getActiveSkillFromId (powerSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (powerSkillId);
 		}
 
 		public ActiveSkill getFullPowerSkill(){
-			return manager.getActiveSkillFromId (fullPowerSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (fullPowerSkillId);
 		}
 
 		public ActiveSkill getSupportSkill(){
-			return manager.getActiveSkillFromId (supportSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (supportSkillId);
 		}
 
 		public ActiveSkill getHealSkill(){
-			return manager.getActiveSkillFromId (healSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (healSkillId);
 		}
 
 		public ActiveSkill getMoveSkill(){
-			return manager.getActiveSkillFromId (moveSkillId);
+			return ActiveSkillMasterManager.getActiveSkillFromId (moveSkillId);
 		}
 
 		public ActiveSkillSet build(){

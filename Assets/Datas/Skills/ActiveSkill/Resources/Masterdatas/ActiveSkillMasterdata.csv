@@ -2,3 +2,4 @@ id,name,atk,heal,move,range,hit,delay:float,isFriendly:bool,description,attribut
 0,白兵攻撃,0,0,0,0,0,0,1,白兵武器攻撃を行います,PHYSICAL,NONE,ACTION,ATTACK,MFT,SINGLE
 1,射撃攻撃,0,0,0,0,0,0,1,射撃攻撃を行います,PHYSICAL,NONE,ACTION,ATTACK,FFT,SINGLE
 2,ファイア,5,0,0,0,0,0,1,激しい炎で攻撃します,FIRE,NONE,ACTION,ATTACK,MGP,SINGLE
+3,通常移動,0,0,0,0,0,5,0,通常移動します,PHYSICAL,NONE,MOVE,NONE,AGI,NONE

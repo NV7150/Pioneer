@@ -32,7 +32,7 @@ namespace Skill{
 			NAME,
 			DESCRIPTION;
 
-		private readonly SkillType TYPE;
+		private readonly ActiveSkillType TYPE;
 
 		private readonly ActType ACT_TYPE;
 
@@ -57,7 +57,7 @@ namespace Skill{
 			this.DESCRIPTION = datas [9];
 			this.ATTRIBUTE = (SkillAttribute)Enum.Parse (typeof(SkillAttribute),datas[10]);
 			this.HEAL_ATTRIBUTE = (HealAttribute)Enum.Parse (typeof(HealAttribute),datas[11]);
-			this.TYPE = (SkillType)Enum.Parse (typeof(SkillType),datas[12]);
+			this.TYPE = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType),datas[12]);
 			this.ACT_TYPE = (ActType)Enum.Parse (typeof(ActType),datas[13]);
 			this.USE_ABILITY = (Ability)Enum.Parse (typeof(Ability),datas[14]);
 			this.EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[15]);
@@ -67,13 +67,13 @@ namespace Skill{
 
 		public void use(IBattleable bal){
 			switch(TYPE){
-				case SkillType.ACTION:
+				case ActiveSkillType.ACTION:
 					action (bal);
 					break;
-				case SkillType.MOVE:
+				case ActiveSkillType.MOVE:
 					move (bal);
 					break;
-				case SkillType.ACTION_AND_MOVE:
+				case ActiveSkillType.ACTION_AND_MOVE:
 					action (bal);
 					move (bal);
 					break;
@@ -97,7 +97,11 @@ namespace Skill{
 
 		private void attack(IBattleable bal){
 			List<IBattleable> targets = BattleManager.getInstance ().getTaskFromUniqueId (bal.getUniqueId ()).getTargets ();
-			new MonoBehaviour().StartCoroutine(BattleManager.getInstance ().attackCommand (bal,targets,this));
+
+			if (targets.Count <= 0)
+				throw new InvalidOperationException ("invlid battleTask operation");
+
+			bal.getContainer().StartCoroutine(BattleManager.getInstance ().attackCommand (bal,targets,this));
 		}
 
 		private void heal(IBattleable bal){
@@ -148,7 +152,7 @@ namespace Skill{
 			return DELAY;
 		}
 
-		public SkillType getType() {
+		public ActiveSkillType getActiveSkillType() {
 			return TYPE;
 		}
 

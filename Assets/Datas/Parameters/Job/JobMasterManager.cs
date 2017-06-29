@@ -7,14 +7,16 @@ using Parameter;
 
 namespace MasterData{
 	[System.SerializableAttribute]
-	public class JobMasterManager : MasterDataManagerBase<Job> {
+	public class JobMasterManager : MasterDataManagerBase {
+		private static List<Job> dataTable = new List<Job>();
+
 		// Use this for initialization
-		void Start () {
+		void Awake() {
 			var csv = Resources.Load ("MasterDatas/JobMasterData") as TextAsset;
 			constractedBehaviour (csv);
 		}
 
-		public Job getJobFromId(int id){
+		public static Job getJobFromId(int id){
 			foreach(Job job in dataTable){
 				if (job.getId () == id)
 					return job;
@@ -23,8 +25,8 @@ namespace MasterData{
 		}
 			
 		#region implemented abstract members of MasterDataManagerBase
-		protected override Job getInstance (int index, string[,] args) {
-			return new Job (GetRaw(args,index));
+		protected override void addInstance (string[] datas) {
+			dataTable.Add(new Job (datas));
 		}
 		#endregion
 	}

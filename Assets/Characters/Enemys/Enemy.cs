@@ -13,23 +13,16 @@ namespace Character{
 	public class Enemy : IBattleable{
 		private int
 			id,
-			aiId,
-			maxHp,
-			maxMp,
-			mft,
-			fft,
-			phy,
-			mgp,
-			agi,
 			def,
 			level,
 			normalDropId,
-			rareDropId,
-			skillSetId;
+			rareDropId;
 
 		private string 
 			name,
 			modelName;
+
+		private Dictionary<Ability,int> abilities = new Dictionary<Ability, int>();
 
 		private int hp;
 		private int mp;
@@ -49,21 +42,17 @@ namespace Character{
 
 		private readonly Faction FACTION;
 
+		private ActiveSkillSet activeSkillSet;
+		private PassiveSkillSet passiveSkillSet;
+
 		public Enemy(EnemyBuilder builder){
 			this.id = builder.getId ();
 			this.name = builder.getName ();
-			this.maxHp = builder.getMaxHp ();
-			this.maxMp = builder.getMaxMp ();
-			this.mft = builder.getMft ();
-			this.fft = builder.getFft ();
-			this.phy = builder.getPhy ();
-			this.mgp = builder.getMgp ();
-			this.agi = builder.getAgi ();
+			this.abilities = builder.getAbilities ();
 			this.def = builder.getDef ();
 			this.level = builder.getLevel ();
 			this.normalDropId = builder.getNormalDropId ();
 			this.rareDropId = builder.getRareDropId ();
-			this.skillSetId = builder.getSkillSetId ();
 			this.modelName = builder.getModelName ();
 			this.FACTION = builder.getFaction ();
 
@@ -73,6 +62,12 @@ namespace Character{
 			container.setCharacter(this);
 
 			this.UNIQE_ID = UniqueIdCreator.creatUniqueId ();
+
+			activeSkillSet = ActiveSkillSetMasterManager.getActiveSkillSetFromId (builder.getActiveSkillSetId());
+			passiveSkillSet = PassiveSkillSetMasterManager.getPassiveSkillSetFromId (builder.getPassiveSkillSetId());
+			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,passiveSkillSet);
+
+			this.hp = abilities [Ability.HP];
 		}
 
 	    //エンカウントし、戦闘に突入します
@@ -108,26 +103,32 @@ namespace Character{
 			this.mp = mp;
 		}
 		public int getMaxHp () {
-			return maxHp;
+			return abilities[Ability.HP];
 		}
 		public int getMaxMp () {
-			return maxMp;
+			return abilities[Ability.MP];
 		}
 		public int getMft () {
-			return mft;
+			return abilities[Ability.MFT];
 		}
 		public int getFft () {
-			return fft;
+			return abilities[Ability.FFT];
 		}
 		public int getMgp () {
-			return mgp;
+			return abilities[Ability.MGP];
 		}
 		public int getAgi () {
-			return agi;
+			return abilities[Ability.AGI];
 		}
 		public int getPhy () {
-			return phy;
+			return abilities[Ability.PHY];
 		}
+
+		public int getAtk (SkillAttribute attribute, Ability useAbility) {
+			//もっとくふうすする予定
+			return abilities [useAbility];
+		}
+
 		public int getDef () {
 			return def;
 		}
@@ -165,7 +166,8 @@ namespace Character{
 			throw new System.NotImplementedException ();
 		}
 		public int getDodgeness () {
-			throw new System.NotImplementedException ();
+			//あとで実装
+			return getAgi ();
 		}
 		public void setDefBonus (int bonus) {
 			defBonus = bonus;
@@ -216,11 +218,15 @@ namespace Character{
 		}
 
 		public void act () {
-			
+//			Debug.Log ("" + this.hp);
 		}
 
 		public void death () {
 			throw new NotImplementedException ();
+		}
+
+		public Container getContainer () {
+			return this.container;
 		}
 		#endregion
 
@@ -230,7 +236,7 @@ namespace Character{
 
 		public override bool Equals (object obj) {
 			//Enemyであり、IDとユニークIDが同値ならば等価と判断します
-			if (!(obj == typeof(Enemy)))
+			if (!(obj is Enemy))
 				return false;
 			Enemy target = (Enemy)obj;
 			if (target.getUniqueId () != this.getUniqueId() && target.getId() != this.getId())
@@ -239,7 +245,12 @@ namespace Character{
 		}
 
 		public void dammage (int dammage, SkillAttribute attribute) {
-			throw new NotImplementedException ();
+			if (dammage < 0)
+				dammage = 0;
+			//あとでじゃい
+			this.hp -= dammage;
+			if (this.hp < 0)
+				this.hp = 0;
 		}
 
 		public void healed (int heal, HealAttribute attribute) {
@@ -250,16 +261,12 @@ namespace Character{
 			throw new NotImplementedException ();
 		}
 
-		public int move (int moveAmount) {
-			throw new NotImplementedException ();
-		}
-
 		public int getRange (int range) {
 			throw new NotImplementedException ();
 		}
 
-		public int getHitness (int hitness) {
-			throw new NotImplementedException ();
+		public int getHitness (Ability useAbility) {
+			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
 		}
 
 		public int attack (int baseParameter, Ability useAbility) {
@@ -268,6 +275,10 @@ namespace Character{
 
 		public int healing (int baseParameter, Ability useAbility) {
 			throw new NotImplementedException ();
+		}
+
+		public override string ToString () {
+			return "Enemy " + this.name + " No. " + this.UNIQE_ID;
 		}
 	}
 }

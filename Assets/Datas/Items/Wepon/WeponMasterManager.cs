@@ -7,14 +7,15 @@ using Item;
 
 namespace MasterData {
 	[System.SerializableAttribute]
-	public class WeponMasterManager :MasterDataManagerBase<WeponBuilder> {
+	public class WeponMasterManager :MasterDataManagerBase {
+		private static List<WeponBuilder> dataTable = new List<WeponBuilder>();
 		
 		void Awake(){
 			var weponCSVText = Resources.Load("MasterDatas/WeponMasterData") as TextAsset;
 			constractedBehaviour (weponCSVText);
 		}
 
-		public Wepon getWeponFromId(int id){
+		public static Wepon getWeponFromId(int id){
 			foreach (WeponBuilder builder in dataTable)
 				if (builder.getId() == id)
 					return builder.build ();
@@ -23,8 +24,8 @@ namespace MasterData {
 
 		#region implemented abstract members of MasterDataManagerBase
 
-		protected override WeponBuilder getInstance (int index, string[,] args) {
-			return new WeponBuilder (GetRaw(args,index));
+		protected override void addInstance (string[] datas) {
+			dataTable.Add(new WeponBuilder (datas));
 		}
 
 		#endregion

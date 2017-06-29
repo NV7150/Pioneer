@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Skill {
-	public enum SkillType{
+	public enum ActiveSkillType{
 		//攻撃もしくは回復等
 		ACTION,
 		//移動

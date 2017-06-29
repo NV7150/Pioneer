@@ -161,6 +161,9 @@ namespace Character{
 			}
 		}
 
+		public Container getContainer () {
+			return this.container;
+		}
 		#endregion
 		#region IFriendly implementation
 		public int getSpc () {
@@ -240,12 +243,19 @@ namespace Character{
 			return abilities[Ability.PHY];
 		}
 
+		public int getAtk (SkillAttribute attribute, Ability useAbility) {
+			//もっと工夫しようず
+			return abilities[useAbility];
+		}
+
 		public int getDef () {
 			return getMft () / 2 + armor.getDef (); 
 		}
 
 		public float getDelay () {
-			throw new NotImplementedException ();
+//			return getWepon ().getDelay ();
+			//wepon実装まだなんで
+			return 0.5f;
 		}
 
 		public bool getIsBattling () {
@@ -272,8 +282,8 @@ namespace Character{
 			throw new NotImplementedException ();
 		}
 
-		public int getHitness (int hitness) {
-			throw new NotImplementedException ();
+		public int getHitness (Ability useAbility) {
+			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
 		}
 
 		public PassiveSkill decidePassiveSkill () {
@@ -328,7 +338,6 @@ namespace Character{
 			return baseParameter + abilities [useAbility];
 		}
 
-
 		public Faction getFaction () {
 			return faction;
 		}
@@ -351,6 +360,7 @@ namespace Character{
 		}
 
 		public void act () {
+//			Debug.Log ("acted");
 		}
 
 		public void death () {
@@ -432,8 +442,6 @@ namespace Character{
 			if (value <= 0)
 				throw new ArgumentException ("invalit parameter");
 		}
-
-
 			
 		public override bool Equals (object obj) {
 			return this == obj;
