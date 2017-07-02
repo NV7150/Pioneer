@@ -1,4 +1,0 @@
-id,name,defBonus,dodgeBonus,isReadyToCounter,description,category
-0,防御,5,0,1,防御します,GUARD
-1,回避,0,5,1,回避します,DODGE
-2,ミス,0,0,1,行動しません,MISS

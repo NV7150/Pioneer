@@ -8,15 +8,14 @@ using Parameter;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class JobMasterManager : MasterDataManagerBase {
-		//登録済みのジョブのリストです
 		private static List<Job> dataTable = new List<Job>();
 
+		// Use this for initialization
 		void Awake() {
 			var csv = Resources.Load ("MasterDatas/JobMasterData") as TextAsset;
 			constractedBehaviour (csv);
 		}
 
-		//ジョブをIDから取得します
 		public static Job getJobFromId(int id){
 			foreach(Job job in dataTable){
 				if (job.getId () == id)

@@ -19,36 +19,29 @@ namespace Skill{
 	public class ActiveSkill : ISkill{
 		[SerializeField]
 		private readonly int
-			//このスキルのIDです
 			ID,
-			//このスキルの攻撃力です
 			ATK,
-			//このスキルの回復力です
 			HEAL,
-			//このスキルの移動力です
 			MOVE,
-			//このスキルの射程です
 			RANGE,
-			//このスキルの命中値です
-			HIT,
-			//このスキルのディレイ値です
-			DELAY;
+			HIT;
 
 		[SerializeField]
 		private readonly bool
-			//このスキルが友好的かどうかを表します
 			IS_FRIENDLY;
 
 		[SerializeField]
+		private readonly float
+			DELAY;
+
+		[SerializeField]
 		private readonly string
-			//このスキルの名前です
 			NAME,
-			//このスキルの説明です
 			DESCRIPTION;
 
-		//このスキルの種類を返します
 		private readonly ActiveSkillType TYPE;
 
+<<<<<<< HEAD
 		//このスキルのTYPEがActionだった時の詳細な種別を表します
 		private readonly ActionType ACT_TYPE;
 
@@ -57,14 +50,18 @@ namespace Skill{
 
 		//このスキルの回復の属性を表します
 		private readonly HealSkillAttribute HEAL_ATTRIBUTE;
+=======
+		private readonly ActType ACT_TYPE;
 
-		//このスキルが行う判定で使用する能力値です
+		private readonly SkillAttribute ATTRIBUTE;
+
+		private readonly HealAttribute HEAL_ATTRIBUTE;
+>>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+
 		private readonly Ability USE_ABILITY;
 
-		//このスキルの効果範囲です
 		private readonly Extent EXTENT;
 
-		//csvによるstring配列から初期化します
 		public ActiveSkill(string[] datas){
 			this.ID = int.Parse (datas[0]);
 			this.NAME = datas [1];
@@ -73,7 +70,7 @@ namespace Skill{
 			this.MOVE = int.Parse (datas[4]);
 			this.RANGE = int.Parse (datas[5]);
 			this.HIT = int.Parse (datas[6]);
-			this.DELAY = int.Parse (datas [7]);
+			this.DELAY = float.Parse (datas [7]);
 			this.IS_FRIENDLY = ( 0 == int.Parse(datas [8]));
 			this.DESCRIPTION = datas [9];
 			this.ATTRIBUTE = (AttackSkillAttribute)Enum.Parse (typeof(AttackSkillAttribute),datas[10]);
@@ -86,29 +83,24 @@ namespace Skill{
 
 		}
 
-		public void use(){
-			
-		}
-
-		//与えられたactionerとtaskからActiveSkillを使用します
-		public void action(IBattleable actioner,BattleTask task){
+		public void use(IBattleable bal){
 			switch(TYPE){
 				case ActiveSkillType.ACTION:
-					actionTrafic(actioner,task.getTargets());
+					action (bal);
 					break;
 				case ActiveSkillType.MOVE:
-					move (actioner,task.getMove());
+					move (bal);
 					break;
 				case ActiveSkillType.ACTION_AND_MOVE:
-					move (actioner,task.getMove());
-					actionTrafic (actioner,task.getTargets());
+					action (bal);
+					move (bal);
 					break;
 			}
 		}
 
-		//actionスキルの種別に応じて適切なメソッドを呼び出します
-		private void actionTrafic(IBattleable actioner,List<IBattleable> targets){
+		private void action(IBattleable bal){
 			switch(ACT_TYPE){
+<<<<<<< HEAD
 				case ActionType.ATTACK:
 					attack (actioner,targets);
 					break;
@@ -118,91 +110,83 @@ namespace Skill{
 				case ActionType.BOTH:
 					attack (actioner,targets);
 					heal (actioner,targets);
+=======
+				case ActType.ATTACK:
+					attack (bal);
+					break;
+				case ActType.HEAL:
+					heal (bal);
+					break;
+				case ActType.BOTH:
+					attack (bal);
+					heal (bal);
+>>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
 					break;
 			}
 		}
 
-		//攻撃を行います
-		private void attack(IBattleable bal,List<IBattleable> targets){
+		private void attack(IBattleable bal){
+			List<IBattleable> targets = BattleManager.getInstance ().getTaskFromUniqueId (bal.getUniqueId ()).getTargets ();
+
 			if (targets.Count <= 0)
 				throw new InvalidOperationException ("invlid battleTask operation");
 
-			BattleManager.getInstance ().attackCommand (bal,targets,this);
+			bal.getContainer().StartCoroutine(BattleManager.getInstance ().attackCommand (bal,targets,this));
 		}
 
-		//回復を行います
-		private void heal(IBattleable bal,List<IBattleable> targets){
+		private void heal(IBattleable bal){
 			BattleManager.getInstance ().healCommand (bal,RANGE,HEAL,HEAL_ATTRIBUTE,USE_ABILITY);
-			throw new NotImplementedException ();
 		}
 
-		//移動を行います
-		private void move(IBattleable bal,int moveness){
-			//値が適切か判断
-			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (bal);
-			int moveAmountMax = Enum.GetNames (typeof(FieldPosition)).Length - (int)nowPos;
-			int moveAmountMin = -1 * (int)nowPos;
-			if (moveAmountMax <= MOVE||moveAmountMin >= MOVE)
-				throw new ArgumentException ("invlit moveNess");
-			
-			BattleManager.getInstance ().moveCommand (bal,moveness);
+		private void move(IBattleable bal){
+			BattleManager.getInstance ().moveCommand (bal, MOVE);
 		}
 
-		//IDを取得します
 		public int getId() {
 			return ID;
 		}
 
-		//名前を取得します
 		public string getName(){
 			return NAME;
 		}
 
-		//説明を取得します
 		public string getDescription(){
 			return DESCRIPTION;
 		}
 
-		//友好的なスキルかを表すboolを取得します
 		public bool getIsFriendly(){
 			return IS_FRIENDLY;
 		}
 
-		//攻撃力を取得します
 		public int getAtk() {
 			return ATK;
 		}
 
-		//回復力を取得します
 		public int getHeal() {
 			return HEAL;
 		}
 
-		//移動力を取得します
 		public int getMove() {
 			return MOVE;
 		}
 
-		//射程を取得します
 		public int getRange() {
 			return RANGE;
 		}
-			
-		//命中力を取得します
+
 		public int getHit() {
 			return HIT;
 		}
 
-		//ディレイ値を取得します
-		public int getDelay() {
+		public float getDelay() {
 			return DELAY;
 		}
 
-		//スキルの種別を取得します
 		public ActiveSkillType getActiveSkillType() {
 			return TYPE;
 		}
 
+<<<<<<< HEAD
 		//actionの詳細な種別を取得します
 		public ActionType getActType() {
 			return ACT_TYPE;
@@ -215,15 +199,24 @@ namespace Skill{
 
 		//スキルの回復属性を取得します
 		public HealSkillAttribute getHealAttribute() {
+=======
+		public ActType getActType() {
+			return ACT_TYPE;
+		}
+
+		public SkillAttribute getAttribute() {
+			return ATTRIBUTE;
+		}
+
+		public HealAttribute getHealAttribute() {
+>>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
 			return HEAL_ATTRIBUTE;
 		}
 
-		//判定に使用する能力値を取得します
 		public Ability getUseAbility() {
 			return USE_ABILITY;
 		}
 
-		//スキルの効果範囲を取得します
 		public Extent getExtent() {
 			return EXTENT;
 		}

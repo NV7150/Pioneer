@@ -37,12 +37,12 @@ namespace Character{
 		List<ActiveSkill> getActiveSkills ();
 
 		//取得済みの受動スキルを表します
-		List<ReactionSkill> getReactionSKills();
+		List<PassiveSkill> getPassiveSKills();
 
 		//能動スキルを取得します。オーバーロードされます。
 		void addSkill(ActiveSkill skill);
 
 		//受動スキルを取得します。オーバーロードされます。
-		void addSkill(ReactionSkill skill);
+		void addSkill(PassiveSkill skill);
 	}
 }

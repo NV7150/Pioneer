@@ -8,7 +8,6 @@ using Item;
 namespace MasterData {
 	[System.SerializableAttribute]
 	public class ArmorMasterManager :MasterDataManagerBase {
-		//生成したデータのリストです
 		private static List<ArmorBuilder> dataTable = new List<ArmorBuilder>();
 
 		void Awake(){
@@ -16,7 +15,6 @@ namespace MasterData {
 			constractedBehaviour (armorCSVData);
 		}
 
-		//IDからArmorを取得します
 		public static Armor getArmorFromId(int id){
 			foreach (ArmorBuilder builder in dataTable)
 				if (builder.getId () == id)

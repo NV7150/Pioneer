@@ -6,12 +6,11 @@ using Item;
 namespace MasterData {
 	[System.SerializableAttribute]
 	public class ArmorBuilder {
-		//プロパティです
 		[SerializeField]
 		private int
 			id,
 			def,
-			dodge,
+			dodgeBonus,
 			needPhy,
 			itemValue,
 			mass;
@@ -26,12 +25,9 @@ namespace MasterData {
 		private float
 			delayBonus;
 
-		//csvによるstring配列から初期化します
 		public ArmorBuilder (string[] datas) {
 			setDataFromCSV (datas);
 		}
-
-		//各プロパティのgetterです
 
 		public int getId(){
 			return this.id;
@@ -41,8 +37,8 @@ namespace MasterData {
 			return def;
 		}
 
-		public int getDodge() {
-			return dodge;
+		public int getDodgeBonus() {
+			return dodgeBonus;
 		}
 
 		public float getDelayBonus(){
@@ -73,12 +69,11 @@ namespace MasterData {
 			return equipDescription;
 		}
 
-		//csvのstring配列から初期化します
 		private void setDataFromCSV(string[] datas){
 			this.id = int.Parse (datas [0]);
 			this.name = datas [1];
 			this.def = int.Parse (datas[2]);
-			this.dodge = int.Parse (datas[3]);
+			this.dodgeBonus = int.Parse (datas[3]);
 			this.delayBonus = float.Parse (datas [4]);
 			this.needPhy = int.Parse (datas[5]);
 			this.itemValue = int.Parse (datas[6]);
@@ -87,7 +82,6 @@ namespace MasterData {
 			this.equipDescription = datas [9];
 		}
 
-		//Armorを取得します
 		public Armor build(){
 			return new Armor (this);
 		}

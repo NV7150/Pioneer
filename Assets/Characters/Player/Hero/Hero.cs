@@ -62,7 +62,7 @@ namespace Character{
 		//このキャラクターが持つ能動スキルのリストです
 		private List<ActiveSkill> activeSkills = new List<ActiveSkill>();
 		//このキャラクターが持つ受動スキルのリストです
-		private List<ReactionSkill> reactionSkills = new List<ReactionSkill>();
+		private List<PassiveSkill> passiveSkills = new List<PassiveSkill>();
 
 
 		public Hero(Job job,Container con){
@@ -79,7 +79,7 @@ namespace Character{
 
 			setMaxHp (abilities[Ability.PHY]);
 			setMaxMp (abilities[Ability.MGP]);
-			hp = 100;
+			hp = abilities [Ability.HP];
 			mp = abilities [Ability.MP];
 
 			this.container = con;
@@ -138,13 +138,16 @@ namespace Character{
 		}
 
 		public List<ActiveSkill> getActiveSkills () {
-			return new List<ActiveSkill> (activeSkills);
+			List<ActiveSkill> returnSkills = new List<ActiveSkill> ();
+			foreach(ActiveSkill skill in activeSkills){
+				returnSkills.Add (skill);
+			}
+			return returnSkills;
 		}
 
 
-		public List<ReactionSkill> getReactionSKills () {
-			return new List<ReactionSkill> (reactionSkills);
-
+		public List<PassiveSkill> getPassiveSKills () {
+			throw new NotImplementedException ();
 		}
 
 		public void addSkill (ActiveSkill skill) {
@@ -155,9 +158,9 @@ namespace Character{
 			}
 		}
 
-		public void addSkill (ReactionSkill skill) {
-			if (skill != null || !reactionSkills.Contains (skill)) {
-				reactionSkills.Add (skill);
+		public void addSkill (PassiveSkill skill) {
+			if (skill != null || !passiveSkills.Contains (skill)) {
+				passiveSkills.Add (skill);
 			} else {
 				throw new ArgumentException ("invalid passiveSkill");
 			}
@@ -214,7 +217,16 @@ namespace Character{
 					this.hp += heal;
 			}
 		}
-			
+
+		public void setHp (int hp) {
+			if (hp > 0)
+				this.hp = hp;
+		}
+
+		public void setMp (int mp) {
+			if (mp > 0)
+				this.mp = mp;
+		}
 
 		public int getMft () {
 			return abilities[Ability.MFT];
@@ -238,18 +250,17 @@ namespace Character{
 
 		public int getAtk (AttackSkillAttribute attribute, Ability useAbility) {
 			//もっと工夫しようず
-			return 10;
+			return abilities[useAbility];
 		}
 
 		public int getDef () {
-//			return getMft () /  2 + armor.getDef (); 
-			return 0;
+			return getMft () / 2 + armor.getDef (); 
 		}
 
-		public int getDelay () {
+		public float getDelay () {
 //			return getWepon ().getDelay ();
 			//wepon実装まだなんで
-			return 1;
+			return 0.5f;
 		}
 
 		public bool getIsBattling () {
@@ -260,15 +271,31 @@ namespace Character{
 			isBattleing = boolean;
 		}
 
+		public int move (int moveAmount) {
+			throw new NotImplementedException ();
+		}
+
 		public void syncronizePositioin (Vector3 vector) {
 			container.getModel ().transform.position = vector;
 		}
+			
+		public ActiveSkill decideSkill () {
+			throw new NotImplementedException ();
+		}
 
-		public int getHit (Ability useAbility) {
+		public List<IBattleable> decideTarget (List<IBattleable> bals) {
+			throw new NotImplementedException ();
+		}
+
+		public int getHitness (Ability useAbility) {
 			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
 		}
 
-		public int getDodge () {
+		public PassiveSkill decidePassiveSkill () {
+			throw new NotImplementedException ();
+		}
+
+		public int getDodgeness () {
 			return getAgi();
 		}
 
@@ -311,6 +338,7 @@ namespace Character{
 			return baseParameter + abilities [useAbility];
 		}
 
+
 		public int healing (int baseParameter, Ability useAbility) {
 			return baseParameter + abilities [useAbility];
 		}
@@ -323,10 +351,12 @@ namespace Character{
 			return (this.faction == faction);
 		}
 
-
+		public string getName(){
+			return "hero";
+		}
 			
 		public void encount () {
-			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE);
+			container.getExcecutor().StartCoroutine(BattleManager.getInstance().joinBattle(this,FieldPosition.ONE));
 		}
 		#endregion
 		#region ICharacter implementation
@@ -344,10 +374,6 @@ namespace Character{
 
 		public long getUniqueId () {
 			return UNIQUE_ID;
-		}
-
-		public string getName(){
-			return "hero";
 		}
 		#endregion
 
@@ -420,10 +446,6 @@ namespace Character{
 		private void isntInvalitAblityParamter(int value){
 			if (value <= 0)
 				throw new ArgumentException ("invalit parameter");
-		}
-
-		public override string ToString () {
-			return "Hero No." + UNIQUE_ID;
 		}
 			
 		public override bool Equals (object obj) {

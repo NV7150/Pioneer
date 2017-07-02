@@ -7,26 +7,17 @@ using MasterData;
 namespace Item {
 	[System.SerializableAttribute]
 	public class Armor : IItem{
-		private int
-			//この装備のIDです
+		private int 
 			id,
-			//この装備が与える防御への影響です
 			def,
-			//この装備が与える回避への影響です
-			dodge,
-			//この装備が必要とするphy能力値です
+			dodgeBonus,
 			needPhy,
-			//このアイテムの重さです
 			mass,
-			//このアイテムの価格です
 			itemValue;
 
 		private string
-			//このアイテムの名前です
 			name,
-			//このアイテムの説明です
 			descpription,
-			//このアイテム装備条件の説明です
 			equipDescription;
 
 		private float delayBonus;
@@ -34,7 +25,7 @@ namespace Item {
 		public Armor(ArmorBuilder builder){
 			this.id = builder.getId ();
 			this.def = builder.getDef ();
-			this.dodge = builder.getDodge ();
+			this.dodgeBonus = builder.getDodgeBonus ();
 			this.needPhy = builder.getNeedPhy ();
 			this.name = builder.getName ();
 			this.descpription = builder.getDescription ();
@@ -48,8 +39,8 @@ namespace Item {
 		}
 
 		//回避修正を返します
-		public int getDodge(){
-			return dodge;
+		public int getDodgeBonus(){
+			return dodgeBonus;
 		}
 
 		//武器が装備可能かを確認します
@@ -87,7 +78,6 @@ namespace Item {
 			return id;
 		}
 
-		//アイテムを使用します
 		public void use (IPlayable use) {
 			throw new NotImplementedException ();
 		}

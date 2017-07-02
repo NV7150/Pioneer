@@ -37,8 +37,6 @@ public class BattleTest : MonoBehaviour {
 
 		hero.addSkill (ActiveSkillMasterManager.getActiveSkillFromId(0));
 		hero.addSkill (ActiveSkillMasterManager.getActiveSkillFromId(1));
-		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(0));
-		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(1));
 
 		con.setCharacter (hero);
 		con2.setCharacter (en);
