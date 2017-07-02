@@ -22,5 +22,8 @@ namespace Character{
 
 		//キャラクターそれぞれが固有に持つIDを取得します
 		long getUniqueId();
+
+		//名前を取得します
+		string getName();
 	}	
 }

@@ -8,7 +8,7 @@ using Skill;
 namespace MasterData {
 	[System.SerializableAttribute]
 	public class ActiveSkillMasterManager :MasterDataManagerBase{
-
+		//登録済みのスキルのデータテーブルです
 		private static List<ActiveSkill> dataTable = new List<ActiveSkill>();
 
 		private void Awake(){
@@ -17,6 +17,7 @@ namespace MasterData {
 			constractedBehaviour (activeSkillCSVText);
 		}
 
+		//idからActiveSkillを取得します
 		public static ActiveSkill getActiveSkillFromId(int id){
 			foreach(ActiveSkill skill in dataTable){
 				if (skill.getId () == id)

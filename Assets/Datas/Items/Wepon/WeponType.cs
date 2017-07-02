@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 namespace Item{
+	//武器の種別です
 	public enum WeponType{
 		SWORD,
 		BOW,
@@ -12,9 +13,10 @@ namespace Item{
 		AX,
 		GUN 
 	}
-
+		
 	public class WeponTypeHelper{
 		private WeponTypeHelper (){}
+		//idから武器タイプを取得します
 		public static WeponType getTypeFromId(int id){
 			switch(id){
 				case 0:
@@ -30,7 +32,7 @@ namespace Item{
 				case 5:
 					return WeponType.GUN;
 				default:
-					throw new ArgumentException ("invlit weponTypeID");
+					throw new ArgumentException ("invalid weponTypeID");
 			}
 		}
 	}

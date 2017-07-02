@@ -15,19 +15,13 @@ namespace Character{
 		int getHp();
 
 		//HPを減少させます
-		void dammage (int dammage,SkillAttribute attribute);
+		void dammage (int dammage,SkillParameters.SkillAttribute attribute);
 
 		//回復されます（受動側）
-		void healed(int heal,HealAttribute attribute);
+		void healed(int heal,SkillParameters.HealAttribute attribute);
 
 		//MPを返します
 		int getMp();
-
-		//HPを設定します
-		void setHp(int hp);
-
-		//MPを設定します
-		void setMp(int mp);
 
 		//最大HPを返します
 		int getMaxHp();
@@ -51,14 +45,13 @@ namespace Character{
 		int getPhy();
 
 		//攻撃力(atk)を返します。属性と使用能力値が必須です
-		int getAtk(SkillAttribute attribute,Ability useAbility);
-
+		int getAtk(SkillParameters.SkillAttribute attribute,EnumParameters.Ability useAbility);
 
 		//防御力(defence)を返します
 		int getDef();
 
 		//ディレイ値を返します
-		float getDelay();
+		int getDelay();
 
 		//戦闘中かどうかを表します
 		bool getIsBattling();
@@ -69,20 +62,11 @@ namespace Character{
 		//containerの位置を現在の位置と同期させます
 		void syncronizePositioin(Vector3 vector);
 
-		//攻撃するSkillを決定し、そのスキルを返します。
-		ActiveSkill decideSkill();
-
-		//攻撃の対象を決定します。isButtlingがtrue時のみ呼び出されます。
-		List<IBattleable> decideTarget(List<IBattleable> bals);
-
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
-		int getHitness(Ability useAbility);
-
-		//受動の行動を決定します。isButtlingがtrue時のみ呼びだされます。
-		PassiveSkill decidePassiveSkill();
+		int getHit(EnumParameters.Ability useAbility);
 
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
-		int getDodgeness();
+		int getDodge();
 
 		//防御へのボーナスを設定します。isButtlingがtrue時のみ呼びだされます。
 		void setDefBonus(int bonus);
@@ -103,19 +87,16 @@ namespace Character{
 		int getLevel();
 
 		//攻撃を行います
-		int attack(int baseParameter,Ability useAbility);
+		int attack(int baseParameter,EnumParameters.Ability useAbility);
 
 		//回復を行います（能動側）
-		int healing(int baseParameter,Ability useAbility);
+		int healing(int baseParameter,EnumParameters.Ability useAbility);
 
 		//派閥を取得します
-		Faction getFaction();
+		EnumParameters.Faction getFaction();
 
 		//敵対派閥かを取得します
-		bool isHostility(Faction faction);
-
-		//名前を取得します
-		string getName();
+		bool isHostility(EnumParameters.Faction faction);
 
 		//エンカウントし、バトルに突入します
 		void encount();

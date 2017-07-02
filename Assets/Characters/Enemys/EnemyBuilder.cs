@@ -10,6 +10,8 @@ using AI;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class EnemyBuilder{
+		//プロパティです
+
 		[SerializeField]
 		private int
 		id,
@@ -26,7 +28,7 @@ namespace MasterData{
 		normalDropId,
 		rareDropId,
 		activeSkillSetId,
-		passiveSkillSetId;
+		reactionSkillSetId;
 
 		[SerializeField]
 		private string 
@@ -34,9 +36,12 @@ namespace MasterData{
 		modelName,
 		faction;
 
+		//csvによるstring配列から初期化します
 		public EnemyBuilder(string[] parameters){
 			setParameterFromCSV (parameters);
 		}
+
+		//各能力値のgetterです
 
 		public int getId() {
 			return id;
@@ -66,8 +71,8 @@ namespace MasterData{
 			return activeSkillSetId;
 		}
 
-		public int getPassiveSkillSetId(){
-			return passiveSkillSetId;
+		public int getReactionSkillSetId(){
+			return reactionSkillSetId;
 		}
 
 		public string getName() {
@@ -94,11 +99,13 @@ namespace MasterData{
 			};
 		}
 
+		//Enemyを取得します
 		public Enemy build(){
 			Enemy returnEnemy = new Enemy (this);
 			return returnEnemy;
 		}
 
+		//csvのstring配列から初期化します
 		private void setParameterFromCSV(string[] parameters){
 			id = int.Parse (parameters [0]);
 			name = parameters [1];
@@ -115,7 +122,7 @@ namespace MasterData{
 			normalDropId = int.Parse (parameters [12]);
 			rareDropId = int.Parse (parameters [13]);
 			activeSkillSetId = int.Parse (parameters [14]);
-			passiveSkillSetId = int.Parse (parameters[15]);
+			reactionSkillSetId = int.Parse (parameters[15]);
 			faction = parameters [16];
 			modelName = "Models/" + parameters [17];
 		}
