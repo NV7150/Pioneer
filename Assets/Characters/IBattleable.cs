@@ -16,6 +16,7 @@ namespace Character{
 
 		//HPを減少させます
 <<<<<<< HEAD
+<<<<<<< HEAD
 		void dammage (int dammage,ActiveSkillParameters.AttackSkillAttribute attribute);
 
 		//回復されます（受動側）
@@ -26,15 +27,15 @@ namespace Character{
 		//回復されます（受動側）
 		void healed(int heal,HealAttribute attribute);
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+		void dammage (int dammage,SkillParameters.SkillAttribute attribute);
+
+		//回復されます（受動側）
+		void healed(int heal,SkillParameters.HealAttribute attribute);
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 		//MPを返します
 		int getMp();
-
-		//HPを設定します
-		void setHp(int hp);
-
-		//MPを設定します
-		void setMp(int mp);
 
 		//最大HPを返します
 		int getMaxHp();
@@ -59,17 +60,21 @@ namespace Character{
 
 		//攻撃力(atk)を返します。属性と使用能力値が必須です
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int getAtk(ActiveSkillParameters.AttackSkillAttribute attribute,CharacterParameters.Ability useAbility);
 =======
 		int getAtk(SkillAttribute attribute,Ability useAbility);
 
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+		int getAtk(SkillParameters.SkillAttribute attribute,EnumParameters.Ability useAbility);
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 		//防御力(defence)を返します
 		int getDef();
 
 		//ディレイ値を返します
-		float getDelay();
+		int getDelay();
 
 		//戦闘中かどうかを表します
 		bool getIsBattling();
@@ -80,13 +85,8 @@ namespace Character{
 		//containerの位置を現在の位置と同期させます
 		void syncronizePositioin(Vector3 vector);
 
-		//攻撃するSkillを決定し、そのスキルを返します。
-		ActiveSkill decideSkill();
-
-		//攻撃の対象を決定します。isButtlingがtrue時のみ呼び出されます。
-		List<IBattleable> decideTarget(List<IBattleable> bals);
-
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
+<<<<<<< HEAD
 <<<<<<< HEAD
 		int getHit(CharacterParameters.Ability useAbility);
 =======
@@ -95,9 +95,12 @@ namespace Character{
 		//受動の行動を決定します。isButtlingがtrue時のみ呼びだされます。
 		PassiveSkill decidePassiveSkill();
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+		int getHit(EnumParameters.Ability useAbility);
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
-		int getDodgeness();
+		int getDodge();
 
 		//防御へのボーナスを設定します。isButtlingがtrue時のみ呼びだされます。
 		void setDefBonus(int bonus);
@@ -119,6 +122,7 @@ namespace Character{
 
 		//攻撃を行います
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int attack(int baseParameter,CharacterParameters.Ability useAbility);
 
 		//回復を行います（能動側）
@@ -131,19 +135,26 @@ namespace Character{
 		bool isHostility(CharacterParameters.Faction faction);
 =======
 		int attack(int baseParameter,Ability useAbility);
+=======
+		int attack(int baseParameter,EnumParameters.Ability useAbility);
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 		//回復を行います（能動側）
-		int healing(int baseParameter,Ability useAbility);
+		int healing(int baseParameter,EnumParameters.Ability useAbility);
 
 		//派閥を取得します
-		Faction getFaction();
+		EnumParameters.Faction getFaction();
 
 		//敵対派閥かを取得します
+<<<<<<< HEAD
 		bool isHostility(Faction faction);
 
 		//名前を取得します
 		string getName();
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+		bool isHostility(EnumParameters.Faction faction);
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 		//エンカウントし、バトルに突入します
 		void encount();

@@ -7,9 +7,12 @@ using Skill;
 using Character;
 using MasterData;
 
+<<<<<<< HEAD
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 using Extent = Skill.ActiveSkillParameters.Extent;
 
+=======
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 namespace BattleSystem{
 	public class PlayerBattleTaskManager : MonoBehaviour ,IBattleTaskManager{
 		//記録されているタスクのリストです

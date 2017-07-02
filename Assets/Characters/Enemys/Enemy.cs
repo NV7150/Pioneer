@@ -9,6 +9,7 @@ using MasterData;
 using BattleSystem;
 using Skill;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 using Ability = Parameter.CharacterParameters.Ability;
 using Faction = Parameter.CharacterParameters.Faction;
@@ -16,52 +17,84 @@ using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 =======
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+using static Parameter.EnumParameters.Ability;
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 namespace Character{
 	public class Enemy : IBattleable{
 		private int
+			//このキャラクターのIDです
 			id,
+			//このキャラクターの防御値ですsd
 			def,
+			//このキャラクターのレベルです
 			level,
+			//このキャラクターのノーマルドロップのアイテムIDです
 			normalDropId,
+			//このキャラクターのレアドロップのアイテムIDです
 			rareDropId;
 
 		private string 
+			//このキャラクターの名前です
 			name,
+			//このキャラクターのプレファブリソースへのパスです Resourcesフォルダ内からの相対パスになります
 			modelName;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		//このキャラクターの各能力値を表します
 		private Dictionary<CharacterParameters.Ability,int> abilities = new Dictionary<CharacterParameters.Ability, int>();
 =======
 		private Dictionary<Ability,int> abilities = new Dictionary<Ability, int>();
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+		//このキャラクターの各能力値を表します
+		private Dictionary<EnumParameters.Ability,int> abilities = new Dictionary<EnumParameters.Ability, int>();
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
+		//このキャラクターの現在のHPです
 		private int hp;
+		//このキャラクターの現在のMPです
 		private int mp;
+		//このキャラクターが受けている防御値へのボーナスです
 		private int defBonus = 0;
+		//このキャラクターが受けている回避へのボーナスです
 		private int dodgeBonus = 0;
+		//このキャラクターが受けている攻撃へのボーナスです
 		private int atkBonus = 0;
 
+		//このキャラクターがバトル中かどうかを表します
 		private bool isBattling = false;
 
+		//このキャラクターがカウンターを行うかを表します
 		private bool isReadyToCounter = false;
 
+		//このキャラクターのゲームオブジェクトにアタッチされてるContainerオブジェクトを表します
 		private Container container;
 
+		//このキャラクターのAIを表します
 		private IEnemyAI ai;
 
+		//このキャラクターの個を識別するためのIDです
 		private readonly long UNIQE_ID;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		//このキャラクターが属する陣営を表します
 		private readonly CharacterParameters.Faction FACTION;
 =======
 		private readonly Faction FACTION;
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+		//このキャラクターが属する陣営を表します
+		private readonly EnumParameters.Faction FACTION;
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
+		//このキャラクターが持つActiveSkillSetです
 		private ActiveSkillSet activeSkillSet;
-		private PassiveSkillSet passiveSkillSet;
+		//このキャラクターが持つPassiveSkillSetです
+		private ReactionSkillSet reactionSkillSet;
 
 		public Enemy(EnemyBuilder builder){
 			this.id = builder.getId ();
@@ -82,62 +115,49 @@ namespace Character{
 			this.UNIQE_ID = UniqueIdCreator.creatUniqueId ();
 
 			activeSkillSet = ActiveSkillSetMasterManager.getActiveSkillSetFromId (builder.getActiveSkillSetId());
-			passiveSkillSet = PassiveSkillSetMasterManager.getPassiveSkillSetFromId (builder.getPassiveSkillSetId());
-			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,passiveSkillSet);
+			reactionSkillSet = ReactionSkillSetMasterManager.getReactionSkillSetFromId (builder.getReactionSkillSetId());
+			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,reactionSkillSet);
 
 			this.hp = abilities [Ability.HP];
 		}
 
-	    //エンカウントし、戦闘に突入します
-		public void encount(){
-			container.getExcecutor().StartCoroutine(BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai));
-		}
+	   
 
-	    //このEnemyが与える経験値を取得します
-		public int getGiveExp(){
-			throw new NotSupportedException ();
-		}
-
-	    //このEnemyのドロップアイテムを取得します。ない場合はnullを返します
-		public IItem getDrop(){
-			throw new NotSupportedException ();
-		}
+	    
 			
 		#region IBattleable implementation
 		public int getHp () {
 			return hp;
 		}
+
 		public int getMp () {
 			return mp;
 		}
-		public void setHp (int hp) {
-			if (hp < 0)
-				throw new ArgumentException ("invlid hp");
-			this.hp = hp;
-		}
-		public void setMp (int mp) {
-			if (mp < 0)
-				throw new ArgumentException ("invlid mp");
-			this.mp = mp;
-		}
+
 		public int getMaxHp () {
 			return abilities[Ability.HP];
 		}
+
 		public int getMaxMp () {
 			return abilities[Ability.MP];
 		}
+
 		public int getMft () {
 			return abilities[Ability.MFT];
 		}
+
 		public int getFft () {
 			return abilities[Ability.FFT];
 		}
+
 		public int getMgp () {
 			return abilities[Ability.MGP];
 		}
+
 		public int getAgi () {
 			return abilities[Ability.AGI];
 		}
+
 		public int getPhy () {
 			return abilities[Ability.PHY];
 		}
@@ -150,12 +170,18 @@ namespace Character{
 		public int getDef () {
 			return def;
 		}
-		public float getDelay () {
+
+		public int getDelay () {
 			throw new System.NotImplementedException ();
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
+=======
+
+		public void dammage (int dammage, SkillAttribute attribute) {
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 			if (dammage < 0)
 				dammage = 0;
 			//あとでじゃい
@@ -164,7 +190,11 @@ namespace Character{
 				this.hp = 0;
 		}
 
+<<<<<<< HEAD
 		public void healed (int heal, HealSkillAttribute attribute) {
+=======
+		public void healed (int heal, HealAttribute attribute) {
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 			throw new NotImplementedException ();
 		}
 
@@ -180,64 +210,55 @@ namespace Character{
 			throw new NotImplementedException ();
 		}
 
+<<<<<<< HEAD
 =======
 >>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
+=======
+>>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 		public bool getIsBattling () {
 			return isBattling;
 		}
+
 		public void setIsBattling (bool boolean) {
 			isBattling = boolean;
 		}
-		public int move () {
-			throw new System.NotImplementedException ();
-		}
+
 		public void syncronizePositioin (UnityEngine.Vector3 vector) {
 			container.getModel ().transform.position = vector;
 		}
-		public BattleCommand decideCommand () {
-			throw new System.NotImplementedException ();
-		}
-		public ActiveSkill decideSkill () {
-			throw new System.NotImplementedException ();
-		}
-		public int getRange (ActiveSkill skill) {
-			throw new System.NotImplementedException ();
-		}
-		public int getHitness (ActiveSkill skill) {
-			throw new System.NotImplementedException ();
-		}
-		public int battleAction (ActiveSkill skill) {
-			throw new System.NotImplementedException ();
-		}
-		public PassiveSkill decidePassiveSkill () {
-			throw new System.NotImplementedException ();
-		}
-		public int getDodgeness () {
+
+		public int getDodge () {
 			//あとで実装
 			return getAgi ();
 		}
+
 		public void setDefBonus (int bonus) {
 			defBonus = bonus;
 		}
+
 		public void setDodBonus (int bonus) {
 			dodgeBonus = bonus;
 		}
+
 		public void setAtkBonus (int bonus) {
 			atkBonus = bonus;
 		}
+
 		public void setIsReadyToCounter (bool flag) {
 			isReadyToCounter = flag;
 		}
+
 		public void resetBonus () {
 			defBonus = 0;
 			dodgeBonus = 0;
 			atkBonus = 0;
 			isReadyToCounter = false;
 		}
+
 		public int getLevel () {
 			return level;
 		}
-		List<IBattleable> IBattleable.decideTarget (List<IBattleable> bals) {
+		List<IBattleable> decideTarget (List<IBattleable> bals) {
 			throw new System.NotImplementedException ();
 		}
 
@@ -250,13 +271,12 @@ namespace Character{
 		
 		}
 
-		public string getName () {
-			return this.name;
+		//エンカウントし、戦闘に突入します
+		public void encount(){
+			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai);
 		}
 
-		public long getUniqueId () {
-			return this.UNIQE_ID;
-		}
+
 		#endregion
 
 		#region IChracter implementation
@@ -275,10 +295,47 @@ namespace Character{
 		public Container getContainer () {
 			return this.container;
 		}
+
+		public string getName () {
+			return this.name;
+		}
+
+		public long getUniqueId () {
+			return this.UNIQE_ID;
+		}
 		#endregion
 
+		//Enemyの種族IDを返します
 		public int getId(){
 			return this.id;
+		}
+
+		//HPを設定します
+		public void setHp (int hp) {
+			if (hp < 0)
+				throw new ArgumentException ("invalid hp");
+			this.hp = hp;
+		}
+
+		//MPを設定します
+		public void setMp (int mp) {
+			if (mp < 0)
+				throw new ArgumentException ("invalid mp");
+			this.mp = mp;
+		}
+
+		//このEnemyが与える経験値を取得します
+		public int getGiveExp(){
+			throw new NotSupportedException ();
+		}
+
+		//このEnemyのドロップアイテムを取得します。ない場合はnullを返します
+		public IItem getDrop(){
+			throw new NotSupportedException ();
+		}
+
+		public override string ToString () {
+			return "Enemy " + this.name + " No. " + this.UNIQE_ID;
 		}
 
 		public override bool Equals (object obj) {
@@ -289,43 +346,6 @@ namespace Character{
 			if (target.getUniqueId () != this.getUniqueId() && target.getId() != this.getId())
 				return false;
 			return true;
-		}
-
-		public void dammage (int dammage, SkillAttribute attribute) {
-			if (dammage < 0)
-				dammage = 0;
-			//あとでじゃい
-			this.hp -= dammage;
-			if (this.hp < 0)
-				this.hp = 0;
-		}
-
-		public void healed (int heal, HealAttribute attribute) {
-			throw new NotImplementedException ();
-		}
-
-		public float getDelay (float delay) {
-			throw new NotImplementedException ();
-		}
-
-		public int getRange (int range) {
-			throw new NotImplementedException ();
-		}
-
-		public int getHitness (Ability useAbility) {
-			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
-		}
-
-		public int attack (int baseParameter, Ability useAbility) {
-			throw new NotImplementedException ();
-		}
-
-		public int healing (int baseParameter, Ability useAbility) {
-			throw new NotImplementedException ();
-		}
-
-		public override string ToString () {
-			return "Enemy " + this.name + " No. " + this.UNIQE_ID;
 		}
 	}
 }
