@@ -8,6 +8,9 @@ using Skill;
 using Parameter;
 using AI;
 
+using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
+using Ability = Parameter.CharacterParameters.Ability;
+
 /*BattleManagerクラス
  * 戦闘処理の仲介や戦闘状態の管理などを行います
 */
@@ -15,9 +18,10 @@ namespace BattleSystem{
 	public class BattleManager{
 		private static readonly BattleManager INSTANCE = new BattleManager();
 		private Dictionary<FieldPosition,List<IBattleable>> joinedCharacter = new Dictionary<FieldPosition,List<IBattleable>>();
+		private Dictionary<long,IBattleTaskManager> enteredManager = new Dictionary<long, IBattleTaskManager>();
 		private BattleField field;
-		private Dictionary<long,IBattleTaskManager> entriedManagers = new Dictionary<long, IBattleTaskManager>();
-		private Dictionary<long,BattleTask> runningTask = new Dictionary<long, BattleTask> ();
+
+		private long playerID;
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -41,81 +45,40 @@ namespace BattleSystem{
 		 * Battleable bal 戦闘に参加させたいオブジェクト
 		 * FiealdPosition pos 初期の戦闘参加位置
 		*/
-		public IEnumerator joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
+		public void joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
 			Debug.Log (bal.getName() + " is joined!");
 
 			bal.setIsBattling (true);
 			joinedCharacter [pos].Add (bal);
 
-			AIBattleTaskManager manager = new AIBattleTaskManager ();
+			AIBattleTaskManager manager = MonoBehaviour.Instantiate ((GameObject)Resources.Load("Prefabs/AIBattleManager")).GetComponent<AIBattleTaskManager>();
 			manager.setCharacter (bal,ai);
-			entriedManagers.Add(bal.getUniqueId(),manager);
-			runningTask.Add (bal.getUniqueId(),null);
-
-			while (bal.getIsBattling()) {
-				action (bal, manager);
-				yield return new WaitForSeconds(0f);
-			}
-			joinedCharacter [pos].Remove (bal);
+			enteredManager.Add (bal.getUniqueId(),manager);
 		}
 
-		public IEnumerator joinBattle(IPlayable player,FieldPosition pos){
+		public void joinBattle(IPlayable player,FieldPosition pos){
 			Debug.Log (player.getName() + " is joined!");
+
+			playerID = player.getUniqueId ();
 
 			player.setIsBattling (true);
 			joinedCharacter [pos].Add (player);
 
-			GameObject view = (GameObject) MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/BattleNodeController"));
+			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/BattleNodeController"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
 			manager.setPlayer (player);
-			entriedManagers.Add (player.getUniqueId(),manager);
-			runningTask.Add (player.getUniqueId(),null);
-
-			while (player.getIsBattling ()) {
-				Debug.Log ("start action player");
-				action (player,manager);
-				yield return new WaitForSeconds(0f);
-			}
-			joinedCharacter [pos].Remove (player);
+			enteredManager.Add (player.getUniqueId(),manager);
 		}
 
-		//攻撃・スキル使用を行います。
-		private void action(IBattleable bal,IBattleTaskManager taskManager){
-			if (taskManager.isHavingTask ()) {
-				Debug.Log ("start getTask");
-				BattleTask task = taskManager.getTask ();
-				Debug.Log ("get Task " + task.getSkill().getName());
-				runningTask [bal.getUniqueId ()] = task;
-				ActiveSkill useSkill = task.getSkill ();
-				useSkill.use (bal);
-				runningTask.Remove (bal.getUniqueId ());
-			} else {
-//				Debug.Log ("hasn't task");
-			}
-		}
-
-		public IEnumerator attackCommand(IBattleable bal,List<IBattleable> targets,ActiveSkill skill){
-			//命中値を求める
-			int hitness = bal.getHitness (skill.getUseAbility()) + skill.getHit();
-			Debug.Log ("got hitness " + hitness);
+		//攻撃処理を行います
+		public void attackCommand(IBattleable bal,List<IBattleable> targets,ActiveSkill skill){
 			foreach(IBattleable target in targets){
 				//対象のリアクション
-				entriedManagers[target.getUniqueId()].offerPassive();
-			}
-
-			float time = Time.deltaTime;
-			Debug.Log ("start Delay at" + Time.deltaTime);
-			float delay = bal.getDelay () + skill.getDelay ();
-			//ディレイ秒リアクションを待つ
-			yield return new WaitForSeconds(delay);
-			Debug.Log ("end Delay takes" + (time - Time.deltaTime) + " delay is " + delay);
-
-			foreach(IBattleable target in targets){
-				PassiveSkill passive = entriedManagers [target.getUniqueId ()].getPassive (bal,skill);
-				passive.use (target,bal.attack(skill.getAtk(),skill.getUseAbility()),hitness,skill.getAttribute());
+				enteredManager[target.getUniqueId()].offerReaction(bal,skill);
 			}
 		}
 
+		//与えられたキャラクターから射程範囲内にいるキャラクターのリストを返します
 		public List<IBattleable> getCharacterInRange(IBattleable bal,int range){
 			//Range内のIBattleableを検索
 			List<IBattleable> list = new List<IBattleable>();
@@ -127,7 +90,7 @@ namespace BattleSystem{
 		}
 
 		//回復処理をします
-		public void healCommand(IBattleable bal,int range,int basicHealRate,HealAttribute attribute,Ability useAbility){
+		public void healCommand(IBattleable bal,int range,int basicHealRate,HealSkillAttribute attribute,Ability useAbility){
 			//Range内のIBattleableを検索
 			List<IBattleable> list = new List<IBattleable> ();
 			FieldPosition pos =  searchCharacter(bal);
@@ -135,11 +98,13 @@ namespace BattleSystem{
 				list.AddRange (joinedCharacter[pos + i]);
 			}
 			//targetの決定
-			List<IBattleable> targets = bal.decideTarget (list);
+//			List<IBattleable> targets = bal.decideTarget (list);
 			//回復処理
-			foreach(IBattleable target in targets){
-				target.healed (bal.healing(basicHealRate,useAbility),attribute);
-			}
+//			foreach(IBattleable target in targets){
+//				target.healed (bal.healing(basicHealRate,useAbility),attribute);
+//			}
+
+			throw new NotSupportedException ();
 		}
 
 		//対象は戦闘から離脱します
@@ -184,22 +149,18 @@ namespace BattleSystem{
 		}
 
 		//動きます
-		public void moveCommand(IBattleable bal,int basicMoveAmount){
+		public void moveCommand(IBattleable bal,int moveness){
 			//引数に渡されたIBattleableキャラの位置を検索
 			FieldPosition nowPos = searchCharacter (bal);
 
-			//移動量を決定
-			int moveAmount = runningTask[bal.getUniqueId()].getMove();
-
 			//値が適切か判断
-			int moveAmountMax = Enum.GetNames (typeof(FieldPosition)).Length - (int)nowPos;
-			int moveAmountMin = -1 * (int)nowPos;
-			if (moveAmountMax <= basicMoveAmount||moveAmountMin >= basicMoveAmount)
-				throw new ArgumentException ("invlit moveAmount");
+			if (Enum.GetNames (typeof(FieldPosition)).Length < (int)(nowPos + moveness))
+				throw new ArgumentException ("invalid moveness");
 
 			//移動処理
 			joinedCharacter [nowPos].Remove (bal);
-			joinedCharacter [nowPos + moveAmount].Add (bal);
+			joinedCharacter [nowPos + moveness].Add (bal);
+
 		}
 
 		//指定されたキャラクターの指定された範囲でもっとも危険な（敵対キャラクターのレベル合計が高い）ポジションを返します
@@ -257,11 +218,6 @@ namespace BattleSystem{
 		//指定されたFieldPositionにいるCharacterを返します
 		public List<IBattleable> getAreaCharacter(FieldPosition pos){
 			return joinedCharacter [pos];
-		}
-
-		//ユニークIDからタスクを読み込みます
-		public BattleTask getTaskFromUniqueId(long uniqueId){
-			return runningTask[uniqueId];
 		}
 	}
 

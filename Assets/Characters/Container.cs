@@ -31,6 +31,7 @@ namespace Character{
 			return this;
 		}
 
+		//Characterを設定します
 		public void setCharacter(ICharacter chara){
 			this.character = chara;
 		}

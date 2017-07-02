@@ -3,21 +3,32 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
+using Ability = Parameter.CharacterParameters.Ability;
+
 namespace Parameter{
 	[System.SerializableAttribute]
 	public class Job{
 		[SerializeField]
 		private readonly int
+			//このジョブのIDです
 			ID,
+			//このジョブの基礎mftです
 			MFT,
+			//このジョブの基礎fftです
 			FFT,
+			//このジョブの基本mgpです
 			MGP,
+			//このジョブの基礎phyです
 			PHY,
+			//このジョブの基礎dexです
 			DEX,
+			//このジョブの基礎agiです
 			AGI,
+			//このジョブの基礎spcです
 			SPC;
 
 		private readonly string
+			//このジョブのなまえです
 			name;
 
 		public Job(string[] parameters){
@@ -30,18 +41,14 @@ namespace Parameter{
 			AGI = int.Parse (parameters[6]);
 			DEX = int.Parse (parameters[7]);
 			SPC = int.Parse (parameters[8]);
-
-			string log = "";
-			foreach (var p in parameters) {
-				log += p + ", ";
-			}
-			Debug.Log (log);
 		}
 
+		//ジョブの名前を取得します
 		public string getName (){
 			return name;
 		}
 
+		//能力値テーブルを表すDictionaryを取得します
 		public Dictionary<Ability,int> defaultSetting(){
 			Dictionary<Ability,int> parameters = new Dictionary<Ability, int> ();
 			parameters [Ability.MFT] = MFT;
@@ -57,6 +64,7 @@ namespace Parameter{
 			return parameters;
 		}
 
+		//ジョブのIDを取得します
 		public int getId(){
 			return ID;
 		}

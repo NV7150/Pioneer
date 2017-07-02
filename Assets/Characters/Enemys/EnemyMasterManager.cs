@@ -9,6 +9,7 @@ using Character;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class EnemyMasterManager : MasterDataManagerBase{
+		//登録済みのデータのリストです
 		private static List<EnemyBuilder> dataTable = new List<EnemyBuilder>();
 
 		private void Awake(){
@@ -16,6 +17,7 @@ namespace MasterData{
 			constractedBehaviour (enemyCSVText);
 		}
 
+		//IDからEnemyを取得します
 		public static Enemy getEnemyFromId(int id){
 			foreach(EnemyBuilder builder in dataTable){
 				if (builder.getId () == id) {

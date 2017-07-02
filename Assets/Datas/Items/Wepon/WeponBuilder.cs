@@ -8,6 +8,8 @@ using Item;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class WeponBuilder{
+		//プロパティです
+
 		[SerializeField]
 		private int
 		id,
@@ -16,7 +18,8 @@ namespace MasterData{
 		needMft,
 		itemValue,
 		mass,
-		weponTypeID;
+		weponTypeID,
+		delay;
 
 		[SerializeField]
 		private string 
@@ -24,12 +27,11 @@ namespace MasterData{
 		description,
 		equipDescription;
 
-		[SerializeField]
-		private float delay;
-
 		public WeponBuilder(string[] datas){
 			setFromCSV (datas);
 		}
+
+		//各プロパティのgetterです
 
 		public int getId(){
 			return id;
@@ -66,7 +68,7 @@ namespace MasterData{
 			return equipDescription;
 		}
 
-		public float getDelay() {
+		public int getDelay() {
 			return delay;
 		}
 
@@ -74,6 +76,7 @@ namespace MasterData{
 			return WeponTypeHelper.getTypeFromId (weponTypeID);
 		}
 
+		//csvから初期化します
 		private void setFromCSV(string[] datas){
 			this.id = int.Parse (datas[0]);
 			this.name = datas [1];
@@ -85,9 +88,10 @@ namespace MasterData{
 			this.weponTypeID = int.Parse (datas[7]);
 			this.description = datas [8];
 			this.equipDescription = datas [9];
-			this.delay = float.Parse (datas[10]);
+			this.delay = int.Parse (datas[10]);
 		}
 
+		//Weponを取得します
 		public Wepon build(){
 			return new Wepon(this);
 		}
