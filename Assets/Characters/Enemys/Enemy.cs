@@ -8,18 +8,12 @@ using AI;
 using MasterData;
 using BattleSystem;
 using Skill;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 using Ability = Parameter.CharacterParameters.Ability;
 using Faction = Parameter.CharacterParameters.Faction;
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
-=======
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-using static Parameter.EnumParameters.Ability;
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
+
 
 namespace Character{
 	public class Enemy : IBattleable{
@@ -41,17 +35,9 @@ namespace Character{
 			//このキャラクターのプレファブリソースへのパスです Resourcesフォルダ内からの相対パスになります
 			modelName;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 		//このキャラクターの各能力値を表します
 		private Dictionary<CharacterParameters.Ability,int> abilities = new Dictionary<CharacterParameters.Ability, int>();
-=======
-		private Dictionary<Ability,int> abilities = new Dictionary<Ability, int>();
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-		//このキャラクターの各能力値を表します
-		private Dictionary<EnumParameters.Ability,int> abilities = new Dictionary<EnumParameters.Ability, int>();
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
+
 
 		//このキャラクターの現在のHPです
 		private int hp;
@@ -79,20 +65,12 @@ namespace Character{
 		//このキャラクターの個を識別するためのIDです
 		private readonly long UNIQE_ID;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-		//このキャラクターが属する陣営を表します
-		private readonly CharacterParameters.Faction FACTION;
-=======
-		private readonly Faction FACTION;
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-		//このキャラクターが属する陣営を表します
-		private readonly EnumParameters.Faction FACTION;
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
+		//このキャラクターが属する陣営を表します
+		private readonly Faction FACTION;
 		//このキャラクターが持つActiveSkillSetです
 		private ActiveSkillSet activeSkillSet;
+
 		//このキャラクターが持つPassiveSkillSetです
 		private ReactionSkillSet reactionSkillSet;
 
@@ -174,14 +152,8 @@ namespace Character{
 		public int getDelay () {
 			throw new System.NotImplementedException ();
 		}
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
-=======
-
-		public void dammage (int dammage, SkillAttribute attribute) {
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 			if (dammage < 0)
 				dammage = 0;
 			//あとでじゃい
@@ -189,12 +161,9 @@ namespace Character{
 			if (this.hp < 0)
 				this.hp = 0;
 		}
-
-<<<<<<< HEAD
+			
 		public void healed (int heal, HealSkillAttribute attribute) {
-=======
-		public void healed (int heal, HealAttribute attribute) {
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
+
 			throw new NotImplementedException ();
 		}
 
@@ -210,11 +179,6 @@ namespace Character{
 			throw new NotImplementedException ();
 		}
 
-<<<<<<< HEAD
-=======
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 		public bool getIsBattling () {
 			return isBattling;
 		}

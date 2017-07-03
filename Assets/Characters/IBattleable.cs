@@ -8,6 +8,10 @@ using BattleSystem;
 using Parameter;
 using Character;
 
+using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
+using Ability = Parameter.CharacterParameters.Ability;
+using Faction = Parameter.CharacterParameters.Faction;
+
 namespace Character{
 	public interface IBattleable : ICharacter{
 
@@ -15,24 +19,11 @@ namespace Character{
 		int getHp();
 
 		//HPを減少させます
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 		void dammage (int dammage,ActiveSkillParameters.AttackSkillAttribute attribute);
 
 		//回復されます（受動側）
 		void healed(int heal,ActiveSkillParameters.HealSkillAttribute attribute);
-=======
-		void dammage (int dammage,SkillAttribute attribute);
-
-		//回復されます（受動側）
-		void healed(int heal,HealAttribute attribute);
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-		void dammage (int dammage,SkillParameters.SkillAttribute attribute);
-
-		//回復されます（受動側）
-		void healed(int heal,SkillParameters.HealAttribute attribute);
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 		//MPを返します
 		int getMp();
@@ -59,16 +50,8 @@ namespace Character{
 		int getPhy();
 
 		//攻撃力(atk)を返します。属性と使用能力値が必須です
-<<<<<<< HEAD
-<<<<<<< HEAD
-		int getAtk(ActiveSkillParameters.AttackSkillAttribute attribute,CharacterParameters.Ability useAbility);
-=======
-		int getAtk(SkillAttribute attribute,Ability useAbility);
 
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-		int getAtk(SkillParameters.SkillAttribute attribute,EnumParameters.Ability useAbility);
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
+		int getAtk(AttackSkillAttribute attribute,Ability useAbility);
 
 		//防御力(defence)を返します
 		int getDef();
@@ -86,18 +69,7 @@ namespace Character{
 		void syncronizePositioin(Vector3 vector);
 
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
-<<<<<<< HEAD
-<<<<<<< HEAD
-		int getHit(CharacterParameters.Ability useAbility);
-=======
-		int getHitness(Ability useAbility);
-
-		//受動の行動を決定します。isButtlingがtrue時のみ呼びだされます。
-		PassiveSkill decidePassiveSkill();
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-		int getHit(EnumParameters.Ability useAbility);
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
+		int getHit(Ability useAbility);
 
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
 		int getDodge();
@@ -121,40 +93,19 @@ namespace Character{
 		int getLevel();
 
 		//攻撃を行います
-<<<<<<< HEAD
-<<<<<<< HEAD
-		int attack(int baseParameter,CharacterParameters.Ability useAbility);
+		int attack(int baseParameter,Ability useAbility);
 
 		//回復を行います（能動側）
 		int healing(int baseParameter,CharacterParameters.Ability useAbility);
 
 		//派閥を取得します
-		CharacterParameters.Faction getFaction();
+		Faction getFaction();
 
 		//敵対派閥かを取得します
-		bool isHostility(CharacterParameters.Faction faction);
-=======
-		int attack(int baseParameter,Ability useAbility);
-=======
-		int attack(int baseParameter,EnumParameters.Ability useAbility);
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
-
-		//回復を行います（能動側）
-		int healing(int baseParameter,EnumParameters.Ability useAbility);
-
-		//派閥を取得します
-		EnumParameters.Faction getFaction();
-
-		//敵対派閥かを取得します
-<<<<<<< HEAD
 		bool isHostility(Faction faction);
 
 		//名前を取得します
 		string getName();
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-		bool isHostility(EnumParameters.Faction faction);
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 
 		//エンカウントし、バトルに突入します
 		void encount();

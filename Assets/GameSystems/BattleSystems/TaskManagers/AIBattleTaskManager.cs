@@ -7,11 +7,8 @@ using AI;
 using Skill;
 using Character;
 
-<<<<<<< HEAD
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
-=======
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 namespace BattleSystem {
 	public class AIBattleTaskManager : MonoBehaviour,IBattleTaskManager{
 		//行動の指針となるAIです

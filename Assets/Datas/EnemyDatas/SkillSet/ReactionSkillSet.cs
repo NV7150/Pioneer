@@ -6,11 +6,8 @@ using Skill;
 using AI;
 using MasterData;
 
-<<<<<<< HEAD
 using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategory;
 
-=======
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 namespace AI {
 	public class ReactionSkillSet {
 

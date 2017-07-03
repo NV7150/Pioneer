@@ -6,12 +6,9 @@ using System;
 using Character;
 using AI;
 
-<<<<<<< HEAD
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategory;
 
-=======
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 namespace Skill{
 	//受動的に使用するスキルです。
 	[System.SerializableAttribute]
@@ -63,12 +60,7 @@ namespace Skill{
 		#endregion	
 
 		//userにreactionを起こさせます
-<<<<<<< HEAD
 		public void reaction (IBattleable user,int attack,int hit,AttackSkillAttribute attribute) {
-=======
-		public void reaction (IBattleable user,int attack,int hit,SkillAttribute attribute) {
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
-
 			if (this.CATEGORY == ReactionSkillCategory.DODGE) {
 				//命中判定
 				if (hit > user.getDodge () + DODGE)

@@ -49,8 +49,7 @@ namespace Skill{
 		//このスキルの種類を返します
 		private readonly ActiveSkillType TYPE;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 		//このスキルのTYPEがActionだった時の詳細な種別を表します
 		private readonly ActionType ACT_TYPE;
 
@@ -59,18 +58,6 @@ namespace Skill{
 
 		//このスキルの回復の属性を表します
 		private readonly HealSkillAttribute HEAL_ATTRIBUTE;
-=======
-=======
-		//このスキルのTYPEがActionだった時の詳細な種別を表します
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
-		private readonly ActType ACT_TYPE;
-
-		//このスキルの攻撃の属性を表します
-		private readonly SkillAttribute ATTRIBUTE;
-
-		//このスキルの回復の属性を表します
-		private readonly HealAttribute HEAL_ATTRIBUTE;
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
 
 		//このスキルが行う判定で使用する能力値です
 		private readonly Ability USE_ABILITY;
@@ -121,9 +108,8 @@ namespace Skill{
 		}
 
 		//actionスキルの種別に応じて適切なメソッドを呼び出します
-		private void actionTrafic(IBattleable actioner,List<IBattleable> targets){
+		private void actionTrafic(IBattleable actioner, List<IBattleable> targets){
 			switch(ACT_TYPE){
-<<<<<<< HEAD
 				case ActionType.ATTACK:
 					attack (actioner,targets);
 					break;
@@ -133,22 +119,6 @@ namespace Skill{
 				case ActionType.BOTH:
 					attack (actioner,targets);
 					heal (actioner,targets);
-=======
-				case ActType.ATTACK:
-					attack (actioner,targets);
-					break;
-				case ActType.HEAL:
-					heal (actioner,targets);
-					break;
-				case ActType.BOTH:
-<<<<<<< HEAD
-					attack (bal);
-					heal (bal);
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
-=======
-					attack (actioner,targets);
-					heal (actioner,targets);
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
 					break;
 			}
 		}
@@ -233,9 +203,6 @@ namespace Skill{
 		public ActiveSkillType getActiveSkillType() {
 			return TYPE;
 		}
-
-<<<<<<< HEAD
-<<<<<<< HEAD
 		//actionの詳細な種別を取得します
 		public ActionType getActType() {
 			return ACT_TYPE;
@@ -248,22 +215,6 @@ namespace Skill{
 
 		//スキルの回復属性を取得します
 		public HealSkillAttribute getHealAttribute() {
-=======
-=======
-		//actionの詳細な種別を取得します
->>>>>>> cfdbb9b19b7aff48b2537cc983d1f41f037f910b
-		public ActType getActType() {
-			return ACT_TYPE;
-		}
-
-		//スキルの攻撃属性を取得します
-		public SkillAttribute getAttribute() {
-			return ATTRIBUTE;
-		}
-
-		//スキルの回復属性を取得します
-		public HealAttribute getHealAttribute() {
->>>>>>> parent of cfdbb9b... コードの整理・ファイル構造の変更・いらない部分の削除などを行いました。
 			return HEAL_ATTRIBUTE;
 		}
 
