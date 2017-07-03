@@ -14,6 +14,7 @@ namespace BattleSystem{
 	public class PlayerBattleTaskManager : MonoBehaviour ,IBattleTaskManager{
 		//記録されているタスクのリストです
 		private List<BattleTask> tasks = new List<BattleTask>();
+
 		//スクロールビューのcontentです
 		public GameObject contents;
 		//スクロールビューのreactoinContentsです
@@ -23,7 +24,6 @@ namespace BattleSystem{
 
 		//元のプレイヤーです
 		private IPlayable player;
-
 		//現在選ばれているActiveSkillです
 		private ActiveSkill chosenActiveSkill;
 		//現在リアクション中のKeyValuePairです
@@ -31,10 +31,12 @@ namespace BattleSystem{
 		//現在リアクションを待っているKeyValuePairたちです
 		private List<KeyValuePair<IBattleable,ActiveSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, ActiveSkill>>();
 
-		//
+		//現在のステートです
 		private BattleState battleState = BattleState.ACTION;
 
+		//残り待機フレーム数です
 		private int delay = 0;
+		//残りリアクションフレーム数です
 		private int reactionLimit = 0;
 
 		private bool needToReaction = false;
@@ -215,7 +217,7 @@ namespace BattleSystem{
 			detachReactionContents ();
 			contents.SetActive (false);
 			foreach(ReactionSkill skill in player.getReactionSKills()){
-				GameObject node = Instantiate((GameObject)Resources.Load ("Prefabs/PassiveSkillNode"));
+				GameObject node = Instantiate((GameObject)Resources.Load ("Prefabs/ReactionSkillNode"));
 				node.GetComponent<ReactionSkillNode> ().setState (skill,this);
 				node.transform.SetParent (reactoinContents.transform);
 			}
@@ -246,7 +248,7 @@ namespace BattleSystem{
 				prosessingPair = waitingReactionActiveSkills[0];
 				inputReactionSkillList ();
 //				reactionLimit = pair.Value.getDelay() ;
-				reactionLimit = 1000;
+				reactionLimit = 100;
 				needToReaction = true;
 			} else {
 				needToReaction = false;

@@ -19,7 +19,6 @@ namespace Character{
 		int getHp();
 
 		//HPを減少させます
-
 		void dammage (int dammage,ActiveSkillParameters.AttackSkillAttribute attribute);
 
 		//回復されます（受動側）
@@ -91,9 +90,6 @@ namespace Character{
 
 		//レベルを取得します
 		int getLevel();
-
-		//攻撃を行います
-		int attack(int baseParameter,Ability useAbility);
 
 		//回復を行います（能動側）
 		int healing(int baseParameter,CharacterParameters.Ability useAbility);

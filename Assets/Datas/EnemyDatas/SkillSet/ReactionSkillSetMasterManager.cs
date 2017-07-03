@@ -11,7 +11,7 @@ namespace MasterData {
 		private static List<ReactionSkillSetBuilder> dataTable = new List<ReactionSkillSetBuilder>();
 
 		void Awake(){
-			var csv = Resources.Load ("MasterDatas/ReactioxnSkillSetMasterData") as TextAsset;
+			var csv = Resources.Load ("MasterDatas/ReactionSkillSetMasterData") as TextAsset;
 			constractedBehaviour (csv);
 		}
 
@@ -21,7 +21,7 @@ namespace MasterData {
 				if (builder.getId () == id)
 					return builder.build ();
 			}
-			throw new ArgumentException ("invlid passiveSkillSetId");
+			throw new ArgumentException ("invalid ReactionSkillSetId");
 		}
 
 		#region implemented abstract members of MasterDataManagerBase

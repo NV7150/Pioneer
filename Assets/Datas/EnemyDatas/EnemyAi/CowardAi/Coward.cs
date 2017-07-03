@@ -97,6 +97,7 @@ namespace AI {
 
 			//合計が0の場合、攻撃不可と判断して移動します
 			if(sum <= 0){
+				Debug.Log ("passed sum <= 0");
 				return activeSkills.getSkillFromSkillCategory (ActiveSkillCategory.MOVE);
 			}
 

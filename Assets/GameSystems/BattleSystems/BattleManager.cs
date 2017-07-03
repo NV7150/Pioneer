@@ -46,7 +46,7 @@ namespace BattleSystem{
 		 * FiealdPosition pos 初期の戦闘参加位置
 		*/
 		public void joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
-			Debug.Log (bal.getName() + " is joined!");
+			Debug.Log (bal.getName() + " is joined! to " + pos);
 
 			bal.setIsBattling (true);
 			joinedCharacter [pos].Add (bal);
@@ -57,7 +57,7 @@ namespace BattleSystem{
 		}
 
 		public void joinBattle(IPlayable player,FieldPosition pos){
-			Debug.Log (player.getName() + " is joined!");
+			Debug.Log (player.getName() + " is joined! to " + pos);
 
 			playerID = player.getUniqueId ();
 
@@ -124,9 +124,14 @@ namespace BattleSystem{
 		public int sumFromAreaTo(IBattleable bal,int range){
 			FieldPosition area = searchCharacter (bal);
 			int count = 0;
-			for(int i = (int) area;i < (int)area + range;i++){
-				count += joinedCharacter[(FieldPosition) i].Count;
+			int index = (((int)area - range) < 0) ? 0 : (int)area - range;
+			Debug.Log ("start roop");
+			for(;index < (int)area + range + 1;index++){
+				Debug.Log ("plus " + (FieldPosition)index + " the count is " + joinedCharacter[(FieldPosition)index]);
+				count += joinedCharacter[(FieldPosition) index].Count;
 			}
+			Debug.Log("end roop");
+			Debug.Log ((FieldPosition)0 + " " + area);
 			return count;
 		}
 
@@ -161,6 +166,7 @@ namespace BattleSystem{
 			joinedCharacter [nowPos].Remove (bal);
 			joinedCharacter [nowPos + moveness].Add (bal);
 
+			Debug.Log (nowPos + "→" +searchCharacter(bal));
 		}
 
 		//指定されたキャラクターの指定された範囲でもっとも危険な（敵対キャラクターのレベル合計が高い）ポジションを返します
@@ -205,7 +211,8 @@ namespace BattleSystem{
 
 		//与えられたIBattleableオブジェクトを検索し位置を返します
 		public FieldPosition searchCharacter(IBattleable target){
-			foreach (FieldPosition pos in joinedCharacter.Keys) {
+			var poses = joinedCharacter.Keys;
+			foreach (FieldPosition pos in poses) {
 				foreach (IBattleable character in joinedCharacter[pos]) {
 					if (character.Equals (target)) {
 						return pos;

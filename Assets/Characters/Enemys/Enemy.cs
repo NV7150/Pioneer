@@ -163,16 +163,11 @@ namespace Character{
 		}
 			
 		public void healed (int heal, HealSkillAttribute attribute) {
-
 			throw new NotImplementedException ();
 		}
 
 		public int getHit (Ability useAbility) {
 			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
-		}
-
-		public int attack (int baseParameter, Ability useAbility) {
-			throw new NotImplementedException ();
 		}
 
 		public int healing (int baseParameter, Ability useAbility) {
@@ -232,14 +227,12 @@ namespace Character{
 
 		public bool isHostility (Faction faction) {
 			return (faction == FACTION);
-		
 		}
 
 		//エンカウントし、戦闘に突入します
 		public void encount(){
 			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai);
 		}
-
 
 		#endregion
 

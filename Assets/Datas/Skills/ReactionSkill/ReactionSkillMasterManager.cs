@@ -22,7 +22,7 @@ namespace MasterData{
 				if (skill.getId () == id)
 					return skill;
 			}
-			throw new ArgumentException ("invalid passiveSkillId");
+			throw new ArgumentException ("invalid ReactionSkillId");
 		}
 
 		#region implemented abstract members of MasterDataManagerBase

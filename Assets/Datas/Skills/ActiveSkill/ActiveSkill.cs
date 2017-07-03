@@ -49,7 +49,6 @@ namespace Skill{
 		//このスキルの種類を返します
 		private readonly ActiveSkillType TYPE;
 
-
 		//このスキルのTYPEがActionだった時の詳細な種別を表します
 		private readonly ActionType ACT_TYPE;
 

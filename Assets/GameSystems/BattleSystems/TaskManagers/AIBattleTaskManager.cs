@@ -65,6 +65,7 @@ namespace BattleSystem {
 		//ステートがアクション時に毎フレーム行う処理です
 		private void actionState(){
 			BattleTask task = getTask ();
+			Debug.Log (task.getSkill().getName());
 			task.getSkill ().action (user,task);
 			delay = task.getSkill ().getDelay ();
 			state = BattleState.IDLE;
