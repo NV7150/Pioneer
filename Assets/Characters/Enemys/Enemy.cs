@@ -65,7 +65,6 @@ namespace Character{
 		//このキャラクターの個を識別するためのIDです
 		private readonly long UNIQE_ID;
 
-
 		//このキャラクターが属する陣営を表します
 		private readonly Faction FACTION;
 		//このキャラクターが持つActiveSkillSetです
@@ -98,9 +97,6 @@ namespace Character{
 
 			this.hp = abilities [Ability.HP];
 		}
-
-	   
-
 	    
 			
 		#region IBattleable implementation

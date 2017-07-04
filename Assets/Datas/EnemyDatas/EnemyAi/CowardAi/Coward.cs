@@ -208,7 +208,9 @@ namespace AI {
 			//ダメージからのリスク:攻撃側の攻撃力/現在HP
 			int atk = skill.getAtk () + attacker.getAtk(skill.getAttribute(),skill.getUseAbility());
 			atk = (atk > 0) ? atk : 1;
-			float dodgeDammageRisk = atk / user.getHp () + 1.0f;
+			int hp = user.getHp ();
+			hp = (hp > 0) ? hp : 1;
+			float dodgeDammageRisk = atk / (hp);
 			//命中からのリスク:命中値/回避値 - 1
 			float dodgeHitRisk = (skill.getHit ()) / (user.getDodge() + reactionSkills.getReactionSkillFromCategory(ReactionSkillCategory.DODGE).getDodge()) - 1;
 			//回避合計リスク
@@ -218,16 +220,23 @@ namespace AI {
 			riskTable.Add (ReactionSkillCategory.DODGE, dodgeRisk);
 
 			//攻撃を受けるリスク
-			float guardRisk = atk  / (user.getHp() + user.getDef());
+			int sumHpGuard = user.getHp() + user.getDef();
+			sumHpGuard = (sumHpGuard > 0) ? sumHpGuard : 1;
+			float guardRisk = atk  / sumHpGuard;
 			riskTable.Add (ReactionSkillCategory.GUARD,guardRisk);
+
+			Debug.Log ("guard " + guardRisk + " dodge " + dodgeRisk);
 
 			//乱数判定
 			float random = UnityEngine.Random.Range(0,dodgeRisk + guardRisk);
-			foreach(ReactionSkillCategory category in riskTable.Keys){
-				if (riskTable [category] <= random) {
+			Debug.Log ("random " + random);
+			var keys = riskTable.Keys;
+			foreach(ReactionSkillCategory category in keys){
+				if (riskTable [category] >= random) {
+					Debug.Log ("chosen " + category);
 					return reactionSkills.getReactionSkillFromCategory(category);
 				} else {
-					random += riskTable [category];
+					random -= riskTable [category];
 				}
 			}
 			throw new InvalidOperationException ("invalid state");

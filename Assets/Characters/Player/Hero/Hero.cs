@@ -195,6 +195,9 @@ namespace Character{
 				dammage = (int)( dammage * 1.5f );
 			
 			this.hp -= dammage;
+
+			if (this.hp < 0)
+				this.hp = 0;
 		}
 
 

@@ -183,6 +183,9 @@ namespace BattleSystem{
 		private void inputSingleTargetList(){
 			List<IBattleable> targets = BattleManager.getInstance ().getCharacterInRange (player, chosenActiveSkill.getRange ());
 			foreach (IBattleable target in targets) {
+				if (target.Equals (player))
+					continue;
+				
 				GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/TargetNode"));
 				node.GetComponent<TargetNode> ().setState (target, this);
 				node.transform.SetParent (contents.transform);
