@@ -68,6 +68,8 @@ namespace BattleSystem {
 			Debug.Log (task.getSkill().getName());
 			task.getSkill ().action (user,task);
 			delay = task.getSkill ().getDelay ();
+			//テスト用
+			delay = 800;
 			state = BattleState.IDLE;
 		}
 

@@ -125,7 +125,8 @@ namespace BattleSystem{
 
 		//moveAreaNodeが選ばれた時の処理です
 		public void moveAreaChose(FieldPosition pos){
-			int move = (int) (BattleManager.getInstance ().searchCharacter(player) - pos);
+			int move = (int)(pos - BattleManager.getInstance ().searchCharacter(player));
+			Debug.Log ("search " + BattleManager.getInstance ().searchCharacter(player) + " pos " + pos + " move " + move);
 			tasks.Add (new BattleTask(player.getUniqueId(),chosenActiveSkill,move));
 			chosenActiveSkill = null;
 			inputActiveSkillList ();
@@ -191,10 +192,18 @@ namespace BattleSystem{
 		//スキルの効果範囲が範囲の時のtargetをビューにインプットします
 		private void inputAreaTargetList(){
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
-			for (int i = -1 * (int)nowPos; i < chosenActiveSkill.getRange (); i++) {
-				if ((nowPos + i) >= 0) {
+
+			int index = (int)nowPos - chosenActiveSkill.getRange ();
+			index = (index < 0) ? 0 : index;
+
+			int maxRange = (int)nowPos + chosenActiveSkill.getRange ();
+			maxRange = (maxRange > 7) ? 7 : maxRange;
+			maxRange = (maxRange < 0) ? 0 : maxRange;
+
+			for (; index < maxRange; index++) {
+				if ((nowPos + index) >= 0) {
 					GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/TargetNode"));
-					node.GetComponent<TargetNode> ().setState ((FieldPosition)(nowPos + i), this);
+					node.GetComponent<TargetNode> ().setState ((FieldPosition)index, this);
 					node.transform.SetParent (contents.transform);
 				}
 			}
@@ -202,11 +211,21 @@ namespace BattleSystem{
 
 		//スキルの効果範囲が全体の時のtargetをビューにインプットします
 		private void inputMoveAreaList(){
+			detachContents ();
+
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
-			for (int i = -1 * (int)nowPos; i < chosenActiveSkill.getRange (); i++) {
-				if ((nowPos + i) >= 0) {
+
+			int index = (int)nowPos - chosenActiveSkill.getMove ();
+			index = (index < 0) ? 0 : index;
+
+			int maxpos = (int)nowPos + chosenActiveSkill.getMove ();
+			maxpos = (maxpos > 7) ? 7 : maxpos;
+			maxpos = (maxpos < 0) ? 0 : maxpos;
+
+			for (; index < maxpos; index++) {
+				if ((nowPos + index) >= 0) { 
 					GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/MoveAreaNode"));
-					node.GetComponent<MoveAreaNode> ().setState ((FieldPosition)(nowPos + i), this);
+					node.GetComponent<MoveAreaNode> ().setState ((FieldPosition)index, this);
 					node.transform.SetParent (contents.transform);
 				}
 			}

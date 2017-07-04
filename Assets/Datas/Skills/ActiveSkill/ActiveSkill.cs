@@ -180,7 +180,9 @@ namespace Skill{
 
 		//移動力を取得します
 		public int getMove() {
-			return MOVE;
+//			return MOVE;
+			//デバッグよう
+			return 3;
 		}
 
 		//射程を取得します

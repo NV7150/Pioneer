@@ -188,7 +188,7 @@ namespace AI {
 		//好戦的な移動を行います
 		private int advance(ActiveSkill useSkill){
 			//レベルが高い所に行く
-			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (user, useSkill.getRange());
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (user, useSkill.getMove());
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (user);
 			return ((int)targetPos) - ((int)nowPos);
 		}
@@ -196,7 +196,7 @@ namespace AI {
 		//非戦的な移動を行います
 		private int recession(ActiveSkill useSkill){
 			//レベルが低い所に行く
-			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (user, useSkill.getRange());
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (user, useSkill.getMove());
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (user);
 			return((int)targetPos) - ((int)nowPos);
 		}
