@@ -1,2 +1,2 @@
-id,name,normal,caoution,danger,power,full power,support,heal,move
-0,ゴブリンセット,0,0,0,0,0,0,0,3
+id,name,normal,normalSkillType,caution,cautionSkillType,danger,dangerSkillType,power,powerSkillType,full power,fullPowerSkillType,support,supportSkillType,heal,healSkillType,move,moveSkillType
+0,ゴブリンセット,0,ATTACK,0,ATTACK,0,ATTACK,0,ATTACK,0,ATTACK,0,ATTACK,0,ATTACK,0,MOVE

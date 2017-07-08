@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 using Skill;
 using AI;
+using Character;
+
+using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
 namespace MasterData{
 	public class ActiveSkillSetBuilder{
@@ -22,20 +26,44 @@ namespace MasterData{
 
 		private string name;
 
-		private ActiveSkillMasterManager manager;
+		private ActiveSkillType
+			normalSkillType,
+			cautionSkillType,
+			dangerSkillType,
+			powerSkillType,
+			fullPowerSkillType,
+			supportSkillType,
+			healSkillType,
+			moveSkillType;
 
 		//csvによるstring配列からプロパティを初期化します
 		public ActiveSkillSetBuilder(string[] datas){
 			id = int.Parse (datas[0]);
 			name = datas [1];
+
 			normalSkillId = int.Parse (datas [2]);
-			cautionSkillId = int.Parse (datas[3]);
-			dangerSkillId = int.Parse (datas[4]);
-			powerSkillId = int.Parse (datas [5]);
-			fullPowerSkillId = int.Parse (datas[6]);
-			supportSkillId = int.Parse (datas[7]);
-			healSkillId = int.Parse (datas[8]);
-			moveSkillId = int.Parse (datas[9]);
+			normalSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType),datas[3]);
+
+			cautionSkillId = int.Parse (datas[4]);
+			cautionSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType), datas [5]);
+
+			dangerSkillId = int.Parse (datas[6]);
+			dangerSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType),datas[7]);
+
+			powerSkillId = int.Parse (datas [8]);
+			powerSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType),datas[9]);
+
+			fullPowerSkillId = int.Parse (datas[10]);
+			fullPowerSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType),datas[11]);
+
+			supportSkillId = int.Parse (datas[12]);
+			supportSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType), datas [13]);
+
+			healSkillId = int.Parse (datas[14]);
+			healSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType), datas [15]);
+
+			moveSkillId = int.Parse (datas[16]);
+			moveSkillType = (ActiveSkillType)Enum.Parse (typeof(ActiveSkillType),datas[17]);
 		}
 
 		//getterです
@@ -48,41 +76,66 @@ namespace MasterData{
 			return name;
 		}
 
-		public ActiveSkill getNormalSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (normalSkillId);
+		public IActiveSkill getNormalSkill(){
+			return searchAndGetBuilder (normalSkillId,normalSkillType);
 		}
 
-		public ActiveSkill getCautionSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (cautionSkillId);
+		public IActiveSkill getCautionSkill(){
+			return searchAndGetBuilder (cautionSkillId,cautionSkillType);
 		}
 
-		public ActiveSkill getDangerSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (dangerSkillId);
+		public IActiveSkill getDangerSkill(){
+			return searchAndGetBuilder (dangerSkillId,dangerSkillType);
 		}
 
-		public ActiveSkill getPowerSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (powerSkillId);
+		public IActiveSkill getPowerSkill(){
+			return searchAndGetBuilder (powerSkillId,powerSkillType);
 		}
 
-		public ActiveSkill getFullPowerSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (fullPowerSkillId);
+		public IActiveSkill getFullPowerSkill(){
+			return searchAndGetBuilder (fullPowerSkillId, fullPowerSkillType);
 		}
 
-		public ActiveSkill getSupportSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (supportSkillId);
+		public IActiveSkill getSupportSkill(){
+			return searchAndGetBuilder (supportSkillId,supportSkillType);
 		}
 
-		public ActiveSkill getHealSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (healSkillId);
+		public IActiveSkill getHealSkill(){
+			return searchAndGetBuilder (healSkillId,healSkillType);
 		}
 
-		public ActiveSkill getMoveSkill(){
-			return ActiveSkillMasterManager.getActiveSkillFromId (moveSkillId);
+		public IActiveSkill getMoveSkill(){
+			return searchAndGetBuilder (moveSkillId,moveSkillType);
+		}
+
+		/// <summary>
+		/// 与えられたデータからIActiveSkillを探して返します
+		/// </summary>
+		/// <returns> 結果 </returns>
+		/// <param name="id"> スキルのID </param>
+		/// <param name="type"> スキルの種別 </param>
+		private IActiveSkill searchAndGetBuilder(int id,ActiveSkillType type){
+			switch(type){
+				case ActiveSkillType.ATTACK:
+					return AttackSkillMasterManager.getAttackSkillFromId (id);
+				case ActiveSkillType.BUF :
+					//return BufSkillMasterManager.getBufSkillFromId(id);
+					break;
+				case ActiveSkillType.DEBUF:
+					//return DebufSkillMasterManager.getDebufSkillFromId(id);
+					break;
+				case ActiveSkillType.HEAL:
+					//return HealSkillMasterManager.getHealSkillFromId(id);
+					break;
+				case ActiveSkillType.MOVE:
+					return MoveSkillMasterManager.getMoveSkillFromId (id);
+			}
+			throw new NotSupportedException ("Unkonwn SkillType");
 		}
 
 		//ActiveSKillSetを取得します
-		public ActiveSkillSet build(){
-			return new ActiveSkillSet (this);
+		public ActiveSkillSet build(IBattleable user){
+			return new ActiveSkillSet (this,user);
 		}
 	}
 }

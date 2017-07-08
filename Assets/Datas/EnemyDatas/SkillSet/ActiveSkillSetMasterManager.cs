@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 using AI;
+using Character;
 
 namespace MasterData{
 	public class ActiveSkillSetMasterManager : MasterDataManagerBase{
@@ -16,10 +17,10 @@ namespace MasterData{
 		}
 
 		//idからActiveSkillSetを取得します
-		public static ActiveSkillSet getActiveSkillSetFromId(int id){
+		public static ActiveSkillSet getActiveSkillSetFromId(int id,IBattleable user){
 			foreach(ActiveSkillSetBuilder builder in dataTable){
 				if (builder.getId () == id)
-					return builder.build();
+					return builder.build(user);
 			}
 			throw new ArgumentException ("invlit id");
 		}

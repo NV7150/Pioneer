@@ -9,7 +9,7 @@ using Character;
 namespace BattleSystem{
 	public class BattleTask {
 		//行うスキルです
-		private readonly ActiveSkill SKILL;
+		private readonly IActiveSkill SKILL;
 		//行動系スキルの対象です
 		private List<IBattleable> targets;
 		//移動系スキルの移動量です
@@ -18,21 +18,21 @@ namespace BattleSystem{
 		private readonly long OWNER_UNIQUEID;
 
 		//ターゲットが存在する場合のコンストラクタです
-		public BattleTask(long uniqueId,ActiveSkill skill,List<IBattleable> targets){
+		public BattleTask(long uniqueId,IActiveSkill skill,List<IBattleable> targets){
 			this.OWNER_UNIQUEID = uniqueId;
 			this.SKILL = skill;
 			this.targets = targets;
 		}
 
 		//移動量が存在する場合のコンストラクタです
-		public BattleTask(long uniqueId,ActiveSkill skill,int move){
+		public BattleTask(long uniqueId,IActiveSkill skill,int move){
 			this.OWNER_UNIQUEID = uniqueId;
 			this.SKILL = skill;
 			this.move = move;
 		}
 
 		//スキルを取得します
-		public ActiveSkill getSkill(){
+		public IActiveSkill getSkill(){
 			return SKILL;
 		}
 

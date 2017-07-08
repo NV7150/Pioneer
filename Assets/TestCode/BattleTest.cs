@@ -16,7 +16,6 @@ public class BattleTest : MonoBehaviour {
 	public Container con;
 	public Container con2;
 	public JobMasterManager jma;
-	public ActiveSkillMasterManager sManager;
 
 	// Use this for initialization
 	void Start () {
@@ -35,11 +34,11 @@ public class BattleTest : MonoBehaviour {
 		hero = new Hero (JobMasterManager.getJobFromId(0),con);
 		Debug.Log ("cleared" + hero.getName() + en.getName());
 
-		hero.addSkill (ActiveSkillMasterManager.getActiveSkillFromId(0));
-		hero.addSkill (ActiveSkillMasterManager.getActiveSkillFromId(1));
 		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(0));
 		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(1));
-		hero.addSkill (ActiveSkillMasterManager.getActiveSkillFromId(3));
+		hero.addSkill (AttackSkillMasterManager.getAttackSkillFromId(0));
+		hero.addSkill (AttackSkillMasterManager.getAttackSkillFromId(1));
+		hero.addSkill (MoveSkillMasterManager.getMoveSkillFromId(0));
 
 		con.setCharacter (hero);
 		con2.setCharacter (en);

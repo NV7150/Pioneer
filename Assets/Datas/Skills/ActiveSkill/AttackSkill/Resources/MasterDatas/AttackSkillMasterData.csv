@@ -1,0 +1,9 @@
+id,name,atk,range,hit,delay,cost,depentAtk,dependHit,dependRange,dependDleay,attribute,useAbility,extent,description
+0,白兵攻撃,0,0,0,0,0,TRUE,TRUE,TRUE,TRUE,PHYSICAL,NONE,SINGLE,近接武器で攻撃を行う
+1,炎矢,5,1,5,500,1,FALSE,FALSE,FALSE,FALSE,FIRE,MGP,SINGLE,炎は矢となり、対象を燃え上がらせる
+2,水槍,5,1,5,500,1,FALSE,FALSE,FALSE,FALSE,WATER,MGP,SINGLE,水は槍となり、対象を突き刺す
+3,風刃,5,1,5,500,1,FALSE,FALSE,FALSE,FALSE,WIND,MGP,SINGLE,風は刃となり、対象を切り裂く
+4,土弾,5,1,5,500,1,FALSE,FALSE,FALSE,FALSE,EARTH,MGP,SINGLE,土は弾丸となり、対象を撃ち抜く
+5,懲罰,5,1,5,500,1,FALSE,FALSE,FALSE,FALSE,HOLY,MGP,SINGLE,仇なすものに聖なる罰を与える
+6,魔撃,5,0,5,500,1,TRUE,TRUE,TRUE,TRUE,PENETRATION,NONE,SINGLE,魔法を込めた攻撃は、鎧を貫通する
+7,満潮,3,1,5,1000,3,FALSE,FALSE,FALSE,FALSE,WATER,MGP,AREA,水はその場を満たし、対象を飲み込む

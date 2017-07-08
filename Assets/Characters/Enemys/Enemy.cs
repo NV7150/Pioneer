@@ -43,12 +43,6 @@ namespace Character{
 		private int hp;
 		//このキャラクターの現在のMPです
 		private int mp;
-		//このキャラクターが受けている防御値へのボーナスです
-		private int defBonus = 0;
-		//このキャラクターが受けている回避へのボーナスです
-		private int dodgeBonus = 0;
-		//このキャラクターが受けている攻撃へのボーナスです
-		private int atkBonus = 0;
 
 		//このキャラクターがバトル中かどうかを表します
 		private bool isBattling = false;
@@ -73,6 +67,9 @@ namespace Character{
 		//このキャラクターが持つPassiveSkillSetです
 		private ReactionSkillSet reactionSkillSet;
 
+		//このキャラクターの武器です
+		private Wepon equipedWepon;
+
 		public Enemy(EnemyBuilder builder){
 			this.id = builder.getId ();
 			this.name = builder.getName ();
@@ -83,6 +80,7 @@ namespace Character{
 			this.rareDropId = builder.getRareDropId ();
 			this.modelName = builder.getModelName ();
 			this.FACTION = builder.getFaction ();
+			this.equipedWepon = builder.getWepon ();
 
 			GameObject prefab = (GameObject)Resources.Load(modelName);
 			GameObject gameobject = MonoBehaviour.Instantiate (prefab);
@@ -91,7 +89,7 @@ namespace Character{
 
 			this.UNIQE_ID = UniqueIdCreator.creatUniqueId ();
 
-			activeSkillSet = ActiveSkillSetMasterManager.getActiveSkillSetFromId (builder.getActiveSkillSetId());
+			activeSkillSet = ActiveSkillSetMasterManager.getActiveSkillSetFromId (builder.getActiveSkillSetId(),this);
 			reactionSkillSet = ReactionSkillSetMasterManager.getReactionSkillSetFromId (builder.getReactionSkillSetId());
 			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,reactionSkillSet);
 
@@ -186,28 +184,12 @@ namespace Character{
 			//あとで実装
 			return getAgi ();
 		}
-
-		public void setDefBonus (int bonus) {
-			defBonus = bonus;
-		}
-
-		public void setDodBonus (int bonus) {
-			dodgeBonus = bonus;
-		}
-
-		public void setAtkBonus (int bonus) {
-			atkBonus = bonus;
-		}
-
 		public void setIsReadyToCounter (bool flag) {
 			isReadyToCounter = flag;
 		}
 
 		public void resetBonus () {
-			defBonus = 0;
-			dodgeBonus = 0;
-			atkBonus = 0;
-			isReadyToCounter = false;
+			throw new NotImplementedException ();
 		}
 
 		public int getLevel () {
@@ -228,6 +210,19 @@ namespace Character{
 		//エンカウントし、戦闘に突入します
 		public void encount(){
 			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai);
+		}
+
+		public Wepon getWepon () {
+			return this.equipedWepon;
+		}
+
+		public void addAbilityBonus (AbilityBonus bonus) {
+			throw new NotImplementedException ();
+		}
+
+
+		public void addSubAbilityBonus (SubAbilityBonus bonus) {
+			throw new NotImplementedException ();
 		}
 
 		#endregion

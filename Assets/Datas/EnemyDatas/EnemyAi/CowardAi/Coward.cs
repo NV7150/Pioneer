@@ -44,7 +44,7 @@ namespace AI {
 
 		#region EnemyAI implementation
 			
-		public ActiveSkill decideSkill () {
+		public IActiveSkill decideSkill () {
 			//ボーナス値のテーブルです。最終的に足されます。
 			Dictionary<ActiveSkillCategory,int> probalityBonus = new Dictionary<ActiveSkillCategory, int> (){
 				{ ActiveSkillCategory.NORMAL, 0 },
@@ -74,10 +74,14 @@ namespace AI {
 			}
 
 			List<ActiveSkillCategory> categories = new List<ActiveSkillCategory>(probalityBonus.Keys);
+
 			//スキルの射程内に何もいない時、ボーナス値を使って可能性値を0にします。
 			foreach(ActiveSkillCategory category in categories){
-				ActiveSkill categorySkill = activeSkills.getSkillFromSkillCategory (category);
-				if(BattleManager.getInstance().sumFromAreaTo(user,categorySkill.getRange()) <= 0){
+				IActiveSkill categorySkill = activeSkills.getSkillFromSkillCategory (category);
+
+				int range = (ActiveSkillSupporter.needsTarget(categorySkill)) ?  ActiveSkillSupporter.searchRange (categorySkill,user) : ActiveSkillSupporter.searchMove(categorySkill,user);
+
+				if(BattleManager.getInstance().sumFromAreaTo(user,range) <= 0){
 					probalityBonus [category] = -1 * probalityTable [category] ;
 				}
 			}
@@ -114,35 +118,40 @@ namespace AI {
 		}
 
 
-		public List<IBattleable> decideTarget (List<IBattleable> targets, ActiveSkill useSkill) {
-			switch (useSkill.getIsFriendly ()) {
+		public List<IBattleable> decideTarget (List<IBattleable> targets, IActiveSkill useSkill) {
+			if (!ActiveSkillSupporter.needsTarget (useSkill))
+				throw new ArgumentException ("the skill " + useSkill + " dosen't has to decide target.");
+
+			switch (useSkill.isFriendly ()) {
 				case true:
 					return this.decideFriendlyTarget (targets, useSkill);
 				case false:
 					return this.decideHostileTarget (targets, useSkill);
 			}
-			throw new InvalidOperationException ("Wrong isFriendly.");
+			throw new InvalidOperationException ("Wrong isFriendly. (not supported 実装してないです)");
 		}
 
-		private List<IBattleable> decideFriendlyTarget(List<IBattleable> targets,ActiveSkill useSkill){
+		private List<IBattleable> decideFriendlyTarget(List<IBattleable> targets,IActiveSkill useSkill){
 			// とりあえずreturnがなかったので
 			return new List<IBattleable>();
 		}
 
-		private List<IBattleable> decideHostileTarget(List<IBattleable> targets,ActiveSkill useSkill){
-			if (useSkill.getExtent () == Extent.SINGLE) {
-				
+		private List<IBattleable> decideHostileTarget(List<IBattleable> targets,IActiveSkill useSkill){
+			Extent extent = ActiveSkillSupporter.searchExtent (useSkill);
+			int range = ActiveSkillSupporter.searchRange (useSkill,user);
+
+			if (extent == Extent.SINGLE) {
 				List<IBattleable> returnList = new List<IBattleable> ();
 				returnList.Add (decideHostileSingleTarget(targets));
 				return returnList;
 
-			} else if (useSkill.getExtent () == Extent.AREA) {
+			} else if (extent == Extent.AREA) {
 				
 				//エリア攻撃の場合、最もレベルが低いエリアを殴ります。
-				FieldPosition targetPos = BattleManager.getInstance ().whereIsMostSafePositionInRange (user, useSkill.getRange ());
+				FieldPosition targetPos = BattleManager.getInstance ().whereIsMostSafePositionInRange (user, range);
 				return BattleManager.getInstance ().getAreaCharacter (targetPos);
 
-			} else if (useSkill.getExtent () == Extent.ALL) {
+			} else if (extent == Extent.ALL) {
 				//全体の場合は無条件で全部焼き払います
 				List<IBattleable> returnList = new List<IBattleable> ();
 				foreach(List<IBattleable> list in targets){
@@ -150,7 +159,7 @@ namespace AI {
 				}
 				return returnList;
 			}
-			throw new Exception ("invlit state");
+			throw new Exception ("invlit state (未実装)");
 		}
 			
 		//単体の対象を決定します
@@ -176,7 +185,7 @@ namespace AI {
 		}
 
 		//移動距離を決めます
-		public int decideMove (ActiveSkill useSkill) {
+		public int decideMove (MoveSkill useSkill) {
 			//HPが最大HPの50%以下なら非戦的行動、以上なら好戦的行動
 			if ((user.getHp () / user.getMaxHp ()) * 100 <= 50) {
 				return recession (useSkill);
@@ -186,33 +195,33 @@ namespace AI {
 		}
 
 		//好戦的な移動を行います
-		private int advance(ActiveSkill useSkill){
+		private int advance(MoveSkill useSkill){
 			//レベルが高い所に行く
-			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (user, useSkill.getMove());
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostDengerPositionInRange (user, useSkill.getMove(user));
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (user);
 			return ((int)targetPos) - ((int)nowPos);
 		}
 
 		//非戦的な移動を行います
-		private int recession(ActiveSkill useSkill){
+		private int recession(MoveSkill useSkill){
 			//レベルが低い所に行く
-			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (user, useSkill.getMove());
+			FieldPosition targetPos =  BattleManager.getInstance ().whereIsMostSafePositionInRange (user, useSkill.getMove(user));
 			FieldPosition nowPos =  BattleManager.getInstance ().searchCharacter (user);
 			return((int)targetPos) - ((int)nowPos);
 		}
 
 		//リアクションを決定します
-		public ReactionSkill decideReaction (IBattleable attacker, ActiveSkill skill) {
+		public ReactionSkill decideReaction (IBattleable attacker, AttackSkill skill) {
 			Dictionary<ReactionSkillCategory,float> riskTable = new Dictionary<ReactionSkillCategory,float> ();
 
 			//ダメージからのリスク:攻撃側の攻撃力/現在HP
-			int atk = skill.getAtk () + attacker.getAtk(skill.getAttribute(),skill.getUseAbility());
+			int atk = skill.getAtk (attacker);
 			atk = (atk > 0) ? atk : 1;
 			int hp = user.getHp ();
 			hp = (hp > 0) ? hp : 1;
-			float dodgeDammageRisk = atk / (hp);
+			float dodgeDammageRisk = atk / hp;
 			//命中からのリスク:命中値/回避値 - 1
-			float dodgeHitRisk = (skill.getHit ()) / (user.getDodge() + reactionSkills.getReactionSkillFromCategory(ReactionSkillCategory.DODGE).getDodge()) - 1;
+			float dodgeHitRisk = (skill.getHit (attacker)) / (user.getDodge() + reactionSkills.getReactionSkillFromCategory(ReactionSkillCategory.DODGE).getDodge()) - 1;
 			//回避合計リスク
 			float dodgeRisk = dodgeHitRisk + dodgeDammageRisk;
 			if (dodgeRisk != 0)

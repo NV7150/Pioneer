@@ -71,7 +71,7 @@ namespace BattleSystem{
 		}
 
 		//攻撃処理を行います
-		public void attackCommand(IBattleable bal,List<IBattleable> targets,ActiveSkill skill){
+		public void attackCommand(IBattleable bal,List<IBattleable> targets,AttackSkill skill){
 			foreach(IBattleable target in targets){
 				//対象のリアクション
 				enteredManager[target.getUniqueId()].offerReaction(bal,skill);

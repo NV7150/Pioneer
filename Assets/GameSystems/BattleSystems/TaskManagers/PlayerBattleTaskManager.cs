@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 using Skill;
 using Character;
@@ -25,11 +26,13 @@ namespace BattleSystem{
 		//元のプレイヤーです
 		private IPlayable player;
 		//現在選ばれているActiveSkillです
-		private ActiveSkill chosenActiveSkill;
+		private IActiveSkill chosenActiveSkill;
+		//現在選ばれているのがmoveか、それ以外かを表します
+		private ActiveSkillType activeSkillType;
 		//現在リアクション中のKeyValuePairです
-		private KeyValuePair<IBattleable,ActiveSkill> prosessingPair;
+		private KeyValuePair<IBattleable,AttackSkill> prosessingPair;
 		//現在リアクションを待っているKeyValuePairたちです
-		private List<KeyValuePair<IBattleable,ActiveSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, ActiveSkill>>();
+		private List<KeyValuePair<IBattleable,AttackSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
 		//現在のステートです
 		private BattleState battleState = BattleState.ACTION;
@@ -77,7 +80,7 @@ namespace BattleSystem{
 		private void actionState(){
 			BattleTask runTask = tasks [0];
 			runTask.getSkill ().action (player, runTask);
-			delay = runTask.getSkill ().getDelay ();
+			delay = runTask.getSkill ().getDelay (player);
 			tasks.Remove (runTask);
 			battleState = BattleState.IDLE;
 		}
@@ -97,22 +100,24 @@ namespace BattleSystem{
 		}
 
 		//タスクを追加します
-		private void setTask(ActiveSkill skill,List<IBattleable> targets){
+		private void setTask(IActiveSkill skill,List<IBattleable> targets){
 			tasks.Add(new BattleTask(player.getUniqueId(),skill,targets));
 		}
 
 		//skillnodeが選ばれた時の処理です
-		public void skillChose(ActiveSkill chosenSkill){
+		public void skillChose(IActiveSkill chosenSkill){
 			Debug.Log (chosenSkill.ToString());
 			this.chosenActiveSkill = chosenSkill;
 
-			switch(chosenSkill.getActiveSkillType()){
-				case ActiveSkillType.ACTION:
-					inputTargetList ();
-					break;
-				case ActiveSkillType.MOVE:
-					inputMoveAreaList ();
-					break;
+			if (chosenSkill.getActiveSkillType () != ActiveSkillType.MOVE) {
+				Extent extent = ActiveSkillSupporter.searchExtent (chosenSkill);
+				int range = ActiveSkillSupporter.searchRange (chosenSkill, player);
+				inputTargetList (extent, range);
+			} else if (chosenSkill.getActiveSkillType () == ActiveSkillType.MOVE) {
+				int move = ActiveSkillSupporter.searchMove (chosenSkill, player);
+				inputMoveAreaList (move);
+			} else {
+				throw new NotSupportedException ("Unkonwn skillType");
 			}
 		}
 
@@ -144,10 +149,10 @@ namespace BattleSystem{
 		//passiveスキルを使用します
 		private void reaction(ReactionSkill passiveSkill){
 			IBattleable attacker = prosessingPair.Key;
-			ActiveSkill skill = prosessingPair.Value;
-			int atk = attacker.getAtk (skill.getAttribute (), skill.getUseAbility()) + skill.getAtk ();
-			int hit = attacker.getHit (skill.getUseAbility()) + skill.getHit();
-			passiveSkill.reaction (player,atk,hit,skill.getAttribute());
+			AttackSkill skill = prosessingPair.Value;
+			int atk = skill.getAtk (attacker);
+			int hit = skill.getHit(attacker);
+			passiveSkill.reaction (player,atk,hit,skill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove (prosessingPair);
 			updateProsessingPair ();
 		}
@@ -156,7 +161,7 @@ namespace BattleSystem{
 		private void inputActiveSkillList(){
 			detachContents ();
 
-			foreach(ActiveSkill skill in player.getActiveSkills()){
+			foreach(IActiveSkill skill in player.getActiveSkills()){
 				GameObject node =  Instantiate ((GameObject)Resources.Load("Prefabs/ActiveSKillNode"));
 				node.GetComponent<ActiveSkillNode> ().setState (this,skill);
 				node.transform.SetParent (contents.transform);
@@ -164,24 +169,27 @@ namespace BattleSystem{
 		}
 
 		//スクロールビューにTargetのリストを表示します
-		private void inputTargetList(){
+		private void inputTargetList(Extent extent,int range){
 			detachContents ();
-			switch(chosenActiveSkill.getExtent()){
+			switch(extent){
 				case Extent.SINGLE:
-					inputSingleTargetList ();
+					inputSingleTargetList (range);
 					break;
 				case Extent.AREA:
-					inputAreaTargetList ();
+					inputAreaTargetList (range);
 					break;
 				case Extent.ALL:
 					targetChose (BattleManager.getInstance().getJoinedBattleCharacter());
 					break;
+				case Extent.NONE:
+					throw new ArgumentException ("invalid skill");
 			}
 		}
 
 		//スキルの効果範囲が単体の時のtargetをビューにインプットします
-		private void inputSingleTargetList(){
-			List<IBattleable> targets = BattleManager.getInstance ().getCharacterInRange (player, chosenActiveSkill.getRange ());
+		private void inputSingleTargetList(int range){
+			List<IBattleable> targets = BattleManager.getInstance ().getCharacterInRange (player, range);
+
 			foreach (IBattleable target in targets) {
 				if (target.Equals (player))
 					continue;
@@ -193,13 +201,13 @@ namespace BattleSystem{
 		}
 
 		//スキルの効果範囲が範囲の時のtargetをビューにインプットします
-		private void inputAreaTargetList(){
+		private void inputAreaTargetList(int range){
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
 
-			int index = (int)nowPos - chosenActiveSkill.getRange ();
+			int index = (int)nowPos - range;
 			index = (index < 0) ? 0 : index;
 
-			int maxRange = (int)nowPos + chosenActiveSkill.getRange ();
+			int maxRange = (int)nowPos + range;
 			maxRange = (maxRange > 7) ? 7 : maxRange;
 			maxRange = (maxRange < 0) ? 0 : maxRange;
 
@@ -213,15 +221,18 @@ namespace BattleSystem{
 		}
 
 		//スキルの効果範囲が全体の時のtargetをビューにインプットします
-		private void inputMoveAreaList(){
+		private void inputMoveAreaList(int move){
 			detachContents ();
+			Debug.Log (move);
 
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
 
-			int index = (int)nowPos - chosenActiveSkill.getMove ();
+			Debug.Log ("now " + nowPos + "plus " + ((int)nowPos + move) + "div" +((int)nowPos - move));
+
+			int index = (int)nowPos - move;
 			index = (index < 0) ? 0 : index;
 
-			int maxpos = (int)nowPos + chosenActiveSkill.getMove ();
+			int maxpos = (int)nowPos + move + 1;
 			maxpos = (maxpos > 7) ? 7 : maxpos;
 			maxpos = (maxpos < 0) ? 0 : maxpos;
 
@@ -288,8 +299,8 @@ namespace BattleSystem{
 			}
 		}
 
-		public void offerReaction (IBattleable attacker, ActiveSkill skill) {
-			KeyValuePair<IBattleable,ActiveSkill> pair = new KeyValuePair<IBattleable, ActiveSkill> (attacker,skill);
+		public void offerReaction (IBattleable attacker, AttackSkill skill) {
+			KeyValuePair<IBattleable,AttackSkill> pair = new KeyValuePair<IBattleable, AttackSkill> (attacker,skill);
 			waitingReactionActiveSkills.Add (pair);
 
 			updateProsessingPair ();

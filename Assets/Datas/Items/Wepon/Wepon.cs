@@ -6,21 +6,25 @@ using BattleSystem;
 
 using MasterData;
 
+using Ability = Parameter.CharacterParameters.Ability;
+
 namespace Item{
 	public class  Wepon :  IItem{
-		private int
+		private readonly int
 			//この武器の攻撃力です
-			attack,
+			ATTACK,
 			//この武器の射程です
-			range,
+			RANGE,
 			//この武器を装備するのに必要なmftです
-			needMft,
+			NEED_MFT,
 			//このアイテムの価格です
-			itemValue,
+			ITEM_VALUE,
 			//このアイテムの重さです
-			mass;
+			MASS,
+			//このアイテムのディレイ値です
+			DELAY;
 
-		private string 
+		private readonly string 
 			//このアイテムの名前です
 			name,
 			//このアイテムの説明です
@@ -28,18 +32,18 @@ namespace Item{
 			//このアイテムの装備条件の説明です
 			equipdescription;
 
-		//この武器のディレイ値です
-		private int delay;
 
 		//この武器の種別です
 		private WeponType type;
 
+		private Ability ability;
+
 		public Wepon(WeponBuilder builder){
-			attack = builder.getAttack ();
-			range = builder.getRange ();
-			needMft = builder.getNeedMft ();
-			itemValue = builder.getItemValue ();
-			mass = builder.getMass ();
+			ATTACK = builder.getAttack ();
+			RANGE = builder.getRange ();
+			NEED_MFT = builder.getNeedMft ();
+			ITEM_VALUE = builder.getItemValue ();
+			MASS = builder.getMass ();
 			name = builder.getName ();
 			description = builder.getDescription ();
 			equipdescription = builder.getEquipDescription ();
@@ -48,27 +52,27 @@ namespace Item{
 
 		//攻撃力を取得します
 		public int getAttack() {
-			return attack;
+			return ATTACK;
 		}
 
 		//射程を取得します
 		public int getRange() {
-			return range;
+			return RANGE;
 		}
 
 		//必要なmftを取得します
 		public int getNeedMft() {
-			return needMft;
+			return NEED_MFT;
 		}
 
 		//価格を取得します
 		public int getItemValue() {
-			return itemValue;
+			return ITEM_VALUE;
 		}
 
 		//重さを取得します
 		public int getMass(){
-			return mass;
+			return MASS;
 		}
 
 		//名前を取得します
@@ -83,7 +87,7 @@ namespace Item{
 
 		//ディレイ値を取得します
 		public int getDelay() {
-			return delay;
+			return DELAY;
 		}
 
 		//武器の種別を取得します
@@ -93,7 +97,7 @@ namespace Item{
 
 		//武器が装備可能かを確認します
 		public bool canEquip(IPlayable user){
-			return (needMft <= user.getMft());
+			return (NEED_MFT <= user.getMft());
 		}
 
 		//装備条件の説明を返します
@@ -101,6 +105,9 @@ namespace Item{
 			return equipdescription;
 		}
 
+		public Ability getWeponAbility(){
+			return ability;
+		}
 
 		public void use (IPlayable use) {
 			throw new NotImplementedException ();

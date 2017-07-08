@@ -9,6 +9,7 @@ using Parameter;
 using Character;
 
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
+using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 using Ability = Parameter.CharacterParameters.Ability;
 using Faction = Parameter.CharacterParameters.Faction;
 
@@ -19,10 +20,10 @@ namespace Character{
 		int getHp();
 
 		//HPを減少させます
-		void dammage (int dammage,ActiveSkillParameters.AttackSkillAttribute attribute);
+		void dammage (int dammage,AttackSkillAttribute attribute);
 
 		//回復されます（受動側）
-		void healed(int heal,ActiveSkillParameters.HealSkillAttribute attribute);
+		void healed(int heal,HealSkillAttribute attribute);
 
 		//MPを返します
 		int getMp();
@@ -49,7 +50,6 @@ namespace Character{
 		int getPhy();
 
 		//攻撃力(atk)を返します。属性と使用能力値が必須です
-
 		int getAtk(AttackSkillAttribute attribute,Ability useAbility);
 
 		//防御力(defence)を返します
@@ -73,17 +73,12 @@ namespace Character{
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
 		int getDodge();
 
-		//防御へのボーナスを設定します。isButtlingがtrue時のみ呼びだされます。
-		void setDefBonus(int bonus);
-
-		//回避へのボーナスを設定します。isButtlingがtrue時のみ呼びだされます。
-		void setDodBonus(int bonus);
-
-		//攻撃へのボーナスを設定します。isButtlingがtrue時のみ呼びだされます。
-		void setAtkBonus(int bonus);
-
 		//カウンターを行うかどうかのフラグを設定します。isButtlingがtrue時のみ呼びだされます。
 		void setIsReadyToCounter(bool flag);
+
+		void addAbilityBonus (AbilityBonus bonus);
+
+		void addSubAbilityBonus (SubAbilityBonus bonus);
 
 		//ボーナスをリセットします。isButtlingがtrue時のみ呼びだされます。
 		void resetBonus();
@@ -100,10 +95,10 @@ namespace Character{
 		//敵対派閥かを取得します
 		bool isHostility(Faction faction);
 
-		//名前を取得します
-		string getName();
-
 		//エンカウントし、バトルに突入します
 		void encount();
+
+		//装備中の武器を返します
+		Wepon getWepon();
 	}
 }

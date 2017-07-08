@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Parameter{
 	public static class CharacterParameters {
-		//能力値を表します
+		//基本能力値を表します
 		public enum Ability{
 			//最大HP
 			HP,
@@ -25,8 +25,20 @@ namespace Parameter{
 			//器用
 			DEX,
 			//レベル
-			LV
-		} 
+			LV,
+			//なし
+			NONE
+		}
+
+		//服能力値を表します
+		public enum SubAbility{
+			//攻撃力
+			ATK,
+			//防御力
+			DEF,
+			//回避力
+			DODGE
+		}
 
 		//所属する勢力を表します
 		public enum Faction {

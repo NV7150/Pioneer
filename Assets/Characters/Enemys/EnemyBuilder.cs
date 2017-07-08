@@ -6,6 +6,7 @@ using System;
 using Character;
 using Parameter;
 using AI;
+using Item;
 
 using Ability = Parameter.CharacterParameters.Ability;
 using Faction = Parameter.CharacterParameters.Faction;
@@ -31,7 +32,8 @@ namespace MasterData{
 		normalDropId,
 		rareDropId,
 		activeSkillSetId,
-		reactionSkillSetId;
+		reactionSkillSetId,
+		weponId;
 
 		[SerializeField]
 		private string 
@@ -82,6 +84,10 @@ namespace MasterData{
 			return name;
 		}
 
+		public Wepon getWepon(){
+			return WeponMasterManager.getWeponFromId (weponId);
+		}
+
 		public string getModelName() {
 			return modelName;
 		}
@@ -126,8 +132,9 @@ namespace MasterData{
 			rareDropId = int.Parse (parameters [13]);
 			activeSkillSetId = int.Parse (parameters [14]);
 			reactionSkillSetId = int.Parse (parameters[15]);
-			faction = parameters [16];
-			modelName = "Models/" + parameters [17];
+			weponId = int.Parse (parameters[16]);
+			faction = parameters [17];
+			modelName = "Models/" + parameters [18];
 		}
 
 		public override string ToString () {

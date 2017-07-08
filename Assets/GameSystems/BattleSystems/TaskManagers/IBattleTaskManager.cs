@@ -9,7 +9,7 @@ namespace BattleSystem {
 		void deleteTaskFromTarget(IBattleable target);
 
 		//リアクションを申請します
-		void offerReaction(IBattleable attacker,ActiveSkill skill);
+		void offerReaction(IBattleable attacker,AttackSkill skill);
 
 		//タスクがあるかを返します
 		bool isHavingTask();

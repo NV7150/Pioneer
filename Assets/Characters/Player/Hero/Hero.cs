@@ -45,12 +45,6 @@ namespace Character{
 		private bool isBattleing;
 		//このキャラクターの実体を表します
 		private Container container;
-		//このキャラクターの防御へのボーナスを表します
-		private int defBonus = 0;
-		//このキャラクターの回避へのボーナスを表します
-		private int dodgeBonus = 0;
-		//このキャラクターの攻撃へのボーナスを表します
-		private int atkBonus = 0;
 		//カウンターを行うかを表します
 		private bool isReadyToCounter;
 		//プレイヤーの派閥を表します
@@ -60,7 +54,7 @@ namespace Character{
 		//このキャラクターのunipueIdを表します
 		private long UNIQUE_ID;
 		//このキャラクターが持つ能動スキルのリストです
-		private List<ActiveSkill> activeSkills = new List<ActiveSkill>();
+		private List<IActiveSkill> activeSkills = new List<IActiveSkill>();
 		//このキャラクターが持つ受動スキルのリストです
 		private List<ReactionSkill> reactionSkills = new List<ReactionSkill>();
 
@@ -137,8 +131,8 @@ namespace Character{
 			return abilities[Ability.DEX];
 		}
 
-		public List<ActiveSkill> getActiveSkills () {
-			return new List<ActiveSkill> (activeSkills);
+		public List<IActiveSkill> getActiveSkills () {
+			return new List<IActiveSkill> (activeSkills);
 		}
 
 
@@ -147,7 +141,7 @@ namespace Character{
 
 		}
 
-		public void addSkill (ActiveSkill skill) {
+		public void addSkill (IActiveSkill skill) {
 			if (skill != null || !activeSkills.Contains (skill)) {
 				activeSkills.Add (skill);
 			} else {
@@ -275,27 +269,12 @@ namespace Character{
 			return getAgi();
 		}
 
-		public void setDefBonus (int bonus) {
-			defBonus = bonus;
-		}
-
-		public void setDodBonus (int bonus) {
-			dodgeBonus = bonus;
-		}
-
-		public void setAtkBonus (int bonus) {
-			atkBonus = bonus;
-		}
-
 		public void setIsReadyToCounter (bool flag) {
 			isReadyToCounter = flag;
 		}
 
 		public void resetBonus () {
-			defBonus = 0;
-			dodgeBonus = 0;
-			atkBonus = 0;
-			isReadyToCounter = false;
+			throw new NotImplementedException ();
 		}
 
 		public int getLevel () {
@@ -325,12 +304,20 @@ namespace Character{
 		public bool isHostility (Faction faction) {
 			return (this.faction == faction);
 		}
-
-
 			
 		public void encount () {
 			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE);
 		}
+
+		public void addAbilityBonus (AbilityBonus bonus) {
+			throw new NotImplementedException ();
+		}
+
+
+		public void addSubAbilityBonus (SubAbilityBonus bonus) {
+			throw new NotImplementedException ();
+		}
+
 		#endregion
 		#region ICharacter implementation
 		public GameObject getModel () {

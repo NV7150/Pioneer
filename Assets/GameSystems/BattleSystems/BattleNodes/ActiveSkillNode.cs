@@ -10,12 +10,12 @@ namespace BattleSystem{
 		//アタッチされているゲームオブジェクトのテキストオブジェクトです
 		public Text textObject;
 		//担当しているActiveSkillです
-		private ActiveSkill skill;
+		private IActiveSkill skill;
 		//元のPlayerBattleTaskManagerです
 		private PlayerBattleTaskManager manager;
 
 		//ステータスを設定します
-		public void setState(PlayerBattleTaskManager controller,ActiveSkill skill){
+		public void setState(PlayerBattleTaskManager controller,IActiveSkill skill){
 			this.manager = controller;
 			this.skill = skill;
 			textObject.text = skill.getName ();

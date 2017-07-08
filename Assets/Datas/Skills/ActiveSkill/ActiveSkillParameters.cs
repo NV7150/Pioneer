@@ -4,26 +4,16 @@ namespace Skill{
 	public static class ActiveSkillParameters {
 		//ActiveSkillの種別です
 		public enum ActiveSkillType{
-			//攻撃もしくは回復等
-			ACTION,
-			//移動
-			MOVE,
-			//移動攻撃
-			ACTION_AND_MOVE,
-			//なし
-			NONE
-		}
-
-		//ActiveSkillTypeがACTIONだった時のさらに詳細な種別です
-		public enum ActionType{
 			//攻撃
 			ATTACK,
+			//移動
+			MOVE,
 			//回復
 			HEAL,
-			//どっちも
-			BOTH,
-			//なし
-			NONE
+			//バフ
+			BUF,
+			//デバフ
+			DEBUF
 		}
 
 		//スキルの効果範囲です

@@ -6,19 +6,20 @@ using Skill;
 using AI;
 using Parameter;
 using MasterData;
+using Character;
 
 namespace AI {
 	public class ActiveSkillSet {
 		//スキルセットを表すDictionaryです
-		private Dictionary<ActiveSkillCategory,ActiveSkill> skillSet = new Dictionary<ActiveSkillCategory, ActiveSkill> ();
+		private Dictionary<ActiveSkillCategory,IActiveSkill> skillSet = new Dictionary<ActiveSkillCategory, IActiveSkill> ();
 		//スキルセットのIDです
 		private readonly int ID;
 		//スキルセット全体で一番の効果範囲を表します
-		private readonly int MAX_RANGE;
+		private int MAX_RANGE;
 		//スキルセットの名前を表します
 		private readonly string NAME;
 
-		public ActiveSkillSet (ActiveSkillSetBuilder builder) {
+		public ActiveSkillSet (ActiveSkillSetBuilder builder,IBattleable user) {
 			this.ID = builder.getId ();
 			this.NAME = builder.getName ();
 
@@ -31,16 +32,19 @@ namespace AI {
 			skillSet [ActiveSkillCategory.HEAL] = builder.getHealSkill ();
 			skillSet [ActiveSkillCategory.MOVE] = builder.getMoveSkill ();
 
-			this.MAX_RANGE = calculateMaxRange ();
+			calculateMaxRange (user);
 		}
 
 		//スキルの中での最大レンジを計算します
-		private int calculateMaxRange(){
+		private int calculateMaxRange(IBattleable user){
 			int maxRange = 0;
 			var keys = skillSet.Keys;
 			foreach(ActiveSkillCategory category in keys){
-				if (skillSet [category].getRange () > maxRange)
-					maxRange = skillSet [category].getRange ();
+				if (ActiveSkillSupporter.needsTarget (skillSet [category])) {
+					int skillRange = ActiveSkillSupporter.searchRange (skillSet[category],user);
+					if (skillRange > maxRange)
+						maxRange = skillRange;
+				}
 			}
 			return maxRange;
 		}
@@ -61,7 +65,7 @@ namespace AI {
 		}
 
 		//カテゴリからスキルを取得します
-		public ActiveSkill getSkillFromSkillCategory(ActiveSkillCategory category){
+		public IActiveSkill getSkillFromSkillCategory(ActiveSkillCategory category){
 			return skillSet[category];
 		}
 	}

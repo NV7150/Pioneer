@@ -29,9 +29,9 @@ namespace BattleSystem {
 		bool isReady = false;
 
 		//現在リアクションしているKeyValuePairを表します
-		private KeyValuePair<IBattleable,ActiveSkill> prosessingPair;
+		private KeyValuePair<IBattleable,AttackSkill> prosessingPair;
 		//リアクション待ちのKeyValuePairを表します
-		private List<KeyValuePair<IBattleable,ActiveSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, ActiveSkill>>();
+		private List<KeyValuePair<IBattleable,AttackSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
 		void Update(){
 			if (isReady) {
@@ -49,13 +49,13 @@ namespace BattleSystem {
 		private void reactionState(){
 
 			IBattleable attacker = prosessingPair.Key;
-			ActiveSkill useSkill = prosessingPair.Value;
+			AttackSkill useSkill = prosessingPair.Value;
 
 			ReactionSkill reactoin = ai.decideReaction (attacker,useSkill);
 
-			int atk = useSkill.getAtk () + attacker.getAtk (useSkill.getAttribute(),useSkill.getUseAbility());
-			int hit = useSkill.getHit () + attacker.getHit (useSkill.getUseAbility());
-			reactoin.reaction (user,atk,hit,useSkill.getAttribute());
+			int atk = useSkill.getAtk (attacker);
+			int hit = useSkill.getHit (attacker);
+			reactoin.reaction (user,atk,hit,useSkill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove (prosessingPair);
 			updateProsessingPair ();
 
@@ -67,7 +67,7 @@ namespace BattleSystem {
 			BattleTask task = getTask ();
 			Debug.Log (task.getSkill().getName());
 			task.getSkill ().action (user,task);
-			delay = task.getSkill ().getDelay ();
+			delay = task.getSkill ().getDelay (user);
 			//テスト用
 			delay = 800;
 			state = BattleState.IDLE;
@@ -84,14 +84,21 @@ namespace BattleSystem {
 		//タスクを生成して返します
 		private BattleTask getTask(){
 			searchIsReady ();
-			ActiveSkill skill = ai.decideSkill ();
-			switch (skill.getActiveSkillType ()) {
-				case ActiveSkillType.ACTION:
-					List<IBattleable> targets = ai.decideTarget (BattleManager.getInstance ().getCharacterInRange (user, skill.getRange ()), skill);
-					return new BattleTask (user.getUniqueId(),skill,targets);
-				case ActiveSkillType.MOVE:
-					int move = ai.decideMove (skill);
-					return new BattleTask(user.getUniqueId(),skill,move);
+			IActiveSkill skill = ai.decideSkill ();
+//			switch (skill.getActiveSkillType ()) {
+//				case ActiveSkillType:
+//					
+//				case ActiveSkillType.MOVE:
+//					int move = ai.decideMove (skill);
+//					return new BattleTask(user.getUniqueId(),skill,move);
+//			}
+			if (ActiveSkillSupporter.needsTarget (skill)) {
+				List<IBattleable> targets = ai.decideTarget (BattleManager.getInstance ().getCharacterInRange (user, ActiveSkillSupporter.searchRange (skill, user)), skill);
+				return new BattleTask (user.getUniqueId (), skill, targets);
+			} else if(skill.getActiveSkillType() == ActiveSkillType.MOVE){
+				MoveSkill moveSkill = (MoveSkill)skill;
+				int move = ai.decideMove (moveSkill);
+				return new BattleTask(user.getUniqueId(),skill,move);
 			}
 			throw new InvalidOperationException ("unknown skillType");
 		}
@@ -125,10 +132,10 @@ namespace BattleSystem {
 			
 		}
 
-		public void offerReaction (IBattleable attacker, ActiveSkill skill) {
+		public void offerReaction (IBattleable attacker, AttackSkill skill) {
 			Debug.Log ("offered");
-			waitingReactionActiveSkills.Add (new KeyValuePair<IBattleable, ActiveSkill>(attacker,skill));
-			reactionLimit = skill.getDelay ();
+			waitingReactionActiveSkills.Add (new KeyValuePair<IBattleable, AttackSkill>(attacker,skill));
+			reactionLimit = skill.getDelay (user);
 			updateProsessingPair ();
 		}
 

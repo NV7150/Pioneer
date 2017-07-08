@@ -33,14 +33,14 @@ namespace Character{
 		//器用さを取得します
 		int getDex();
 
-		//取得済みの能動スキルを表します
-		List<ActiveSkill> getActiveSkills ();
+		//取得済みの能動スキルを取得します
+		List<IActiveSkill> getActiveSkills ();
 
-		//取得済みの受動スキルを表します
+		//取得済みの受動スキルを取得します
 		List<ReactionSkill> getReactionSKills();
 
-		//能動スキルを取得します。オーバーロードされます。
-		void addSkill(ActiveSkill skill);
+		//能動スキルを獲得します。オーバーロードされます。
+		void addSkill(IActiveSkill skill);
 
 		//受動スキルを取得します。オーバーロードされます。
 		void addSkill(ReactionSkill skill);
