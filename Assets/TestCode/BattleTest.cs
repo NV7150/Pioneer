@@ -32,16 +32,22 @@ public class BattleTest : MonoBehaviour {
 	private void startBattle(){
 		en = EnemyMasterManager.getEnemyFromId (0);
 		hero = new Hero (JobMasterManager.getJobFromId(0),con);
-		Debug.Log ("cleared" + hero.getName() + en.getName());
 
 		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(0));
 		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(1));
 		hero.addSkill (AttackSkillMasterManager.getAttackSkillFromId(0));
 		hero.addSkill (AttackSkillMasterManager.getAttackSkillFromId(1));
 		hero.addSkill (MoveSkillMasterManager.getMoveSkillFromId(0));
+		hero.addSkill (BufSkillMasterManager.getBufSkillFromId (0));
+		hero.addSkill (DebufSkillMasterManager.getDebufSkillFromId(0));
+		hero.addSkill (HealSkillMasterManager.getHealSkillFromId (0));
 
 		con.setCharacter (hero);
 		con2.setCharacter (en);
+
+		WeponMasterManager.getWeponFromId (1).use (hero);
+
+		BattleManager.getInstance ().StartNewBattle (new Vector3(0,0,0));
 
 		hero.encount ();
 		en.encount ();

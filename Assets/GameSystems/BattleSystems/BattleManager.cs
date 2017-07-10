@@ -9,7 +9,8 @@ using Parameter;
 using AI;
 
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using Faction = Parameter.CharacterParameters.Faction;
 
 /*BattleManagerクラス
  * 戦闘処理の仲介や戦闘状態の管理などを行います
@@ -20,8 +21,7 @@ namespace BattleSystem{
 		private Dictionary<FieldPosition,List<IBattleable>> joinedCharacter = new Dictionary<FieldPosition,List<IBattleable>>();
 		private Dictionary<long,IBattleTaskManager> enteredManager = new Dictionary<long, IBattleTaskManager>();
 		private BattleField field;
-
-		private long playerID;
+		private bool isBattleing = false;
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -35,10 +35,56 @@ namespace BattleSystem{
 		}
 
 		public void StartNewBattle(Vector3 basicPoint){
-			foreach(FieldPosition pos in System.Enum.GetValues(typeof(FieldPosition))){
+			field = new BattleField (basicPoint);
+			isBattleing = true;
+		}
+
+		public void deadCharacter(IBattleable character){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
+			FieldPosition pos = searchCharacter (character);
+			joinedCharacter [pos].Remove (character);
+			character.death ();
+			enteredManager [character.getUniqueId ()].finished ();
+			enteredManager.Remove (character.getUniqueId ());
+
+			if (isFinishedBattle ()) {
+				finishBattle ();
+			} else {
+				var keys = enteredManager.Keys;
+				foreach(long id in keys){
+					IBattleTaskManager taskManager = enteredManager [id];
+					taskManager.deleteTaskFromTarget (character);
+				}
+			}
+		}
+
+		private bool isFinishedBattle(){
+			var keys = joinedCharacter.Keys;
+			List<Faction> factions = new List<Faction> ();
+			foreach(FieldPosition pos in keys){
+				foreach(IBattleable chara in joinedCharacter[pos]){
+					if (!factions.Contains (chara.getFaction ()))
+						factions.Add (chara.getFaction());
+				}
+			}
+			return CharacterParameterSupporter.isThereHostality (factions);
+		}
+
+		private void finishBattle(){
+			var uniqueIds = enteredManager.Keys;
+			foreach(long id in uniqueIds){
+				enteredManager [id].win ();
+				enteredManager [id].finished ();
+			}
+			enteredManager.Clear ();
+
+			var fieldPositions = System.Enum.GetValues (typeof(FieldPosition));
+			foreach(FieldPosition pos in fieldPositions){
 				joinedCharacter [pos].Clear ();
 			}
-			field = new BattleField (basicPoint);
+			isBattleing = false;
 		}
 
 		/*引数に渡したBattleableオブジェクトを戦闘に参加させます
@@ -46,7 +92,8 @@ namespace BattleSystem{
 		 * FiealdPosition pos 初期の戦闘参加位置
 		*/
 		public void joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
-			Debug.Log (bal.getName() + " is joined! to " + pos);
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
 
 			bal.setIsBattling (true);
 			joinedCharacter [pos].Add (bal);
@@ -57,9 +104,8 @@ namespace BattleSystem{
 		}
 
 		public void joinBattle(IPlayable player,FieldPosition pos){
-			Debug.Log (player.getName() + " is joined! to " + pos);
-
-			playerID = player.getUniqueId ();
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
 
 			player.setIsBattling (true);
 			joinedCharacter [pos].Add (player);
@@ -80,6 +126,9 @@ namespace BattleSystem{
 
 		//与えられたキャラクターから射程範囲内にいるキャラクターのリストを返します
 		public List<IBattleable> getCharacterInRange(IBattleable bal,int range){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			//Range内のIBattleableを検索
 			List<IBattleable> list = new List<IBattleable>();
 			FieldPosition pos =  searchCharacter(bal);
@@ -90,7 +139,10 @@ namespace BattleSystem{
 		}
 
 		//回復処理をします
-		public void healCommand(IBattleable bal,int range,int basicHealRate,HealSkillAttribute attribute,Ability useAbility){
+		public void healCommand(IBattleable bal,int range,int basicHealRate,HealSkillAttribute attribute,BattleAbility useAbility){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			//Range内のIBattleableを検索
 			List<IBattleable> list = new List<IBattleable> ();
 			FieldPosition pos =  searchCharacter(bal);
@@ -109,6 +161,9 @@ namespace BattleSystem{
 
 		//対象は戦闘から離脱します
 		private float escapeCommand(IBattleable bal,FieldPosition pos){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			removeBalFromJoinedCharacter (bal);
 			bal.setIsBattling (false);
 			return 0;
@@ -116,27 +171,32 @@ namespace BattleSystem{
 
 		//渡された位置にある渡されたbalオブジェクトをjoinedCharacterディクショナリから削除します
 		private void removeBalFromJoinedCharacter(IBattleable bal){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			FieldPosition pos =  searchCharacter (bal);
 			joinedCharacter [pos].Remove (bal);
 		}
 
 		//与えられたキャラの位置から与えられた範囲のバトル参加中のキャラクターの数を返します。
 		public int sumFromAreaTo(IBattleable bal,int range){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			FieldPosition area = searchCharacter (bal);
 			int count = 0;
 			int index = (((int)area - range) < 0) ? 0 : (int)area - range;
-			Debug.Log ("start roop");
 			for(;index < (int)area + range + 1;index++){
-				Debug.Log ("plus " + (FieldPosition)index + " the count is " + joinedCharacter[(FieldPosition)index]);
 				count += joinedCharacter[(FieldPosition) index].Count;
 			}
-			Debug.Log("end roop");
-			Debug.Log ((FieldPosition)0 + " " + area);
 			return count;
 		}
 
 		//全てのバトル参加中キャラクターの数の合計を返します
 		public int sumAll(){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			int returnValue = 0;
 			foreach(FieldPosition pos in joinedCharacter.Keys){
 				returnValue += joinedCharacter [pos].Count;
@@ -146,6 +206,9 @@ namespace BattleSystem{
 
 		//全ての戦闘に参加しているIBattleableキャラクターを取得します
 		public List<IBattleable> getJoinedBattleCharacter(){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			List<IBattleable> returnList = new List<IBattleable> ();
 			foreach(FieldPosition pos in joinedCharacter.Keys){
 				returnList.AddRange (joinedCharacter[pos]);
@@ -155,6 +218,9 @@ namespace BattleSystem{
 
 		//動きます
 		public void moveCommand(IBattleable bal,int moveness){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			//引数に渡されたIBattleableキャラの位置を検索
 			FieldPosition nowPos = searchCharacter (bal);
 
@@ -171,6 +237,9 @@ namespace BattleSystem{
 
 		//指定されたキャラクターの指定された範囲でもっとも危険な（敵対キャラクターのレベル合計が高い）ポジションを返します
 		public FieldPosition whereIsMostDengerPositionInRange(IBattleable bal,int range){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			//暫定最大危険ポジションのレベル合計より現在のポジションのレベル合計が高い
 			Func<int[],bool> function = (int[] list) =>{
 				return list[0] > list[1];
@@ -181,6 +250,9 @@ namespace BattleSystem{
 
 		//指定されたキャラクターの指定された範囲でもっとも安全な（敵対キャラクターのレベル合計が低い）ポジションを返します
 		public FieldPosition whereIsMostSafePositionInRange(IBattleable bal,int range ){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			//暫定最大安全ポジションのレベル合計より現在のポジションのレベル合計が低いor暫定が0
 			Func<int[],bool> function = (int[] list) =>{
 				return list[0] < list[1] || list[1] == 0;
@@ -191,6 +263,9 @@ namespace BattleSystem{
 
 		//与えられた関数似合う条件の場所を検索します。
 		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			FieldPosition nowPos = searchCharacter (bal);
 			FieldPosition returnPos = nowPos;
 			int returnAreaSum = 0;
@@ -211,6 +286,9 @@ namespace BattleSystem{
 
 		//与えられたIBattleableオブジェクトを検索し位置を返します
 		public FieldPosition searchCharacter(IBattleable target){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			var poses = joinedCharacter.Keys;
 			foreach (FieldPosition pos in poses) {
 				foreach (IBattleable character in joinedCharacter[pos]) {
@@ -219,22 +297,21 @@ namespace BattleSystem{
 					}
 				}
 			}
-			throw new ArgumentException ("Don't found " + target.ToString());
+			throw new ArgumentException ("Didn't found " + target.ToString());
 		}
 
 		//指定されたFieldPositionにいるCharacterを返します
 		public List<IBattleable> getAreaCharacter(FieldPosition pos){
+			if (!isBattleing)
+				throw new InvalidOperationException ("battle isn't started");
+
 			return joinedCharacter [pos];
 		}
 	}
 
-
 	//戦闘フィールドでの状態を表します。ZEROを中心としてPL側がマイナス、NPC側がプラスです。
 	public enum FieldPosition{ZERO = 0,ONE = 1,TWO = 2,THREE = 3,FOUR = 4,FIVE = 5,SIX = 6};
 
-	//戦闘コマンドを表します。ACTION:攻撃・スキルorアイテムの使用 MOVE:戦闘エリアの移動 RUN:逃走
-	public enum BattleCommand{ACTION,MOVE,ESCAPE};
-
-	//方向を表します便宜上、等しいを意味するドローも含まれます
+	//方向を表します。便宜上、等しいを意味するドローも含まれます
 	public enum Direction{PLUS = 1,MINUS = -1,DRAW = 0}
 }

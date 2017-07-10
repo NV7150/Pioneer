@@ -7,89 +7,95 @@ using MasterData;
 namespace Item {
 	[System.SerializableAttribute]
 	public class Armor : IItem{
-		private int
+		private readonly int
 			//この装備のIDです
-			id,
+			ID,
 			//この装備が与える防御への影響です
-			def,
+			DEF,
 			//この装備が与える回避への影響です
-			dodge,
+			DODGE,
 			//この装備が必要とするphy能力値です
-			needPhy,
+			NEED_PHY,
 			//このアイテムの重さです
-			mass,
+			MASS,
 			//このアイテムの価格です
-			itemValue;
+			ITEM_VALUE;
 
 		private string
 			//このアイテムの名前です
-			name,
+			NAME,
 			//このアイテムの説明です
-			descpription,
+			DESCRIPTION,
 			//このアイテム装備条件の説明です
-			equipDescription;
+			EQUIP_DESCRIPTION;
 
-		private float delayBonus;
+		private float DELAY_BONUS;
 
 		public Armor(ArmorBuilder builder){
-			this.id = builder.getId ();
-			this.def = builder.getDef ();
-			this.dodge = builder.getDodge ();
-			this.needPhy = builder.getNeedPhy ();
-			this.name = builder.getName ();
-			this.descpription = builder.getDescription ();
-			this.equipDescription = builder.getEquipDescription ();
-			this.delayBonus = builder.getDelayBonus ();
+			this.ID = builder.getId ();
+			this.DEF = builder.getDef ();
+			this.DODGE = builder.getDodge ();
+			this.NEED_PHY = builder.getNeedPhy ();
+			this.NAME = builder.getName ();
+			this.DESCRIPTION = builder.getDescription ();
+			this.EQUIP_DESCRIPTION = builder.getEquipDescription ();
+			this.DELAY_BONUS = builder.getDelayBonus ();
+			this.MASS = builder.getMass ();
+			this.ITEM_VALUE = builder.getItemValue ();
 		}
 
 		//物理防御を返します
 		public int getDef(){
-			return def;
+			return DEF;
 		}
 
 		//回避修正を返します
 		public int getDodge(){
-			return dodge;
+			return DODGE;
 		}
 
 		//武器が装備可能かを確認します
 		public bool canEquip(IPlayable user){
-			return (user.getPhy () >= needPhy);
+			return (user.getPhy () >= NEED_PHY);
 		}
 
 		//装備条件を文章として返します
 		public string getEquipDescription (){
-			return equipDescription;
+			return EQUIP_DESCRIPTION;
 		}
 
 		//アイテム名を取得します
 		public string getName(){
-			return name;
+			return NAME;
 		}
 
 		//アイテム説明を取得します
 		public string getDescription(){
-			return descpription;
+			return DESCRIPTION;
 		}
 
 		//アイテムの重量を表します
 		public int getMass(){
-			return mass;
+			return MASS;
 		}
 
 		//アイテムの基本価格を表します
 		public int getItemValue(){
-			return itemValue;
+			return ITEM_VALUE;
 		}
 
 		//アイテムのidを返します
 		public int getId(){
-			return id;
+			return ID;
+		}
+
+		public float getDelayBonus(){
+			return DELAY_BONUS;
 		}
 
 		//アイテムを使用します
-		public void use (IPlayable use) {
-			throw new NotImplementedException ();
+		public void use (IPlayable user) {
+			user.equipArmor (this);
 		}
 	}
 }

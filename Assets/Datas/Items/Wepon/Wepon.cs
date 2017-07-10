@@ -6,7 +6,7 @@ using BattleSystem;
 
 using MasterData;
 
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 
 namespace Item{
 	public class  Wepon :  IItem{
@@ -20,9 +20,7 @@ namespace Item{
 			//このアイテムの価格です
 			ITEM_VALUE,
 			//このアイテムの重さです
-			MASS,
-			//このアイテムのディレイ値です
-			DELAY;
+			MASS;
 
 		private readonly string 
 			//このアイテムの名前です
@@ -32,11 +30,13 @@ namespace Item{
 			//このアイテムの装備条件の説明です
 			equipdescription;
 
+		//このアイテムのディレイ値です
+		private float DELAY;
 
 		//この武器の種別です
 		private WeponType type;
 
-		private Ability ability;
+		private BattleAbility ability;
 
 		public Wepon(WeponBuilder builder){
 			ATTACK = builder.getAttack ();
@@ -48,6 +48,7 @@ namespace Item{
 			description = builder.getDescription ();
 			equipdescription = builder.getEquipDescription ();
 			type = builder.getWeponType ();
+			DELAY = builder.getDelay ();
 		}
 
 		//攻撃力を取得します
@@ -86,7 +87,7 @@ namespace Item{
 		}
 
 		//ディレイ値を取得します
-		public int getDelay() {
+		public float getDelay() {
 			return DELAY;
 		}
 
@@ -105,12 +106,12 @@ namespace Item{
 			return equipdescription;
 		}
 
-		public Ability getWeponAbility(){
+		public BattleAbility getWeponAbility(){
 			return ability;
 		}
 
-		public void use (IPlayable use) {
-			throw new NotImplementedException ();
+		public void use (IPlayable user) {
+			user.equipWepon (this);
 		}
 	}
 }

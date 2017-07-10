@@ -57,16 +57,18 @@ namespace AI {
 				{ ActiveSkillCategory.MOVE,0}
 			};
 
+			int maxMp = (user.getMaxMp () > 0) ? user.getMaxMp () : 1;
+
 			//HPが50%以下の場合、caution可能性値を+20します
-			if (this.user.getHp() / this.user.getMaxHp() <= 0.5f)
+			if (this.user.getHp() / maxMp <= 0.5f)
 				probalityBonus [ActiveSkillCategory.CAUTION] += 20;
 
 			//HPが20%以下の場合、danger可能性値を+30します
-			if (this.user.getHp() / this.user.getMaxHp() <= 0.2f)
+			if (this.user.getHp() / maxMp <= 0.2f)
 				probalityBonus [ActiveSkillCategory.DANGER] += 30;
 
 			//HPが70%以下の場合、攻撃する可能性値を-5、移動する可能性を+10します
-			if (this.user.getHp() / this.user.getMaxHp() <= 0.7f) {
+			if (this.user.getHp() / maxMp <= 0.7f) {
 				probalityBonus [ActiveSkillCategory.NORMAL] -= 5;
 				probalityBonus [ActiveSkillCategory.POWER] -= 5;
 				probalityBonus [ActiveSkillCategory.FULL_POWER] -= 5;
@@ -112,8 +114,9 @@ namespace AI {
 				if (choose <  probality|| choose == 0) {
 					return activeSkills.getSkillFromSkillCategory (category);
 				}
-				choose -= probalityTable [category];
+				choose -= probalityTable [category] + probalityBonus [category];
 			}
+
 			throw new InvalidOperationException("exception state");
 		}
 
@@ -234,15 +237,11 @@ namespace AI {
 			float guardRisk = atk  / sumHpGuard;
 			riskTable.Add (ReactionSkillCategory.GUARD,guardRisk);
 
-			Debug.Log ("guard " + guardRisk + " dodge " + dodgeRisk);
-
 			//乱数判定
 			float random = UnityEngine.Random.Range(0,dodgeRisk + guardRisk);
-			Debug.Log ("random " + random);
 			var keys = riskTable.Keys;
 			foreach(ReactionSkillCategory category in keys){
 				if (riskTable [category] >= random) {
-					Debug.Log ("chosen " + category);
 					return reactionSkills.getReactionSkillFromCategory(category);
 				} else {
 					random -= riskTable [category];

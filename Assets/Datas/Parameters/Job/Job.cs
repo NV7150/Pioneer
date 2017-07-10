@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
 
 namespace Parameter{
 	[System.SerializableAttribute]
@@ -49,18 +50,22 @@ namespace Parameter{
 		}
 
 		//能力値テーブルを表すDictionaryを取得します
-		public Dictionary<Ability,int> defaultSetting(){
-			Dictionary<Ability,int> parameters = new Dictionary<Ability, int> ();
-			parameters [Ability.MFT] = MFT;
-			parameters [Ability.FFT] = FFT;
-			parameters [Ability.AGI] = AGI;
-			parameters [Ability.MGP] = MGP;
-			parameters [Ability.PHY] = PHY;
-			parameters [Ability.DEX] = DEX;
-			parameters [Ability.SPC] = SPC;
-			parameters [Ability.HP] = PHY;
-			parameters [Ability.MP] = MGP;
-			parameters [Ability.LV] = 1;
+		public Dictionary<BattleAbility,int> defaultSettingBattleAbility(){
+			Dictionary<BattleAbility,int> parameters = new Dictionary<BattleAbility, int> ();
+			parameters [BattleAbility.MFT] = MFT;
+			parameters [BattleAbility.FFT] = FFT;
+			parameters [BattleAbility.AGI] = AGI;
+			parameters [BattleAbility.MGP] = MGP;
+			parameters [BattleAbility.PHY] = PHY;
+
+			return parameters;
+		}
+
+		public Dictionary<FriendlyAbility,int> defaultSettingFriendlyAbility(){
+			Dictionary<FriendlyAbility,int> parameters = new Dictionary<FriendlyAbility, int> ();
+			parameters [FriendlyAbility.DEX] = DEX;
+			parameters [FriendlyAbility.SPC] = SPC;
+
 			return parameters;
 		}
 

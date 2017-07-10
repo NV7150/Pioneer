@@ -13,6 +13,12 @@ namespace BattleSystem {
 
 		//タスクがあるかを返します
 		bool isHavingTask();
+
+		/// <summary> 勝利時の処理です </summary>
+		void win();
+
+		/// <summary> 死亡時の処理です </summary>
+		void finished();
 	}
 }
 

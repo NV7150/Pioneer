@@ -18,14 +18,15 @@ namespace MasterData{
 		needMft,
 		itemValue,
 		mass,
-		weponTypeID,
-		delay;
+		weponTypeID;
 
 		[SerializeField]
 		private string 
 		name,
 		description,
 		equipDescription;
+
+		private float delay;
 
 		public WeponBuilder(string[] datas){
 			setFromCSV (datas);
@@ -68,7 +69,7 @@ namespace MasterData{
 			return equipDescription;
 		}
 
-		public int getDelay() {
+		public float getDelay() {
 			return delay;
 		}
 
@@ -82,13 +83,13 @@ namespace MasterData{
 			this.name = datas [1];
 			this.attack = int.Parse (datas[2]);
 			this.range = int.Parse (datas[3]);
-			this.needMft = int.Parse (datas [4]);
-			this.itemValue = int.Parse (datas[5]);
-			this.mass = int.Parse (datas[6]);
-			this.weponTypeID = int.Parse (datas[7]);
-			this.description = datas [8];
-			this.equipDescription = datas [9];
-			this.delay = int.Parse (datas[10]);
+			this.delay = float.Parse (datas[4]);
+			this.needMft = int.Parse (datas [5]);
+			this.itemValue = int.Parse (datas[6]);
+			this.mass = int.Parse (datas[7]);
+			this.weponTypeID = int.Parse (datas[8]);
+			this.description = datas [9];
+			this.equipDescription = datas [10];
 		}
 
 		//Weponを取得します

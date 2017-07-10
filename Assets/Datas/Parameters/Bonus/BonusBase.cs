@@ -4,7 +4,7 @@ namespace Parameter{
 	public abstract class BonusBase {
 		protected string name;
 		protected int bonusValue;
-		protected int limit;
+		protected float limit;
 
 
 		//このボーナスの名前を返します

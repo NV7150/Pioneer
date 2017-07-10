@@ -8,7 +8,7 @@ using Parameter;
 using AI;
 using Item;
 
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using Faction = Parameter.CharacterParameters.Faction;
 
 namespace MasterData{
@@ -96,15 +96,21 @@ namespace MasterData{
 			return (Faction) Enum.Parse (typeof(Faction),this.faction);
 		}
 
-		public Dictionary<Ability,int> getAbilities(){
-			return new Dictionary<Ability,int> {
-				{Ability.MFT,mft},
-				{Ability.FFT,fft},
-				{Ability.PHY,phy},
-				{Ability.MGP,mgp},
-				{Ability.AGI,agi},
-				{Ability.HP,maxHp},
-				{Ability.MP,maxMp}			
+		public int getMaxHp(){
+			return maxHp;
+		}
+
+		public int getMaxMp(){
+			return maxMp;
+		}
+
+		public Dictionary<BattleAbility,int> getAbilities(){
+			return new Dictionary<BattleAbility,int> {
+				{BattleAbility.MFT,mft},
+				{BattleAbility.FFT,fft},
+				{BattleAbility.PHY,phy},
+				{BattleAbility.MGP,mgp},
+				{BattleAbility.AGI,agi},			
 			};
 		}
 

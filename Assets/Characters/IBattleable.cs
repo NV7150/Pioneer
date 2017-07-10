@@ -10,7 +10,7 @@ using Character;
 
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using Faction = Parameter.CharacterParameters.Faction;
 
 namespace Character{
@@ -50,13 +50,10 @@ namespace Character{
 		int getPhy();
 
 		//攻撃力(atk)を返します。属性と使用能力値が必須です
-		int getAtk(AttackSkillAttribute attribute,Ability useAbility);
+		int getAtk(AttackSkillAttribute attribute,BattleAbility useAbility);
 
 		//防御力(defence)を返します
 		int getDef();
-
-		//ディレイ値を返します
-		int getDelay();
 
 		//戦闘中かどうかを表します
 		bool getIsBattling();
@@ -68,7 +65,7 @@ namespace Character{
 		void syncronizePositioin(Vector3 vector);
 
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
-		int getHit(Ability useAbility);
+		int getHit(BattleAbility useAbility);
 
 		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
 		int getDodge();
@@ -76,9 +73,9 @@ namespace Character{
 		//カウンターを行うかどうかのフラグを設定します。isButtlingがtrue時のみ呼びだされます。
 		void setIsReadyToCounter(bool flag);
 
-		void addAbilityBonus (AbilityBonus bonus);
+		void addAbilityBonus (BattleAbilityBonus bonus);
 
-		void addSubAbilityBonus (SubAbilityBonus bonus);
+		void addSubAbilityBonus (SubBattleAbilityBonus bonus);
 
 		//ボーナスをリセットします。isButtlingがtrue時のみ呼びだされます。
 		void resetBonus();
@@ -87,7 +84,7 @@ namespace Character{
 		int getLevel();
 
 		//回復を行います（能動側）
-		int healing(int baseParameter,CharacterParameters.Ability useAbility);
+		int healing(BattleAbility useAbility);
 
 		//派閥を取得します
 		Faction getFaction();

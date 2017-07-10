@@ -9,7 +9,7 @@ using MasterData;
 using BattleSystem;
 using Skill;
 
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using Faction = Parameter.CharacterParameters.Faction;
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
@@ -17,27 +17,30 @@ using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 
 namespace Character{
 	public class Enemy : IBattleable{
-		private int
+		private readonly int
 			//このキャラクターのIDです
-			id,
-			//このキャラクターの防御値ですsd
-			def,
+			ID,
+			//このキャラクターの最大HPを表します
+			MAX_HP,
+			//このキャラクターの最大MPを表します
+			MAX_MP,
+			//このキャラクターの防御値です
+			DEF,
 			//このキャラクターのレベルです
-			level,
+			LV,
 			//このキャラクターのノーマルドロップのアイテムIDです
-			normalDropId,
+			NORMAL_DROP_ID,
 			//このキャラクターのレアドロップのアイテムIDです
-			rareDropId;
+			RARE_DROP_ID;
 
-		private string 
+		private readonly string 
 			//このキャラクターの名前です
-			name,
+			NAME,
 			//このキャラクターのプレファブリソースへのパスです Resourcesフォルダ内からの相対パスになります
-			modelName;
+			MODEL_ID;
 
 		//このキャラクターの各能力値を表します
-		private Dictionary<CharacterParameters.Ability,int> abilities = new Dictionary<CharacterParameters.Ability, int>();
-
+		private Dictionary<CharacterParameters.BattleAbility,int> abilities = new Dictionary<CharacterParameters.BattleAbility, int>();
 
 		//このキャラクターの現在のHPです
 		private int hp;
@@ -70,19 +73,31 @@ namespace Character{
 		//このキャラクターの武器です
 		private Wepon equipedWepon;
 
+		//このキャラクターが得ている補正値のリストです
+		private BonusKeeper bonusKeeper = new BonusKeeper();
+
 		public Enemy(EnemyBuilder builder){
-			this.id = builder.getId ();
-			this.name = builder.getName ();
+			this.ID = builder.getId ();
+			this.NAME = builder.getName ();
 			this.abilities = builder.getAbilities ();
-			this.def = builder.getDef ();
-			this.level = builder.getLevel ();
-			this.normalDropId = builder.getNormalDropId ();
-			this.rareDropId = builder.getRareDropId ();
-			this.modelName = builder.getModelName ();
+			this.DEF = builder.getDef ();
+			this.LV = builder.getLevel ();
+			this.NORMAL_DROP_ID = builder.getNormalDropId ();
+			this.RARE_DROP_ID = builder.getRareDropId ();
+			this.MODEL_ID = builder.getModelName ();
 			this.FACTION = builder.getFaction ();
 			this.equipedWepon = builder.getWepon ();
 
-			GameObject prefab = (GameObject)Resources.Load(modelName);
+//			this.MAX_HP = this.abilities [BattleAbility.PHY] * 2 + LV;
+			this.MAX_HP = 100;
+
+			this.MAX_MP = this.abilities [BattleAbility.MGP] * 2 + LV;
+
+//			this.hp = MAX_HP;
+			this.hp = 100;
+			this.mp = MAX_MP;
+
+			GameObject prefab = (GameObject)Resources.Load(MODEL_ID);
 			GameObject gameobject = MonoBehaviour.Instantiate (prefab);
 			this.container = gameobject.GetComponent<Container> ();
 			container.setCharacter(this);
@@ -92,8 +107,6 @@ namespace Character{
 			activeSkillSet = ActiveSkillSetMasterManager.getActiveSkillSetFromId (builder.getActiveSkillSetId(),this);
 			reactionSkillSet = ReactionSkillSetMasterManager.getReactionSkillSetFromId (builder.getReactionSkillSetId());
 			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,reactionSkillSet);
-
-			this.hp = abilities [Ability.HP];
 		}
 	    
 			
@@ -107,44 +120,40 @@ namespace Character{
 		}
 
 		public int getMaxHp () {
-			return abilities[Ability.HP];
+			return MAX_HP;
 		}
 
 		public int getMaxMp () {
-			return abilities[Ability.MP];
+			return MAX_MP;
 		}
 
 		public int getMft () {
-			return abilities[Ability.MFT];
+			return abilities[BattleAbility.MFT];
 		}
 
 		public int getFft () {
-			return abilities[Ability.FFT];
+			return abilities[BattleAbility.FFT];
 		}
 
 		public int getMgp () {
-			return abilities[Ability.MGP];
+			return abilities[BattleAbility.MGP];
 		}
 
 		public int getAgi () {
-			return abilities[Ability.AGI];
+			return abilities[BattleAbility.AGI];
 		}
 
 		public int getPhy () {
-			return abilities[Ability.PHY];
+			return abilities[BattleAbility.PHY];
 		}
 
-		public int getAtk (AttackSkillAttribute attribute, Ability useAbility) {
+		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility) {
 			//もっとくふうすする予定
-			return abilities [useAbility];
+			return abilities [useAbility] + UnityEngine.Random.Range(0,10 + LV);
 		}
 
 		public int getDef () {
-			return def;
-		}
-
-		public int getDelay () {
-			throw new System.NotImplementedException ();
+			return DEF;
 		}
 
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
@@ -157,14 +166,28 @@ namespace Character{
 		}
 			
 		public void healed (int heal, HealSkillAttribute attribute) {
-			throw new NotImplementedException ();
+			Debug.Log ("" + heal);
+			if (heal < 0 || attribute == HealSkillAttribute.NONE)
+				throw new ArgumentException ("invlit heal");
+
+			if (attribute == HealSkillAttribute.HP_HEAL || attribute == HealSkillAttribute.BOTH) {
+				if (this.hp != 0)
+					this.hp += heal;
+			}
+			if (attribute == HealSkillAttribute.MP_HEAL || attribute == HealSkillAttribute.BOTH) {
+				this.mp += heal;
+			}
+			if (attribute == HealSkillAttribute.RESURRECTITION) {
+				if(this.hp == 0)
+					this.hp += heal;
+			}
 		}
 
-		public int getHit (Ability useAbility) {
+		public int getHit (BattleAbility useAbility) {
 			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
 		}
 
-		public int healing (int baseParameter, Ability useAbility) {
+		public int healing (BattleAbility useAbility) {
 			throw new NotImplementedException ();
 		}
 
@@ -193,7 +216,7 @@ namespace Character{
 		}
 
 		public int getLevel () {
-			return level;
+			return LV;
 		}
 		List<IBattleable> decideTarget (List<IBattleable> bals) {
 			throw new System.NotImplementedException ();
@@ -207,7 +230,6 @@ namespace Character{
 			return (faction == FACTION);
 		}
 
-		//エンカウントし、戦闘に突入します
 		public void encount(){
 			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai);
 		}
@@ -216,13 +238,13 @@ namespace Character{
 			return this.equipedWepon;
 		}
 
-		public void addAbilityBonus (AbilityBonus bonus) {
-			throw new NotImplementedException ();
+		public void addAbilityBonus (BattleAbilityBonus bonus) {
+			bonusKeeper.setBonus (bonus);
 		}
 
 
-		public void addSubAbilityBonus (SubAbilityBonus bonus) {
-			throw new NotImplementedException ();
+		public void addSubAbilityBonus (SubBattleAbilityBonus bonus) {
+			bonusKeeper.setBonus (bonus);
 		}
 
 		#endregion
@@ -233,11 +255,11 @@ namespace Character{
 		}
 
 		public void act () {
-//			Debug.Log ("" + this.hp);
+			ENTP.hp = this.hp;
 		}
 
 		public void death () {
-			throw new NotImplementedException ();
+			MonoBehaviour.Destroy (container);
 		}
 
 		public Container getContainer () {
@@ -245,7 +267,7 @@ namespace Character{
 		}
 
 		public string getName () {
-			return this.name;
+			return this.NAME;
 		}
 
 		public long getUniqueId () {
@@ -255,7 +277,7 @@ namespace Character{
 
 		//Enemyの種族IDを返します
 		public int getId(){
-			return this.id;
+			return this.ID;
 		}
 
 		//HPを設定します
@@ -283,7 +305,7 @@ namespace Character{
 		}
 
 		public override string ToString () {
-			return "Enemy " + this.name + " No. " + this.UNIQE_ID;
+			return "Enemy " + this.NAME + " No. " + this.UNIQE_ID;
 		}
 
 		public override bool Equals (object obj) {

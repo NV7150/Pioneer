@@ -71,6 +71,8 @@ namespace Skill{
 				int dammage = attack - def;
 				dammage = (dammage >= 0) ? dammage : 0;
 				user.dammage (dammage, attribute);
+			} else if (this.CATEGORY == ReactionSkillCategory.MISS) {
+				user.dammage (attack,attribute);
 			}
 		}
 

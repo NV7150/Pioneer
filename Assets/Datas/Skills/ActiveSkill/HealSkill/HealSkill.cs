@@ -8,6 +8,7 @@ using BattleSystem;
 using HealAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 using Extent = Skill.ActiveSkillParameters.Extent;
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 
 namespace Skill {
 	public class HealSkill : IActiveSkill{
@@ -18,8 +19,6 @@ namespace Skill {
 			HEAL,
 			/// <summary> 射程 </summary>
 			RANGE,
-			/// <summary> ディレイフレーム数  </summary>
-			DELAY,
 			/// <summary> MPコスト </summary>
 			COST;
 
@@ -28,6 +27,11 @@ namespace Skill {
 			NAME,
 			/// <summary> スキルの説明文 </summary>
 			DESCRIPTION;
+
+		/// <summary> 秒数  </summary>
+		private readonly float DELAY;
+
+		private readonly BattleAbility USE_ABILITY;
 
 		private readonly HealAttribute ATTRIBUTE;
 
@@ -38,11 +42,12 @@ namespace Skill {
 			NAME = datas [1];
 			HEAL = int.Parse (datas[2]);
 			RANGE = int.Parse (datas[3]);
-			DELAY = int.Parse (datas[4]);
+			DELAY = float.Parse (datas[4]);
 			COST = int.Parse (datas[5]);
-			DESCRIPTION = datas [6];
-			ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas [7]);
-			EXTENT = (Extent)Enum.Parse(typeof(Extent),datas [8]);
+			ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas [6]);
+			EXTENT = (Extent)Enum.Parse(typeof(Extent),datas [7]);
+			USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility),datas[8]);
+			DESCRIPTION = datas [9];
 		}
 
 		/// <summary>
@@ -51,7 +56,10 @@ namespace Skill {
 		/// <param name="actioner"> 回復を行うIBattleableキャラクター </param>
 		/// <param name="targets"> 対象のリスト </param>
 		private void heal(IBattleable actioner,List<IBattleable> targets){
-			throw new NotSupportedException ();
+			foreach(IBattleable target in targets){
+				int heal = actioner.healing(this.USE_ABILITY);
+				target.healed (heal,this.ATTRIBUTE);
+			}
 		}
 
 		/// <summary>
@@ -88,8 +96,8 @@ namespace Skill {
 			return COST;
 		}
 
-		public int getDelay (IBattleable actioner) {
-			throw new NotImplementedException ();
+		public float getDelay (IBattleable actioner) {
+			return DELAY;
 		}
 
 		public ActiveSkillType getActiveSkillType () {

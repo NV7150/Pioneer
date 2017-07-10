@@ -6,9 +6,10 @@ using Character;
 using BattleSystem;
 using Parameter;
 
-using Ability = Parameter.CharacterParameters.Ability;
-using SubAbility = Parameter.CharacterParameters.SubAbility;
+using Ability = Parameter.CharacterParameters.BattleAbility;
+using SubAbility = Parameter.CharacterParameters.SubBattleAbility;
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
+using Extent = Skill.ActiveSkillParameters.Extent;
 
 namespace Skill {
 	public class BufSkill : SupportSkillBase,IActiveSkill{
@@ -17,19 +18,24 @@ namespace Skill {
 			ID,
 			/// <summary> このスキルによる補正値 </summary>
 			BONUS,
-			/// <summary> このスキルの効果時間 </summary>
-			LIMIT,
 			/// <summary> このスキルの射程 </summary>
 			RANGE,
 			/// <summary> このスキルのMPコスト </summary>
-			COST,
-			DELAY;
+			COST;
 
 		private readonly string
 			/// <summary> スキル名 </summary>
 			NAME,
 			/// <summary>  スキルの説明 </summary>
 			DESCRIPTION;
+
+		private readonly float 
+			/// <summary> このスキルのディレイ秒数です </summary>
+			DELAY,
+			/// <summary> このスキルの効果時間 </summary>
+			LIMIT;
+
+		private readonly Extent EXTENT;
 
 		public BufSkill (string[] datas) {
 			this.ID = int.Parse (datas [0]);
@@ -38,19 +44,28 @@ namespace Skill {
 			this.LIMIT = int.Parse(datas [3]);
 			this.RANGE = int.Parse (datas[4]);
 			this.COST = int.Parse (datas[5]);
-			this.DELAY = int.Parse (datas[6]);
+			this.DELAY = float.Parse (datas[6]);
 			setBonusParameter (datas[7]);
-			this.DESCRIPTION = datas [8];
+			this.EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[8]);
+			this.DESCRIPTION = datas [9];
+		}
+
+		public Extent getExtent(){
+			return EXTENT;
+		}
+
+		public int getRange(){
+			return RANGE;
 		}
 
 		#region implemented abstract members of SupportSkillBase
 
-		protected override AbilityBonus getAbilityBonus(){
-			return new AbilityBonus(NAME,bonusAbility,LIMIT,BONUS);
+		protected override BattleAbilityBonus getAbilityBonus(){
+			return new BattleAbilityBonus(NAME,bonusAbility,LIMIT,BONUS);
 		}
 
-		protected override SubAbilityBonus getSubAbilityBonus(){
-			return new SubAbilityBonus (NAME,bonusSubAbility,LIMIT,BONUS);
+		protected override SubBattleAbilityBonus getSubAbilityBonus(){
+			return new SubBattleAbilityBonus (NAME,bonusSubAbility,LIMIT,BONUS);
 		}
 
 		#endregion
@@ -65,7 +80,7 @@ namespace Skill {
 			return COST;
 		}
 
-		public int getDelay (IBattleable user) {
+		public float getDelay (IBattleable user) {
 			return DELAY;
 		}
 

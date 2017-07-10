@@ -2,16 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using Ability = Parameter.CharacterParameters.Ability;
-using SubAbility = Parameter.CharacterParameters.SubAbility;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using SubBattleAbility = Parameter.CharacterParameters.SubBattleAbility;
 using Character;
 using Parameter;
 
 namespace Skill {
 	public abstract class SupportSkillBase {
 
-		protected Ability bonusAbility;
-		protected SubAbility bonusSubAbility;
+		protected BattleAbility bonusAbility;
+		protected SubBattleAbility bonusSubAbility;
 
 		protected bool isBonusForAbility;
 
@@ -20,11 +20,11 @@ namespace Skill {
 		/// </summary>
 		/// <param name="data"> AbilityもしかはSubAblitiyのstringデータ </param>
 		protected void setBonusParameter(string data){
-			if (Enum.IsDefined (typeof(Ability), data)) {
-				bonusAbility = (Ability)Enum.Parse (typeof(Ability), data);
+			if (Enum.IsDefined (typeof(BattleAbility), data)) {
+				bonusAbility = (BattleAbility)Enum.Parse (typeof(BattleAbility), data);
 				this.isBonusForAbility = true;
-			} else if (Enum.IsDefined (typeof(SubAbility), data)) {
-				bonusSubAbility = (SubAbility)Enum.Parse (typeof(SubAbility), data);
+			} else if (Enum.IsDefined (typeof(SubBattleAbility), data)) {
+				bonusSubAbility = (SubBattleAbility)Enum.Parse (typeof(SubBattleAbility), data);
 				this.isBonusForAbility = false;
 			}
 		}
@@ -39,9 +39,9 @@ namespace Skill {
 			}
 		}
 
-		protected abstract AbilityBonus getAbilityBonus ();
+		protected abstract BattleAbilityBonus getAbilityBonus ();
 
-		protected abstract SubAbilityBonus getSubAbilityBonus ();
+		protected abstract SubBattleAbilityBonus getSubAbilityBonus ();
 	}
 }
 

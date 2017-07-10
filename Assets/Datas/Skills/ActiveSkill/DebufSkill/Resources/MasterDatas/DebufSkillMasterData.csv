@@ -1,0 +1,4 @@
+id,name,bonus,limit,range,cost,delay,parameter,extent,description
+0,規制：刃,-3,20,1,5,3,ATK,SINGLE,刃を鈍らせる祈りを捧げる。
+1,闘士の咆哮,-3,20,1,5,3,DEF,SINGLE,邪魔な守りを打ち消す咆哮を放つ。
+2,逆風,-1,20,1,5,3,AGI,SINGLE,風は逆風となり、対象を妨げる。

@@ -1,5 +1,5 @@
-id,name,attack,range,needMft,itemValue,mass,weponTypeID,description,equipDescription,delay
-0,装備なし,0,0,0,0,0,3,武器を持っていない状態,なし,300
-1,木剣,1,0,1,30,1,0,練習用の木製の剣,mftが1以上。,300
-2,鉄の剣,3,0,3,100,2,0,鉄製の一般的な剣,mftが3以上。,400
-3,棍棒,1,0,1,10,1,3,ゴブリンなどが使う粗い棍棒,mftが1以上,400
+id,name,attack,range,delay,needMft,itemValue,mass,weponTypeID,description,equipDescription
+0,装備なし,0,0,3,0,0,0,3,武器を持っていない状態,なし
+1,木剣,1,0,3.5,1,30,1,0,練習用の木製の剣,mftが1以上。
+2,鉄の剣,3,0,4,3,100,2,0,鉄製の一般的な剣,mftが3以上。
+3,棍棒,1,0,4,1,10,1,3,ゴブリンなどが使う粗い棍棒,mftが1以上

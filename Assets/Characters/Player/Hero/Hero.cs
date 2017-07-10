@@ -8,7 +8,8 @@ using Skill;
 using Parameter;
 using BattleSystem;
 
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
 using Faction = Parameter.CharacterParameters.Faction;
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
@@ -19,12 +20,18 @@ namespace Character{
 		private int hp;
 		//このキャラクターのMPを表します
 		private int mp;
+		//このキャラクターの最大HPを表します
+		private int maxHp;
+		//このキャラクターの最大MPを表します
+		private int maxMp;
 		//ゲームスコアを表します
 		private int score;
 		//キャタクターの経験値を表します
 		private int exp;
-		//キャラクターの各種パラメータを表します
-		Dictionary<Ability,int> abilities = new Dictionary<Ability, int>();
+		//キャラクターの各種戦闘用パラメータを表します
+		Dictionary<BattleAbility,int> battleAbilities = new Dictionary<BattleAbility, int>();
+		//キャラクターの各非戦的パラメータを表します
+		Dictionary<FriendlyAbility,int> friendlyAbilities = new Dictionary<FriendlyAbility, int>();
 		//このキャラクターの所持金(metal)を表します
 		private int mt = 0;
 		//使命達成用のflugリストです。
@@ -57,24 +64,26 @@ namespace Character{
 		private List<IActiveSkill> activeSkills = new List<IActiveSkill>();
 		//このキャラクターが持つ受動スキルのリストです
 		private List<ReactionSkill> reactionSkills = new List<ReactionSkill>();
+		//このキャラクターのレベル
+		private int level;
 
 
 		public Hero(Job job,Container con){
-			Dictionary<Ability,int> parameters = job.defaultSetting ();
+			Dictionary<BattleAbility,int> battleParameters = job.defaultSettingBattleAbility ();
+			Dictionary<FriendlyAbility,int> friendlyParameters = job.defaultSettingFriendlyAbility ();
 
-			setMft (parameters[Ability.MFT]);
-			setFft (parameters [Ability.FFT]);
-			setMgp (parameters [Ability.MGP]);
-			setPhy (parameters [Ability.PHY]);
-			setAgi (parameters [Ability.AGI]);
-			setDex (parameters [Ability.DEX]);
-			setSpc (parameters [Ability.SPC]);
-			abilities [Ability.LV] = 1;
+			setMft (battleParameters[BattleAbility.MFT]);
+			setFft (battleParameters [BattleAbility.FFT]);
+			setMgp (battleParameters [BattleAbility.MGP]);
+			setPhy (battleParameters [BattleAbility.PHY]);
+			setAgi (battleParameters [BattleAbility.AGI]);
+			setDex (friendlyParameters [FriendlyAbility.DEX]);
+			setSpc (friendlyParameters [FriendlyAbility.SPC]);
 
-			setMaxHp (abilities[Ability.PHY]);
-			setMaxMp (abilities[Ability.MGP]);
+			setMaxHp (battleAbilities[BattleAbility.PHY]);
+			setMaxMp (battleAbilities[BattleAbility.MGP]);
 			hp = 100;
-			mp = abilities [Ability.MP];
+			mp = 50;
 
 			this.container = con;
 
@@ -91,6 +100,7 @@ namespace Character{
 			} else {
 				return false;
 			}
+
 		}
 
 		public bool equipArmor (Armor armor) {
@@ -128,7 +138,7 @@ namespace Character{
 		}
 
 		public int getDex () {
-			return abilities[Ability.DEX];
+			return friendlyAbilities[FriendlyAbility.DEX];
 		}
 
 		public List<IActiveSkill> getActiveSkills () {
@@ -163,7 +173,7 @@ namespace Character{
 		#endregion
 		#region IFriendly implementation
 		public int getSpc () {
-			return abilities[Ability.SPC];
+			return friendlyAbilities[FriendlyAbility.SPC];
 		}
 
 		public void talk (IFriendly friendly) {
@@ -211,42 +221,40 @@ namespace Character{
 					this.hp += heal;
 			}
 		}
-			
 
 		public int getMft () {
-			return abilities[Ability.MFT];
+			return battleAbilities[BattleAbility.MFT];
 		}
 
 		public int getFft () {
-			return abilities[Ability.FFT];
+			return battleAbilities[BattleAbility.FFT];
 		}
 
 		public int getMgp () {
-			return abilities[Ability.MGP];
+			return battleAbilities[BattleAbility.MGP];
 		}
 
 		public int getAgi () {
-			return abilities[Ability.AGI];
+			return battleAbilities[BattleAbility.AGI];
 		}
 
 		public int getPhy () {
-			return abilities[Ability.PHY];
+			return battleAbilities[BattleAbility.PHY];
 		}
 
-		public int getAtk (AttackSkillAttribute attribute, Ability useAbility) {
-			//もっと工夫しようず
-			return 10;
+		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility) {
+			int atk = battleAbilities [useAbility] + UnityEngine.Random.Range (0,level);
+			return atk;
 		}
 
+		/// <summary>
+		/// 防御を取得
+		/// 防御の計算式：装備品の防御 + (phy / 4 + mft / 4)
+		/// </summary>
+		/// <returns>The def.</returns>
 		public int getDef () {
-//			return getMft () /  2 + armor.getDef (); 
+//			return armor.getDef() + (this.battleAbilities[BattleAbility.PHY]/4  + this.battleAbilities[BattleAbility.MFT]/4);
 			return 0;
-		}
-
-		public int getDelay () {
-//			return getWepon ().getDelay ();
-			//wepon実装まだなんで
-			return 1;
 		}
 
 		public bool getIsBattling () {
@@ -261,8 +269,8 @@ namespace Character{
 			container.getModel ().transform.position = vector;
 		}
 
-		public int getHit (Ability useAbility) {
-			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
+		public int getHit (BattleAbility useAbility) {
+			return battleAbilities [useAbility] + UnityEngine.Random.Range (1,11);
 		}
 
 		public int getDodge () {
@@ -278,23 +286,20 @@ namespace Character{
 		}
 
 		public int getLevel () {
-			return abilities [Ability.LV];
+			return level;
 		}
 
 		public int getMaxHp () {
-			return abilities[Ability.HP];
+			return maxHp;
 		}
 
 		public int getMaxMp () {
-			return abilities[Ability.MP];
+			return maxMp;
 		}
 
-		public int attack (int baseParameter, Ability useAbility) {
-			return baseParameter + abilities [useAbility];
-		}
 
-		public int healing (int baseParameter, Ability useAbility) {
-			return baseParameter + abilities [useAbility];
+		public int healing (BattleAbility useAbility) {
+			return battleAbilities [useAbility] + UnityEngine.Random.Range(0,level);
 		}
 
 		public Faction getFaction () {
@@ -309,12 +314,12 @@ namespace Character{
 			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE);
 		}
 
-		public void addAbilityBonus (AbilityBonus bonus) {
+		public void addAbilityBonus (BattleAbilityBonus bonus) {
 			throw new NotImplementedException ();
 		}
 
 
-		public void addSubAbilityBonus (SubAbilityBonus bonus) {
+		public void addSubAbilityBonus (SubBattleAbilityBonus bonus) {
 			throw new NotImplementedException ();
 		}
 
@@ -325,11 +330,11 @@ namespace Character{
 		}
 
 		public void act () {
-//			Debug.Log ("acted");
+			PLHPsetter.hp = this.hp;
 		}
 
 		public void death () {
-			throw new NotImplementedException ();
+			Debug.Log ("game over!");
 		}
 
 		public long getUniqueId () {
@@ -355,55 +360,55 @@ namespace Character{
 		//最大HPを設定します
 		private void setMaxHp(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities [Ability.HP] = parameter;
+			maxHp = parameter;
 		}
 
 		//最大MPを設定します
 		private void setMaxMp(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities [Ability.MP] = parameter;
+			maxMp = parameter;
 		}
 
 		//白兵戦闘力(mft)を設定します
 		private void setMft(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities[Ability.MFT] = parameter;
+			this.battleAbilities[BattleAbility.MFT] = parameter;
 		}
 
 		//遠距離戦闘能力(fft)を設定します
 		private void setFft(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities[Ability.FFT] = parameter;
+			this.battleAbilities[BattleAbility.FFT] = parameter;
 		}
 
 		//魔力(mgp)を設定します
 		private void setMgp(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities[Ability.MGP] = parameter;
+			this.battleAbilities[BattleAbility.MGP] = parameter;
 		}
 
 		//話術(spc)を設定します
 		private void setSpc(int parameter){
 			isntInvalitAblityParamter(parameter);
-			this.abilities[Ability.SPC] = parameter;
+			this.friendlyAbilities[FriendlyAbility.SPC] = parameter;
 		}
 
 		//器用さ(dex)を設定します
 		private void setDex(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities[Ability.DEX] = parameter;
+			this.friendlyAbilities[FriendlyAbility.DEX] = parameter;
 		}
 
 		//体力(phy)を設定します
 		private void setPhy(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities[Ability.PHY] = parameter;
+			this.battleAbilities[BattleAbility.PHY] = parameter;
 		}
 
 		//敏捷性(agi)を設定します
 		private void setAgi(int parameter){
 			isntInvalitAblityParamter (parameter);
-			this.abilities[Ability.AGI] = parameter;
+			this.battleAbilities[BattleAbility.AGI] = parameter;
 		}
 
 		//与えられた値を検査し、不正な値の場合は例外を投げます

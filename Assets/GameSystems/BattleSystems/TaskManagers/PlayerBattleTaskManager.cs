@@ -38,9 +38,9 @@ namespace BattleSystem{
 		private BattleState battleState = BattleState.ACTION;
 
 		//残り待機フレーム数です
-		private int delay = 0;
+		private float delay = 0;
 		//残りリアクションフレーム数です
-		private int reactionLimit = 0;
+		private float reactionLimit = 0;
 
 		private bool needToReaction = false;
 
@@ -53,7 +53,10 @@ namespace BattleSystem{
 		
 		// Update is called once per frame
 		void Update () {
-//			Debug.Log ("updated pl");
+			if (player.getHp () <= 0) {
+				BattleManager.getInstance ().deadCharacter (player);
+			}
+
 			if(needToReaction){
 				reactionState ();
 			}else if (battleState == BattleState.ACTION && tasks.Count > 0) {
@@ -61,11 +64,13 @@ namespace BattleSystem{
 			} else if (battleState == BattleState.IDLE) {
 				idleState ();
 			}
+
+
 		}
 			
 		//update時リアクションが必要な時に呼ばれます
 		private void reactionState(){
-			reactionLimit--;
+			reactionLimit -= Time.deltaTime;
 			if(reactionLimit <= 0){
 				reaction (ReactionSkillMasterManager.getReactionSkillFromId(2));
 
@@ -73,7 +78,6 @@ namespace BattleSystem{
 				contents.SetActive (true);
 				detachReactionContents ();
 			}
-			Debug.Log ("" + player.getHp());
 		}
 
 		//update時actionステートの時に呼ばれます
@@ -87,7 +91,7 @@ namespace BattleSystem{
 
 		//update時idleステート時に呼ばれます
 		private void idleState(){
-			delay--;
+			delay -= Time.deltaTime;
 			if (delay <= 0) {
 				battleState = BattleState.ACTION;
 			}
@@ -106,7 +110,6 @@ namespace BattleSystem{
 
 		//skillnodeが選ばれた時の処理です
 		public void skillChose(IActiveSkill chosenSkill){
-			Debug.Log (chosenSkill.ToString());
 			this.chosenActiveSkill = chosenSkill;
 
 			if (chosenSkill.getActiveSkillType () != ActiveSkillType.MOVE) {
@@ -152,6 +155,7 @@ namespace BattleSystem{
 			AttackSkill skill = prosessingPair.Value;
 			int atk = skill.getAtk (attacker);
 			int hit = skill.getHit(attacker);
+			Debug.Log ("Dammage is " + atk + "hit is " + hit);
 			passiveSkill.reaction (player,atk,hit,skill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove (prosessingPair);
 			updateProsessingPair ();
@@ -281,7 +285,7 @@ namespace BattleSystem{
 				prosessingPair = waitingReactionActiveSkills[0];
 				inputReactionSkillList ();
 //				reactionLimit = pair.Value.getDelay() ;
-				reactionLimit = 100;
+				reactionLimit = 1;
 				needToReaction = true;
 			} else {
 				needToReaction = false;
@@ -304,13 +308,21 @@ namespace BattleSystem{
 			waitingReactionActiveSkills.Add (pair);
 
 			updateProsessingPair ();
-
-			Debug.Log ("offered");
 		}
 
 		public bool isHavingTask () {
 			return tasks.Count > 0;
 		}
+
+		public void win () {
+			//(実装)まだです
+		}
+			
+		public void finished(){
+			MonoBehaviour.Destroy (view);
+		}
 		#endregion
+
+
 	}
 }

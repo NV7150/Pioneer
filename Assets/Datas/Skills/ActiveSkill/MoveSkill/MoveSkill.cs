@@ -3,7 +3,7 @@
 using Character;
 using BattleSystem;
 
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
 namespace Skill {
@@ -13,8 +13,6 @@ namespace Skill {
 			ID,
 			/// <summary> 最大移動量 </summary>
 			MOVE,
-			/// <summary> ディレイフレーム数 </summary>
-			DELAY,
 			/// <summary> MPコスト </summary>
 			COST;
 
@@ -24,17 +22,20 @@ namespace Skill {
 			/// <summary> スキルの説明 </summary>
 			DESCRIPTION;
 
+		/// <summary> ディレイ秒数 </summary>
+		private readonly float DELAY;
+
 		/// <summary> 使用する能力値 </summary>
-		private readonly Ability USE_ABILITY;
+		private readonly BattleAbility USE_ABILITY;
 
 		public MoveSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
 			MOVE = int.Parse (datas [2]);
-			DELAY = int.Parse (datas [3]);
+			DELAY = float.Parse (datas [3]);
 			COST = int.Parse (datas [4]);
 			DESCRIPTION = datas [5];
-			USE_ABILITY = (Ability)Enum.Parse (typeof(Ability),datas[6]);
+			USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility),datas[6]);
 		}
 
 		/// <summary>
@@ -60,19 +61,19 @@ namespace Skill {
 		public int getMove(IBattleable actioner){
 			int moveBonus = 0;
 			switch(USE_ABILITY){
-				case Ability.MFT:
+				case BattleAbility.MFT:
 					moveBonus += (actioner.getMft () / 5) + 1;
 					break;
-				case Ability.AGI:
+				case BattleAbility.AGI:
 					moveBonus += (actioner.getAgi () / 3) + 1;
 					break;
-				case Ability.FFT:
+				case BattleAbility.FFT:
 					moveBonus += (actioner.getFft () / 5) + 1;
 					break;
-				case Ability.PHY:
+				case BattleAbility.PHY:
 					moveBonus += (actioner.getPhy () / 5) + 1;
 					break;
-				case Ability.MGP:
+				case BattleAbility.MGP:
 					moveBonus += (actioner.getMgp () / 5) + 1;
 					break;
 			}
@@ -94,7 +95,7 @@ namespace Skill {
 			return COST;
 		}
 
-		public int getDelay (IBattleable actioner) {
+		public float getDelay (IBattleable actioner) {
 			return DELAY;
 		}
 

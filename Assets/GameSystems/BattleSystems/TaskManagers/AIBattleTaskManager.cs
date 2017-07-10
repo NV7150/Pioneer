@@ -18,10 +18,10 @@ namespace BattleSystem {
 		//現在のステートを表します
 		BattleState state = BattleState.IDLE;
 
-		//ディレイ終了までの残りフレーム数
-		int delay = 0;
-		//リアクション終了までの残りフレーム数
-		int reactionLimit = 0;
+		//ディレイ終了までの残り秒数
+		float delay = 0;
+		//リアクション終了までの残り秒数
+		float reactionLimit = 0;
 		//リアクションが必要かを表します
 		bool needToReaction;
 
@@ -33,7 +33,14 @@ namespace BattleSystem {
 		//リアクション待ちのKeyValuePairを表します
 		private List<KeyValuePair<IBattleable,AttackSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
+		//かり
+		public GameObject gameObject;
+
 		void Update(){
+			if (user.getHp () <= 0) {
+				BattleManager.getInstance ().deadCharacter (user);
+			}
+
 			if (isReady) {
 				if (needToReaction) {
 					reactionState ();
@@ -58,24 +65,21 @@ namespace BattleSystem {
 			reactoin.reaction (user,atk,hit,useSkill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove (prosessingPair);
 			updateProsessingPair ();
-
-			Debug.Log ("" + user.getHp());
 		}
 
 		//ステートがアクション時に毎フレーム行う処理です
 		private void actionState(){
 			BattleTask task = getTask ();
-			Debug.Log (task.getSkill().getName());
 			task.getSkill ().action (user,task);
 			delay = task.getSkill ().getDelay (user);
 			//テスト用
-			delay = 800;
+			delay = 3f;
 			state = BattleState.IDLE;
 		}
 
 		//ステートがidle時に毎フレーム行う処理です
 		private void idleState(){
-			delay--;
+			delay -= Time.deltaTime;
 			if(delay <= 0){
 				state = BattleState.ACTION;
 			}
@@ -85,13 +89,7 @@ namespace BattleSystem {
 		private BattleTask getTask(){
 			searchIsReady ();
 			IActiveSkill skill = ai.decideSkill ();
-//			switch (skill.getActiveSkillType ()) {
-//				case ActiveSkillType:
-//					
-//				case ActiveSkillType.MOVE:
-//					int move = ai.decideMove (skill);
-//					return new BattleTask(user.getUniqueId(),skill,move);
-//			}
+
 			if (ActiveSkillSupporter.needsTarget (skill)) {
 				List<IBattleable> targets = ai.decideTarget (BattleManager.getInstance ().getCharacterInRange (user, ActiveSkillSupporter.searchRange (skill, user)), skill);
 				return new BattleTask (user.getUniqueId (), skill, targets);
@@ -128,12 +126,9 @@ namespace BattleSystem {
 
 		#region IBattleTaskManager implementation
 
-		public void deleteTaskFromTarget (IBattleable target) {
-			
-		}
+		public void deleteTaskFromTarget (IBattleable target) {}
 
 		public void offerReaction (IBattleable attacker, AttackSkill skill) {
-			Debug.Log ("offered");
 			waitingReactionActiveSkills.Add (new KeyValuePair<IBattleable, AttackSkill>(attacker,skill));
 			reactionLimit = skill.getDelay (user);
 			updateProsessingPair ();
@@ -141,6 +136,14 @@ namespace BattleSystem {
 
 		public bool isHavingTask () {
 			return true;
+		}
+
+		public void win () {
+			//(実装)まだです
+		}
+
+		public void finished () {
+			MonoBehaviour.Destroy (gameObject);
 		}
 		#endregion
 	}

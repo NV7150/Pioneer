@@ -12,9 +12,6 @@ namespace Character{
 		//対象(武器)を装備します。装備不能の場合はfalseを返します
 		bool equipWepon(Wepon wepon);
 
-		//対象(武器)を取得します。装備不能の場合はfalseを返します
-		Wepon getWepon();
-
 		//対象(防具)を装備します
 		bool equipArmor(Armor armor);
 

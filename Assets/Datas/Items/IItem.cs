@@ -9,7 +9,7 @@ namespace Item {
         string getDescription();
 
         //アイテムを使用します
-		void use(IPlayable use);
+		void use(IPlayable user);
 
         //アイテムの重量を表します
         int getMass();

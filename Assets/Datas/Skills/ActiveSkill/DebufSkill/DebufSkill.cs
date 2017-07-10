@@ -5,41 +5,55 @@ using BattleSystem;
 using Parameter;
 
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
+using Extent = Skill.ActiveSkillParameters.Extent;
 
 namespace Skill {
 	public class DebufSkill : SupportSkillBase,IActiveSkill{
 		private readonly int 
 			ID,
 			BONUS,
-			LIMIT,
 			COST,
-			RANGE,
-			DELAY;
+			RANGE;
 
 		private readonly string
 			NAME,
 			DESCRIPTION;
 
+		private readonly float 
+			DELAY,
+			LIMIT;
+
+		private readonly Extent EXTENT;
+
 		public DebufSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
 			BONUS = int.Parse (datas[2]);
-			LIMIT = int.Parse (datas[3]);
+			LIMIT = float.Parse (datas[3]);
 			COST = int.Parse (datas[4]);
 			RANGE = int.Parse (datas[5]);
-			DELAY = int.Parse (datas[6]);
+			DELAY = float.Parse (datas[6]);
 			setBonusParameter (datas[7]);
-			DESCRIPTION = datas [8];
+			EXTENT =(Extent) Enum.Parse (typeof(Extent),datas[8]);
+			DESCRIPTION = datas [9];
+		}
+
+		public Extent getExtent(){
+			return EXTENT;
+		}
+
+		public int getRange(){
+			return RANGE;
 		}
 
 		#region implemented abstract members of SupportSkillBase
 
-		protected override AbilityBonus getAbilityBonus () {
-			return new AbilityBonus (NAME,bonusAbility,LIMIT,BONUS);
+		protected override BattleAbilityBonus getAbilityBonus () {
+			return new BattleAbilityBonus (NAME,bonusAbility,LIMIT,BONUS);
 		}
 
-		protected override SubAbilityBonus getSubAbilityBonus () {
-			return new SubAbilityBonus (NAME,bonusSubAbility,LIMIT,BONUS);
+		protected override SubBattleAbilityBonus getSubAbilityBonus () {
+			return new SubBattleAbilityBonus (NAME,bonusSubAbility,LIMIT,BONUS);
 		}
 
 		#endregion
@@ -54,7 +68,7 @@ namespace Skill {
 			return COST;
 		}
 
-		public int getDelay (IBattleable actioner) {
+		public float getDelay (IBattleable actioner) {
 			return DELAY;
 		}
 

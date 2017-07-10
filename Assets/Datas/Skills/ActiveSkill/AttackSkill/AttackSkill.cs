@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 using Character;
 using BattleSystem;
 
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
-using Ability = Parameter.CharacterParameters.Ability;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using Extent = Skill.ActiveSkillParameters.Extent;
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
@@ -21,8 +22,7 @@ namespace Skill {
 			RANGE,
 			/// <summary> このスキルの命中率です </summary>
 			HIT,
-			/// <summary> このスキルの待ちフレーム数です </summary>
-			DELAY,
+			
 			/// <summary> このスキルのMPコストです </summary>
 			COST;
 
@@ -44,11 +44,14 @@ namespace Skill {
 			/// <summary> 使用する能力値が武器に依存するかのフラグです </summary>
 			DEPEND_ABILITY;
 
+		/// <summary> ディレイ秒数 </summary>
+		private readonly float DELAY;
+
 		/// <summary> このスキルの属性です </summary>
 		private readonly AttackSkillAttribute ATTRIBUTE;
 
 		/// <summary> このスキルの判定に使用する能力値です </summary>
-		private Ability USE_ABILITY;
+		private BattleAbility USE_ABILITY;
 
 		/// <summary> このスキルの効果範囲です </summary>
 		private readonly Extent EXTENT;
@@ -59,17 +62,24 @@ namespace Skill {
 			ATK = int.Parse(datas [2]);
 			RANGE = int.Parse(datas [3]);
 			HIT = int.Parse(datas [4]);
-			DELAY = int.Parse(datas [5]);
+			DELAY = float.Parse(datas [5]);
 			COST = int.Parse (datas[6]);
 			DEPEND_ATK  = (datas[7] == "TRUE");
 			DEPEND_HIT = (datas [8] == "TRUE");
 			DEPEND_RANGE = (datas [9] == "TRUE");
 			DEPEND_DELAY = (datas[10] == "TRUE");
-			ATTRIBUTE = (AttackSkillAttribute)Enum.Parse(typeof(AttackSkillAttribute), datas [11]);
-			USE_ABILITY = (Ability)Enum.Parse (typeof(Ability), datas [12]);
+			ATTRIBUTE = (AttackSkillAttribute)Enum.Parse(typeof(AttackSkillAttribute), datas[11]);
+
+			if (datas[12] == "DEPEND") {
+				DEPEND_ABILITY = true;
+			} else {
+				USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility), datas [12]);
+			}
+
 			EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[13]);
 			DESCRIPTON = datas [14];
 		}
+
 
 		/// <summary>
 		/// 攻撃を行います
@@ -119,8 +129,8 @@ namespace Skill {
 		/// 判定に使う能力値を取得します
 		/// </summary>
 		/// <returns> 判定に使う能力値 使用者依存ならNONEを返します </returns>
-		public Ability getUseAbility(IBattleable actoiner){
-			if (USE_ABILITY == Ability.NONE) {
+		public BattleAbility getUseAbility(IBattleable actoiner){
+			if (DEPEND_ABILITY) {
 				return actoiner.getWepon ().getWeponAbility ();
 			} else {
 				return this.USE_ABILITY;
@@ -148,10 +158,6 @@ namespace Skill {
 			return RANGE + this.RANGE + bonus; 
 		}
 
-//		public int getRawRange(){
-////			int range = (DEPEND_RANGE) ?  
-//		}
-
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner,BattleTask task) {
@@ -162,7 +168,7 @@ namespace Skill {
 			return COST;
 		}
 
-		public int getDelay(IBattleable actioner){
+		public float getDelay(IBattleable actioner){
 			int bonus = 0;
 			if (DEPEND_DELAY) {
 				//bonus += actioner.getWepon().getDelay();

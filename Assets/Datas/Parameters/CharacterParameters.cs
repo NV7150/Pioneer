@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Parameter{
-	public static class CharacterParameters {
+	public static class CharacterParameters{
 		//基本能力値を表します
-		public enum Ability{
-			//最大HP
-			HP,
-			//最大MP
-			MP,
+		public enum BattleAbility{
 			//白兵戦闘力
 			MFT,
 			//遠戦闘力
@@ -19,19 +15,19 @@ namespace Parameter{
 			//敏捷
 			AGI,
 			//体力
-			PHY,
+			PHY
+		}
+
+		public enum FriendlyAbility{
 			//話術
 			SPC,
 			//器用
-			DEX,
-			//レベル
-			LV,
-			//なし
-			NONE
+			DEX
 		}
 
+
 		//服能力値を表します
-		public enum SubAbility{
+		public enum SubBattleAbility{
 			//攻撃力
 			ATK,
 			//防御力

@@ -22,10 +22,10 @@ namespace Skill {
 		int getCost();
 
 		/// <summary>
-		/// ディレイフレーム数を取得します
+		/// ディレイ秒数を取得します
 		/// </summary>
 		/// <returns>ディレイするフレーム数</returns>
-		int getDelay(IBattleable actioner);
+		float getDelay(IBattleable actioner);
 
 		/// <summary>
 		/// ActiveSkillとしての種類を取得します

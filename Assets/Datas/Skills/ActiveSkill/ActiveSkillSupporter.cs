@@ -24,12 +24,11 @@ namespace Skill {
 
 				case ActiveSkillType.BUF:
 					BufSkill bufSkill = (BufSkill)skill;
-					break;
+					return bufSkill.getExtent ();
 
 				case ActiveSkillType.DEBUF:
 					DebufSkill debufSkill = (DebufSkill)skill;
-					//retun debufSkill.getExtent();
-					break;
+					return debufSkill.getExtent();
 			}
 			throw new ArgumentException ("invalid skill " + skill);
 		}
@@ -51,13 +50,11 @@ namespace Skill {
 
 				case ActiveSkillType.BUF:
 					BufSkill bufSkill = (BufSkill)skill;
-					//return bufSkill.getRange();
-					break;
+					return bufSkill.getRange();
 
 				case ActiveSkillType.DEBUF:
 					DebufSkill debufSkill = (DebufSkill)skill;
-					//retun debufSkill.getRange();
-					break;
+					return debufSkill.getRange();
 			}
 
 			throw new ArgumentException ("invalid skill " + skill);

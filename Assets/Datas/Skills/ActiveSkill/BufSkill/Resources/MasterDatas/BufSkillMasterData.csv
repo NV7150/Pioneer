@@ -1,0 +1,4 @@
+id,name,bonus,limit,range,cost,delay,parameter,extent,description
+0,氷刃,3,20,1,3,3,ATK,SINGLE,氷は武具に憑き、その鋭さを増す。
+1,硬土,3,20,1,3,3,DEF,SINGLE,土は防具に憑き、その硬度を増す。
+2,熱体,1,20,1,3,3,PHY,SINGLE,炎は熱を以って、対象の体力を強化する。
