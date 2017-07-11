@@ -22,6 +22,9 @@ namespace Character{
 		//HPを減少させます
 		void dammage (int dammage,AttackSkillAttribute attribute);
 
+		//MPを減少させます
+		void minusMp(int value);
+
 		//回復されます（受動側）
 		void healed(int heal,HealSkillAttribute attribute);
 

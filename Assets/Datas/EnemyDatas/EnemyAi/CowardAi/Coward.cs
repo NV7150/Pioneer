@@ -45,6 +45,8 @@ namespace AI {
 		#region EnemyAI implementation
 			
 		public IActiveSkill decideSkill () {
+//			Debug.Log ("into decideSkill");
+
 			//ボーナス値のテーブルです。最終的に足されます。
 			Dictionary<ActiveSkillCategory,int> probalityBonus = new Dictionary<ActiveSkillCategory, int> (){
 				{ ActiveSkillCategory.NORMAL, 0 },
@@ -81,7 +83,10 @@ namespace AI {
 			foreach(ActiveSkillCategory category in categories){
 				IActiveSkill categorySkill = activeSkills.getSkillFromSkillCategory (category);
 
-				int range = (ActiveSkillSupporter.needsTarget(categorySkill)) ?  ActiveSkillSupporter.searchRange (categorySkill,user) : ActiveSkillSupporter.searchMove(categorySkill,user);
+				if (!ActiveSkillSupporter.needsTarget (categorySkill))
+					continue;
+
+				int range = ActiveSkillSupporter.searchRange (categorySkill,user);
 
 				if(BattleManager.getInstance().sumFromAreaTo(user,range) <= 0){
 					probalityBonus [category] = -1 * probalityTable [category] ;
@@ -112,6 +117,7 @@ namespace AI {
 			foreach (ActiveSkillCategory category in categories) {
 				int probality = probalityTable [category] + probalityBonus [category];
 				if (choose <  probality|| choose == 0) {
+//					Debug.Log (activeSkills.getSkillFromSkillCategory(category).getName());
 					return activeSkills.getSkillFromSkillCategory (category);
 				}
 				choose -= probalityTable [category] + probalityBonus [category];
@@ -169,22 +175,27 @@ namespace AI {
 		private IBattleable decideHostileSingleTarget(List<IBattleable> targets){
 			//レベルを合計する
 			int sumLevel = 0;
+			List<IBattleable> hostalityTargets = new List<IBattleable> ();
 			foreach (IBattleable target in targets) {
 				if (target.isHostility (user.getFaction())) {
+					Debug.Log (target.getName() + " is " + target.getLevel());
+					hostalityTargets.Add (target);
 					sumLevel += target.getLevel ();
 				}
 			}
 
 			//乱数を出す
-			int choose = UnityEngine.Random.Range (0, sumLevel);
+			int choose = UnityEngine.Random.Range (0, sumLevel) + 1;
+			Debug.Log ("sum " + sumLevel + "chose " + choose);
 			//最終判定
 			//弱い敵を積極的に殴るので、レベル合計-レベルが可能性値です
-			foreach (IBattleable target in targets) {
-				if (( sumLevel - target.getLevel () )>= choose)
+			foreach (IBattleable target in hostalityTargets) {
+				int probality = sumLevel - target.getLevel ();
+				if (probality >= choose || probality <= 0)
 					return target;
-				choose -= ( sumLevel - target.getLevel () );
+				choose -= probality;
 			}
-			throw new InvalidOperationException ("Cannot decideHOstileSingleTarget.");
+			throw new InvalidOperationException ("Cannot decideHostileSingleTarget.");
 		}
 
 		//移動距離を決めます

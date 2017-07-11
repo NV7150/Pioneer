@@ -164,6 +164,15 @@ namespace Character{
 			if (this.hp < 0)
 				this.hp = 0;
 		}
+
+		public void minusMp (int value) {
+			if (value < 0)
+				value = 0;
+
+			this.mp -= value;
+			if (this.mp < 0)
+				this.mp = 0;
+		}
 			
 		public void healed (int heal, HealSkillAttribute attribute) {
 			Debug.Log ("" + heal);
@@ -227,7 +236,7 @@ namespace Character{
 		}
 
 		public bool isHostility (Faction faction) {
-			return (faction == FACTION);
+			return (faction != FACTION);
 		}
 
 		public void encount(){
@@ -256,6 +265,7 @@ namespace Character{
 
 		public void act () {
 			ENTP.hp = this.hp;
+			ENTP.mp = this.mp;
 		}
 
 		public void death () {

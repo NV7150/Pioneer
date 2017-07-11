@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ENTP : MonoBehaviour {
 	public Text text;
 	public static int hp;
+	public static int mp;
 
 	// Use this for initialization
 	void Start () {
@@ -14,6 +15,6 @@ public class ENTP : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		text.text = "" + hp;
+		text.text = "HP " + hp + " MP ";
 	}
 }

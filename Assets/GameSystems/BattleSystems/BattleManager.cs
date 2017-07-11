@@ -189,7 +189,8 @@ namespace BattleSystem{
 			for(;index < (int)area + range + 1;index++){
 				count += joinedCharacter[(FieldPosition) index].Count;
 			}
-			return count;
+			//自分が1つ入るので-1
+			return count - 1;
 		}
 
 		//全てのバトル参加中キャラクターの数の合計を返します
@@ -232,6 +233,8 @@ namespace BattleSystem{
 			joinedCharacter [nowPos].Remove (bal);
 			joinedCharacter [nowPos + moveness].Add (bal);
 
+			bal.syncronizePositioin (field.getNextPosition(nowPos + moveness));
+
 			Debug.Log (nowPos + "→" +searchCharacter(bal));
 		}
 
@@ -265,20 +268,23 @@ namespace BattleSystem{
 		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
+			Debug.Log ("into juge");
 
 			FieldPosition nowPos = searchCharacter (bal);
 			FieldPosition returnPos = nowPos;
 			int returnAreaSum = 0;
-			for(int i = (int)nowPos - range;i > (int)nowPos + range;i++){
+			int index = (((int)nowPos - range) < 0) ? 0 : (int)nowPos - range;
+			for(;index < (int)nowPos + range + 1;index++){
 				int areaLevelSum = 0;
-				foreach(IBattleable target in joinedCharacter[(FieldPosition) i]){
+				foreach(IBattleable target in joinedCharacter[(FieldPosition) index]){
 					if (bal.isHostility (target.getFaction())) {
 						areaLevelSum += target.getLevel ();
 					}
 				}
+				Debug.Log ((FieldPosition)index);
 				if (function(new int[]{areaLevelSum,returnAreaSum})) {
 					returnAreaSum = areaLevelSum;
-					returnPos = (FieldPosition)i;
+					returnPos = (FieldPosition)index;
 				}
 			}
 			return returnPos;

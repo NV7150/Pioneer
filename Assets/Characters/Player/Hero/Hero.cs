@@ -88,6 +88,8 @@ namespace Character{
 			this.container = con;
 
 			UNIQUE_ID = UniqueIdCreator.creatUniqueId ();
+
+			this.level = 2;
 		}
 
 		#region IPlayable implementation
@@ -204,6 +206,15 @@ namespace Character{
 				this.hp = 0;
 		}
 
+		public void minusMp (int value) {
+			if (value > 0)
+				value = 0;
+			
+			this.mp -= value;
+
+			if (this.mp < 0)
+				this.mp = 0;
+		}
 
 		public void healed (int heal, HealSkillAttribute attribute) {
 			if (heal < 0 || attribute == HealSkillAttribute.NONE)
@@ -307,7 +318,7 @@ namespace Character{
 		}
 
 		public bool isHostility (Faction faction) {
-			return (this.faction == faction);
+			return (this.faction != faction);
 		}
 			
 		public void encount () {
@@ -331,6 +342,7 @@ namespace Character{
 
 		public void act () {
 			PLHPsetter.hp = this.hp;
+			PLHPsetter.mp = this.mp;
 		}
 
 		public void death () {

@@ -89,7 +89,10 @@ namespace Skill {
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner, BattleTask task) {
+			if (actioner.getMp () < this.COST)
+				return;
 			heal (actioner,task.getTargets());
+			actioner.minusMp(this.COST);
 		}
 
 		public int getCost () {
