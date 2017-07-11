@@ -43,11 +43,10 @@ public class BattleTest : MonoBehaviour {
 		hero.addSkill (HealSkillMasterManager.getHealSkillFromId (0));
 
 		con.setCharacter (hero);
-		con2.setCharacter (en);
 
 		WeponMasterManager.getWeponFromId (1).use (hero);
 
-		BattleManager.getInstance ().StartNewBattle (new Vector3(0,0,0));
+		BattleManager.getInstance ().StartNewBattle (new Vector3(100,100,100));
 
 		hero.encount ();
 		en.encount ();

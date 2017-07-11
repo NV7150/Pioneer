@@ -108,7 +108,6 @@ namespace AI {
 
 			//合計が0の場合、攻撃不可と判断して移動します
 			if(sum <= 0){
-				Debug.Log ("passed sum <= 0");
 				return activeSkills.getSkillFromSkillCategory (ActiveSkillCategory.MOVE);
 			}
 
@@ -178,7 +177,6 @@ namespace AI {
 			List<IBattleable> hostalityTargets = new List<IBattleable> ();
 			foreach (IBattleable target in targets) {
 				if (target.isHostility (user.getFaction())) {
-					Debug.Log (target.getName() + " is " + target.getLevel());
 					hostalityTargets.Add (target);
 					sumLevel += target.getLevel ();
 				}
@@ -186,7 +184,6 @@ namespace AI {
 
 			//乱数を出す
 			int choose = UnityEngine.Random.Range (0, sumLevel) + 1;
-			Debug.Log ("sum " + sumLevel + "chose " + choose);
 			//最終判定
 			//弱い敵を積極的に殴るので、レベル合計-レベルが可能性値です
 			foreach (IBattleable target in hostalityTargets) {

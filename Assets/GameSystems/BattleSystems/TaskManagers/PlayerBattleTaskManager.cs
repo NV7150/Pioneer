@@ -134,7 +134,6 @@ namespace BattleSystem{
 		//moveAreaNodeが選ばれた時の処理です
 		public void moveAreaChose(FieldPosition pos){
 			int move = (int)(pos - BattleManager.getInstance ().searchCharacter(player));
-			Debug.Log ("search " + BattleManager.getInstance ().searchCharacter(player) + " pos " + pos + " move " + move);
 			tasks.Add (new BattleTask(player.getUniqueId(),chosenActiveSkill,move));
 			chosenActiveSkill = null;
 			inputActiveSkillList ();
@@ -227,11 +226,8 @@ namespace BattleSystem{
 		//スキルの効果範囲が全体の時のtargetをビューにインプットします
 		private void inputMoveAreaList(int move){
 			detachContents ();
-			Debug.Log (move);
 
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
-
-			Debug.Log ("now " + nowPos + "plus " + ((int)nowPos + move) + "div" +((int)nowPos - move));
 
 			int index = (int)nowPos - move;
 			index = (index < 0) ? 0 : index;

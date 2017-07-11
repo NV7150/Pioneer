@@ -229,9 +229,19 @@ namespace BattleSystem{
 			if (Enum.GetNames (typeof(FieldPosition)).Length < (int)(nowPos + moveness))
 				throw new ArgumentException ("invalid moveness");
 
+			Debug.Log ((int)nowPos + moveness);
+
+			int movePosValue = (int)nowPos + moveness;
+			if (movePosValue < 0) {
+				movePosValue = 0;
+			} else if (movePosValue > Enum.GetNames (typeof(FieldPosition)).Length - 1) {
+				movePosValue = Enum.GetNames (typeof(FieldPosition)).Length - 1;
+			}
+
+			FieldPosition movePos = (FieldPosition)movePosValue;
 			//移動処理
 			joinedCharacter [nowPos].Remove (bal);
-			joinedCharacter [nowPos + moveness].Add (bal);
+			joinedCharacter [movePos].Add (bal);
 
 			bal.syncronizePositioin (field.getNextPosition(nowPos + moveness));
 
@@ -268,20 +278,32 @@ namespace BattleSystem{
 		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
-			Debug.Log ("into juge");
-
+			
 			FieldPosition nowPos = searchCharacter (bal);
 			FieldPosition returnPos = nowPos;
 			int returnAreaSum = 0;
-			int index = (((int)nowPos - range) < 0) ? 0 : (int)nowPos - range;
-			for(;index < (int)nowPos + range + 1;index++){
+			int index = (int)nowPos - range;
+			int numberOfField = Enum.GetNames (typeof(FieldPosition)).Length;
+			if(index < 0){
+				index = 0;
+			}else if(index > numberOfField){
+				index = numberOfField;
+			}
+
+			int maxpos = (int)nowPos + range + 1;
+			if(maxpos < 0){
+				maxpos = 0;
+			}else if(maxpos > numberOfField){
+				maxpos = numberOfField;
+			}
+
+			for(;index < maxpos;index++){
 				int areaLevelSum = 0;
 				foreach(IBattleable target in joinedCharacter[(FieldPosition) index]){
 					if (bal.isHostility (target.getFaction())) {
 						areaLevelSum += target.getLevel ();
 					}
 				}
-				Debug.Log ((FieldPosition)index);
 				if (function(new int[]{areaLevelSum,returnAreaSum})) {
 					returnAreaSum = areaLevelSum;
 					returnPos = (FieldPosition)index;
