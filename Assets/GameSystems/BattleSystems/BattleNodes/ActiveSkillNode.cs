@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Skill;
-
+ 
 namespace BattleSystem{
 	public class ActiveSkillNode : MonoBehaviour {
 		//アタッチされているゲームオブジェクトのテキストオブジェクトです
@@ -14,10 +14,10 @@ namespace BattleSystem{
 		//元のPlayerBattleTaskManagerです
 		private PlayerBattleTaskManager manager;
 
-		//ステータスを設定します
+		//  
 		public void setState(PlayerBattleTaskManager controller,IActiveSkill skill){
-			this.manager = controller;
-			this.skill = skill;
+			this.manager = controller;   
+			this.skill = skill; 
 			textObject.text = skill.getName ();
 		}
 

@@ -8,6 +8,8 @@ using Character;
 
 namespace BattleSystem{
 	public class BattleTask {
+		//タスク名です
+		private readonly string NAME;
 		//行うスキルです
 		private readonly IActiveSkill SKILL;
 		//行動系スキルの対象です
@@ -16,20 +18,26 @@ namespace BattleSystem{
 		private int move;
 		//タスクを行うキャラクターのユニークIDです
 		private readonly long OWNER_UNIQUEID;
+        //タスクのユニークIDです
+        private readonly long ID;
 
 		//ターゲットが存在する場合のコンストラクタです
-		public BattleTask(long uniqueId,IActiveSkill skill,List<IBattleable> targets){
+        public BattleTask(long uniqueId,IActiveSkill skill,List<IBattleable> targets,long id){
 			this.OWNER_UNIQUEID = uniqueId;
 			this.SKILL = skill;
 			this.targets = targets;
+			this.NAME = SKILL.getName ();
+            this.ID = id;
 		}
 
-		//移動量が存在する場合のコンストラクタです
-		public BattleTask(long uniqueId,IActiveSkill skill,int move){
-			this.OWNER_UNIQUEID = uniqueId;
-			this.SKILL = skill;
-			this.move = move;
-		}
+        //移動量が存在する場合のコンストラクタです
+        public BattleTask(long uniqueId, IActiveSkill skill, int move, long id) {
+            this.OWNER_UNIQUEID = uniqueId;
+            this.SKILL = skill;
+            this.NAME = skill.getName();
+            this.move = move;
+            this.ID = id;
+        }
 
 		//スキルを取得します
 		public IActiveSkill getSkill(){
@@ -52,5 +60,20 @@ namespace BattleSystem{
 		public long getOwnerBattleId(){
 			return OWNER_UNIQUEID;
 		}
+
+        public long getBattleTaskId(){
+            return this.ID;
+        }
+
+		public string getName(){
+			return this.NAME;
+		}
+
+        public override bool Equals(object obj) {
+            if (!(obj is BattleTask))
+                return false;
+            BattleTask task = (BattleTask)obj;
+            return (task.getOwnerBattleId() == OWNER_UNIQUEID && task.getBattleTaskId() == ID);
+        }
 	}
 }

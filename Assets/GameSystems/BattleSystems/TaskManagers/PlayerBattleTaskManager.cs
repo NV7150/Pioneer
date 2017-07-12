@@ -44,11 +44,22 @@ namespace BattleSystem{
 
 		private bool needToReaction = false;
 
+        private long battletaskIdCount = 0;
+
+        private BattleTaskListView listView;
+
 		// Use this for initialization
 		void Start () {
-			GameObject canvas = GameObject.Find ("Canvas/BattleView");
-			view.transform.SetParent (canvas.transform);
+            GameObject battleView = GameObject.Find ("Canvas/BattleView");
+			view.transform.SetParent (battleView.transform);
 			reactoinContents.SetActive (false);
+
+            GameObject taskView = GameObject.Find("Canvas/TaskView");
+            GameObject battleListNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleTaskListView"));
+            battleListNode.transform.SetParent(taskView.transform);
+            listView = battleListNode.GetComponent<BattleTaskListView>();
+            listView.setManager(this);
+            Debug.Log(listView);
 		}
 		
 		// Update is called once per frame
@@ -64,8 +75,6 @@ namespace BattleSystem{
 			} else if (battleState == BattleState.IDLE) {
 				idleState ();
 			}
-
-
 		}
 			
 		//update時リアクションが必要な時に呼ばれます
@@ -86,6 +95,7 @@ namespace BattleSystem{
 			runTask.getSkill ().action (player, runTask);
 			delay = runTask.getSkill ().getDelay (player);
 			tasks.Remove (runTask);
+            listView.deleteTask(runTask);
 			battleState = BattleState.IDLE;
 		}
 
@@ -104,8 +114,14 @@ namespace BattleSystem{
 		}
 
 		//タスクを追加します
-		private void setTask(IActiveSkill skill,List<IBattleable> targets){
-			tasks.Add(new BattleTask(player.getUniqueId(),skill,targets));
+        private void setTask(BattleTask addTask){
+            tasks.Add(addTask);
+            listView.setTask(addTask);
+
+            battletaskIdCount++;
+
+			chosenActiveSkill = null;
+			inputActiveSkillList();
 		}
 
 		//skillnodeが選ばれた時の処理です
@@ -126,17 +142,15 @@ namespace BattleSystem{
 
 		//targtNodeが選ばれた時の処理です
 		public void targetChose(List<IBattleable> targets){
-			tasks.Add (new BattleTask(player.getUniqueId(),chosenActiveSkill,targets));
-			chosenActiveSkill = null;
-			inputActiveSkillList ();
+			BattleTask addTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, targets, battletaskIdCount);
+            setTask(addTask);
 		}
 
 		//moveAreaNodeが選ばれた時の処理です
 		public void moveAreaChose(FieldPosition pos){
 			int move = (int)(pos - BattleManager.getInstance ().searchCharacter(player));
-			tasks.Add (new BattleTask(player.getUniqueId(),chosenActiveSkill,move));
-			chosenActiveSkill = null;
-			inputActiveSkillList ();
+			BattleTask addTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, move, battletaskIdCount);
+            setTask(addTask);
 		}
 
 		//passiveNodeが選ばれた時の処理です
@@ -286,6 +300,10 @@ namespace BattleSystem{
 			} else {
 				needToReaction = false;
 			}
+		}
+
+		public void canseledTask(BattleTask task) {
+            tasks.Remove(task);
 		}
 
 		#region IBattleTaskManager implementation

@@ -99,9 +99,9 @@ namespace Skill {
 		/// <returns> 攻撃力 </returns>
 		public int getAtk(IBattleable actioner){
 			int bonus = 0;
-			if(DEPEND_ATK){
-				bonus += actioner.getWepon ().getAttack ();
-			}
+            if (DEPEND_ATK) {
+                bonus += actioner.getWepon().getAttack();
+            }
 			return ATK + actioner.getAtk (getAttackSkillAttribute(),getUseAbility(actioner));
 		}
 
@@ -173,9 +173,9 @@ namespace Skill {
 		}
 
 		public float getDelay(IBattleable actioner){
-			int bonus = 0;
+            float bonus = 0;
 			if (DEPEND_DELAY) {
-				//bonus += actioner.getWepon().getDelay();
+				bonus += actioner.getWepon().getDelay();
 			}
 			return this.DELAY + bonus;
 		}

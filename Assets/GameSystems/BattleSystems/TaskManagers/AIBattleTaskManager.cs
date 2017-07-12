@@ -33,8 +33,7 @@ namespace BattleSystem {
 		//リアクション待ちのKeyValuePairを表します
 		private List<KeyValuePair<IBattleable,AttackSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
-		//かり
-		public GameObject gameObject;
+        private long battletaskIdCount = 0;
 
 		void Update(){
 			if (user.getHp () <= 0) {
@@ -92,11 +91,15 @@ namespace BattleSystem {
 
 			if (ActiveSkillSupporter.needsTarget (skill)) {
 				List<IBattleable> targets = ai.decideTarget (BattleManager.getInstance ().getCharacterInRange (user, ActiveSkillSupporter.searchRange (skill, user)), skill);
-				return new BattleTask (user.getUniqueId (), skill, targets);
+                BattleTask returnTask = new BattleTask (user.getUniqueId (), skill, targets,battletaskIdCount);
+                battletaskIdCount++;
+                return returnTask;
 			} else if(skill.getActiveSkillType() == ActiveSkillType.MOVE){
 				MoveSkill moveSkill = (MoveSkill)skill;
 				int move = ai.decideMove (moveSkill);
-				return new BattleTask(user.getUniqueId(),skill,move);
+                BattleTask returnTask = new BattleTask(user.getUniqueId(),skill,move,battletaskIdCount);
+                battletaskIdCount++;
+                return returnTask;
 			}
 			throw new InvalidOperationException ("unknown skillType");
 		}

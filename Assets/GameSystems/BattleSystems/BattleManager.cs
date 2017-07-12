@@ -335,6 +335,8 @@ namespace BattleSystem{
 
 			return joinedCharacter [pos];
 		}
+
+       
 	}
 
 	//戦闘フィールドでの状態を表します。ZEROを中心としてPL側がマイナス、NPC側がプラスです。
