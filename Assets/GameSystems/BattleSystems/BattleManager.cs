@@ -17,10 +17,15 @@ using Faction = Parameter.CharacterParameters.Faction;
 */
 namespace BattleSystem{
 	public class BattleManager{
+        /// <summary>  唯一のインスタンス </summary>
 		private static readonly BattleManager INSTANCE = new BattleManager();
+        /// <summary> バトルに参加済みのキャラクターのリスト </summary>
 		private Dictionary<FieldPosition,List<IBattleable>> joinedCharacter = new Dictionary<FieldPosition,List<IBattleable>>();
-		private Dictionary<long,IBattleTaskManager> enteredManager = new Dictionary<long, IBattleTaskManager>();
+        /// <summary> バトルに参加済みのキャラクターのユニークIDとそのバトルマネージャのディクショナリ </summary>
+        private Dictionary<long,IBattleTaskManager> joinedManager = new Dictionary<long, IBattleTaskManager>();
+        /// <summary> 展開中のバトルフィールド </summary>
 		private BattleField field;
+        /// <summary> バトルしているか falseだとBattleManagerのほとんどのメソッドがロックされます </summary>
 		private bool isBattleing = false;
 
 		//唯一のインスタンスを取得します
@@ -34,11 +39,19 @@ namespace BattleSystem{
 			}
 		}
 
+        /// <summary>
+        /// 新たにバトルを開始します
+        /// </summary>
+        /// <param name="basicPoint"> 起点とする座標 </param>
 		public void StartNewBattle(Vector3 basicPoint){
 			field = new BattleField (basicPoint);
 			isBattleing = true;
 		}
 
+        /// <summary>
+        /// キャラクターの死亡による離脱処理をおこないます
+        /// </summary>
+        /// <param name="character"> 死亡したキャラクター </param>
 		public void deadCharacter(IBattleable character){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -46,21 +59,25 @@ namespace BattleSystem{
 			FieldPosition pos = searchCharacter (character);
 			joinedCharacter [pos].Remove (character);
 			character.death ();
-			enteredManager [character.getUniqueId ()].finished ();
-			enteredManager.Remove (character.getUniqueId ());
+			joinedManager [character.getUniqueId ()].finished ();
+			joinedManager.Remove (character.getUniqueId ());
 
-			if (isFinishedBattle ()) {
+			if (isContinuingBattle ()) {
 				finishBattle ();
 			} else {
-				var keys = enteredManager.Keys;
+				var keys = joinedManager.Keys;
 				foreach(long id in keys){
-					IBattleTaskManager taskManager = enteredManager [id];
+					IBattleTaskManager taskManager = joinedManager [id];
 					taskManager.deleteTaskFromTarget (character);
 				}
 			}
 		}
 
-		private bool isFinishedBattle(){
+        /// <summary>
+        /// バトルが続いているかを検査します
+        /// </summary>
+        /// <returns><c>true</c>, バトルは続いている, <c>false</c> バトル終了している </returns>
+        private bool isContinuingBattle(){
 			var keys = joinedCharacter.Keys;
 			List<Faction> factions = new List<Faction> ();
 			foreach(FieldPosition pos in keys){
@@ -73,12 +90,12 @@ namespace BattleSystem{
 		}
 
 		private void finishBattle(){
-			var uniqueIds = enteredManager.Keys;
+			var uniqueIds = joinedManager.Keys;
 			foreach(long id in uniqueIds){
-				enteredManager [id].win ();
-				enteredManager [id].finished ();
+				joinedManager [id].win ();
+				joinedManager [id].finished ();
 			}
-			enteredManager.Clear ();
+			joinedManager.Clear ();
 
 			var fieldPositions = System.Enum.GetValues (typeof(FieldPosition));
 			foreach(FieldPosition pos in fieldPositions){
@@ -100,7 +117,7 @@ namespace BattleSystem{
 
 			AIBattleTaskManager manager = MonoBehaviour.Instantiate ((GameObject)Resources.Load("Prefabs/AIBattleManager")).GetComponent<AIBattleTaskManager>();
 			manager.setCharacter (bal,ai);
-			enteredManager.Add (bal.getUniqueId(),manager);
+			joinedManager.Add (bal.getUniqueId(),manager);
 		}
 
 		public void joinBattle(IPlayable player,FieldPosition pos){
@@ -113,14 +130,14 @@ namespace BattleSystem{
 			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/BattleNodeController"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
 			manager.setPlayer (player);
-			enteredManager.Add (player.getUniqueId(),manager);
+			joinedManager.Add (player.getUniqueId(),manager);
 		}
 
 		//攻撃処理を行います
 		public void attackCommand(IBattleable bal,List<IBattleable> targets,AttackSkill skill){
 			foreach(IBattleable target in targets){
 				//対象のリアクション
-				enteredManager[target.getUniqueId()].offerReaction(bal,skill);
+				joinedManager[target.getUniqueId()].offerReaction(bal,skill);
 			}
 		}
 

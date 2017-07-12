@@ -61,10 +61,18 @@ namespace BattleSystem{
 			return OWNER_UNIQUEID;
 		}
 
+        /// <summary>
+        /// このタスクのIDを取得します
+        /// </summary>
+        /// <returns> タスクのID </returns>
         public long getBattleTaskId(){
             return this.ID;
         }
 
+        /// <summary>
+        /// このタスクの名前を取得します
+        /// </summary>
+        /// <returns> タスク名 </returns>
 		public string getName(){
 			return this.NAME;
 		}

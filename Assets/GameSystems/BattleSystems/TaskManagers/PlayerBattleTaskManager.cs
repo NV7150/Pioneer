@@ -302,6 +302,10 @@ namespace BattleSystem{
 			}
 		}
 
+        /// <summary>
+        /// タスクをキャンセルします
+        /// </summary>
+        /// <param name="task"> キャンセルしたいタスク </param>
 		public void canseledTask(BattleTask task) {
             tasks.Remove(task);
 		}

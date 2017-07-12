@@ -14,9 +14,13 @@ namespace BattleSystem{
 		//元のPlayerBattleTaskManagerです
 		private PlayerBattleTaskManager manager;
 
-		//  
-		public void setState(PlayerBattleTaskManager controller,IActiveSkill skill){
-			this.manager = controller;   
+        /// <summary>
+        /// 初期設定をします
+        /// </summary>
+        /// <param name="manager"> 情報を取得するPlayerBattleTaskManager </param>
+        /// <param name="skill"> 担当するスキル </param>
+        public void setState(PlayerBattleTaskManager manager,IActiveSkill skill){
+			this.manager = manager;   
 			this.skill = skill; 
 			textObject.text = skill.getName ();
 		}
