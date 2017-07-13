@@ -82,8 +82,11 @@ namespace Character{
 
 			setMaxHp (battleAbilities[BattleAbility.PHY]);
 			setMaxMp (battleAbilities[BattleAbility.MGP]);
-			hp = 100;
-			mp = 50;
+            //かり
+            setMaxHp(100);
+            setMaxMp(100);
+            hp = maxHp;
+            mp = maxMp;
 
 			this.container = con;
 

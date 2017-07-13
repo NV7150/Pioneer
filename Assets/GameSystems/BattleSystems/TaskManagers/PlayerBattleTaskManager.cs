@@ -59,7 +59,11 @@ namespace BattleSystem{
             battleListNode.transform.SetParent(taskView.transform);
             listView = battleListNode.GetComponent<BattleTaskListView>();
             listView.setManager(this);
-            Debug.Log(listView);
+
+            GameObject stateView = GameObject.Find("Canvas/StateView");
+            GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/StateNode"));
+            stateNode.transform.SetParent(stateView.transform);
+            stateNode.GetComponent<BattleStateNode>().setUser(player);
 		}
 		
 		// Update is called once per frame
