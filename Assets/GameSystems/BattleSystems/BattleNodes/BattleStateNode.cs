@@ -16,7 +16,6 @@ namespace BattleSystem {
         public Text name;
 
         void Start() {
-            name.text = user.getName();
         }
 
         // Update is called once per frame
@@ -31,7 +30,8 @@ namespace BattleSystem {
         }
 
         public void setUser(IBattleable user) {
-            this.user = user;
+			this.user = user;
+			name.text = user.getName();
         }
     }
 }

@@ -325,7 +325,8 @@ namespace Character{
 		}
 			
 		public void encount () {
-			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE);
+            if(!isBattleing)
+    			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE);
 		}
 
 		public void addAbilityBonus (BattleAbilityBonus bonus) {

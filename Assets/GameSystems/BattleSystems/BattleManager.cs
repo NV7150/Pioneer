@@ -353,6 +353,13 @@ namespace BattleSystem{
 			return joinedCharacter [pos];
 		}
 
+        /// <summary>
+        /// バトルが始まっているかを返します
+        /// </summary>
+        /// <returns><c>true</c>, バトルが始まっている, <c>false</c> 始まっていない </returns>
+        public bool getIsBattleing(){
+            return isBattleing;
+        }
        
 	}
 

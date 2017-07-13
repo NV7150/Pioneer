@@ -27,24 +27,31 @@ public class BattleTest : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.S) && Input.GetKey(KeyCode.A)) {
 			startBattle ();
 		}
+        if(Input.GetKeyDown(KeyCode.N)){
+            setBattle();
+        }
 	}
 
+    private void setBattle(){
+		en = EnemyMasterManager.getEnemyFromId(0);
+		hero = new Hero(JobMasterManager.getJobFromId(0), con);
+
+		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(0));
+		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(1));
+		hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(0));
+		hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(1));
+		hero.addSkill(MoveSkillMasterManager.getMoveSkillFromId(0));
+		hero.addSkill(BufSkillMasterManager.getBufSkillFromId(0));
+		hero.addSkill(DebufSkillMasterManager.getDebufSkillFromId(0));
+		hero.addSkill(HealSkillMasterManager.getHealSkillFromId(0));
+
+		con.setCharacter(hero);
+
+		WeponMasterManager.getWeponFromId(1).use(hero);
+    }
+
 	private void startBattle(){
-		en = EnemyMasterManager.getEnemyFromId (0);
-		hero = new Hero (JobMasterManager.getJobFromId(0),con);
-
-		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(0));
-		hero.addSkill (ReactionSkillMasterManager.getReactionSkillFromId(1));
-		hero.addSkill (AttackSkillMasterManager.getAttackSkillFromId(0));
-		hero.addSkill (AttackSkillMasterManager.getAttackSkillFromId(1));
-		hero.addSkill (MoveSkillMasterManager.getMoveSkillFromId(0));
-		hero.addSkill (BufSkillMasterManager.getBufSkillFromId (0));
-		hero.addSkill (DebufSkillMasterManager.getDebufSkillFromId(0));
-		hero.addSkill (HealSkillMasterManager.getHealSkillFromId (0));
-
-		con.setCharacter (hero);
-
-		WeponMasterManager.getWeponFromId (1).use (hero);
+		
 
 		BattleManager.getInstance ().StartNewBattle (new Vector3(100,100,100));
 

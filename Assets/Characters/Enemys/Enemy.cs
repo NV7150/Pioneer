@@ -240,7 +240,8 @@ namespace Character{
 		}
 
 		public void encount(){
-			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai);
+            if(!isBattling)
+    			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai);
 		}
 
 		public Wepon getWepon () {
