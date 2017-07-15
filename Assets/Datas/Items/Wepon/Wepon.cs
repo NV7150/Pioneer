@@ -36,7 +36,7 @@ namespace Item{
 		//この武器の種別です
 		private WeponType type;
 
-		private BattleAbility ability;
+		private BattleAbility weponAbility;
 
 		public Wepon(WeponBuilder builder){
 			ATTACK = builder.getAttack ();
@@ -49,6 +49,7 @@ namespace Item{
 			equipdescription = builder.getEquipDescription ();
 			type = builder.getWeponType ();
 			DELAY = builder.getDelay ();
+            weponAbility = builder.getWeponAbility();
 		}
 
 		//攻撃力を取得します
@@ -107,7 +108,8 @@ namespace Item{
 		}
 
 		public BattleAbility getWeponAbility(){
-			return ability;
+            Debug.Log("called");
+            return weponAbility;
 		}
 
 		public void use (IPlayable user) {

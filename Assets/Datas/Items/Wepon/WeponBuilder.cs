@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 using Item;
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 
 namespace MasterData{
 	[System.SerializableAttribute]
@@ -27,6 +28,9 @@ namespace MasterData{
 		equipDescription;
 
 		private float delay;
+
+        private BattleAbility weponAbility;
+        private WeponType weponType;
 
 		public WeponBuilder(string[] datas){
 			setFromCSV (datas);
@@ -74,8 +78,12 @@ namespace MasterData{
 		}
 
 		public WeponType getWeponType(){
-			return WeponTypeHelper.getTypeFromId (weponTypeID);
+            return weponType;
 		}
+
+        public BattleAbility getWeponAbility(){
+            return weponAbility;
+        }
 
 		//csvから初期化します
 		private void setFromCSV(string[] datas){
@@ -87,9 +95,10 @@ namespace MasterData{
 			this.needMft = int.Parse (datas [5]);
 			this.itemValue = int.Parse (datas[6]);
 			this.mass = int.Parse (datas[7]);
-			this.weponTypeID = int.Parse (datas[8]);
-			this.description = datas [9];
-			this.equipDescription = datas [10];
+			this.weponType = (WeponType)Enum.Parse(typeof(WeponType), datas[8]);
+			this.weponAbility = (BattleAbility)Enum.Parse(typeof(BattleAbility), datas[9]);
+			this.description = datas [10];
+			this.equipDescription = datas [11];
 		}
 
 		//Weponを取得します

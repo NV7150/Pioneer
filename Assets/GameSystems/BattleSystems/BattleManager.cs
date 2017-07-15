@@ -127,7 +127,7 @@ namespace BattleSystem{
 			player.setIsBattling (true);
 			joinedCharacter [pos].Add (player);
 
-			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/BattleNodeController"));
+			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/PlayerBattleTaskManager"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
 			manager.setPlayer (player);
 			joinedManager.Add (player.getUniqueId(),manager);
@@ -246,8 +246,6 @@ namespace BattleSystem{
 			if (Enum.GetNames (typeof(FieldPosition)).Length < (int)(nowPos + moveness))
 				throw new ArgumentException ("invalid moveness");
 
-			Debug.Log ((int)nowPos + moveness);
-
 			int movePosValue = (int)nowPos + moveness;
 			if (movePosValue < 0) {
 				movePosValue = 0;
@@ -261,8 +259,6 @@ namespace BattleSystem{
 			joinedCharacter [movePos].Add (bal);
 
 			bal.syncronizePositioin (field.getNextPosition(nowPos + moveness));
-
-			Debug.Log (nowPos + "→" +searchCharacter(bal));
 		}
 
 		//指定されたキャラクターの指定された範囲でもっとも危険な（敵対キャラクターのレベル合計が高い）ポジションを返します

@@ -22,6 +22,10 @@ namespace BattleSystem{
 		public GameObject reactoinContents;
 		//アタッチされているスクロールビューです
 		public GameObject view;
+        //戻るボタン
+        public Button backButton;
+        //ヘッダのテキスト
+        public Text headerText;
 
 		//元のプレイヤーです
 		private IPlayable player;
@@ -159,7 +163,7 @@ namespace BattleSystem{
 
 		//passiveNodeが選ばれた時の処理です
 		public void reactionChose(ReactionSkill chosenSkill){
-			reaction (chosenSkill);
+			reaction(chosenSkill);
 
 			reactoinContents.SetActive (false);
 			contents.SetActive (true);
@@ -172,7 +176,6 @@ namespace BattleSystem{
 			AttackSkill skill = prosessingPair.Value;
 			int atk = skill.getAtk (attacker);
 			int hit = skill.getHit(attacker);
-			Debug.Log ("Dammage is " + atk + "hit is " + hit);
 			passiveSkill.reaction (player,atk,hit,skill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove (prosessingPair);
 			updateProsessingPair ();
@@ -180,7 +183,8 @@ namespace BattleSystem{
 
 		//スクロールビューにActiveSkillのリストを表示します
 		private void inputActiveSkillList(){
-			detachContents ();
+			detachContents();
+            backButton.gameObject.SetActive(false);
 
 			foreach(IActiveSkill skill in player.getActiveSkills()){
 				GameObject node =  Instantiate ((GameObject)Resources.Load("Prefabs/ActiveSKillNode"));
@@ -209,7 +213,8 @@ namespace BattleSystem{
 
 		//スキルの効果範囲が単体の時のtargetをビューにインプットします
 		private void inputSingleTargetList(int range){
-			List<IBattleable> targets = BattleManager.getInstance ().getCharacterInRange (player, range);
+			List<IBattleable> targets = BattleManager.getInstance().getCharacterInRange(player, range);
+			backButton.gameObject.SetActive(true);
 
 			foreach (IBattleable target in targets) {
 				if (target.Equals (player))
@@ -223,7 +228,8 @@ namespace BattleSystem{
 
 		//スキルの効果範囲が範囲の時のtargetをビューにインプットします
 		private void inputAreaTargetList(int range){
-			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
+			FieldPosition nowPos = BattleManager.getInstance().searchCharacter(player);
+			backButton.gameObject.SetActive(true);
 
 			int index = (int)nowPos - range;
 			index = (index < 0) ? 0 : index;
@@ -244,6 +250,7 @@ namespace BattleSystem{
 		//スキルの効果範囲が全体の時のtargetをビューにインプットします
 		private void inputMoveAreaList(int move){
 			detachContents ();
+            backButton.gameObject.SetActive(true);
 
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
 
@@ -266,6 +273,7 @@ namespace BattleSystem{
 		//スクロールビューにPassiveSkillのリストを表示します
 		private void inputReactionSkillList(){
 			detachReactionContents ();
+            backButton.gameObject.SetActive(false);
 			contents.SetActive (false);
 			foreach(ReactionSkill skill in player.getReactionSKills()){
 				GameObject node = Instantiate((GameObject)Resources.Load ("Prefabs/ReactionSkillNode"));
@@ -314,6 +322,15 @@ namespace BattleSystem{
             tasks.Remove(task);
 		}
 
+        /// <summary>
+        /// 戻るボタンが選ばれた時の処理です
+        /// </summary>
+        public void backChose(){
+            detachContents();
+            inputActiveSkillList();
+            backButton.gameObject.SetActive(false);
+        }
+
 		#region IBattleTaskManager implementation
 
 		public void deleteTaskFromTarget (IBattleable target) {
@@ -341,7 +358,7 @@ namespace BattleSystem{
 		}
 			
 		public void finished(){
-			MonoBehaviour.Destroy (view);
+			Destroy (view);
 		}
 		#endregion
 
