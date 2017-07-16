@@ -16,60 +16,77 @@ using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 
 namespace Character{
 	public class Hero :IPlayable {
-		//このキャラクターのHPを表します
-		private int hp;
-		//このキャラクターのMPを表します
-		private int mp;
-		//このキャラクターの最大HPを表します
-		private int maxHp;
-		//このキャラクターの最大MPを表します
-		private int maxMp;
-		//ゲームスコアを表します
-		private int score;
-		//キャタクターの経験値を表します
-		private int exp;
-		//キャラクターの各種戦闘用パラメータを表します
-		Dictionary<BattleAbility,int> battleAbilities = new Dictionary<BattleAbility, int>();
-		//キャラクターの各非戦的パラメータを表します
-		Dictionary<FriendlyAbility,int> friendlyAbilities = new Dictionary<FriendlyAbility, int>();
-		//このキャラクターの所持金(metal)を表します
-		private int mt = 0;
-		//使命達成用のflugリストです。
-		private FlugList flugs;
-		//このキャラクターの職業を表します
-		private Job job;
-		//このキャラクターの個性を表します
-		private IIdentity identity;
-		//このキャラクターの使命を表します
-		private Mission mission;
-		//このキャラクターが装備中の武器を表します
-		private Wepon wepon;
-		//このキャラクターが装備中の防具を返します
-		private Armor armor;
-		//このキャラクターのインベントリを表します
-		private Dictionary<string,ItemStack> inventry = new Dictionary<string,ItemStack>();
-		//このキャラクターがバトル中かを示します
-		private bool isBattleing;
-		//このキャラクターの実体を表します
-		private Container container;
-		//カウンターを行うかを表します
-		private bool isReadyToCounter;
-		//プレイヤーの派閥を表します
-		private Faction faction = Faction.PLAYER;
-		//プレイヤーの苦手属性を表します
-		private AttackSkillAttribute weakAttribute;
-		//このキャラクターのunipueIdを表します
+		/// <summary> キャラクターの個を表すID </summary>
 		private long UNIQUE_ID;
-		//このキャラクターが持つ能動スキルのリストです
-		private List<IActiveSkill> activeSkills = new List<IActiveSkill>();
-		//このキャラクターが持つ受動スキルのリストです
-		private List<ReactionSkill> reactionSkills = new List<ReactionSkill>();
-		//このキャラクターのレベル
+
+		/// <summary> このキャラクターを取得しているContainerオブジェクト </summary>
+		private Container container;
+
+		/// <summary> このキャラクターの現在HP </summary>
+		private int hp;
+		/// <summary> このキャラクターの現在MP </summary>
+		private int mp;
+		/// <summary> このキャラクターの最大HP </summary>
+		private int maxHp;
+		/// <summary> このキャラクターの最大MP </summary>
+		private int maxMp;
+
+		/// <summary> 現在のゲームスコア </summary>
+		private int score;
+		/// <summary> キャラクターの取得経験値 </summary>
+		private int exp;
+		/// <summary> キャラクターのレベル </summary>
 		private int level;
-        //ボーナス値の管理
-        private BonusKeeper bonusKeeper = new BonusKeeper();
 
+		/// <summary> BattleAbilityに登録されているパラメータのDictionary </summary>
+		Dictionary<BattleAbility,int> battleAbilities = new Dictionary<BattleAbility, int>();
+		/// <summary> FriendlyAbilityに登録されているパラメータのDictionary </summary>
+		Dictionary<FriendlyAbility,int> friendlyAbilities = new Dictionary<FriendlyAbility, int>();
 
+        /// <summary> このキャラクターの所持金 </summary>
+        private int mt = 0;
+
+        /// <summary> 使命達成を判定するフラグの記憶インスタンス </summary>
+		private FlugList flugs;
+
+		/// <summary> キャラクターの職業 </summary>
+		private Job job;
+		/// <summary> このキャラクターの特徴 </summary>
+		private IIdentity identity;
+		/// <summary> このキャラクターの使命 </summary>
+		private Mission mission;
+
+		/// <summary> プレイヤーの所属派閥 </summary>
+		private Faction faction = Faction.PLAYER;
+
+		/// <summary> 装備中の武器 </summary>
+		private Wepon wepon;
+		/// <summary> 装備中の防具 </summary>
+		private Armor armor;
+
+		/// <summary> キャラクターが所持しているアイテム(keyをstring以外にする予定) </summary>
+		private Dictionary<string,ItemStack> inventry = new Dictionary<string,ItemStack>();
+
+		/// <summary> キャラクターが持つActiveSkillのリスト </summary>
+		private List<IActiveSkill> activeSkills = new List<IActiveSkill>();
+		/// <summary> キャラクターが持つReactionSkillのリスト </summary>
+		private List<ReactionSkill> reactionSkills = new List<ReactionSkill>();
+
+		/// <summary> このキャラクターがバトル中かどうか </summary>
+		private bool isBattleing;
+		/// <summary> （実装予定）カウンターを行うかどうか </summary>
+		private bool isReadyToCounter;
+		/// <summary> ボーナス値を管理するインスタンス </summary>
+		private BonusKeeper bonusKeeper = new BonusKeeper();
+
+		/// <summary> プレイヤーの苦手属性 </summary>
+		private AttackSkillAttribute weakAttribute;
+
+        /// <summary>
+        /// <see cref="T:Character.Hero"/> classのコンストラクタです
+        /// </summary>
+        /// <param name="job">職業</param>
+        /// <param name="con">Container</param>
 		public Hero(Job job,Container con){
 			Dictionary<BattleAbility,int> battleParameters = job.defaultSettingBattleAbility ();
 			Dictionary<FriendlyAbility,int> friendlyParameters = job.defaultSettingFriendlyAbility ();
@@ -366,7 +383,10 @@ namespace Character{
 		}
 		#endregion
 
-		//インベントリにアイテムを追加します
+		/// <summary>
+        /// インベントリにアイテムを追加します
+        /// </summary>
+        /// <param name="item">追加するアイテム</param>
 		public void addItem(IItem item){
 			if (inventry.ContainsKey (item.getName ())) {
 				inventry [item.getName()].add (item);
@@ -377,61 +397,91 @@ namespace Character{
 			}
 		}
 
-		//最大HPを設定します
+		/// <summary>
+        /// 最大HPを設定します
+        /// </summary>
+        /// <param name="parameter">設定するHP</param>
 		private void setMaxHp(int parameter){
 			isntInvalitAblityParamter (parameter);
 			maxHp = parameter;
 		}
 
-		//最大MPを設定します
+		/// <summary>
+        /// 最大MPを設定します
+        /// </summary>
+        /// <param name="parameter">設定するMP</param>
 		private void setMaxMp(int parameter){
 			isntInvalitAblityParamter (parameter);
 			maxMp = parameter;
 		}
 
-		//白兵戦闘力(mft)を設定します
+		/// <summary>
+        /// 白兵攻撃力(MFT)を設定します
+        /// </summary>
+        /// <param name="parameter">設定するパラメータ</param>
 		private void setMft(int parameter){
 			isntInvalitAblityParamter (parameter);
 			this.battleAbilities[BattleAbility.MFT] = parameter;
 		}
 
-		//遠距離戦闘能力(fft)を設定します
+		/// <summary>
+		/// 遠距離攻撃力(FFT)を設定します
+		/// </summary>
+		/// <param name="parameter">設定するパラメータ</param>
 		private void setFft(int parameter){
 			isntInvalitAblityParamter (parameter);
 			this.battleAbilities[BattleAbility.FFT] = parameter;
 		}
 
-		//魔力(mgp)を設定します
+		/// <summary>
+		/// 魔力(MGP)を設定します
+		/// </summary>
+		/// <param name="parameter">設定するパラメータ</param>
 		private void setMgp(int parameter){
 			isntInvalitAblityParamter (parameter);
 			this.battleAbilities[BattleAbility.MGP] = parameter;
 		}
 
-		//話術(spc)を設定します
+		/// <summary>
+		/// 話術(SPC)を設定します
+		/// </summary>
+		/// <param name="parameter">設定するパラメータ</param>
 		private void setSpc(int parameter){
 			isntInvalitAblityParamter(parameter);
 			this.friendlyAbilities[FriendlyAbility.SPC] = parameter;
 		}
 
-		//器用さ(dex)を設定します
+		/// <summary>
+		/// 器用(DEX)を設定します
+		/// </summary>
+		/// <param name="parameter">設定するパラメータ</param>
 		private void setDex(int parameter){
 			isntInvalitAblityParamter (parameter);
 			this.friendlyAbilities[FriendlyAbility.DEX] = parameter;
 		}
 
-		//体力(phy)を設定します
+		/// <summary>
+		/// 体力(PHY)を設定します
+		/// </summary>
+		/// <param name="parameter">設定するパラメータ</param>
 		private void setPhy(int parameter){
 			isntInvalitAblityParamter (parameter);
 			this.battleAbilities[BattleAbility.PHY] = parameter;
 		}
 
-		//敏捷性(agi)を設定します
+		/// <summary>
+        /// 敏捷性(AGI)を設定します
+        /// </summary>
+        /// <param name="parameter">設定するパラメータ</param>
 		private void setAgi(int parameter){
 			isntInvalitAblityParamter (parameter);
 			this.battleAbilities[BattleAbility.AGI] = parameter;
 		}
 
-		//与えられた値を検査し、不正な値の場合は例外を投げます
+		/// <summary>
+        /// 与えられた値を検査し、不正な場合は例外を投げます
+        /// </summary>
+        /// <param name="value"> 検査したい値 </param>
 		private void isntInvalitAblityParamter(int value){
 			if (value <= 0)
 				throw new ArgumentException ("invalit parameter");

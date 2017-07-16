@@ -9,7 +9,7 @@ using Character;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class EnemyMasterManager : MasterDataManagerBase{
-		//登録済みのデータのリストです
+		/// <summary> 登録済みEnemのリスト </summary>
 		private static List<EnemyBuilder> dataTable = new List<EnemyBuilder>();
 
 		private void Awake(){
@@ -17,7 +17,11 @@ namespace MasterData{
 			constractedBehaviour (enemyCSVText);
 		}
 
-		//IDからEnemyを取得します
+		/// <summary>
+		/// idからEnemyを生成し、返します
+		/// </summary>
+		/// <returns>結果のEnemy</returns>
+		/// <param name="id">取得したいEnemyのID</param>
 		public static Enemy getEnemyFromId(int id){
 			foreach(EnemyBuilder builder in dataTable){
 				if (builder.getId () == id) {

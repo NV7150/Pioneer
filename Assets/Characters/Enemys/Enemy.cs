@@ -17,66 +17,75 @@ using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 
 
 namespace Character{
+    /// <summary>
+    /// 敵のキャラクターオブジェクト
+    /// マスターデータによって管理されます
+    /// </summary>
 	public class Enemy : IBattleable{
 		private readonly int
-			//このキャラクターのIDです
+			/// <summary> このキャラクターのID </summary>
 			ID,
-			//このキャラクターの最大HPを表します
+			/// <summary> このキャラクターの最大HP </summary>
 			MAX_HP,
-			//このキャラクターの最大MPを表します
+			/// <summary> このキャラクターの最大MP </summary>
 			MAX_MP,
-			//このキャラクターの防御値です
+			/// <summary> このキャラクターの防御 </summary>
 			DEF,
-			//このキャラクターのレベルです
+			/// <summary> このキャラクターのレベル </summary>
 			LV,
-			//このキャラクターのノーマルドロップのアイテムIDです
+			/// <summary> このキャラクターの通常ドロップのアイテムID </summary>
 			NORMAL_DROP_ID,
-			//このキャラクターのレアドロップのアイテムIDです
+			/// <summary> このキャラクターのレアドロップのアイテムID </summary>
 			RARE_DROP_ID;
 
 		private readonly string 
-			//このキャラクターの名前です
+			/// <summary> このキャラクターの名前 </summary>
 			NAME,
-			//このキャラクターのプレファブリソースへのパスです Resourcesフォルダ内からの相対パスになります
+			/// <summary> このキャラクターのprefabのリソースのResourcesフォルダからの相対パス </summary>
 			MODEL_ID;
 
-		//このキャラクターの各能力値を表します
-		private Dictionary<CharacterParameters.BattleAbility,int> abilities = new Dictionary<CharacterParameters.BattleAbility, int>();
+		/// <summary> このキャラクターの能力値のDictonary </summary>
+		private Dictionary<BattleAbility,int> abilities = new Dictionary<CharacterParameters.BattleAbility, int>();
 
-		//このキャラクターの現在のHPです
+		/// <summary> このキャラクターの現在HP </summary>
 		private int hp;
-		//このキャラクターの現在のMPです
+		/// <summary> このキャラクターの現在MP </summary>
 		private int mp;
 
-		//このキャラクターがバトル中かどうかを表します
+		/// <summary> このキャラクターがバトルしているかどうか </summary>
 		private bool isBattling = false;
 
-		//このキャラクターがカウンターを行うかを表します
+		/// <summary> （実装予定）このキャラクターがカウンターするかどうか </summary>
 		private bool isReadyToCounter = false;
 
-		//このキャラクターのゲームオブジェクトにアタッチされてるContainerオブジェクトを表します
+		/// <summary> このキャラクターのcontainerオブジェクト </summary>
 		private Container container;
 
-		//このキャラクターのAIを表します
+		/// <summary> このキャラクターのAI </summary>
 		private IEnemyAI ai;
 
-		//このキャラクターの個を識別するためのIDです
+		/// <summary> このキャラクターの個を表すID </summary>
 		private readonly long UNIQE_ID;
 
-		//このキャラクターが属する陣営を表します
+		/// <summary> このキャラクターの陣営 </summary>
 		private readonly Faction FACTION;
-		//このキャラクターが持つActiveSkillSetです
+		
+        /// <summary> このキャラクターが使うActiveSkillSet </summary>
 		private ActiveSkillSet activeSkillSet;
 
-		//このキャラクターが持つPassiveSkillSetです
+		/// <summary> このキャラクターが使うReactionSkillSet </summary>
 		private ReactionSkillSet reactionSkillSet;
 
-		//このキャラクターの武器です
+		/// <summary> このキャラクターが装備中の武器 </summary>
 		private Wepon equipedWepon;
 
-		//このキャラクターが得ている補正値のリストです
+		/// <summary> このキャラクターの能力値ボーナスを管理を管理するBonusKeeper </summary>
 		private BonusKeeper bonusKeeper = new BonusKeeper();
 
+        /// <summary>
+        ///  <see cref="T:Character.Enemy"/> classのコンストラクタ
+        /// </summary>
+        /// <param name="builder">このキャラクターの初期設定を保持するEnemyBuilerクラス</param>
 		public Enemy(EnemyBuilder builder){
 			this.ID = builder.getId ();
 			this.NAME = builder.getName ();
@@ -89,12 +98,10 @@ namespace Character{
 			this.FACTION = builder.getFaction ();
 			this.equipedWepon = builder.getWepon ();
 
-//			this.MAX_HP = this.abilities [BattleAbility.PHY] * 2 + LV;
 			this.MAX_HP = 100;
 
 			this.MAX_MP = this.abilities [BattleAbility.MGP] * 2 + LV;
 
-//			this.hp = MAX_HP;
 			this.hp = 100;
 			this.mp = MAX_MP;
 
@@ -294,31 +301,47 @@ namespace Character{
 		}
 		#endregion
 
-		//Enemyの種族IDを返します
+		/// <summary>
+        /// このキャラクターの種族を表すIDを取得します
+        /// </summary>
+        /// <returns>種族ID</returns>
 		public int getId(){
 			return this.ID;
 		}
 
-		//HPを設定します
+		/// <summary>
+        /// 現在HPを設定します
+        /// </summary>
+        /// <param name="hp">設定するHp</param>
 		public void setHp (int hp) {
 			if (hp < 0)
 				throw new ArgumentException ("invalid hp");
 			this.hp = hp;
 		}
 
-		//MPを設定します
+		/// <summary>
+        /// 現在MPを設定します
+        /// </summary>
+        /// <param name="mp">設定するMP</param>
 		public void setMp (int mp) {
 			if (mp < 0)
 				throw new ArgumentException ("invalid mp");
 			this.mp = mp;
 		}
 
-		//このEnemyが与える経験値を取得します
+		/// <summary>
+        /// このキャラクターが与える経験値を取得します
+        /// </summary>
+        /// <returns>与える経験値</returns>
 		public int getGiveExp(){
 			throw new NotSupportedException ();
 		}
 
-		//このEnemyのドロップアイテムを取得します。ない場合はnullを返します
+		/// <summary>
+        /// このキャラクターのドロップアイテムを取得します
+        /// なければnullを返します
+        /// </summary>
+        /// <returns>ドロップアイテム</returns>
 		public IItem getDrop(){
 			throw new NotSupportedException ();
 		}
