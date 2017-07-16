@@ -1,9 +1,10 @@
 ﻿﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 using UnityEngine.UI;
-//using static UnityEngine.UI.Image.Type;
+
 using Character;
 
 namespace BattleSystem {
@@ -13,7 +14,8 @@ namespace BattleSystem {
         public Image mpBar;
         public Text hpValue;
         public Text mpValue;
-        public Text name;
+        public Text text;
+        public Image progressRectangle;
 
         void Start() {
         }
@@ -31,7 +33,27 @@ namespace BattleSystem {
 
         public void setUser(IBattleable user) {
 			this.user = user;
-			name.text = user.getName();
+            text.text = user.getName();
         }
+
+		public void advanceProgress(float val) {
+			if (val <= 0)
+				throw new ArgumentException("invalid value");
+
+			progressRectangle.fillAmount = (progressRectangle.fillAmount < 1.0f) ? progressRectangle.fillAmount + val : progressRectangle.fillAmount;
+			cheakColor();
+		}
+
+		public void resetProgress() {
+			progressRectangle.fillAmount = 0f;
+		}
+
+		private void cheakColor() {
+			if (progressRectangle.fillAmount >= 1.0f) {
+				progressRectangle.color = new Color(0f, 230f, 0f);
+			} else if (progressRectangle.fillAmount < 1.0f) {
+                progressRectangle.color = Color.grey;
+			}
+		}
     }
 }

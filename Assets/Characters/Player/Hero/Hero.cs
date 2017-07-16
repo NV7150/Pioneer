@@ -66,6 +66,8 @@ namespace Character{
 		private List<ReactionSkill> reactionSkills = new List<ReactionSkill>();
 		//このキャラクターのレベル
 		private int level;
+        //ボーナス値の管理
+        private BonusKeeper bonusKeeper = new BonusKeeper();
 
 
 		public Hero(Job job,Container con){
@@ -117,7 +119,6 @@ namespace Character{
 			} else {
 				return false;
 			}
-				
 		}
 
 		public void levelUp () {
@@ -221,7 +222,7 @@ namespace Character{
 
 		public void healed (int heal, HealSkillAttribute attribute) {
 			if (heal < 0 || attribute == HealSkillAttribute.NONE)
-				throw new ArgumentException ("invlit heal");
+				throw new ArgumentException ("invalid heal");
 
 			if (attribute == HealSkillAttribute.HP_HEAL || attribute == HealSkillAttribute.BOTH) {
 				if (this.hp != 0)
@@ -256,6 +257,10 @@ namespace Character{
 			return battleAbilities[BattleAbility.PHY];
 		}
 
+		public int getAbilityContainsBonus(BattleAbility ability) {
+            return battleAbilities[ability] + bonusKeeper.getBonus(ability);
+		}
+
 		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility) {
 			int atk = battleAbilities [useAbility] + UnityEngine.Random.Range (0,level);
 			return atk;
@@ -283,12 +288,12 @@ namespace Character{
 			container.getModel ().transform.position = vector;
 		}
 
-		public int getHit (BattleAbility useAbility) {
-			return battleAbilities [useAbility] + UnityEngine.Random.Range (1,11);
+		public int getDodge() {
+            return getAbilityContainsBonus(BattleAbility.AGI);
 		}
 
-		public int getDodge () {
-			return getAgi();
+		public int getHit (BattleAbility useAbility) {
+            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range (1,11);
 		}
 
 		public void setIsReadyToCounter (bool flag) {
@@ -313,7 +318,7 @@ namespace Character{
 
 
 		public int healing (BattleAbility useAbility) {
-			return battleAbilities [useAbility] + UnityEngine.Random.Range(0,level);
+            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,level);
 		}
 
 		public Faction getFaction () {
@@ -330,12 +335,12 @@ namespace Character{
 		}
 
 		public void addAbilityBonus (BattleAbilityBonus bonus) {
-			throw new NotImplementedException ();
+            bonusKeeper.setBonus(bonus);
 		}
 
 
 		public void addSubAbilityBonus (SubBattleAbilityBonus bonus) {
-			throw new NotImplementedException ();
+            bonusKeeper.setBonus(bonus);
 		}
 
 		#endregion
@@ -345,8 +350,7 @@ namespace Character{
 		}
 
 		public void act () {
-			PLHPsetter.hp = this.hp;
-			PLHPsetter.mp = this.mp;
+            bonusKeeper.advanceLimit();
 		}
 
 		public void death () {
@@ -440,5 +444,7 @@ namespace Character{
 		public override bool Equals (object obj) {
 			return this == obj;
 		}
-	}
+
+
+    }
 }

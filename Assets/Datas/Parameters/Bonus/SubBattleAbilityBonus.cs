@@ -17,11 +17,6 @@ namespace Parameter {
 		public SubBattleAbility getBonusAbility(){
 			return BONUS_SUBABILITY;
 		}
-
-		public bool hasNextLimit(){
-			limit -= Time.deltaTime;
-			return (limit > 0);
-		}
 	}
 }
 

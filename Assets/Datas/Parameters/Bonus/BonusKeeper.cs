@@ -54,13 +54,14 @@ namespace Parameter {
 			return sumBonus;
 
 		}
-			
+
 		/// <summary>
 		/// 与えられたボーナスを追加します
 		/// 引数がBattleAbilityBonusかSubBattleAbilityBonusかでオーバーロードします
 		/// </summary>
 		/// <param name="bonus">追加したいボーナス</param>
-		public void setBonus(BattleAbilityBonus bonus){
+		public void setBonus(BattleAbilityBonus bonus) {
+			UnityEngine.Debug.Log("setted bonus");
 			BattleAbility bonusAbility = bonus.getBonusAbility ();
 			battleAbilityBonusList [bonusAbility].Add (bonus);
 		}
@@ -70,7 +71,8 @@ namespace Parameter {
 		/// 引数がBattleAbilityBonusかSubBattleAbilityBonusかでオーバーロードします
 		/// </summary>
 		/// <param name="bonus">追加したいボーナス</param>
-		public void setBonus(SubBattleAbilityBonus bonus){
+		public void setBonus(SubBattleAbilityBonus bonus) {
+			UnityEngine.Debug.Log("setted bonus");
 			SubBattleAbility bonusAbility = bonus.getBonusAbility ();
 			subAbilityBonusList [bonusAbility].Add (bonus);
 		}
@@ -79,10 +81,13 @@ namespace Parameter {
 		/// 保持しているBonusのlimitを進めます
 		/// </summary>
 		public void advanceLimit(){
-			var battleAbilities = battleAbilityBonusList.Keys;
+
+            var battleAbilities = battleAbilityBonusList.Keys;
 			foreach(BattleAbility ability in battleAbilities){
-				foreach (BattleAbilityBonus bonus in battleAbilityBonusList [ability]) {
-					if (!bonus.hasNextLimit ()){
+                int count = battleAbilityBonusList[ability].Count;
+                for (int i = 0; i < count; i++) {
+                    BattleAbilityBonus bonus = battleAbilityBonusList[ability][i];
+					if (!bonus.nextFrame()){
 						battleAbilityBonusList [ability].Remove (bonus);
 					}
 				}
@@ -90,8 +95,10 @@ namespace Parameter {
 
 			var subAbilities = subAbilityBonusList.Keys;
 			foreach(SubBattleAbility ability in subAbilities){
-				foreach(SubBattleAbilityBonus bonus in subAbilityBonusList [ability]){
-					if (!bonus.hasNextLimit ()) {
+                int count = subAbilityBonusList[ability].Count;
+                for (int i = 0; i < count;i++){
+                    SubBattleAbilityBonus bonus = subAbilityBonusList[ability][i];
+					if (!bonus.nextFrame()) {
 						subAbilityBonusList [ability].Remove (bonus);
 					}
 				}

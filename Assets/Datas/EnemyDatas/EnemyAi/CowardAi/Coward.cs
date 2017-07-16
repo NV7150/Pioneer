@@ -231,20 +231,10 @@ namespace AI {
             //現在のpos
             FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
 
-            //ループ変数の設定
-            int index = (int)nowPos - useSkill.getRange();
-            if(index < 0){
-                index = 0;
-            }else if (index >= fieldPosMax){
-                index = fieldPosMax;
-            }
+			//ループ変数の設定
+			int index = BattleManager.getInstance().restructionPositionValue(nowPos, -1 * useSkill.getRange());
 
-            int maxIndex = (int)nowPos + useSkill.getRange();
-            if (maxIndex < 0) {
-                maxIndex = 0;
-            } else if (maxIndex >= fieldPosMax) {
-                maxIndex = fieldPosMax;
-			}
+			int maxIndex = BattleManager.getInstance().restructionPositionValue(nowPos, useSkill.getRange());
 
             //２つのdictionaryの設定
             float probalitySum = 0;
@@ -361,22 +351,12 @@ namespace AI {
             //ループ変数の設定
 			int fieldPosMax = Enum.GetNames(typeof(FieldPosition)).Length;
 
-			int index = (int)nowPos - useSkill.getRange();
-			if (index < 0) {
-				index = 0;
-			} else if (index >= fieldPosMax) {
-				index = fieldPosMax;
-			}
+            int index = BattleManager.getInstance().restructionPositionValue(nowPos, -1 * useSkill.getRange());
 
-			int maxIndex = (int)nowPos + useSkill.getRange();
-			if (maxIndex < 0) {
-				maxIndex = 0;
-			} else if (maxIndex >= fieldPosMax) {
-				maxIndex = fieldPosMax;
-			}
+            int maxIndex = BattleManager.getInstance().restructionPositionValue(nowPos, useSkill.getRange());
 
             //エリアの友軍の合計レベルが高いほど可能性が高くなる
-            for (;index < maxIndex;index++){
+            for (;index <= maxIndex;index++){
                 int areaFriendlyLevelSum = 0;
                 areaFriendlyCharacter.Add((FieldPosition)index,new List<IBattleable>());
                 foreach(IBattleable target in BattleManager.getInstance().getAreaCharacter((FieldPosition)index)){
@@ -441,9 +421,9 @@ namespace AI {
                     sumLevel += target.getLevel();
                 }
             }
-
             //乱数を出す
             int choose = UnityEngine.Random.Range(0, sumLevel) + 1;
+
             //最終判定
             //弱い敵を積極的に殴るので、レベル合計-レベルが可能性値です
             foreach (IBattleable target in hostalityTargets) {

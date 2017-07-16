@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Parameter{
 	public abstract class BonusBase {
@@ -17,10 +18,10 @@ namespace Parameter{
 			return bonusValue;
 		}
 
-		//次のフレームへ行き、残りフレーム数がなくなるとtureを返します
+		//次のフレームへ行き、残りフレーム数がなくなるとfalseを返します
 		public bool nextFrame(){
-			this.limit--;
-			return (this.limit <= 0);
+            this.limit -= Time.deltaTime;
+			return (this.limit > 0);
 		}
 	}
 }

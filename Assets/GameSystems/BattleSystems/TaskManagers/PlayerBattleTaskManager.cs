@@ -7,6 +7,7 @@ using System;
 using Skill;
 using Character;
 using MasterData;
+using Parameter;
 
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 using Extent = Skill.ActiveSkillParameters.Extent;
@@ -52,6 +53,10 @@ namespace BattleSystem{
 
         private BattleTaskListView listView;
 
+        private BattleStateNode state;
+
+        private bool isInputingBackButton = false;
+
 		// Use this for initialization
 		void Start () {
             GameObject battleView = GameObject.Find ("Canvas/BattleView");
@@ -68,6 +73,7 @@ namespace BattleSystem{
             GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/StateNode"));
             stateNode.transform.SetParent(stateView.transform);
             stateNode.GetComponent<BattleStateNode>().setUser(player);
+            state = stateNode.GetComponent<BattleStateNode>();
 		}
 		
 		// Update is called once per frame
@@ -80,7 +86,8 @@ namespace BattleSystem{
 				reactionState ();
 			}else if (battleState == BattleState.ACTION && tasks.Count > 0) {
 				actionState ();
-			} else if (battleState == BattleState.IDLE) {
+			}
+            if (battleState == BattleState.IDLE) {
 				idleState ();
 			}
 		}
@@ -94,6 +101,8 @@ namespace BattleSystem{
 				reactoinContents.SetActive (false);
 				contents.SetActive (true);
 				detachReactionContents ();
+
+				backButton.gameObject.SetActive(isInputingBackButton);
 			}
 		}
 
@@ -105,11 +114,13 @@ namespace BattleSystem{
 			tasks.Remove (runTask);
             listView.deleteTask(runTask);
 			battleState = BattleState.IDLE;
+            state.resetProgress();
 		}
 
 		//update時idleステート時に呼ばれます
 		private void idleState(){
 			delay -= Time.deltaTime;
+			state.advanceProgress(Time.deltaTime);
 			if (delay <= 0) {
 				battleState = BattleState.ACTION;
 			}
@@ -168,6 +179,9 @@ namespace BattleSystem{
 			reactoinContents.SetActive (false);
 			contents.SetActive (true);
 			detachReactionContents ();
+
+            backButton.gameObject.SetActive(isInputingBackButton);
+            needToReaction = false;
 		}
 
 		//passiveスキルを使用します
@@ -185,6 +199,7 @@ namespace BattleSystem{
 		private void inputActiveSkillList(){
 			detachContents();
             backButton.gameObject.SetActive(false);
+            isInputingBackButton = false;
 
 			foreach(IActiveSkill skill in player.getActiveSkills()){
 				GameObject node =  Instantiate ((GameObject)Resources.Load("Prefabs/ActiveSKillNode"));
@@ -215,6 +230,7 @@ namespace BattleSystem{
 		private void inputSingleTargetList(int range){
 			List<IBattleable> targets = BattleManager.getInstance().getCharacterInRange(player, range);
 			backButton.gameObject.SetActive(true);
+			isInputingBackButton = true;
 
 			foreach (IBattleable target in targets) {
 				if (target.Equals (player))
@@ -230,20 +246,17 @@ namespace BattleSystem{
 		private void inputAreaTargetList(int range){
 			FieldPosition nowPos = BattleManager.getInstance().searchCharacter(player);
 			backButton.gameObject.SetActive(true);
+			isInputingBackButton = true;
 
-			int index = (int)nowPos - range;
-			index = (index < 0) ? 0 : index;
+            int index = BattleManager.getInstance().restructionPositionValue(nowPos, range);
+            int maxRange = BattleManager.getInstance().restructionPositionValue(nowPos, range);
 
-			int maxRange = (int)nowPos + range;
-			maxRange = (maxRange > 7) ? 7 : maxRange;
-			maxRange = (maxRange < 0) ? 0 : maxRange;
-
-			for (; index < maxRange; index++) {
-				if ((nowPos + index) >= 0) {
-					GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/TargetNode"));
-					node.GetComponent<TargetNode> ().setState ((FieldPosition)index, this);
-					node.transform.SetParent (contents.transform);
-				}
+			for (; index <= maxRange; index++) {
+				if (index == (int)nowPos)
+					continue;
+				GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/TargetNode"));
+				node.GetComponent<TargetNode> ().setState ((FieldPosition)index, this);
+				node.transform.SetParent (contents.transform);
 			}
 		}
 
@@ -251,28 +264,28 @@ namespace BattleSystem{
 		private void inputMoveAreaList(int move){
 			detachContents ();
             backButton.gameObject.SetActive(true);
+            isInputingBackButton = true;
 
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
 
-			int index = (int)nowPos - move;
-			index = (index < 0) ? 0 : index;
+            int index = BattleManager.getInstance().restructionPositionValue(nowPos,-move);
+            int maxpos = BattleManager.getInstance().restructionPositionValue(nowPos, move);
 
-			int maxpos = (int)nowPos + move + 1;
-			maxpos = (maxpos > 7) ? 7 : maxpos;
-			maxpos = (maxpos < 0) ? 0 : maxpos;
+            Debug.Log("index : " + index + " max : " + maxpos);
 
-			for (; index < maxpos; index++) {
-				if ((nowPos + index) >= 0) { 
-					GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/MoveAreaNode"));
-					node.GetComponent<MoveAreaNode> ().setState ((FieldPosition)index, this);
-					node.transform.SetParent (contents.transform);
-				}
+			for (; index <= maxpos; index++) {
+                if (index == (int)nowPos)
+                    continue;
+				GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/MoveAreaNode"));
+				node.GetComponent<MoveAreaNode> ().setState ((FieldPosition)index, this);
+				node.transform.SetParent (contents.transform);
 			}
 		}
 
 		//スクロールビューにPassiveSkillのリストを表示します
 		private void inputReactionSkillList(){
-			detachReactionContents ();
+			detachReactionContents();
+
             backButton.gameObject.SetActive(false);
 			contents.SetActive (false);
 			foreach(ReactionSkill skill in player.getReactionSKills()){
@@ -326,9 +339,8 @@ namespace BattleSystem{
         /// 戻るボタンが選ばれた時の処理です
         /// </summary>
         public void backChose(){
-            detachContents();
             inputActiveSkillList();
-            backButton.gameObject.SetActive(false);
+            isInputingBackButton = true;
         }
 
 		#region IBattleTaskManager implementation

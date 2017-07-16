@@ -10,6 +10,7 @@ using BattleSystem;
 using Skill;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using SubBattleAbility = Parameter.CharacterParameters.SubBattleAbility;
 using Faction = Parameter.CharacterParameters.Faction;
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
@@ -128,32 +129,36 @@ namespace Character{
 		}
 
 		public int getMft () {
-			return abilities[BattleAbility.MFT];
+            return abilities[BattleAbility.MFT];
 		}
 
 		public int getFft () {
-			return abilities[BattleAbility.FFT];
+            return abilities[BattleAbility.FFT];
 		}
 
 		public int getMgp () {
-			return abilities[BattleAbility.MGP];
+            return abilities[BattleAbility.MGP];
 		}
 
 		public int getAgi () {
-			return abilities[BattleAbility.AGI];
+            return abilities[BattleAbility.AGI];
 		}
 
 		public int getPhy () {
-			return abilities[BattleAbility.PHY];
+            return abilities[BattleAbility.PHY];
 		}
+
+        public int getAbilityContainsBonus(BattleAbility ability){
+            return abilities[ability] + bonusKeeper.getBonus(ability);
+        }
 
 		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility) {
 			//もっとくふうすする予定
-			return abilities [useAbility] + UnityEngine.Random.Range(0,10 + LV);
+            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,10 + LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
 		}
 
 		public int getDef () {
-			return DEF;
+            return DEF + bonusKeeper.getBonus(SubBattleAbility.DEF);
 		}
 
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
@@ -177,7 +182,7 @@ namespace Character{
 		public void healed (int heal, HealSkillAttribute attribute) {
 			Debug.Log ("" + heal);
 			if (heal < 0 || attribute == HealSkillAttribute.NONE)
-				throw new ArgumentException ("invlit heal");
+				throw new ArgumentException ("invalid heal");
 
 			if (attribute == HealSkillAttribute.HP_HEAL || attribute == HealSkillAttribute.BOTH) {
 				if (this.hp != 0)
@@ -192,8 +197,12 @@ namespace Character{
 			}
 		}
 
+		public int getDodge() {
+			return getAbilityContainsBonus(BattleAbility.AGI);
+		}
+
 		public int getHit (BattleAbility useAbility) {
-			return abilities [useAbility] + UnityEngine.Random.Range (1,11);
+            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range (1,11);
 		}
 
 		public int healing (BattleAbility useAbility) {
@@ -212,10 +221,6 @@ namespace Character{
 			container.getModel ().transform.position = vector;
 		}
 
-		public int getDodge () {
-			//あとで実装
-			return getAgi ();
-		}
 		public void setIsReadyToCounter (bool flag) {
 			isReadyToCounter = flag;
 		}
@@ -227,6 +232,7 @@ namespace Character{
 		public int getLevel () {
 			return LV;
 		}
+
 		List<IBattleable> decideTarget (List<IBattleable> bals) {
 			throw new System.NotImplementedException ();
 		}
@@ -249,13 +255,16 @@ namespace Character{
 		}
 
 		public void addAbilityBonus (BattleAbilityBonus bonus) {
+            Debug.Log("called");
 			bonusKeeper.setBonus (bonus);
 		}
 
 
 		public void addSubAbilityBonus (SubBattleAbilityBonus bonus) {
+            Debug.Log("called");
 			bonusKeeper.setBonus (bonus);
 		}
+
 
 		#endregion
 
@@ -265,8 +274,7 @@ namespace Character{
 		}
 
 		public void act () {
-			ENTP.hp = this.hp;
-			ENTP.mp = this.mp;
+            bonusKeeper.advanceLimit();
 		}
 
 		public void death () {
@@ -328,5 +336,5 @@ namespace Character{
 				return false;
 			return true;
 		}
-	}
+    }
 }

@@ -145,35 +145,17 @@ namespace BattleSystem{
 		public List<IBattleable> getCharacterInRange(IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
-
 			//Range内のIBattleableを検索
 			List<IBattleable> list = new List<IBattleable>();
 			FieldPosition pos =  searchCharacter(bal);
-			for (int i = (int) pos; i < (int)pos + range + 1; i++) {
-				list.AddRange (joinedCharacter[(FieldPosition) i]);
+
+            int index = restructionPositionValue(pos, -1 * range);
+            int maxPos = restructionPositionValue(pos, range);
+
+            for (; index <= maxPos; index++) {
+				list.AddRange (joinedCharacter[(FieldPosition) index]);
 			}
 			return list;
-		}
-
-		//回復処理をします
-		public void healCommand(IBattleable bal,int range,int basicHealRate,HealSkillAttribute attribute,BattleAbility useAbility){
-			if (!isBattleing)
-				throw new InvalidOperationException ("battle isn't started");
-
-			//Range内のIBattleableを検索
-			List<IBattleable> list = new List<IBattleable> ();
-			FieldPosition pos =  searchCharacter(bal);
-			for (int i = 0; i < range + 1; i++) {
-				list.AddRange (joinedCharacter[pos + i]);
-			}
-			//targetの決定
-//			List<IBattleable> targets = bal.decideTarget (list);
-			//回復処理
-//			foreach(IBattleable target in targets){
-//				target.healed (bal.healing(basicHealRate,useAbility),attribute);
-//			}
-
-			throw new NotSupportedException ();
 		}
 
 		//対象は戦闘から離脱します
@@ -200,10 +182,11 @@ namespace BattleSystem{
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
 
-			FieldPosition area = searchCharacter (bal);
+			FieldPosition nowPos = searchCharacter (bal);
 			int count = 0;
-			int index = (((int)area - range) < 0) ? 0 : (int)area - range;
-			for(;index < (int)area + range + 1;index++){
+            int index = restructionPositionValue(nowPos, -1 * range);
+            int maxPos = restructionPositionValue(nowPos, range);
+            for(;index <= maxPos;index++){
 				count += joinedCharacter[(FieldPosition) index].Count;
 			}
 			//自分が1つ入るので-1
@@ -216,7 +199,8 @@ namespace BattleSystem{
 				throw new InvalidOperationException ("battle isn't started");
 
 			int returnValue = 0;
-			foreach(FieldPosition pos in joinedCharacter.Keys){
+            var keys = joinedCharacter.Keys;
+            foreach(FieldPosition pos in keys){
 				returnValue += joinedCharacter [pos].Count;
 			}
 			return returnValue;
@@ -236,6 +220,7 @@ namespace BattleSystem{
 
 		//動きます
 		public void moveCommand(IBattleable bal,int moveness){
+            Debug.Log("into moveCommand");
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
 
@@ -246,19 +231,15 @@ namespace BattleSystem{
 			if (Enum.GetNames (typeof(FieldPosition)).Length < (int)(nowPos + moveness))
 				throw new ArgumentException ("invalid moveness");
 
-			int movePosValue = (int)nowPos + moveness;
-			if (movePosValue < 0) {
-				movePosValue = 0;
-			} else if (movePosValue > Enum.GetNames (typeof(FieldPosition)).Length - 1) {
-				movePosValue = Enum.GetNames (typeof(FieldPosition)).Length - 1;
-			}
-
+            int movePosValue = restructionPositionValue(nowPos, moveness);
 			FieldPosition movePos = (FieldPosition)movePosValue;
 			//移動処理
 			joinedCharacter [nowPos].Remove (bal);
 			joinedCharacter [movePos].Add (bal);
 
-			bal.syncronizePositioin (field.getNextPosition(nowPos + moveness));
+			bal.syncronizePositioin(field.getNextPosition(nowPos + moveness));
+            Debug.Log(nowPos + "→" + movePos);
+			Debug.Log("end moveCommand");
 		}
 
 		//指定されたキャラクターの指定された範囲でもっとも危険な（敵対キャラクターのレベル合計が高い）ポジションを返します
@@ -295,23 +276,13 @@ namespace BattleSystem{
 			FieldPosition nowPos = searchCharacter (bal);
 			FieldPosition returnPos = nowPos;
 			int returnAreaSum = 0;
-			int index = (int)nowPos - range;
-			int numberOfField = Enum.GetNames (typeof(FieldPosition)).Length;
-			if(index < 0){
-				index = 0;
-			}else if(index > numberOfField){
-				index = numberOfField;
-			}
+            int index = restructionPositionValue(nowPos, -1 * range);
+            int maxpos = restructionPositionValue(nowPos, range);
 
-			int maxpos = (int)nowPos + range + 1;
-			if(maxpos < 0){
-				maxpos = 0;
-			}else if(maxpos > numberOfField){
-				maxpos = numberOfField;
-			}
+            Debug.Log(index + " ind max " + maxpos);
 
-			for(;index < maxpos;index++){
-				int areaLevelSum = 0;
+			for(;index <= maxpos;index++){
+				int areaLevelSum = 0; 
 				foreach(IBattleable target in joinedCharacter[(FieldPosition) index]){
 					if (bal.isHostility (target.getFaction())) {
 						areaLevelSum += target.getLevel ();
@@ -355,6 +326,17 @@ namespace BattleSystem{
         /// <returns><c>true</c>, バトルが始まっている, <c>false</c> 始まっていない </returns>
         public bool getIsBattleing(){
             return isBattleing;
+        }
+
+        public int restructionPositionValue(FieldPosition pos,int range){
+            int positionValue = (int)pos + range;
+			int numberOfField = Enum.GetNames(typeof(FieldPosition)).Length;
+			if (positionValue < 0) {
+				positionValue = 0;
+			} else if (positionValue >= numberOfField) {
+				positionValue = numberOfField - 1;
+			}
+            return positionValue;
         }
        
 	}

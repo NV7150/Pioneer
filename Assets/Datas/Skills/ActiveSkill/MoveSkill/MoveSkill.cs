@@ -49,7 +49,7 @@ namespace Skill {
 			int moveAmountMax = Enum.GetNames (typeof(FieldPosition)).Length - (int)nowPos;
 			int moveAmountMin = -1 * (int)nowPos;
 			if (moveAmountMax <= MOVE||moveAmountMin >= MOVE)
-				throw new ArgumentException ("invlit moveNess");
+				throw new ArgumentException ("inva  lid moveNess");
 
 			BattleManager.getInstance ().moveCommand (actioner,move);
 		}
@@ -60,23 +60,9 @@ namespace Skill {
 		/// <returns> スキルの移動量 </returns>
 		public int getMove(IBattleable actioner){
 			int moveBonus = 0;
-			switch(USE_ABILITY){
-				case BattleAbility.MFT:
-					moveBonus += (actioner.getMft () / 5) + 1;
-					break;
-				case BattleAbility.AGI:
-					moveBonus += (actioner.getAgi () / 3) + 1;
-					break;
-				case BattleAbility.FFT:
-					moveBonus += (actioner.getFft () / 5) + 1;
-					break;
-				case BattleAbility.PHY:
-					moveBonus += (actioner.getPhy () / 5) + 1;
-					break;
-				case BattleAbility.MGP:
-					moveBonus += (actioner.getMgp () / 5) + 1;
-					break;
-			}
+
+            int abilityVal = actioner.getAbilityContainsBonus(USE_ABILITY);
+            moveBonus += abilityVal / 3 + 1;
 
 			return MOVE + moveBonus;
 		}

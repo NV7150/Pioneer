@@ -6,6 +6,7 @@ using UnityEngine;
 using AI;
 using Skill;
 using Character;
+using Parameter;
 
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
@@ -70,6 +71,7 @@ namespace BattleSystem {
 		private void actionState(){
 			BattleTask task = getTask ();
 			task.getSkill ().action (user,task);
+
 			delay = task.getSkill ().getDelay (user);
 			//テスト用
 			delay = 3f;

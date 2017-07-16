@@ -17,11 +17,6 @@ namespace Parameter {
 		public BattleAbility getBonusAbility(){
 			return BONUS_ABILITY;
 		}
-
-		public bool hasNextLimit(){
-			limit--;
-			return (limit > 0);
-		}
 	}
 }
 

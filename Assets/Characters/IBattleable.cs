@@ -52,6 +52,9 @@ namespace Character{
 		//体力(phygical)を返します
 		int getPhy();
 
+        //ボーナス値を含む能力値を返します
+        int getAbilityContainsBonus(BattleAbility ability);
+
 		//攻撃力(atk)を返します。属性と使用能力値が必須です
 		int getAtk(AttackSkillAttribute attribute,BattleAbility useAbility);
 
@@ -70,8 +73,8 @@ namespace Character{
 		//攻撃の成功値を算出します。isButtlingがtrueの時のみ呼び出されます。
 		int getHit(BattleAbility useAbility);
 
-		//回避の達成値を表します。基本的にisButtlingがtrue時のみ呼びだされます。
-		int getDodge();
+        //回避の成功値を算出します
+        int getDodge();
 
 		//カウンターを行うかどうかのフラグを設定します。isButtlingがtrue時のみ呼びだされます。
 		void setIsReadyToCounter(bool flag);

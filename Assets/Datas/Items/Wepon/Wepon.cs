@@ -108,7 +108,6 @@ namespace Item{
 		}
 
 		public BattleAbility getWeponAbility(){
-            Debug.Log("called");
             return weponAbility;
 		}
 
