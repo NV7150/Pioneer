@@ -135,25 +135,9 @@ namespace Character{
 			return MAX_MP;
 		}
 
-		public int getMft () {
-            return abilities[BattleAbility.MFT];
-		}
-
-		public int getFft () {
-            return abilities[BattleAbility.FFT];
-		}
-
-		public int getMgp () {
-            return abilities[BattleAbility.MGP];
-		}
-
-		public int getAgi () {
-            return abilities[BattleAbility.AGI];
-		}
-
-		public int getPhy () {
-            return abilities[BattleAbility.PHY];
-		}
+        public int getRawAbility(BattleAbility ability){
+            return abilities[ability];
+        }
 
         public int getAbilityContainsBonus(BattleAbility ability){
             return abilities[ability] + bonusKeeper.getBonus(ability);
@@ -217,19 +201,19 @@ namespace Character{
 		}
 
 		public float getCharacterDelay() {
-			throw new NotImplementedException();
+            return equipedWepon.getDelay();
 		}
 
 		public int getCharacterRange() {
-			throw new NotImplementedException();
+            return equipedWepon.getRange();
 		}
 
 		public BattleAbility getCharacterAttackMethod() {
-			throw new NotImplementedException();
+            return equipedWepon.getWeponAbility();
 		}
 
 		public void addAbilityBonus(SubBattleAbilityBonus bonus) {
-			throw new NotImplementedException();
+            bonusKeeper.setBonus(bonus);
 		}
 
 		public bool getIsBattling () {

@@ -20,7 +20,9 @@ namespace Skill {
 			/// <summary> スキル名 </summary>
 			NAME,
 			/// <summary> スキルの説明 </summary>
-			DESCRIPTION;
+			DESCRIPTION,
+            /// <summary> スキルのフレーバーテキスト </summary>
+            FLAVOR_TEXT;
 
 		/// <summary> ディレイ秒数 </summary>
 		private readonly float DELAY;
@@ -38,8 +40,9 @@ namespace Skill {
 			MOVE = int.Parse (datas [2]);
 			DELAY = float.Parse (datas [3]);
 			COST = int.Parse (datas [4]);
-			DESCRIPTION = datas [5];
-			USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility),datas[6]);
+			USE_ABILITY = (BattleAbility)Enum.Parse(typeof(BattleAbility), datas[5]);
+			DESCRIPTION = datas[6];
+            FLAVOR_TEXT = datas[7];
 		}
 
 		/// <summary>
@@ -116,7 +119,11 @@ namespace Skill {
 			return this.ID;
 		}
 
-		#endregion
-	}
+        public string getFlavorText() {
+            return FLAVOR_TEXT;
+        }
+
+        #endregion
+    }
 }
 

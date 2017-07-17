@@ -50,12 +50,6 @@ namespace Character{
 		int getExp();
 
 		/// <summary>
-        /// 器用さを取得します
-        /// </summary>
-        /// <returns> 器用さ </returns>
-		int getDex();
-
-		/// <summary>
         /// キャラクターが取得したIActiveSkillのListを取得します
         /// </summary>
         /// <returns>IActionSkillのList</returns>

@@ -14,6 +14,12 @@ namespace Skill {
         /// <returns>The description.</returns>
         string getDescription();
 
+        /// <summary>
+        /// スキルのフレーバーテキストを取得します
+        /// </summary>
+        /// <returns>フレーバーテキスト</returns>
+        string getFlavorText();
+
 		/// <summary>
         /// スキル種別IDを取得します
         /// </summary>

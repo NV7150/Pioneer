@@ -13,10 +13,10 @@ namespace Item{
 		private readonly int
 			/// <summary> 武器の攻撃力 </summary>
 			ATTACK,
-			/// <summary> この武器の射程</summary>
+			/// <summary> この武器の射程 </summary>
 			RANGE,
-			/// <summary> 装備するのに必要なmft</summary>
-			NEED_MFT,
+			/// <summary> 装備するのに必要な能力値　この能力値はweponAbitliyで設定します </summary>
+            NEED_ABILITY,
 			/// <summary> アイテムの基本価格 </summary>
 			ITEM_VALUE,
 			/// <summary> アイテムの重さ </summary>
@@ -28,7 +28,7 @@ namespace Item{
 			/// <summary> アイテムの説明 </summary>
 			description,
 			/// <summary> 装備条件の説明 </summary>
-			equipdescription;
+            flavorText;
 
 		/// <summary> 武器のディレイ値 </summary>
 		private float DELAY;
@@ -46,12 +46,12 @@ namespace Item{
 		public Wepon(WeponBuilder builder){
 			ATTACK = builder.getAttack ();
 			RANGE = builder.getRange ();
-			NEED_MFT = builder.getNeedMft ();
+			NEED_ABILITY = builder.getNeedMft ();
 			ITEM_VALUE = builder.getItemValue ();
 			MASS = builder.getMass ();
 			name = builder.getName ();
 			description = builder.getDescription ();
-			equipdescription = builder.getEquipDescription ();
+			flavorText = builder.getFlavorText ();
 			type = builder.getWeponType ();
 			DELAY = builder.getDelay ();
             weponAbility = builder.getWeponAbility();
@@ -74,11 +74,11 @@ namespace Item{
 		}
 
 		/// <summary>
-        /// 装備に必要なMftを取得します
+        /// 装備に必要な能力値を取得します
         /// </summary>
-        /// <returns>必要なmft</returns>
-		public int getNeedMft() {
-			return NEED_MFT;
+        /// <returns>必要な能力値</returns>
+        public int getNeedAbility() {
+			return NEED_ABILITY;
 		}
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace Item{
 		/// <returns><c>true</c>, 装備可能 , <c>false</c> 装備不可能 </returns>
 		/// <param name="user">装備したいキャラクター</param>
 		public bool canEquip(IPlayable user) {
-			return (NEED_MFT <= user.getMft());
+            return (NEED_ABILITY <= user.getRawAbility(weponAbility));
 		}
 
 		/// <summary>
@@ -103,7 +103,7 @@ namespace Item{
 		/// </summary>
 		/// <returns>装備条件のい説明の文章</returns>
 		public string getEquipDescription() {
-			return equipdescription;
+			return flavorText;
 		}
 
 		/// <summary>

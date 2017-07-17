@@ -74,11 +74,6 @@ namespace BattleSystem{
             listView = battleListNode.GetComponent<BattleTaskListView>();
             listView.setManager(this);
 
-            GameObject stateView = GameObject.Find("Canvas/StateView");
-            GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleStateNode"));
-            stateNode.transform.SetParent(stateView.transform);
-            stateNode.GetComponent<BattleStateNode>().setUser(player);
-            state = stateNode.GetComponent<BattleStateNode>();
 		}
 		
 		// Update is called once per frame
@@ -143,6 +138,11 @@ namespace BattleSystem{
         /// <param name="player">Player.</param>
 		public void setPlayer(IPlayable player){
 			this.player = player;
+			GameObject stateView = GameObject.Find("Canvas/StateView");
+			GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleStateNode"));
+			stateNode.transform.SetParent(stateView.transform);
+			state = stateNode.GetComponent<BattleStateNode>();
+            state.setUser(player);
 			inputActiveSkillList ();
 		}
 
@@ -240,6 +240,10 @@ namespace BattleSystem{
 				node.GetComponent<ActiveSkillNode> ().setState (this,skill);
 				node.transform.SetParent (contents.transform);
 			}
+
+			GameObject escapeNode = Instantiate((GameObject)Resources.Load("Prefabs/EscapeNode"));
+			escapeNode.GetComponent<EscapeNode>().setCharacter(player);
+			escapeNode.transform.SetParent(contents.transform);
 		}
 
 		/// <summary>
@@ -279,6 +283,7 @@ namespace BattleSystem{
 				node.GetComponent<TargetNode> ().setState (target, this);
 				node.transform.SetParent (contents.transform);
 			}
+			
 		}
 
 		/// <summary>
@@ -424,7 +429,9 @@ namespace BattleSystem{
 		}
 			
 		public void finished(){
-			Destroy (view);
+            Destroy (view.gameObject);
+            Destroy (listView.gameObject);
+            Destroy (state.gameObject);
 		}
 		#endregion
 

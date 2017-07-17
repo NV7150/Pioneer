@@ -1,3 +1,3 @@
-id,name,heal,range,delay,cost,attribute,extent,useAbility,description
-0,治癒,5,2,3,3,HP_HEAL,SINGLE,MGP,傷を癒す祈りを捧げる
-1,魔力吸収,3,1,3,0,MP_HEAL,SINGLE,MGP,周りの魔力を吸い上げる
+id,name,heal,range,delay,cost,attribute,extent,useAbility,description,flavorText
+0,治癒,5,2,3,3,HP_HEAL,SINGLE,MGP,対象のHPを少し回復する,傷を癒す祈りを捧げる
+1,魔力吸収,3,1,3,0,MP_HEAL,SINGLE,MGP,対象のMPを少し回復する,周りの魔力を吸い上げる

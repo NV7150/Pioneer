@@ -26,8 +26,10 @@ namespace Skill{
         private readonly string
             /// <summary>スキル名</summary>
             NAME,
-	        /// <summary> スキルの説明 </summary>
-	        DESCRIPTION;
+            /// <summary> スキルの説明 </summary>
+            DESCRIPTION,
+	        /// <summary> スキルのフレーバーテキスト </summary>
+	        FLAVOR_TEXT;
 
 		[SerializeField]
 		/// <summary>
@@ -49,17 +51,24 @@ namespace Skill{
 			DEF = int.Parse (datas[2]);
 			DODGE = int.Parse (datas[3]);
 			IS_READY_TO_COUNTER = (0 == int.Parse (datas [4]));
-			DESCRIPTION = datas [5];
-			CATEGORY = (ReactionSkillCategory) Enum.Parse (typeof(ReactionSkillCategory), datas [6]);
+			CATEGORY = (ReactionSkillCategory) Enum.Parse (typeof(ReactionSkillCategory), datas [5]);
+            DESCRIPTION = datas[6];
+            FLAVOR_TEXT = datas[7];
 		}
 
 		#region ISkill implementation
 		public string getName () {
 			return NAME;
 		}
+
 		public string getDescription () {
 			return DESCRIPTION;
 		}
+
+		public string getFlavorText() {
+			return FLAVOR_TEXT;
+		}
+
 		public int getId () {
 			return ID;
 		}
@@ -112,5 +121,7 @@ namespace Skill{
 		public ReactionSkillCategory getCategory(){
 			return CATEGORY;
 		}
-	}
+
+
+    }
 }

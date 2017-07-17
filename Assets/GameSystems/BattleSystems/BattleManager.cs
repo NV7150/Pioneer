@@ -60,11 +60,8 @@ namespace BattleSystem{
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
 
-			FieldPosition pos = searchCharacter (character);
-			joinedCharacter [pos].Remove (character);
-			character.death ();
-			joinedManager [character.getUniqueId ()].finished ();
-			joinedManager.Remove (character.getUniqueId ());
+            removeBalFromJoinedCharacter(character);
+            character.death();
 
 			if (isContinuingBattle ()) {
 				finishBattle ();
@@ -170,12 +167,22 @@ namespace BattleSystem{
         /// 対象はバトルから離脱します
         /// </summary>
         /// <param name="bal">離脱するキャラクター</param>
-        private void escapeCommand(IBattleable bal){
+        public void escapeCommand(IBattleable bal){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
 
 			removeBalFromJoinedCharacter (bal);
 			bal.setIsBattling (false);
+
+			if (isContinuingBattle()) {
+				finishBattle();
+			} else {
+				var keys = joinedManager.Keys;
+				foreach (long id in keys) {
+					IBattleTaskManager taskManager = joinedManager[id];
+					taskManager.deleteTaskFromTarget(bal);
+				}
+			}
 		}
 
 		/// <summary>
@@ -188,6 +195,8 @@ namespace BattleSystem{
 
 			FieldPosition pos =  searchCharacter (bal);
 			joinedCharacter [pos].Remove (bal);
+            joinedManager[bal.getUniqueId()].finished();
+            joinedManager.Remove(bal.getUniqueId());
 		}
 
 		/// <summary>
@@ -270,75 +279,41 @@ namespace BattleSystem{
 			Debug.Log("end moveCommand");
 		}
 
-		/// <summary>
-        /// 起点となるキャラクターから指定された範囲まででもっとも危険な(敵性レベルが高い)位置を検索します
-        /// </summary>
-        /// <returns>もっとも危険な位置</returns>
-        /// <param name="bal">起点となるキャラクター</param>
-        /// <param name="range">検索する範囲</param>
-		public FieldPosition whereIsMostDengerPositionInRange(IBattleable bal,int range){
-			if (!isBattleing)
-				throw new InvalidOperationException ("battle isn't started");
-
-			//暫定最大危険ポジションのレベル合計より現在のポジションのレベル合計が高い
-			Func<int[],bool> function = (int[] list) =>{
-				return list[0] > list[1];
-			};
-
-			return judgePosition (function, bal, range);
-		}
+		
 
 		/// <summary>
-        /// 起点となるキャラクターから指定された範囲でもっとも危険な(敵性レベルが低い)位置を検索します
-        /// </summary>
-        /// <returns>もっとも安全な位置</returns>
-        /// <param name="bal">起点となるキャラクター</param>
-        /// <param name="range">検索する範囲</param>
-		public FieldPosition whereIsMostSafePositionInRange(IBattleable bal,int range ){
-			if (!isBattleing)
-				throw new InvalidOperationException ("battle isn't started");
-
-			//暫定最大安全ポジションのレベル合計より現在のポジションのレベル合計が低いor暫定が0
-			Func<int[],bool> function = (int[] list) =>{
-				return list[0] < list[1] || list[1] == 0;
-			};
-
-			return judgePosition (function, bal, range);
-		}
-
-		/// <summary>
-        /// 与えられた関数に適する位置を検索します
-        /// </summary>
-        /// <returns>検索結果のField</returns>
-        /// <param name="function">検索条件の関数</param>
-        /// <param name="bal">起点となるキャラクター</param>
-        /// <param name="range">検索範囲</param>
-		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
-			if (!isBattleing)
-				throw new InvalidOperationException ("battle isn't started");
-			
-			FieldPosition nowPos = searchCharacter (bal);
-			FieldPosition returnPos = nowPos;
-			int returnAreaSum = 0;
-            int index = restructionPositionValue(nowPos, -1 * range);
-            int maxpos = restructionPositionValue(nowPos, range);
-
-            Debug.Log(index + " ind max " + maxpos);
-
-			for(;index <= maxpos;index++){
-				int areaLevelSum = 0; 
-				foreach(IBattleable target in joinedCharacter[(FieldPosition) index]){
-					if (bal.isHostility (target.getFaction())) {
-						areaLevelSum += target.getLevel ();
-					}
-				}
-				if (function(new int[]{areaLevelSum,returnAreaSum})) {
-					returnAreaSum = areaLevelSum;
-					returnPos = (FieldPosition)index;
-				}
-			}
-			return returnPos;
-		}
+		/// 範囲内のエリア危険レベルのDictionaryを変えします
+        /// エリア危険レベルはそのエリアの(敵対キャラクターのレベルの合計 - 味方キャラクターのレベル合計)をまず算出し、その後算出した値が一番小さいものの絶対値を全ての要素に足したものです
+		/// </summary>
+		/// <returns>エリア危険レベルのDictionary</returns>
+		/// <param name="bal">起点となるキャラクター</param>
+		/// <param name="range">検索範囲</param>
+		public Dictionary<FieldPosition,int> getAreaDangerLevelTableInRange(IBattleable bal,int range){
+            Dictionary<FieldPosition, int> dangerLevelTable = new Dictionary<FieldPosition, int>();
+            FieldPosition nowPos = searchCharacter(bal);
+            int index = restructionPositionValue(nowPos, -range);
+            int maxPos = restructionPositionValue(nowPos, range);
+            int minAreaLevel = 0;
+            for (;index <= maxPos;index++){
+                var characters = getAreaCharacter((FieldPosition)index);
+                int areaLevel = 0;
+                foreach(IBattleable character in characters){
+                    if(character.isHostility(bal.getFaction())){
+                        areaLevel += character.getLevel();
+                    }else{
+                        areaLevel -= character.getLevel();
+                    }
+                }
+                if (areaLevel < minAreaLevel)
+                    minAreaLevel = -areaLevel;
+                dangerLevelTable.Add((FieldPosition)index,areaLevel);
+            }
+            var keys = dangerLevelTable.Keys;
+            foreach(FieldPosition pos in keys){
+                dangerLevelTable[pos] += minAreaLevel;
+            }
+            return dangerLevelTable;
+        } 
 
 		/// <summary>
         /// 与えられたキャラクターの位置を検索します

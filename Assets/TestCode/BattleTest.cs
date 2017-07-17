@@ -52,7 +52,7 @@ public class BattleTest : MonoBehaviour {
     }
 
 	private void startBattle(){
-		
+        Debug.Log(hero);
 
 		BattleManager.getInstance ().StartNewBattle (new Vector3(100,100,100));
 

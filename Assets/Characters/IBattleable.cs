@@ -63,35 +63,12 @@ namespace Character{
 		/// <returns>最大MP</returns>
 		int getMaxMp();
 
-		/// <summary>
-		/// 白兵戦闘能力(melee fighting / mft)を取得します
-		/// </summary>
-		/// <returns>白兵戦闘力</returns>
-		int getMft();
-
-		/// <summary>
-		/// 遠距離戦闘能力(far fighting / fft)を取得します
-		/// </summary>
-		/// <returns>遠距離戦闘力</returns>
-		int getFft();
-
-		/// <summary>
-		/// 魔力(magic power / mgp)を取得します
-		/// </summary>
-		/// <returns> 魔力 </returns>
-		int getMgp();
-
-		/// <summary>
-		/// 敏捷性(agility / agi)を取得します
-		/// </summary>
-		/// <returns>敏捷性</returns>
-		int getAgi();
-
-		/// <summary>
-		/// 体力(phycical / phy)を取得します
-		/// </summary>
-		/// <returns> 体力 </returns>
-		int getPhy();
+        /// <summary>
+        /// ボーナス値なしの能力値を取得します
+        /// </summary>
+        /// <returns>指定された能力値の数値</returns>
+        /// <param name="ability">取得したい能力値</param>
+        int getRawAbility(BattleAbility ability);
 
 		/// <summary>
 		/// ボーナス値を含んだ各能力値を取得します

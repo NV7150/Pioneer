@@ -23,7 +23,9 @@ namespace Skill {
 			/// <summary> スキル名 </summary>
 			NAME,
 			/// <summary>  スキルの説明 </summary>
-			DESCRIPTION;
+			DESCRIPTION,
+	        /// <summary> スキルのフレーバーテキスト </summary>
+	        FLAVOR_TEXT;
 
 		private readonly float
 			/// <summary> このスキルのディレイ秒数です </summary>
@@ -49,6 +51,7 @@ namespace Skill {
 			setBonusParameter (datas[7]);
 			EXTENT =(Extent) Enum.Parse (typeof(Extent),datas[8]);
 			DESCRIPTION = datas [9];
+            FLAVOR_TEXT = datas [10];
 		}
 
 		/// <summary>
@@ -120,7 +123,11 @@ namespace Skill {
 			return ID;
 		}
 
-		#endregion
-	}
+        public string getFlavorText() {
+            return FLAVOR_TEXT;
+        }
+
+        #endregion
+    }
 }
 

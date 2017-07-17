@@ -25,6 +25,8 @@ namespace BattleSystem {
 		float reactionLimit = 0;
 		/// <summary> リアクションが必要かどうか </summary>
 		bool needToReaction;
+        /// <summary> リアクションを行う可能性 </summary>
+        float reactionProbality;
 
 		/// <summary> 初期設定が完了しているかどうか </summary>
 		bool isReady = false;
@@ -53,21 +55,44 @@ namespace BattleSystem {
 			}
 		}
 
-		/// <summary>
+        /// <summary>
         /// リアクションが必要な時に毎フレーム行う処理
         /// </summary>
-		private void reactionState(){
+        private void reactionState() {
+            if (isGoingToDoReaction())
+                reaction();
+        }
+
+        /// <summary>
+        /// そのフレームにリアクションを行うかを取得します
+        /// これは、攻撃者と自身(user)のレベル差に依存します
+        /// </summary>
+        /// <returns><c>true</c>, リアクションを行う, <c>false</c> otherwise.</returns>
+        private bool isGoingToDoReaction(){
+            float rand = UnityEngine.Random.Range(0f, 1f);
+            if(reactionProbality >= rand){
+                return true;
+            }else{
+                reactionProbality += 0.0175f;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// リアクションを行います
+        /// </summary>
+        private void reaction(){
 			IBattleable attacker = prosessingPair.Key;
 			AttackSkill useSkill = prosessingPair.Value;
 
-			ReactionSkill reactoin = ai.decideReaction (attacker,useSkill);
+			ReactionSkill reactoin = ai.decideReaction(attacker, useSkill);
 
-			int atk = useSkill.getAtk (attacker);
-			int hit = useSkill.getHit (attacker);
-			reactoin.reaction (user,atk,hit,useSkill.getAttackSkillAttribute());
-			waitingReactionActiveSkills.Remove (prosessingPair);
-			updateProsessingPair ();
-		}
+			int atk = useSkill.getAtk(attacker);
+			int hit = useSkill.getHit(attacker);
+			reactoin.reaction(user, atk, hit, useSkill.getAttackSkillAttribute());
+			waitingReactionActiveSkills.Remove(prosessingPair);
+			updateProsessingPair();
+        }
 
 		/// <summary>
         /// ステートがACTIONの時に毎フレーム行う処理
@@ -135,6 +160,9 @@ namespace BattleSystem {
 			if (waitingReactionActiveSkills.Count > 0) {
 				prosessingPair = waitingReactionActiveSkills [0];
 				needToReaction = true;
+
+                IBattleable attacker = prosessingPair.Key;
+                float probalityToReaction = user.getLevel() / (attacker.getLevel() * 10);
 			} else {
 				needToReaction = false;
 			}

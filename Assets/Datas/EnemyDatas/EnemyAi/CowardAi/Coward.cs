@@ -399,6 +399,11 @@ namespace AI {
         }
 
 
+        /// <summary>
+        /// 非友好的スキルの対象を決定します
+        /// </summary>
+        /// <returns>スキルの対象のリスト</returns>
+        /// <param name="useSkill">スキル</param>
         private List<IBattleable> decideHostileTarget(IActiveSkill useSkill) {
             Extent extent = ActiveSkillSupporter.searchExtent(useSkill);
             int range = ActiveSkillSupporter.searchRange(useSkill, user);
@@ -409,11 +414,7 @@ namespace AI {
                 return returnList;
 
             } else if (extent == Extent.AREA) {
-
-                //エリア攻撃の場合、最もレベルが低いエリアを殴ります。
-                FieldPosition targetPos = BattleManager.getInstance().whereIsMostSafePositionInRange(user, range);
-                return BattleManager.getInstance().getAreaCharacter(targetPos);
-
+                return decideAreaLevelTarget(useSkill);
             } else if (extent == Extent.ALL) {
                 
                 return BattleManager.getInstance().getCharacterInRange(user,ActiveSkillSupporter.searchRange(useSkill,user));
@@ -421,7 +422,11 @@ namespace AI {
             throw new Exception("invlit state (未実装)");
         }
 
-        //単体の対象を決定します
+        /// <summary>
+        /// 効果範囲が単体のスキルの対象を決定します
+        /// </summary>
+        /// <returns>対象となったキャラクター</returns>
+        /// <param name="useSkill">使用するスキル</param>
         private IBattleable decideHostileSingleTarget(IActiveSkill useSkill) {
             //レベルを合計する
             int sumLevel = 0;
@@ -449,7 +454,39 @@ namespace AI {
             throw new InvalidOperationException("Cannot decideHostileSingleTarget.");
         }
 
-        //移動距離を決めます
+        /// <summary>
+        /// 効果範囲が範囲のスキルの対象を決定します
+        /// </summary>
+        /// <returns>対象のキャラクターのリスト</returns>
+        /// <param name="useSkill">使用するスキルのリスト</param>
+        private List<IBattleable> decideAreaLevelTarget(IActiveSkill useSkill){
+            int range = ActiveSkillSupporter.searchRange(useSkill,user);
+            Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user,range);
+			var keys = areaDangerLevelTable.Keys;
+			int sumDangerLevel = 0;
+			foreach (FieldPosition pos in keys) {
+				sumDangerLevel += areaDangerLevelTable[pos];
+			}
+
+			//最終判定：レベルが高いところへ
+			int rand = UnityEngine.Random.Range(0, sumDangerLevel);
+
+			foreach (FieldPosition pos in keys) {
+				if (areaDangerLevelTable[pos] <= rand) {
+                    return BattleManager.getInstance().getAreaCharacter(pos);
+				} else {
+					rand -= areaDangerLevelTable[pos];
+				}
+			}
+            throw new InvalidOperationException("cannot decide areaTarget");
+        }
+
+
+        /// <summary>
+        /// 移動系スキルの移動量を決定します
+        /// </summary>
+        /// <returns>移動量</returns>
+        /// <param name="useSkill">使用するスキル</param>
         public int decideMove(MoveSkill useSkill) {
             //HPが最大HPの50%以下なら非戦的行動、以上なら好戦的行動
             if ((user.getHp() / user.getMaxHp()) * 100 <= 50) {
@@ -459,23 +496,68 @@ namespace AI {
             }
         }
 
-        //好戦的な移動を行います
+        /// <summary>
+        /// 好戦的な移動を行います
+        /// </summary>
+        /// <returns>移動量</returns>
+        /// <param name="useSkill">使用するスキル</param>
         private int advance(MoveSkill useSkill) {
-            //レベルが高い所に行く
-            FieldPosition targetPos = BattleManager.getInstance().whereIsMostDengerPositionInRange(user, useSkill.getMove(user));
-            FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
-            return ((int)targetPos) - ((int)nowPos);
+            //エリア危険性レベルを取得
+            Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user, useSkill.getMove(user));
+            var keys = areaDangerLevelTable.Keys;
+            int sumDangerLevel = 0;
+            foreach(FieldPosition pos in keys){
+                sumDangerLevel += areaDangerLevelTable[pos];
+            }
+
+            //最終判定：レベルが高いところへ
+            int rand = UnityEngine.Random.Range(0,sumDangerLevel);
+
+            foreach(FieldPosition pos in keys){
+                if(areaDangerLevelTable[pos] <= rand){
+                    FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
+                    return pos - nowPos;
+                }else{
+                    rand -= areaDangerLevelTable[pos];
+                }
+            }
+            throw new InvalidOperationException("cannot dicide advance move");
         }
 
-        //非戦的な移動を行います
+        /// <summary>
+        /// 非好戦的な移動を行います
+        /// </summary>
+        /// <returns>移動量</returns>
+        /// <param name="useSkill">使用するスキル</param>
         private int recession(MoveSkill useSkill) {
-            //レベルが低い所に行く
-            FieldPosition targetPos = BattleManager.getInstance().whereIsMostSafePositionInRange(user, useSkill.getMove(user));
-            FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
-            return ((int)targetPos) - ((int)nowPos);
+			//エリア危険性レベルを取得
+			Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user, useSkill.getMove(user));
+			var keys = areaDangerLevelTable.Keys;
+			int sumDangerLevel = 0;
+			foreach (FieldPosition pos in keys) {
+				sumDangerLevel += areaDangerLevelTable[pos];
+			}
+
+            //最終判定：レベルが低いところへ
+			int rand = UnityEngine.Random.Range(0, sumDangerLevel);
+
+			foreach (FieldPosition pos in keys) {
+                if (areaDangerLevelTable[pos] <= (sumDangerLevel - rand)) {
+					FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
+					return pos - nowPos;
+				} else {
+					rand -= areaDangerLevelTable[pos];
+				}
+			}
+            throw new InvalidOperationException("cannot dicide advance move");
         }
 
-        //リアクションを決定します
+        /// <summary>
+        /// リアクションを決定します
+        /// </summary>
+        /// <returns>決定したリアクションスキル</returns>
+        /// <param name="attacker">攻撃者</param>
+        /// <param name="skill">攻撃されるスキル</param>
         public ReactionSkill decideReaction(IBattleable attacker, AttackSkill skill) {
             Dictionary<ReactionSkillCategory, float> riskTable = new Dictionary<ReactionSkillCategory, float>();
 

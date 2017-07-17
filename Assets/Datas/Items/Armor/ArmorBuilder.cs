@@ -20,7 +20,7 @@ namespace MasterData {
 		private string
 			name,
 			description,
-			equipDescription;
+            flavorText;
 
 		[SerializeField]
 		private float
@@ -72,8 +72,8 @@ namespace MasterData {
 			return description;
 		}
 
-		public string getEquipDescription() {
-			return equipDescription;
+		public string getFlavorText() {
+			return flavorText;
 		}
 
 		/// <summary>
@@ -90,7 +90,7 @@ namespace MasterData {
 			this.itemValue = int.Parse (datas[6]);
 			this.mass = int.Parse (datas[7]);
 			this.description = datas [8];
-			this.equipDescription = datas [9];
+			this.flavorText = datas [9];
 		}
 
 		/// <summary>

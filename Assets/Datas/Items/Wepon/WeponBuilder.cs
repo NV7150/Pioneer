@@ -24,7 +24,7 @@ namespace MasterData{
 		private string 
 		name,
 		description,
-		equipDescription;
+        flavorText;
 
 		private float delay;
 
@@ -72,8 +72,8 @@ namespace MasterData{
 		public string getDescription() {
 			return description;
 		}
-		public string getEquipDescription(){
-			return equipDescription;
+		public string getFlavorText(){
+			return flavorText;
 		}
 
 		public float getDelay() {
@@ -104,7 +104,7 @@ namespace MasterData{
 			this.weponType = (WeponType)Enum.Parse(typeof(WeponType), datas[8]);
 			this.weponAbility = (BattleAbility)Enum.Parse(typeof(BattleAbility), datas[9]);
 			this.description = datas [10];
-			this.equipDescription = datas [11];
+			this.flavorText = datas [11];
 		}
 
 		/// <summary>

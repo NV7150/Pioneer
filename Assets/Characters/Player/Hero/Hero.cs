@@ -152,17 +152,9 @@ namespace Character{
 			return exp;
 		}
 
-		public Wepon getWepon () {
-			return wepon;
-		}
-
-		public Armor getArmor () {
-			return armor;
-		}
-
-		public int getDex () {
-			return friendlyAbilities[FriendlyAbility.DEX];
-		}
+        public Armor getArmor() {
+            return armor;
+        }
 
 		public List<IActiveSkill> getActiveSkills () {
 			return new List<IActiveSkill> (activeSkills);
@@ -195,9 +187,9 @@ namespace Character{
 		}
 		#endregion
 		#region IFriendly implementation
-		public int getSpc () {
-			return friendlyAbilities[FriendlyAbility.SPC];
-		}
+        public int getRawFriendlyAbility(FriendlyAbility ability){
+            return friendlyAbilities[ability];
+        }
 
 		public void talk (IFriendly friendly) {
 			throw new NotImplementedException ();
@@ -250,25 +242,9 @@ namespace Character{
 			}
 		}
 
-		public int getMft () {
-			return battleAbilities[BattleAbility.MFT];
-		}
-
-		public int getFft () {
-			return battleAbilities[BattleAbility.FFT];
-		}
-
-		public int getMgp () {
-			return battleAbilities[BattleAbility.MGP];
-		}
-
-		public int getAgi () {
-			return battleAbilities[BattleAbility.AGI];
-		}
-
-		public int getPhy () {
-			return battleAbilities[BattleAbility.PHY];
-		}
+        public int getRawAbility(BattleAbility ability){
+            return battleAbilities[ability];
+        }
 
 		public int getAbilityContainsBonus(BattleAbility ability) {
             return battleAbilities[ability] + bonusKeeper.getBonus(ability);
@@ -372,6 +348,10 @@ namespace Character{
 
 		public void addSubAbilityBonus (SubBattleAbilityBonus bonus) {
             bonusKeeper.setBonus(bonus);
+		}
+
+		public Wepon getWepon() {
+			return wepon;
 		}
 
 		#endregion

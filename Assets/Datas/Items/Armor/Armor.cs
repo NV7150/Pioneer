@@ -4,6 +4,8 @@ using UnityEngine;
 using Character;
 using MasterData;
 
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+
 namespace Item {
 	[System.SerializableAttribute]
 	public class Armor : IItem{
@@ -26,8 +28,8 @@ namespace Item {
 			NAME,
 			/// <summary> アイテムの説明 </summary>
 			DESCRIPTION,
-			/// <summary> アイテムの装備条件の説明 </summary>
-			EQUIP_DESCRIPTION;
+			/// <summary> アイテムのフレーバーテキスト </summary>
+            FLAVOR_TEXT;
 
         /// <summary> 防具のディレイへの修正値 </summary>
 		private float DELAY_BONUS;
@@ -43,7 +45,7 @@ namespace Item {
 			this.NEED_PHY = builder.getNeedPhy ();
 			this.NAME = builder.getName ();
 			this.DESCRIPTION = builder.getDescription ();
-			this.EQUIP_DESCRIPTION = builder.getEquipDescription ();
+			this.FLAVOR_TEXT = builder.getFlavorText ();
 			this.DELAY_BONUS = builder.getDelayBonus ();
 			this.MASS = builder.getMass ();
 			this.ITEM_VALUE = builder.getItemValue ();
@@ -71,7 +73,7 @@ namespace Item {
         /// <returns><c>true</c>, 装備可能, <c>false</c> 装備不可能</returns>
         /// <param name="user">装備したいキャラウター</param>
 		public bool canEquip(IPlayable user){
-			return (user.getPhy () >= NEED_PHY);
+            return (user.getRawAbility (BattleAbility.PHY) >= NEED_PHY);
 		}
 
 		/// <summary>
@@ -79,7 +81,7 @@ namespace Item {
         /// </summary>
         /// <returns>装備条件の文章</returns>
 		public string getEquipDescription (){
-			return EQUIP_DESCRIPTION;
+			return FLAVOR_TEXT;
 		}
 
 		/// <summary>

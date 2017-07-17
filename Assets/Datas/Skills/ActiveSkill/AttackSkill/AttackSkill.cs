@@ -14,46 +14,47 @@ using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 namespace Skill {
 	public class AttackSkill : IActiveSkill{
 		private readonly int 
-			/// <summary> このスキルのIDです </summary>
+			/// <summary> このスキルのID </summary>
 			ID,
-			/// <summary> このスキルの攻撃力です </summary>
+			/// <summary> このスキルの攻撃力 </summary>
 			ATK,
-			/// <summary> このスキルの射程です </summary>
+			/// <summary> このスキルの射程 </summary>
 			RANGE,
-			/// <summary> このスキルの命中率です </summary>
+			/// <summary> このスキルの命中率 </summary>
 			HIT,
-			
-			/// <summary> このスキルのMPコストです </summary>
+			/// <summary> このスキルのMPコスト </summary>
 			COST;
 
 		private readonly string
-			/// <summary> このスキルの名称です </summary>
+			/// <summary> このスキルの名称 </summary>
 			NAME,
-			/// <summary> このスキルの説明文です </summary>
-			DESCRIPTON;
+			/// <summary> このスキルの説明文 </summary>
+			DESCRIPTON,
+            /// <summary> このスキルのフレーバーテキスト </summary>
+            FLAVOR_TEXT;
 
 		private readonly bool
-			/// <summary> 命中率が武器に依存するかのフラグです </summary>
+			/// <summary> 命中率が武器に依存するかのフラグ </summary>
 			DEPEND_HIT,
-			/// <summary> 攻撃力が武器に依存するかのフラグです </summary>
+			/// <summary> 攻撃力が武器に依存するかのフラグ </summary>
 			DEPEND_ATK,
-			/// <summary> 射程が武器に依存するかのフラグです </summary>
+			/// <summary> 射程が武器に依存するかのフラグ </summary>
 			DEPEND_RANGE,
-			/// <summary> ディレイ値が武器に依存するかのフラグです </summary>
+			/// <summary> ディレイ値が武器に依存するかのフラグ </summary>
 			DEPEND_DELAY,
-			/// <summary> 使用する能力値が武器に依存するかのフラグです </summary>
+			/// <summary> 使用する能力値が武器に依存するかのフラグ </summary>
 			DEPEND_ABILITY;
 
 		/// <summary> ディレイ秒数 </summary>
 		private readonly float DELAY;
 
-		/// <summary> このスキルの属性です </summary>
+		/// <summary> このスキルの属性 </summary>
 		private readonly AttackSkillAttribute ATTRIBUTE;
 
-		/// <summary> このスキルの判定に使用する能力値です </summary>
+		/// <summary> このスキルの判定に使用する能力値 </summary>
 		private BattleAbility USE_ABILITY;
 
-		/// <summary> このスキルの効果範囲です </summary>
+		/// <summary> このスキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
 
 		public AttackSkill (string[] datas) {
@@ -78,6 +79,7 @@ namespace Skill {
 
 			EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[13]);
 			DESCRIPTON = datas [14];
+            FLAVOR_TEXT = datas[15];
 		}
 
 
@@ -199,6 +201,10 @@ namespace Skill {
 			return this.DESCRIPTON;
 		}
 
+		public string getFlavorText() {
+			throw new NotImplementedException();
+		}
+
 		public int getId () {
 			return this.ID;
 		}
@@ -208,6 +214,8 @@ namespace Skill {
 		public override string ToString () {
 			return "AttackSkill id:" + ID + " name:" + NAME;
 		}
-	}
+
+
+    }
 }
 

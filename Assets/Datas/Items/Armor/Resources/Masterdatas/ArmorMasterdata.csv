@@ -1,3 +1,3 @@
-id,name,def,dodgeBonus,delayBonus,needPhy,itemValue,mass,description,equipDescription
-0,服,0,0,0,0,10,1,庶民向けの簡素な服。,phyが0以上
-1,革の鎧,3,0,0,2,50,1,少し丈夫な革でできた鎧。,phyが2以上
+id,name,def,dodgeBonus,delayBonus,needPhy,itemValue,mass,description,flavorText
+0,服,0,0,0,0,10,1,phyが0以上で装備できる服。,庶民向けの簡素な服。
+1,革の鎧,3,0,0,2,50,1,phyが2以上で装備できる鎧。,少し丈夫な革でできた鎧。

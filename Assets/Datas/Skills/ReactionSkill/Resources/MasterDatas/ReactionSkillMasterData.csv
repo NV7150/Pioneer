@@ -1,4 +1,4 @@
-id,name,defBonus,dodgeBonus,isReadyToCounter,description,category
-0,防御,5,0,1,防御します,GUARD
-1,回避,0,5,1,回避します,DODGE
-2,ミス,0,0,1,行動しません,MISS
+id,name,defBonus,dodgeBonus,isReadyToCounter,category,description,flavorText
+0,防御,5,0,1,GUARD,防御します。,回避を捨て、防具で攻撃を受ける。
+1,回避,0,5,1,DODGE,回避します。,防御を捨て、攻撃の回避を試みる。
+2,ミス,0,0,1,MISS,行動しません。,何も対応せずに攻撃を受ける。

@@ -26,7 +26,9 @@ namespace Skill {
 			/// <summary> スキル名 </summary>
 			NAME,
 			/// <summary> スキルの説明文 </summary>
-			DESCRIPTION;
+			DESCRIPTION,
+	        /// <summary> スキルのフレーバーテキスト </summary>
+	        FLAVOR_TEXT;
 
 		/// <summary> ディレイ秒数  </summary>
 		private readonly float DELAY;
@@ -55,6 +57,7 @@ namespace Skill {
 			EXTENT = (Extent)Enum.Parse(typeof(Extent),datas [7]);
 			USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility),datas[8]);
 			DESCRIPTION = datas [9];
+            FLAVOR_TEXT = datas[10];
 		}
 
 		/// <summary>
@@ -133,7 +136,11 @@ namespace Skill {
 			return ID;
 		}
 
-		#endregion
-	}
+        public string getFlavorText() {
+            return FLAVOR_TEXT;
+        }
+
+        #endregion
+    }
 }
 
