@@ -2,7 +2,9 @@
 
 namespace Skill{
 	public static class ActiveSkillParameters {
-		//ActiveSkillの種別です
+		/// <summary>
+        /// ActiveSkillの種別
+        /// </summary>
 		public enum ActiveSkillType{
 			//攻撃
 			ATTACK,
@@ -16,19 +18,21 @@ namespace Skill{
 			DEBUF
 		}
 
-		//スキルの効果範囲です
+		/// <summary>
+        /// スキルの効果範囲
+        /// </summary>
 		public enum Extent{
 			//単体
 			SINGLE,
 			//一帯
 			AREA,
 			//全範囲
-			ALL,
-			//なし
-			NONE
+			ALL
 		}
 
-		//攻撃スキルの属性です
+		/// <summary>
+        /// 攻撃スキルの属性
+        /// </summary>
 		public enum AttackSkillAttribute{
 			//物理
 			PHYSICAL,
@@ -45,12 +49,12 @@ namespace Skill{
 			//魔法（無）
 			NEUTRAL,
 			//貫通
-			PENETRATION,
-			//なし
-			NONE
+			PENETRATION
 		}
 
-		//回復スキルの属性です
+		/// <summary>
+        /// 回復スキルの属性
+        /// </summary>
 		public enum HealSkillAttribute{
 			//HP回復
 			HP_HEAL,
@@ -59,9 +63,7 @@ namespace Skill{
 			//両方
 			BOTH,
 			//蘇生
-			RESURRECTITION,
-			//なし
-			NONE
+			RESURRECTITION
 		}
 	}
 }

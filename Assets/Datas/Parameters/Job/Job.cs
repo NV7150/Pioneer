@@ -11,27 +11,31 @@ namespace Parameter{
 	public class Job{
 		[SerializeField]
 		private readonly int
-			//このジョブのIDです
+			/// <summary> 職業のID </summary>
 			ID,
-			//このジョブの基礎mftです
+			/// <summary> 基礎mft </summary>
 			MFT,
-			//このジョブの基礎fftです
+			/// <summary> 基礎fft </summary>
 			FFT,
-			//このジョブの基本mgpです
+			/// <summary> 基礎mgp </summary>
 			MGP,
-			//このジョブの基礎phyです
+			/// <summary> 基礎phy </summary>
 			PHY,
-			//このジョブの基礎dexです
+			/// <summary> 基礎dex </summary>
 			DEX,
-			//このジョブの基礎agiです
+			/// <summary> 基礎agi </summary>
 			AGI,
-			//このジョブの基礎spcです
+			/// <summary> 基礎spc  </summary>
 			SPC;
 
 		private readonly string
-			//このジョブのなまえです
+			/// <summary> 職業名 </summary>
 			name;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="parameters">csvによるstring配列データ</param>
 		public Job(string[] parameters){
 			ID = int.Parse (parameters[0]);
 			name = parameters [1];
@@ -44,12 +48,18 @@ namespace Parameter{
 			SPC = int.Parse (parameters[8]);
 		}
 
-		//ジョブの名前を取得します
+		/// <summary>
+        /// 職業名を取得します
+        /// </summary>
+        /// <returns>ジョブ名</returns>
 		public string getName (){
 			return name;
 		}
 
-		//能力値テーブルを表すDictionaryを取得します
+		/// <summary>
+        /// BattleAbilityの初期化する値が入ったDictionaryを取得します
+        /// </summary>
+        /// <returns>初期化データのDictionary</returns>
 		public Dictionary<BattleAbility,int> defaultSettingBattleAbility(){
 			Dictionary<BattleAbility,int> parameters = new Dictionary<BattleAbility, int> ();
 			parameters [BattleAbility.MFT] = MFT;
@@ -61,6 +71,10 @@ namespace Parameter{
 			return parameters;
 		}
 
+        /// <summary>
+        /// FriendlyAbilityの初期化する値が入ったDictionaryを取得します
+        /// </summary>
+        /// <returns>初期化データのDictionary</returns>
 		public Dictionary<FriendlyAbility,int> defaultSettingFriendlyAbility(){
 			Dictionary<FriendlyAbility,int> parameters = new Dictionary<FriendlyAbility, int> ();
 			parameters [FriendlyAbility.DEX] = DEX;
@@ -69,7 +83,10 @@ namespace Parameter{
 			return parameters;
 		}
 
-		//ジョブのIDを取得します
+		/// <summary>
+        /// 職業のIDを取得します
+        /// </summary>
+        /// <returns>ID</returns>
 		public int getId(){
 			return ID;
 		}

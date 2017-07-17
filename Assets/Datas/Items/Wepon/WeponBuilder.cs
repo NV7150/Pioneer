@@ -18,8 +18,7 @@ namespace MasterData{
 		range,
 		needMft,
 		itemValue,
-		mass,
-		weponTypeID;
+		mass;
 
 		[SerializeField]
 		private string 
@@ -32,6 +31,10 @@ namespace MasterData{
         private BattleAbility weponAbility;
         private WeponType weponType;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="datas">データを表すstring配列</param>
 		public WeponBuilder(string[] datas){
 			setFromCSV (datas);
 		}
@@ -85,7 +88,10 @@ namespace MasterData{
             return weponAbility;
         }
 
-		//csvから初期化します
+		/// <summary>
+        /// csvから初期化を行います
+        /// </summary>
+        /// <param name="datas">csvのstring配列</param>
 		private void setFromCSV(string[] datas){
 			this.id = int.Parse (datas[0]);
 			this.name = datas [1];
@@ -101,7 +107,10 @@ namespace MasterData{
 			this.equipDescription = datas [11];
 		}
 
-		//Weponを取得します
+		/// <summary>
+        /// 武器を生成します
+        /// </summary>
+        /// <returns>生成した武器</returns>
 		public Wepon build(){
 			return new Wepon(this);
 		}

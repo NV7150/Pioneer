@@ -7,7 +7,7 @@ using AI;
 
 namespace MasterData {
 	public class ReactionSkillSetMasterManager: MasterDataManagerBase{
-		//登録済みのデータのリストです
+		/// <summary> 登録済みのReactionSkillSetBuilderのリストです </summary>
 		private static List<ReactionSkillSetBuilder> dataTable = new List<ReactionSkillSetBuilder>();
 
 		void Awake(){

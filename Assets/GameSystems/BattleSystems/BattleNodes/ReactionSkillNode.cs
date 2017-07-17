@@ -7,21 +7,33 @@ using Skill;
 
 namespace BattleSystem{
 	public class ReactionSkillNode : MonoBehaviour {
-		//担当するスキルを表します
+		/// <summary>
+        /// 担当するReacitonSkill
+        /// </summary>
 		private ReactionSkill skill;
-		//アタッチされているGameObjectの子オブジェクトのTextObjectを表します
+		/// <summary>
+		/// アタッチされているGameObjectの子オブジェクトのTextオブジェクト
+		/// </summary>
 		public Text text;
-		//元のPlayerBattleTaskManagerです
+		/// <summary>
+        /// 元のBattleTaskManger
+        /// </summary>
 		private PlayerBattleTaskManager manager;
 
-		//ステートを設定します
+		/// <summary>
+        /// 初期設定を行います
+        /// </summary>
+        /// <param name="skill">担当するスキル</param>
+        /// <param name="manager">元のBattleTaskManager</param>
 		public void setState(ReactionSkill skill,PlayerBattleTaskManager manager){
 			this.skill = skill;
 			text.text = skill.getName ();
 			this.manager = manager;
 		}
 
-		//選ばれた時の処理
+		/// <summary>
+        /// 選ばれた時の処理
+        /// </summary>
 		public void chosen(){
 			manager.reactionChose (skill);
 		}

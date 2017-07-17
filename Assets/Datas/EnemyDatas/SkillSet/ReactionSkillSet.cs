@@ -11,30 +11,44 @@ using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategor
 namespace AI {
 	public class ReactionSkillSet {
 
-		//スキルセットのIDです
+		/// <summary> スキルセットのID </summary>
 		private readonly int ID;
-		//スキルセットの名前です
+		/// <summary> スキルセット名 </summary>
 		private readonly string NAME;
-		//スキルセットを表すDictionaryです
+		/// <summary> スキルセットを表すDictionary </summary>
 		private Dictionary<ReactionSkillCategory,ReactionSkill> skillSet;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="builder">ビルダー</param>
 		public ReactionSkillSet (ReactionSkillSetBuilder builder) {
 			this.ID = builder.getId ();
 			this.NAME = builder.getName ();
 			this.skillSet = builder.getSet ();
 		}
 
-		//IDを取得します
+		/// <summary>
+        /// IDを取得します
+        /// </summary>
+        /// <returns>スキルセットのID</returns>
 		public int getId(){
 			return ID;
 		}
 
-		//名前を取得します
+		/// <summary>
+        /// スキルセット名を取得します
+        /// </summary>
+        /// <returns>スキルセット名</returns>
 		public string getName(){
 			return NAME;
 		}
 
-		//カテゴリからスキルを取得します
+		/// <summary>
+		/// カテゴリからReactionSkillを取得します
+		/// </summary>
+		/// <returns> 指定されたReactionSkill </returns>
+		/// <param name="category"> 取得したいスキルのカテゴリ </param>
 		public ReactionSkill getReactionSkillFromCategory(ReactionSkillCategory category){
 			return skillSet [category];
 		}

@@ -90,7 +90,11 @@ namespace Skill {
 			if (targets.Count <= 0)
 				throw new InvalidOperationException ("invlid battleTask operation");
 
-			BattleManager.getInstance ().attackCommand (bal,targets,this);
+			foreach (IBattleable target in targets) {
+                //対象のリアクション
+                IBattleTaskManager targetManager = BattleManager.getInstance().getTaskManager(target.getUniqueId());
+                targetManager.offerReaction(bal, this);
+			}
 		}
 
 		/// <summary>
@@ -98,11 +102,7 @@ namespace Skill {
 		/// </summary>
 		/// <returns> 攻撃力 </returns>
 		public int getAtk(IBattleable actioner){
-			int bonus = 0;
-            if (DEPEND_ATK) {
-                bonus += actioner.getWepon().getAttack();
-            }
-			return ATK + actioner.getAtk (getAttackSkillAttribute(),getUseAbility(actioner));
+            return ATK + actioner.getAtk (getAttackSkillAttribute(),getUseAbility(actioner),DEPEND_ATK);
 		}
 
 		/// <summary>
@@ -131,7 +131,7 @@ namespace Skill {
 		/// <returns> 判定に使う能力値 使用者依存ならNONEを返します </returns>
 		public BattleAbility getUseAbility(IBattleable actoiner){
 			if (DEPEND_ABILITY) {
-				return actoiner.getWepon ().getWeponAbility ();
+                return actoiner.getCharacterAttackMethod();
 			} else {
 				return this.USE_ABILITY;
 			}
@@ -153,9 +153,9 @@ namespace Skill {
 		public int getRange(IBattleable actioner){
 			int bonus = 0;
 			if (DEPEND_RANGE) {
-				bonus += actioner.getWepon ().getRange();
+                bonus += actioner.getCharacterRange();
 			}
-			return RANGE + this.RANGE + bonus; 
+			return this.RANGE + bonus; 
 		}
 
 		#region IActiveSkill implementation
@@ -175,7 +175,7 @@ namespace Skill {
 		public float getDelay(IBattleable actioner){
             float bonus = 0;
 			if (DEPEND_DELAY) {
-				bonus += actioner.getWepon().getDelay();
+                bonus += actioner.getCharacterDelay();
 			}
 			return this.DELAY + bonus;
 		}

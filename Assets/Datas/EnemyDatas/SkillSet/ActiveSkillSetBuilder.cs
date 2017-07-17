@@ -36,7 +36,10 @@ namespace MasterData{
 			healSkillType,
 			moveSkillType;
 
-		//csvによるstring配列からプロパティを初期化します
+		/// <summary>
+        /// コンスラクタ
+        /// </summary>
+        /// <param name="datas">csvによるstring配列</param>
 		public ActiveSkillSetBuilder(string[] datas){
 			id = int.Parse (datas[0]);
 			name = datas [1];
@@ -133,7 +136,11 @@ namespace MasterData{
 			throw new NotSupportedException ("Unkonwn SkillType");
 		}
 
-		//ActiveSKillSetを取得します
+		/// <summary>
+        /// ActiveSkillSetを生成します
+        /// </summary>
+        /// <returns>生成したActiveSkillSet</returns>
+        /// <param name="user">使用者</param>
 		public ActiveSkillSet build(IBattleable user){
 			return new ActiveSkillSet (this,user);
 		}

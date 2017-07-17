@@ -7,6 +7,7 @@ using Skill;
 
 namespace MasterData {
 	public class BufSkillMasterManager : MasterDataManagerBase{
+        /// <summary> 登録済みのBufSkillのリストです </summary>
 		private static List<BufSkill> dataTable = new List<BufSkill>();
 
 		void Awake(){
@@ -14,6 +15,11 @@ namespace MasterData {
 			constractedBehaviour (csv);
 		}
 
+        /// <summary>
+        /// IDからBufSkillを取得します
+        /// </summary>
+        /// <returns>指定されたBufSkill</returns>
+        /// <param name="id">取得したいBufSkillのID</param>
 		public static BufSkill getBufSkillFromId(int id){
 			foreach(BufSkill skill in dataTable){
 				if(skill.getId() == id){

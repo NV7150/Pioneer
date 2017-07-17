@@ -1,29 +1,40 @@
 ﻿using UnityEngine;
 
 namespace Character{
-
-	/*Characterインタフェースはこのゲームに登場する全てのキャラクターの実体を表します。
-	 *キャラクターはそれぞれ外面(Container)と実体(Character)を持ちます。
-	 *Characterは内部的処理を行います。
-	 *Containerは外面的処理を行います。また、全ての具象のContainerクラスはMonoBehaviourを継承しています。
-	*/
+	/// <summary>
+	/// Characterインタフェースはこのゲームに登場する全てのキャラクターの実体を表します。
+	/// キャラクターはそれぞれ外面(Container)と実体(Character)を持ちます。
+	/// Characterは内部的処理を行います。
+	/// Containerは外面的処理を行います。また、全ての具象のContainerクラスはMonoBehaviourを継承しています。
+	/// </summary>
 	public interface ICharacter{
-		//外面を取得します
-		GameObject getModel();
 
-		//Containerを取得します
+		/// <summary>
+        /// せってされているConataierを取得します
+        /// </summary>
+        /// <returns>Contaierオブジェクト</returns>
 		Container getContainer();
 
-		//何か行動します。
+		/// <summary>
+        /// update()毎に実行される処理
+        /// </summary>
 		void act();
 
-		//いなくなります
+		/// <summary>
+        /// ゲームから消滅します
+        /// </summary>
 		void death();
 
-		//キャラクターそれぞれが固有に持つIDを取得します
+		/// <summary>
+        /// キャラクターがそれぞれ固有に持つユニークIDを取得します
+        /// </summary>
+        /// <returns>ユニークID</returns>
 		long getUniqueId();
 
-		//名前を取得します
+		/// <summary>
+        /// 名前を取得します
+        /// </summary>
+        /// <returns>The name.</returns>
 		string getName();
 	}	
 }

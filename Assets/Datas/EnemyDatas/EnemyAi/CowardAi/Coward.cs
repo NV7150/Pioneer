@@ -12,9 +12,12 @@ using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategor
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
 namespace AI {
-    /*臆病なAIで、弱い敵を積極的に攻撃します*/
+    /// <summary>
+    /// 臆病なAIです
+    /// 基本的に高LVな味方キャラクターを優先して支援し、低LVな敵キャラクターを優先して攻撃します
+    /// </summary>
     public class Coward : IEnemyAI {
-        //ベースの行動可能性値です
+        /// <summary> ベースの行動の可能性値です </summary>
         private Dictionary<ActiveSkillCategory, int> probalityTable = new Dictionary<ActiveSkillCategory, int>(){
             { ActiveSkillCategory.NORMAL, 10 },
             { ActiveSkillCategory.CAUTION, 1 },
@@ -26,28 +29,32 @@ namespace AI {
             { ActiveSkillCategory.MOVE,0}
         };
 
-        //アクティブスキルのスキルセットです
+        /// <summary> userが持つActiveSkillセット </summary>
         private ActiveSkillSet activeSkills;
-        //リアクションスキルのスキルセットです
+        /// <summary> userが持つReactionSkillセット </summary>
         private ReactionSkillSet reactionSkills;
 
-        //このAIのユーザーです
+        /// <summary> このAIに基づいて行動するキャラクター </summary>
         private readonly IBattleable user;
 
-        //このAIのIDです
+        /// <summary> このAIのID </summary>
         public static readonly int ID = 0;
 
-        public Coward(IBattleable battleable, ActiveSkillSet acitiveSkills, ReactionSkillSet passiveSkills) {
-            this.user = battleable;
+        /// <summary>
+        /// AIのコンストラクタ
+        /// </summary>
+        /// <param name="user">AIを使用するIBattleableキャラクター</param>
+        /// <param name="acitiveSkills">userが使用するActiveSkillSet</param>
+        /// <param name="reactionSkills">userが使用するReactionSkillSet</param>
+        public Coward(IBattleable user, ActiveSkillSet acitiveSkills, ReactionSkillSet reactionSkills) {
+            this.user = user;
             this.activeSkills = acitiveSkills;
-            this.reactionSkills = passiveSkills;
+            this.reactionSkills = reactionSkills;
         }
 
         #region EnemyAI implementation
 
         public IActiveSkill decideSkill() {
-            //			Debug.Log ("into decideSkill");
-
             //ボーナス値のテーブルです。最終的に足されます。
             Dictionary<ActiveSkillCategory, int> probalityBonus = new Dictionary<ActiveSkillCategory, int>(){
                 { ActiveSkillCategory.NORMAL, 0 },
@@ -60,6 +67,7 @@ namespace AI {
                 { ActiveSkillCategory.MOVE,0}
             };
 
+            //div0を防ぐための処理
             int maxMp = (user.getMaxMp() > 0) ? user.getMaxMp() : 1;
 
             //HPが50%以下の場合、caution可能性値を+20します
@@ -132,15 +140,15 @@ namespace AI {
         /// <returns>対象のリスト</returns>
         /// <param name="targets">スキル効果範囲内のキャラクターのリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        public List<IBattleable> decideTarget(List<IBattleable> targets, IActiveSkill useSkill) {
+        public List<IBattleable> decideTarget(IActiveSkill useSkill) {
             if (!ActiveSkillSupporter.needsTarget(useSkill))
                 throw new ArgumentException("the skill " + useSkill + " dosen't has to decide target.");
 
             switch (useSkill.isFriendly()) {
                 case true:
-                    return this.decideFriendlyTarget(targets, useSkill);
+                    return this.decideFriendlyTarget(useSkill);
                 case false:
-                    return this.decideHostileTarget(targets, useSkill);
+                    return this.decideHostileTarget(useSkill);
             }
             throw new InvalidOperationException("Wrong isFriendly. (not supported 実装してないです)");
         }
@@ -151,12 +159,12 @@ namespace AI {
         /// <returns>スキルの対象のリスト</returns>
         /// <param name="targets">スキル効果範囲内の対象のリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideFriendlyTarget(List<IBattleable> targets, IActiveSkill useSkill) {
+        private List<IBattleable> decideFriendlyTarget(IActiveSkill useSkill) {
             switch (useSkill.getActiveSkillType()) {
                 case ActiveSkillType.HEAL:
-                    return decideHealTarget(targets,useSkill);
+                    return decideHealTarget(useSkill);
                 case ActiveSkillType.BUF:
-                    return decideBufTarget(targets,useSkill);
+                    return decideBufTarget(useSkill);
             }
             throw new ArgumentException("invalid type of skill");
         }
@@ -167,21 +175,23 @@ namespace AI {
         /// <returns>スキル対象のリスト</returns>
         /// <param name="targets">スキル効果範囲内のキャラクターのリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideHealTarget(List<IBattleable> targets, IActiveSkill useSkill) {
+        private List<IBattleable> decideHealTarget(IActiveSkill useSkill) {
             if(!(useSkill is HealSkill)){
                 throw new ArgumentException(useSkill.getName() + " isn't a healSkill");
             }
 
             HealSkill healUseSkill = (HealSkill)useSkill;
 
+
+
             switch (healUseSkill.getExtent()) {
                 case Extent.SINGLE:
-                    return decideHealSingleTarget(targets, healUseSkill);
+                    return decideHealSingleTarget(healUseSkill);
                 case Extent.AREA:
                     return decideHealAreaTarget(healUseSkill);
                 case Extent.ALL:
                     //工夫する予定
-                    return targets;
+                    return BattleManager.getInstance().getCharacterInRange(user, healUseSkill.getRange()); ;
             }
             throw new NotSupportedException("unkown extent");
         }
@@ -192,10 +202,12 @@ namespace AI {
         /// <returns>対象のリスト</returns>
         /// <param name="targets">射程内のキャラクターのリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideHealSingleTarget(List<IBattleable> targets, HealSkill useSkill) {
+        private List<IBattleable> decideHealSingleTarget(HealSkill useSkill) {
             //keyに可能性値、要素に対象をもつdictionary
             Dictionary<float, IBattleable> characterAndProbalities = new Dictionary<float, IBattleable>();
             float sumProbality = 0;
+
+            List<IBattleable> targets =  BattleManager.getInstance().getCharacterInRange(user, useSkill.getRange());
 
             foreach (IBattleable target in targets) {
                 //敵対勢力→論外
@@ -282,7 +294,7 @@ namespace AI {
         /// <returns>スキルの対象のリスト</returns>
         /// <param name="targets"> スキル射程内のキャラクターのリスト </param>
         /// <param name="useSkill"> 使用するスキル </param>
-        private List<IBattleable> decideBufTarget(List<IBattleable> targets,IActiveSkill useSkill){
+        private List<IBattleable> decideBufTarget(IActiveSkill useSkill){
             if(!(useSkill is BufSkill)){
                 throw new ArgumentException(useSkill.getName() + " isn't a bufSkill");
             }
@@ -291,12 +303,12 @@ namespace AI {
 
             switch (bufUseSkill.getExtent()){
                 case Extent.SINGLE:
-                    return decideSingleBufTarget(targets, bufUseSkill);
+                    return decideSingleBufTarget(bufUseSkill);
                 case Extent.AREA:
                     return decideAreaBufTarget(bufUseSkill);
                 case Extent.ALL:
                     //くふー
-                    return targets;
+                    return BattleManager.getInstance().getCharacterInRange(user,bufUseSkill.getRange());
             }
 
             throw new NotSupportedException("unknown extent value");
@@ -308,10 +320,13 @@ namespace AI {
         /// <returns>対象のリスト</returns>
         /// <param name="targets">スキル射程内のキャラクターのリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideSingleBufTarget(List<IBattleable> targets, BufSkill useSkill){
+        private List<IBattleable> decideSingleBufTarget(BufSkill useSkill){
             //keyに選択可能性、要素にIBattleable本体を持つリスト
             Dictionary<int, IBattleable> targetsAndProbality = new Dictionary<int, IBattleable>();
             int sumFriendlyLevel = 0;
+
+            var targets = BattleManager.getInstance().getCharacterInRange(user, useSkill.getRange());
+
             foreach(IBattleable target in targets){
                 if(!target.isHostility(user.getFaction())){
                     //レベルが高いほど選択可能性が高い
@@ -384,13 +399,13 @@ namespace AI {
         }
 
 
-        private List<IBattleable> decideHostileTarget(List<IBattleable> targets, IActiveSkill useSkill) {
+        private List<IBattleable> decideHostileTarget(IActiveSkill useSkill) {
             Extent extent = ActiveSkillSupporter.searchExtent(useSkill);
             int range = ActiveSkillSupporter.searchRange(useSkill, user);
 
             if (extent == Extent.SINGLE) {
                 List<IBattleable> returnList = new List<IBattleable>();
-                returnList.Add(decideHostileSingleTarget(targets));
+                returnList.Add(decideHostileSingleTarget(useSkill));
                 return returnList;
 
             } else if (extent == Extent.AREA) {
@@ -400,21 +415,20 @@ namespace AI {
                 return BattleManager.getInstance().getAreaCharacter(targetPos);
 
             } else if (extent == Extent.ALL) {
-                //全体の場合は無条件で全部焼き払います
-                List<IBattleable> returnList = new List<IBattleable>();
-                foreach (List<IBattleable> list in targets) {
-                    returnList.AddRange(list);
-                }
-                return returnList;
+                
+                return BattleManager.getInstance().getCharacterInRange(user,ActiveSkillSupporter.searchRange(useSkill,user));
             }
             throw new Exception("invlit state (未実装)");
         }
 
         //単体の対象を決定します
-        private IBattleable decideHostileSingleTarget(List<IBattleable> targets) {
+        private IBattleable decideHostileSingleTarget(IActiveSkill useSkill) {
             //レベルを合計する
             int sumLevel = 0;
             List<IBattleable> hostalityTargets = new List<IBattleable>();
+
+            var targets = BattleManager.getInstance().getCharacterInRange(user, ActiveSkillSupporter.searchRange(useSkill,user));
+
             foreach (IBattleable target in targets) {
                 if (target.isHostility(user.getFaction())) {
                     hostalityTargets.Add(target);

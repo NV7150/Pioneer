@@ -26,7 +26,10 @@ namespace MasterData {
 		private float
 			delayBonus;
 
-		//csvによるstring配列から初期化します
+		/// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="datas">csvによるstring配列データ</param>
 		public ArmorBuilder (string[] datas) {
 			setDataFromCSV (datas);
 		}
@@ -73,7 +76,10 @@ namespace MasterData {
 			return equipDescription;
 		}
 
-		//csvのstring配列から初期化します
+		/// <summary>
+        /// string配列から初期化します
+        /// </summary>
+        /// <param name="datas">データを表すstring配列</param>
 		private void setDataFromCSV(string[] datas){
 			this.id = int.Parse (datas [0]);
 			this.name = datas [1];
@@ -87,7 +93,10 @@ namespace MasterData {
 			this.equipDescription = datas [9];
 		}
 
-		//Armorを取得します
+		/// <summary>
+        /// 防具を生成します
+        /// </summary>
+        /// <returns> 生成した防具 </returns>
 		public Armor build(){
 			return new Armor (this);
 		}

@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Parameter{
+    /// <summary>
+    /// キャラクターのパラメータのEnum
+    /// </summary>
 	public static class CharacterParameters{
-		//基本能力値を表します
+		/// <summary>
+        /// 戦闘に使用する能力値
+        /// </summary>
 		public enum BattleAbility{
 			//白兵戦闘力
 			MFT,
@@ -18,6 +23,9 @@ namespace Parameter{
 			PHY
 		}
 
+        /// <summary>
+        /// 戦闘に関係ない能力値
+        /// </summary>
 		public enum FriendlyAbility{
 			//話術
 			SPC,
@@ -26,7 +34,9 @@ namespace Parameter{
 		}
 
 
-		//服能力値を表します
+		/// <summary>
+        /// BattleAbilityに依存して設定される能力値
+        /// </summary>
 		public enum SubBattleAbility{
 			//攻撃力
 			ATK,
@@ -36,7 +46,9 @@ namespace Parameter{
 			DODGE
 		}
 
-		//所属する勢力を表します
+		/// <summary>
+        /// 所属している派閥
+        /// </summary>
 		public enum Faction {
 			PLAYER,ENEMY
 		}

@@ -8,20 +8,29 @@ using Character;
 
 namespace BattleSystem{
 	public class BattleTask {
-		//タスク名です
+		/// <summary> タスク名 </summary>
 		private readonly string NAME;
-		//行うスキルです
+		/// <summary> 行うスキル </summary>
 		private readonly IActiveSkill SKILL;
-		//行動系スキルの対象です
+		/// <summary> スキルに対象があった場合の対象です </summary>
 		private List<IBattleable> targets;
-		//移動系スキルの移動量です
+		/// <summary> スキルに移動量があった場合の移動量です </summary>
 		private int move;
-		//タスクを行うキャラクターのユニークIDです
+		/// <summary> タスクを実行するキャラクターのユニークID </summary>
 		private readonly long OWNER_UNIQUEID;
-        //タスクのユニークIDです
+        /// <summary>
+        /// タスクの識別IDです
+        /// TaskManagerごとに個別に設定するので一部はかぶる可能性があります
+        /// </summary>
         private readonly long ID;
 
-		//ターゲットが存在する場合のコンストラクタです
+		/// <summary>
+        /// ターゲットが存在する場合のコンストラクタ
+        /// </summary>
+        /// <param name="uniqueId">タスクの実行者のユニークID</param>
+        /// <param name="skill">タスクが実行するスキル</param>
+        /// <param name="targets">スキルの対象のリスト</param>
+        /// <param name="id">タスクID</param>
         public BattleTask(long uniqueId,IActiveSkill skill,List<IBattleable> targets,long id){
 			this.OWNER_UNIQUEID = uniqueId;
 			this.SKILL = skill;
@@ -30,8 +39,14 @@ namespace BattleSystem{
             this.ID = id;
 		}
 
-        //移動量が存在する場合のコンストラクタです
-        public BattleTask(long uniqueId, IActiveSkill skill, int move, long id) {
+		/// <summary>
+		/// 移動が存在する場合のコンストラクタ
+		/// </summary>
+		/// <param name="uniqueId">タスクの実行者のユニークID</param>
+		/// <param name="skill">タスクが実行するスキル</param>
+		/// <param name="move">移動量</param>
+		/// <param name="id">タスクID</param>
+		public BattleTask(long uniqueId, IActiveSkill skill, int move, long id) {
             this.OWNER_UNIQUEID = uniqueId;
             this.SKILL = skill;
             this.NAME = skill.getName();
@@ -39,30 +54,42 @@ namespace BattleSystem{
             this.ID = id;
         }
 
-		//スキルを取得します
+		/// <summary>
+        /// スキルを取得します
+        /// </summary>
+        /// <returns>タスクに設定されているスキル</returns>
 		public IActiveSkill getSkill(){
 			return SKILL;
 		}
 
-		//対象を取得します
+		/// <summary>
+        /// スキル対象のリストを取得します
+        /// </summary>
+        /// <returns>スキル対象のリスト</returns>
 		public List<IBattleable> getTargets(){
 			if (targets.Count == 0)
 				throw new InvalidOperationException ("this task isn't an action");
 			return targets;
 		}
 
-		//移動量を取得します
+		/// <summary>
+        /// 移動量を取得します
+        /// </summary>
+        /// <returns>移動量</returns>
 		public int getMove(){
 			return move;
 		}
 
-		//所有者のユニークIDを取得します
+		/// <summary>
+        /// タスク実行者のユニークIDを取得します
+        /// </summary>
+        /// <returns>タスク実行者のユニークID</returns>
 		public long getOwnerBattleId(){
 			return OWNER_UNIQUEID;
 		}
 
         /// <summary>
-        /// このタスクのIDを取得します
+        /// タスクのIDを取得します
         /// </summary>
         /// <returns> タスクのID </returns>
         public long getBattleTaskId(){

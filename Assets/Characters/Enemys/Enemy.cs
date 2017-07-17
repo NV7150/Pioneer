@@ -159,9 +159,12 @@ namespace Character{
             return abilities[ability] + bonusKeeper.getBonus(ability);
         }
 
-		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility) {
+        public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
 			//もっとくふうすする予定
-            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,10 + LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
+            int atk = getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,10 + LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
+            if (useWepon)
+                atk += equipedWepon.getAttack();
+            return atk;
 		}
 
 		public int getDef () {
@@ -187,9 +190,6 @@ namespace Character{
 		}
 			
 		public void healed (int heal, HealSkillAttribute attribute) {
-			Debug.Log ("" + heal);
-			if (heal < 0 || attribute == HealSkillAttribute.NONE)
-				throw new ArgumentException ("invalid heal");
 
 			if (attribute == HealSkillAttribute.HP_HEAL || attribute == HealSkillAttribute.BOTH) {
 				if (this.hp != 0)
@@ -212,8 +212,24 @@ namespace Character{
             return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range (1,11);
 		}
 
-		public int healing (BattleAbility useAbility) {
+		public int getHeal (BattleAbility useAbility) {
 			throw new NotImplementedException ();
+		}
+
+		public float getCharacterDelay() {
+			throw new NotImplementedException();
+		}
+
+		public int getCharacterRange() {
+			throw new NotImplementedException();
+		}
+
+		public BattleAbility getCharacterAttackMethod() {
+			throw new NotImplementedException();
+		}
+
+		public void addAbilityBonus(SubBattleAbilityBonus bonus) {
+			throw new NotImplementedException();
 		}
 
 		public bool getIsBattling () {
@@ -276,9 +292,6 @@ namespace Character{
 		#endregion
 
 		#region IChracter implementation
-		public GameObject getModel () {
-			throw new NotImplementedException ();
-		}
 
 		public void act () {
             bonusKeeper.advanceLimit();
@@ -307,26 +320,6 @@ namespace Character{
         /// <returns>種族ID</returns>
 		public int getId(){
 			return this.ID;
-		}
-
-		/// <summary>
-        /// 現在HPを設定します
-        /// </summary>
-        /// <param name="hp">設定するHp</param>
-		public void setHp (int hp) {
-			if (hp < 0)
-				throw new ArgumentException ("invalid hp");
-			this.hp = hp;
-		}
-
-		/// <summary>
-        /// 現在MPを設定します
-        /// </summary>
-        /// <param name="mp">設定するMP</param>
-		public void setMp (int mp) {
-			if (mp < 0)
-				throw new ArgumentException ("invalid mp");
-			this.mp = mp;
 		}
 
 		/// <summary>
@@ -359,5 +352,7 @@ namespace Character{
 				return false;
 			return true;
 		}
+
+       
     }
 }

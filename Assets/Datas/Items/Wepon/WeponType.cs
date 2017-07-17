@@ -6,7 +6,9 @@ using System;
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 
 namespace Item{
-	//武器の種別です
+	/// <summary>
+    /// 武器の種別
+    /// </summary>
 	public enum WeponType{
 		SWORD = 0,
 		BOW = 1,

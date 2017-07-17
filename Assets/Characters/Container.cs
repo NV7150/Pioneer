@@ -6,6 +6,9 @@ using System.Runtime.CompilerServices;
 using BattleSystem;
 
 namespace Character{
+    /// <summary>
+    /// Containerはキャラクターの外面的な(GameObject側の)処理を担当します
+    /// </summary>
 	public class Container : MonoBehaviour {
 		public GameObject model;
         public ICharacter user;
@@ -17,30 +20,33 @@ namespace Character{
 
 		// Update is called once per frame
 		void Update () {
-//			Debug.Log ("a");
 			if (user == null) {
-//				print ("null.");
 			} else {
 				user.act ();
 			}
 		}
 
-		//外面のGameObjectを返します
-		public GameObject getModel(){
-			return model;
-		}
+        /// <summary>
+        /// ContainerがアタッチされているGameObjectを取得します
+        /// </summary>
+        /// <returns>アタッチされているGameObject</returns>
+        public GameObject getModel() {
+            return model;
+        }
 
-		//MonoBehaviourの機能を動作させるExecutorを返します
-		public MonoBehaviour getExcecutor(){
-			return this;
-		}
-
-		//Characterを設定します
+		/// <summary>
+        /// Containerにキャラクターを設定します
+        /// </summary>
+        /// <param name="chara">設定するキャラクター</param>
 		public void setCharacter(ICharacter chara){
 			this.user = chara;
             isBattleable = chara is IBattleable;
 		}
 
+        /// <summary>
+        /// 設定されているキャラクターを取得します
+        /// </summary>
+        /// <returns>設定されているキャラクター</returns>
         public ICharacter getCharacter(){
             return this.user;
         }
@@ -55,6 +61,11 @@ namespace Character{
             }
         }
 
+        /// <summary>
+        /// エンカウントし、キャラクターをバトルに参加させます
+        /// </summary>
+        /// <param name="opponent">エンカウントしたキャラクター</param>
+        /// <param name="averageEachPos">エンカウントしたキャラクターと自身の位置の平均</param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
         private void startBattle(ICharacter opponent,Vector3 averageEachPos){
             //ICharacterをIBattleableにキャスト

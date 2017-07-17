@@ -1,14 +1,14 @@
 ﻿using System;
 
 namespace Character {
-	public class UniqueIdCreator {
-		//現在のナンバーを表します
+	public static class UniqueIdCreator {
+		/// <summary> 現在のユニークナンバー </summary>
 		private static long nowNumber = 0;
 
-		//シングルトンです
-		private UniqueIdCreator(){}
-
-		//ユニークIDを取得します。種族のIdの末尾に現在の番号を加えた数がその値になります。
+		/// <summary>
+        /// ユニークIDを生成します
+        /// </summary>
+        /// <returns>ユニークID</returns>
 		public static long creatUniqueId(){
 			long number = nowNumber;
 			nowNumber++;

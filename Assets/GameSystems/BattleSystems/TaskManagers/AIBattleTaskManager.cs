@@ -12,35 +12,32 @@ using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
 namespace BattleSystem {
 	public class AIBattleTaskManager : MonoBehaviour,IBattleTaskManager{
-		//行動の指針となるAIです
+		/// <summary> userが持つAI </summary>
 		IEnemyAI ai;
-		//元のキャラクターを表します
+		/// <summary> 担当するIBattleableキャラクター </summary>
 		IBattleable user;
-		//現在のステートを表します
+		/// <summary> 現在のステート </summary>
 		BattleState state = BattleState.IDLE;
 
-		//ディレイ終了までの残り秒数
+		/// <summary> ディレイ終了までの秒数 </summary>
 		float delay = 0;
-		//リアクション終了までの残り秒数
+		/// <summary> リアクションの制限時間終了までの秒数 </summary>
 		float reactionLimit = 0;
-		//リアクションが必要かを表します
+		/// <summary> リアクションが必要かどうか </summary>
 		bool needToReaction;
 
-		//ユーザーがセットされているかを表します
+		/// <summary> 初期設定が完了しているかどうか </summary>
 		bool isReady = false;
 
-		//現在リアクションしているKeyValuePairを表します
+		/// <summary> リアクションしているスキルとそれを使用したキャラクター </summary>
 		private KeyValuePair<IBattleable,AttackSkill> prosessingPair;
-		//リアクション待ちのKeyValuePairを表します
+		/// <summary> リアクション待ちのスキルとそれを使用したキャラクター </summary>
 		private List<KeyValuePair<IBattleable,AttackSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
+        /// <summary> BattleTaskを判別するためのIDのカウント </summary>
         private long battletaskIdCount = 0;
 
 		void Update(){
-			if (user.getHp () <= 0) {
-				BattleManager.getInstance ().deadCharacter (user);
-			}
-
 			if (isReady) {
 				if (needToReaction) {
 					reactionState ();
@@ -49,12 +46,17 @@ namespace BattleSystem {
 				} else if (state == BattleState.IDLE) {
 					idleState ();
 				}
+
+				if (user.getHp() <= 0) {
+					BattleManager.getInstance().deadCharacter(user);
+				}
 			}
 		}
 
-		//ステートがリアクション時に毎フレーム行う処理です
+		/// <summary>
+        /// リアクションが必要な時に毎フレーム行う処理
+        /// </summary>
 		private void reactionState(){
-
 			IBattleable attacker = prosessingPair.Key;
 			AttackSkill useSkill = prosessingPair.Value;
 
@@ -67,7 +69,9 @@ namespace BattleSystem {
 			updateProsessingPair ();
 		}
 
-		//ステートがアクション時に毎フレーム行う処理です
+		/// <summary>
+        /// ステートがACTIONの時に毎フレーム行う処理
+        /// </summary>
 		private void actionState(){
 			BattleTask task = getTask ();
 			task.getSkill ().action (user,task);
@@ -78,7 +82,9 @@ namespace BattleSystem {
 			state = BattleState.IDLE;
 		}
 
-		//ステートがidle時に毎フレーム行う処理です
+		/// <summary>
+        /// ステートがIDLEの時に毎フレーム行う処理
+        /// </summary>
 		private void idleState(){
 			delay -= Time.deltaTime;
 			if(delay <= 0){
@@ -86,13 +92,18 @@ namespace BattleSystem {
 			}
 		}
 
-		//タスクを生成して返します
+		/// <summary>
+        /// BattleTaskを生成します
+        /// </summary>
+        /// <returns>生成したタスク</returns>
 		private BattleTask getTask(){
-			searchIsReady ();
+            if (!isReady)
+                throw new InvalidOperationException("manager hasn't readied yet");
+
 			IActiveSkill skill = ai.decideSkill ();
 
 			if (ActiveSkillSupporter.needsTarget (skill)) {
-				List<IBattleable> targets = ai.decideTarget (BattleManager.getInstance ().getCharacterInRange (user, ActiveSkillSupporter.searchRange (skill, user)), skill);
+				List<IBattleable> targets = ai.decideTarget (skill);
                 BattleTask returnTask = new BattleTask (user.getUniqueId (), skill, targets,battletaskIdCount);
                 battletaskIdCount++;
                 return returnTask;
@@ -106,20 +117,20 @@ namespace BattleSystem {
 			throw new InvalidOperationException ("unknown skillType");
 		}
 
-		//キャラクターをセットします
-		public void setCharacter(IBattleable bal,IEnemyAI ai){
+		/// <summary>
+        /// キャラクターを設定します
+        /// </summary>
+        /// <param name="user">設定するキャラクター</param>
+        /// <param name="ai">userが持つAI</param>
+        public void setCharacter(IBattleable user,IEnemyAI ai){
 			this.ai = ai;
-			this.user = bal;
+			this.user = user;
 			this.isReady = true;
 		}
 
-		//キャラクターがセットされていない場合に例外を投げます
-		private void searchIsReady(){
-			if (ai == null || user == null)
-				throw new InvalidOperationException ("Manager hasn't readied yet");
-		}
-
-		//実行中のKeyValuePairを更新します
+		/// <summary>
+        /// リアクションしているスキルを更新します
+        /// </summary>
 		private void updateProsessingPair(){
 			if (waitingReactionActiveSkills.Count > 0) {
 				prosessingPair = waitingReactionActiveSkills [0];

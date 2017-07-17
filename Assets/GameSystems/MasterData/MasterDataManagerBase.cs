@@ -5,7 +5,12 @@ using System;
 
 namespace MasterData{
 	public abstract class MasterDataManagerBase  : MonoBehaviour {
-		//渡されたstringの二次配列から使用するデータをstring配列で取得します
+		/// <summary>
+        /// 与えられたstring二次配列から指定されたindexにあるデータを抜き出します
+        /// </summary>
+        /// <returns>使用するstirng配列</returns>
+        /// <param name="csv">csvによって生成されたstring二次配列</param>
+        /// <param name="row">行数</param>
 		protected string[] GetRaw (string[,] csv, int row) {
 			string[] data = new string[ csv.GetLength(0) ];
 			for (int i = 0; i < csv.GetLength(0); i++) 
@@ -13,7 +18,10 @@ namespace MasterData{
 			return data;
 		}
 
-		//これを継承するクラスがAwake()で実行する初期動作です
+		/// <summary>
+        /// 具象クラスがAwake時に呼び出す処理
+        /// </summary>
+        /// <param name="csvAsset">csvのTextAsset</param>
 		protected void constractedBehaviour(TextAsset csvAsset){
 			var datas = CSVReader.SplitCsvGrid(csvAsset.text);
 			for (int i = 1; i < datas.GetLength(1) - 1 ; i++) {
@@ -21,7 +29,10 @@ namespace MasterData{
 			}
 		}
 
-		//渡されたstringデータを元にインスタンスを生成し、dataTableに登録します
+		/// <summary>
+        /// 与えられたstring配列データからインスタンスを生成し、登録します
+        /// </summary>
+        /// <param name="datas">Datas.</param>
 		protected abstract void addInstance (string[] datas);
 	}
 }

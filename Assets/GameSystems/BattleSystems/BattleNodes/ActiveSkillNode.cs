@@ -7,11 +7,11 @@ using Skill;
  
 namespace BattleSystem{
 	public class ActiveSkillNode : MonoBehaviour {
-		//アタッチされているゲームオブジェクトのテキストオブジェクトです
+		/// <summary> アタッチされているGameObjectのTextオブジェクト </summary>
 		public Text textObject;
-		//担当しているActiveSkillです
+		/// <summary> 担当するActiveSkill </summary>
 		private IActiveSkill skill;
-		//元のPlayerBattleTaskManagerです
+        /// <summary> 元のタスクマネージャ </summary>
 		private PlayerBattleTaskManager manager;
 
         /// <summary>
@@ -25,7 +25,9 @@ namespace BattleSystem{
 			textObject.text = skill.getName ();
 		}
 
-		//選択された時の動作です
+		/// <summary>
+        /// 選択された時の動作
+        /// </summary>
 		public void chosen(){
 			manager.skillChose (skill);
 		}

@@ -4,21 +4,27 @@ using UnityEngine;
 
 namespace BattleSystem{
 	public class BattleField{
-		//このバトルフィールドの起点を表します
+		/// <summary> バトルフィールドの起点となる位置 </summary>
 		private readonly Vector3 STARTER_POSITON;
-		//バトルフィールドのエリアごとの実間隔を表します
+		/// <summary> FieldPosition間の実距離 </summary>
 		private static readonly int distanceOfArea = 10;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="position">起点</param>
 		public BattleField(Vector3 position){
 			STARTER_POSITON = position;
 			Debug.Log (STARTER_POSITON);
 		}
 
-		//与えられたポジションからポジションに移動する際の位置を表します
+		/// <summary>
+        /// 与えられたポジションの座標を取得します
+        /// </summary>
+        /// <returns>ポジションの座標</returns>
+        /// <param name="going">Going.</param>
 		public Vector3 getNextPosition(FieldPosition going){
-//			Debug.Log ((int)going - 3);
-//			Debug.Log (distanceOfArea * ((int)going - 3) + Random.Range (0, 11));
-			int x = Random.Range(-15,15);
+            int x = Random.Range(-15,15);
 			int z = distanceOfArea * ((int)going - 3) + Random.Range (0, 11);
 
 			return STARTER_POSITON + new Vector3 (x,0,z);

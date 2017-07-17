@@ -9,22 +9,35 @@ using Extent = Skill.ActiveSkillParameters.Extent;
 
 namespace Skill {
 	public class DebufSkill : SupportSkillBase,IActiveSkill{
-		private readonly int 
+		private readonly int
+			/// <summary> このスキルのID </summary>
 			ID,
+			/// <summary> このスキルによる補正値 </summary>
 			BONUS,
-			COST,
-			RANGE;
+			/// <summary> このスキルの射程 </summary>
+			RANGE,
+			/// <summary> このスキルのMPコスト </summary>
+			COST;
 
 		private readonly string
+			/// <summary> スキル名 </summary>
 			NAME,
+			/// <summary>  スキルの説明 </summary>
 			DESCRIPTION;
 
-		private readonly float 
+		private readonly float
+			/// <summary> このスキルのディレイ秒数です </summary>
 			DELAY,
+			/// <summary> このスキルの効果時間 </summary>
 			LIMIT;
 
+		/// <summary> スキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
 
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="datas">csvによるstring配列データ</param>
 		public DebufSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
@@ -38,11 +51,19 @@ namespace Skill {
 			DESCRIPTION = datas [9];
 		}
 
-		public Extent getExtent(){
+		/// <summary>
+		/// 効果範囲を取得します
+		/// </summary>
+		/// <returns>効果範囲</returns>
+		public Extent getExtent() {
 			return EXTENT;
 		}
 
-		public int getRange(){
+		/// <summary>
+		/// スキル射程を取得します
+		/// </summary>
+		/// <returns>射程</returns>
+		public int getRange() {
 			return RANGE;
 		}
 

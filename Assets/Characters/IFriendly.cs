@@ -1,11 +1,20 @@
 ﻿using System;
 
 namespace Character {
-	public interface  IFriendly {
-		//話術(spc)を取得します
+    /// <summary>
+    /// IFriednlyは全ての友好的なキャラクターを表します
+    /// </summary>
+    public interface  IFriendly : ICharacter{
+		/// <summary>
+        /// 話術(speech / spc)を取得します
+        /// </summary>
+        /// <returns>話術</returns>
 		int getSpc();
 
-		//話します
+		/// <summary>
+        /// 話します
+        /// </summary>
+        /// <param name="friendly">話す対象のIFriendlyキャラクター</param>
 		void talk(IFriendly friendly);
 	}
 }

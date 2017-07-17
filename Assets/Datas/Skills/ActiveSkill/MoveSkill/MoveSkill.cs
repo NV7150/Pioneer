@@ -28,6 +28,10 @@ namespace Skill {
 		/// <summary> 使用する能力値 </summary>
 		private readonly BattleAbility USE_ABILITY;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="datas">csvによるstring配列データ</param>
 		public MoveSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];

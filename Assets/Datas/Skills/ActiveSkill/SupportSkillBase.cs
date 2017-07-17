@@ -9,10 +9,12 @@ using Parameter;
 
 namespace Skill {
 	public abstract class SupportSkillBase {
-
+        /// <summary> ボーナスするBattleAbility </summary>
 		protected BattleAbility bonusAbility;
+        /// <summary> ボーナスするBattleSubAbility </summary>
 		protected SubBattleAbility bonusSubAbility;
 
+        /// <summary> BattleAbilityに対するボーナスかのフラグ </summary>
 		protected bool isBonusForAbility;
 
 		/// <summary>
@@ -29,18 +31,30 @@ namespace Skill {
 			}
 		}
 
+        /// <summary>
+        /// 対象にボーナスを追加します
+        /// </summary>
+        /// <param name="targets">適用するIBattleキャラクターのリスト</param>
 		protected void setBounsToCharacter(List<IBattleable> targets){
 			foreach(IBattleable target in targets){
 				if (isBonusForAbility) {
 					target.addAbilityBonus (getAbilityBonus ());
 				} else {
-					target.addSubAbilityBonus (getSubAbilityBonus());
+					target.addAbilityBonus (getSubAbilityBonus());
 				}
 			}
 		}
 
+        /// <summary>
+        /// BattleAbilityに対するボーナスの場合のボーナスインスタンスを取得します
+        /// </summary>
+        /// <returns>ボーナスインスタンス</returns>
 		protected abstract BattleAbilityBonus getAbilityBonus ();
 
+        /// <summary>
+        /// SubBattleAblityに対するボーナスの場合のボーナスインスタンスを取得します
+        /// </summary>
+        /// <returns>ボーナスインスタンス</returns>
 		protected abstract SubBattleAbilityBonus getSubAbilityBonus ();
 	}
 }

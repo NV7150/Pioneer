@@ -8,17 +8,32 @@ using BattleSystem;
 
 namespace AI {
 	public interface IEnemyAI {
-
-		//与えられたデータを元に、使うスキルを判断します
+		/// <summary>
+        /// 使用するスキルを決定します
+        /// </summary>
+        /// <returns>使用するスキル</returns>
 		IActiveSkill decideSkill();
 
-		//与えられたデータを元に、リアクションを決定します
+		/// <summary>
+        /// 使用するリアクションスキルを決定します
+        /// </summary>
+        /// <returns>使用するスキル</returns>
+        /// <param name="attacker">攻撃者</param>
+        /// <param name="skill">攻撃に使われるAttackSkill</param>
 		ReactionSkill decideReaction(IBattleable attacker,AttackSkill skill);
 
-		//与えられたデータを元に、攻撃する敵を判断します
-		List<IBattleable> decideTarget (List<IBattleable> targets,IActiveSkill useSkill);
+		/// <summary>
+        /// スキルを使用する相手を決定します
+        /// </summary>
+        /// <returns>使用対象のリスト</returns>
+        /// <param name="useSkill">使用するスキル</param>
+		List<IBattleable> decideTarget (IActiveSkill useSkill);
 
-		//与えられたデータを元に、移動量を決定します
+		/// <summary>
+        /// moveSkillによる移動量を決定します
+        /// </summary>
+        /// <returns>移動量</returns>
+        /// <param name="useSkill">使用するMoveSkill</param>
 		int decideMove(MoveSkill useSkill);
 
 	}

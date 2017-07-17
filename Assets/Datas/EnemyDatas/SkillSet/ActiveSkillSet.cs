@@ -10,15 +10,22 @@ using Character;
 
 namespace AI {
 	public class ActiveSkillSet {
-		//スキルセットを表すDictionaryです
+		/// <summary> スキルセットに設定されているスキルのDictionary </summary>
 		private Dictionary<ActiveSkillCategory,IActiveSkill> skillSet = new Dictionary<ActiveSkillCategory, IActiveSkill> ();
-		//スキルセットのIDです
+
+		/// <summary> スキルセットのID </summary>
 		private readonly int ID;
-		//スキルセット全体で一番の効果範囲を表します
-		private int MAX_RANGE;
-		//スキルセットの名前を表します
+
+		/// <summary> スキルセットの中で最大の射程 </summary>
+        private readonly int MAX_RANGE;
+		/// <summary> スキルセット名 </summary>
 		private readonly string NAME;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="builder"> スキルセットのビルダー </param>
+        /// <param name="user"> スキルセットを使うIBattleableキャラクター </param>
 		public ActiveSkillSet (ActiveSkillSetBuilder builder,IBattleable user) {
 			this.ID = builder.getId ();
 			this.NAME = builder.getName ();
@@ -32,10 +39,14 @@ namespace AI {
 			skillSet [ActiveSkillCategory.HEAL] = builder.getHealSkill ();
 			skillSet [ActiveSkillCategory.MOVE] = builder.getMoveSkill ();
 
-			calculateMaxRange (user);
+            MAX_RANGE = calculateMaxRange (user);
 		}
 
-		//スキルの中での最大レンジを計算します
+		/// <summary>
+        /// 最大射程を算出します
+        /// </summary>
+        /// <returns> 最大射程 </returns>
+        /// <param name="user"> スキルを使用するIBattleableオブジェクト </param>
 		private int calculateMaxRange(IBattleable user){
 			int maxRange = 0;
 			var keys = skillSet.Keys;
@@ -49,22 +60,35 @@ namespace AI {
 			return maxRange;
 		}
 
-		//スキルセットのIDを取得します
+		/// <summary>
+        /// スキルセットのIDを取得します
+        /// </summary>
+        /// <returns>ID</returns>
 		public int getId(){
 			return ID;
 		}
 
-		//スキルセットの名前を取得します
+		/// <summary>
+        /// スキルセット名を取得します
+        /// </summary>
+        /// <returns>スキルセット名</returns>
 		public string getName(){
 			return NAME;
 		}
 
-		//スキルセットの中で一番の射程を取得します
+		/// <summary>
+        /// スキルセットの最大射程を取得します
+        /// </summary>
+        /// <returns>最大射程</returns>
 		public int getMaxRange(){
-			return MAX_RANGE;
+            return MAX_RANGE;
 		}
 
-		//カテゴリからスキルを取得します
+		/// <summary>
+		/// 指定したカテゴリからスキルを取得します
+		/// </summary>
+		/// <returns>指定したスキル</returns>
+		/// <param name="category">取得したいスキルのカテゴリ</param>
 		public IActiveSkill getSkillFromSkillCategory(ActiveSkillCategory category){
 			return skillSet[category];
 		}

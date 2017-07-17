@@ -7,6 +7,7 @@ using Skill;
 
 namespace MasterData {
 	public class MoveSkillMasterManager : MasterDataManagerBase{
+        /// <summary> 登録済みのMoveSkillのリスト </summary>
 		private static List<MoveSkill> dataTable = new List<MoveSkill>();
 
 		void Awake(){
@@ -14,6 +15,11 @@ namespace MasterData {
 			constractedBehaviour (csv);
 		}
 
+        /// <summary>
+        /// IDからMoveSkillを取得します
+        /// </summary>
+        /// <returns> 指定されたMoveSkill </returns>
+        /// <param name="id"> 取得したいMoveSkillのID </param>
 		public static MoveSkill getMoveSkillFromId(int id){
 			foreach(MoveSkill skill in dataTable){
 				if (skill.getId () == id)

@@ -7,18 +7,22 @@ using UnityEditor;
 using Character;
 
 namespace AI{
+    /// <summary>
+    /// cowardを生成するビルダー
+    /// </summary>
 	[InitializeOnLoad]
 	public class CowardBuilder : IEnemyAIBuilder {
 
 		private CowardBuilder(){}
 
-		//ゲーム開始時にマネージャに追加します
+		/// <summary>
+        /// ゲーム開始時に自身をEnemyAiSummarizingManagerに登録します
+        /// </summary>
 		static CowardBuilder(){
 			EnemyAISummarizingManager.getInstance ().addAi (new CowardBuilder());	
 		}
 
 		#region IEnemyAIBuilder implementation
-		//CowardAIを生成します
 		public IEnemyAI build (IBattleable bal,ActiveSkillSet activeSKills,ReactionSkillSet passiveSkills) {
 			return new Coward (bal,activeSKills,passiveSkills);
 		}

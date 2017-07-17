@@ -33,6 +33,10 @@ namespace BattleSystem{
 			return INSTANCE;
 		}
 
+        /// <summary>
+        /// コンストラクタ
+        /// 一度しか呼ばれません
+        /// </summary>
 		private BattleManager(){
 			foreach(FieldPosition pos in System.Enum.GetValues(typeof(FieldPosition))){
 				joinedCharacter.Add (pos, new List<IBattleable> ());
@@ -104,10 +108,12 @@ namespace BattleSystem{
 			isBattleing = false;
 		}
 
-		/*引数に渡したBattleableオブジェクトを戦闘に参加させます
-		 * Battleable bal 戦闘に参加させたいオブジェクト
-		 * FiealdPosition pos 初期の戦闘参加位置
-		*/
+		/// <summary>
+        /// 引数に渡したキャラクターをバトルに参加させます
+        /// </summary>
+        /// <param name="bal">参加させるキャラクター</param>
+        /// <param name="pos">参加させる位置</param>
+        /// <param name="ai">キャラクターのAI</param>
 		public void joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -120,6 +126,11 @@ namespace BattleSystem{
 			joinedManager.Add (bal.getUniqueId(),manager);
 		}
 
+		/// <summary>
+		/// 引数に渡したキャラクターをバトルに参加させます
+		/// </summary>
+		/// <param name="player">参加させるキャラクター</param>
+		/// <param name="pos">参加させる位置</param>
 		public void joinBattle(IPlayable player,FieldPosition pos){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -133,15 +144,12 @@ namespace BattleSystem{
 			joinedManager.Add (player.getUniqueId(),manager);
 		}
 
-		//攻撃処理を行います
-		public void attackCommand(IBattleable bal,List<IBattleable> targets,AttackSkill skill){
-			foreach(IBattleable target in targets){
-				//対象のリアクション
-				joinedManager[target.getUniqueId()].offerReaction(bal,skill);
-			}
-		}
-
-		//与えられたキャラクターから射程範囲内にいるキャラクターのリストを返します
+		/// <summary>
+        /// 与えられたキャラクターの位置から与えられた位置までにいるキャラクターを返します
+        /// </summary>
+        /// <returns>位置の中にいたキャラクターのリスト</returns>
+        /// <param name="bal">起点となるキャラクター</param>
+        /// <param name="range">判定したい範囲</param>
 		public List<IBattleable> getCharacterInRange(IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -158,17 +166,22 @@ namespace BattleSystem{
 			return list;
 		}
 
-		//対象は戦闘から離脱します
-		private float escapeCommand(IBattleable bal,FieldPosition pos){
+		/// <summary>
+        /// 対象はバトルから離脱します
+        /// </summary>
+        /// <param name="bal">離脱するキャラクター</param>
+        private void escapeCommand(IBattleable bal){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
 
 			removeBalFromJoinedCharacter (bal);
 			bal.setIsBattling (false);
-			return 0;
 		}
 
-		//渡された位置にある渡されたbalオブジェクトをjoinedCharacterディクショナリから削除します
+		/// <summary>
+        /// 渡されたキャラクターをバトルから削除します
+        /// </summary>
+        /// <param name="bal">削除するキャラクター</param>
 		private void removeBalFromJoinedCharacter(IBattleable bal){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -177,7 +190,12 @@ namespace BattleSystem{
 			joinedCharacter [pos].Remove (bal);
 		}
 
-		//与えられたキャラの位置から与えられた範囲のバトル参加中のキャラクターの数を返します。
+		/// <summary>
+        /// 起点となるキャラクターから指定された位置までのキャラクター数を取得します
+        /// </summary>
+        /// <returns>キャラクター数</returns>
+        /// <param name="bal">起点となるキャラクター</param>
+        /// <param name="range">検索したい範囲</param>
 		public int sumFromAreaTo(IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -193,7 +211,10 @@ namespace BattleSystem{
 			return count - 1;
 		}
 
-		//全てのバトル参加中キャラクターの数の合計を返します
+		/// <summary>
+		/// 全てのバトル参加中キャラクター数を取得します
+		/// </summary>
+		/// <returns>全てのバトル参加中キャラクター数</returns>
 		public int sumAll(){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -206,7 +227,10 @@ namespace BattleSystem{
 			return returnValue;
 		}
 
-		//全ての戦闘に参加しているIBattleableキャラクターを取得します
+		/// <summary>
+		/// 全てのバトル参加中キャラクターオブジェクトを取得します
+		/// </summary>
+		/// <returns>全てのバトル参加中キャラクターオブジェクトリスト</returns>
 		public List<IBattleable> getJoinedBattleCharacter(){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -218,7 +242,11 @@ namespace BattleSystem{
 			return returnList;
 		}
 
-		//動きます
+		/// <summary>
+        /// 対象を指定された量移動させます
+        /// </summary>
+        /// <param name="bal">移動させるキャラクター</param>
+        /// <param name="moveness">移動させる量</param>
 		public void moveCommand(IBattleable bal,int moveness){
             Debug.Log("into moveCommand");
 			if (!isBattleing)
@@ -242,7 +270,12 @@ namespace BattleSystem{
 			Debug.Log("end moveCommand");
 		}
 
-		//指定されたキャラクターの指定された範囲でもっとも危険な（敵対キャラクターのレベル合計が高い）ポジションを返します
+		/// <summary>
+        /// 起点となるキャラクターから指定された範囲まででもっとも危険な(敵性レベルが高い)位置を検索します
+        /// </summary>
+        /// <returns>もっとも危険な位置</returns>
+        /// <param name="bal">起点となるキャラクター</param>
+        /// <param name="range">検索する範囲</param>
 		public FieldPosition whereIsMostDengerPositionInRange(IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -255,7 +288,12 @@ namespace BattleSystem{
 			return judgePosition (function, bal, range);
 		}
 
-		//指定されたキャラクターの指定された範囲でもっとも安全な（敵対キャラクターのレベル合計が低い）ポジションを返します
+		/// <summary>
+        /// 起点となるキャラクターから指定された範囲でもっとも危険な(敵性レベルが低い)位置を検索します
+        /// </summary>
+        /// <returns>もっとも安全な位置</returns>
+        /// <param name="bal">起点となるキャラクター</param>
+        /// <param name="range">検索する範囲</param>
 		public FieldPosition whereIsMostSafePositionInRange(IBattleable bal,int range ){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -268,7 +306,13 @@ namespace BattleSystem{
 			return judgePosition (function, bal, range);
 		}
 
-		//与えられた関数似合う条件の場所を検索します。
+		/// <summary>
+        /// 与えられた関数に適する位置を検索します
+        /// </summary>
+        /// <returns>検索結果のField</returns>
+        /// <param name="function">検索条件の関数</param>
+        /// <param name="bal">起点となるキャラクター</param>
+        /// <param name="range">検索範囲</param>
 		private FieldPosition judgePosition(Func<int[],bool> function,IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -296,7 +340,11 @@ namespace BattleSystem{
 			return returnPos;
 		}
 
-		//与えられたIBattleableオブジェクトを検索し位置を返します
+		/// <summary>
+        /// 与えられたキャラクターの位置を検索します
+        /// </summary>
+        /// <returns>キャラクターの位置</returns>
+        /// <param name="target">検索したいキャラクター</param>
 		public FieldPosition searchCharacter(IBattleable target){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -312,7 +360,11 @@ namespace BattleSystem{
 			throw new ArgumentException ("Didn't found " + target.ToString());
 		}
 
-		//指定されたFieldPositionにいるCharacterを返します
+		/// <summary>
+		/// 指定した位置にいるキャラクターオブジェクトのリストを取得します
+		/// </summary>
+		/// <returns>指定した位置にいるキャラクターオブジェクトのリスト</returns>
+		/// <param name="pos">指定する位置</param>
 		public List<IBattleable> getAreaCharacter(FieldPosition pos){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
@@ -328,6 +380,12 @@ namespace BattleSystem{
             return isBattleing;
         }
 
+        /// <summary>
+        /// 与えられた位置を起点として指定した数値移動する場合、最大と最小を割らないようにして返します
+        /// </summary>
+        /// <returns>正当な値</returns>
+        /// <param name="pos">起点</param>
+        /// <param name="range">判定したい値</param>
         public int restructionPositionValue(FieldPosition pos,int range){
             int positionValue = (int)pos + range;
 			int numberOfField = Enum.GetNames(typeof(FieldPosition)).Length;
@@ -339,6 +397,20 @@ namespace BattleSystem{
             return positionValue;
         }
        
+        /// <summary>
+        /// 指定したユニークIDのTaskManagerを返します
+        /// </summary>
+        /// <returns>指定したTaskManager</returns>
+        /// <param name="uniqueId">指定するユニークID</param>
+        public IBattleTaskManager getTaskManager(long uniqueId){
+            var keys = joinedManager.Keys;
+            foreach(long id in keys){
+                if (id == uniqueId)
+                    return joinedManager[id];
+            }
+            throw new ArgumentException("unknown id " + uniqueId);
+        }
+
 	}
 
 	//戦闘フィールドでの状態を表します。ZEROを中心としてPL側がマイナス、NPC側がプラスです。

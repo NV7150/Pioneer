@@ -28,15 +28,22 @@ namespace Skill {
 			/// <summary> スキルの説明文 </summary>
 			DESCRIPTION;
 
-		/// <summary> 秒数  </summary>
+		/// <summary> ディレイ秒数  </summary>
 		private readonly float DELAY;
 
+        /// <summary> スキルに使用するBattleAbilty </summary>
 		private readonly BattleAbility USE_ABILITY;
 
+        /// <summary> スキルの回復属性 </summary>
 		private readonly HealAttribute ATTRIBUTE;
 
+        /// <summary> スキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="datas">csvによるstring配列データ</param>
 		public HealSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
@@ -57,7 +64,7 @@ namespace Skill {
 		/// <param name="targets"> 対象のリスト </param>
 		private void heal(IBattleable actioner,List<IBattleable> targets){
 			foreach(IBattleable target in targets){
-				int heal = actioner.healing(this.USE_ABILITY);
+				int heal = actioner.getHeal(this.USE_ABILITY);
 				target.healed (heal,this.ATTRIBUTE);
 			}
 		}

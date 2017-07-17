@@ -8,7 +8,9 @@ using Parameter;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class JobMasterManager : MasterDataManagerBase {
-		//登録済みのジョブのリストです
+		/// <summary>
+        /// 登録済みの職業のリスト
+        /// </summary>
 		private static List<Job> dataTable = new List<Job>();
 
 		void Awake() {
@@ -16,7 +18,11 @@ namespace MasterData{
 			constractedBehaviour (csv);
 		}
 
-		//ジョブをIDから取得します
+		/// <summary>
+		/// IDから職業を取得します
+		/// </summary>
+		/// <returns>指定された職業</returns>
+		/// <param name="id">取得したい職業のID</param>
 		public static Job getJobFromId(int id){
 			foreach(Job job in dataTable){
 				if (job.getId () == id)

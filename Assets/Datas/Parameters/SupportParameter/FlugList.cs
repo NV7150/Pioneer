@@ -4,68 +4,102 @@ using System.Collections.Generic;
 
 namespace Parameter{
 	public class FlugList{
-		//現在のレベルを表します
+		/// <summary> 現在のレベル </summary>
 		private int level;
-		//現在の討伐数を表します
+		/// <summary> 現在のモンスター討伐数 </summary>
 		private int numberOfKilled = 0;
-		//現在の倒したボスの最大レベルを表します
+		/// <summary> 倒したボスの最大レベル </summary>
 		private int levelOfBossKilled = 0;
-		//現在メタル(所持金)を表します
+		/// <summary> 現在の所持金 </summary>
 		private int metal;
-		//現在の発見した街の数を表します
+		/// <summary> 発見した街の数</summary>
 		private int numberOfVisitedTown = 0;
-		//魔王が倒されたかを表します
+		/// <summary> 魔王が倒されたか </summary>
 		private bool satanKilled = false;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="metal">所持金</param>
+        /// <param name="level">レベル</param>
 		public FlugList(int metal,int level = 1){
 			this.metal = metal;
 			this.level = level;
 		}
 
-		//レベルを返します
+		/// <summary>
+        /// レベルを取得します
+        /// </summary>
+        /// <returns>レベル</returns>
 		public int getLevel(){
 			return level;
 		}
 
-		//討伐数を返します
+		/// <summary>
+        /// 討伐数を取得します
+        /// </summary>
+        /// <returns>討伐数</returns>
 		public int getNumberOfKilled(){
 			return numberOfKilled;
 		}
 
-		//現在のメタル(所持金)を返します
+		/// <summary>
+        /// 所持金を取得します
+        /// </summary>
+        /// <returns>所持金</returns>
 		public int getMetal(){
 			return metal;
 		}
 
-		//発見街数を返します
+		/// <summary>
+		/// 発見した街の数を取得します
+		/// </summary>
+		/// <returns>発見した街の数</returns>
 		public int getNumberOfVisitedTown(){
 			return numberOfVisitedTown;
 		}
 
-		//魔王が倒されたかを返します
+		/// <summary>
+        /// 魔王が倒されたかを取得します
+        /// </summary>
+        /// <returns><c>true</c>, 魔王死亡, <c>false</c> 魔王未死亡</returns>
 		public bool getSatanKilled(){
 			return satanKilled;
 		}
 
-		//レベルを設定します。負の値は不適切です。
+		/// <summary>
+        /// レベルを設定します
+        /// 負の数は無効です
+        /// </summary>
+        /// <param name="level">設定したいレベル</param>
 		public void setLevel(int level){
 			if(level < 0)throw new ArgumentException("It's negative number");
 			this.level = level;
 		}
 
-		//討伐数を設定します。負の値は不適切です。
-		public void setNumberOfKilled(int number){
+		/// <summary>
+        /// 討伐数を追加します
+        /// 負の値は無効です
+        /// </summary>
+        /// <param name="number">追加したい討伐数</param>
+		public void addNumberOfKilled(int number){
 			if(number < 0)throw new ArgumentException("It's negative number");
-			this.numberOfKilled = number;
+			this.numberOfKilled += number;
 		}
 
-		//現在のメタル(所持金)を設定します。負の値は不適切です。
+		/// <summary>
+        /// 所持金を設定します
+        /// 負の値は無効です
+        /// </summary>
+        /// <param name="metal">設定したい所持金</param>
 		public void setMetal(int metal){
 			if(metal < 0)throw new ArgumentException("It's negative number");
 			this.metal = metal;
 		}
 
-		//魔王が倒されたフラグがたちます
+		/// <summary>
+        /// 魔王が倒されたフラグがtrueになります
+        /// </summary>
 		public void satanisKilled(){
 			satanKilled = true;
 		}

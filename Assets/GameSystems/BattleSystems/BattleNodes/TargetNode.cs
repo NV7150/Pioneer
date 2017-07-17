@@ -8,29 +8,39 @@ using Character;
 
 namespace BattleSystem{
 	public class TargetNode : MonoBehaviour {
-		//アタッチされているGameObjectの子オブジェクトです
-		public Text textObject;
-		//担当しているIBattleableキャラクターのリストです
+		/// <summary> アタッチされているオブジェクトのTextオブジェクト </summary>
+        public Text targetName;
+		/// <summary> 担当しているIBattleableキャラクターのリスト </summary>
 		List<IBattleable> targets = new List<IBattleable> ();
-		//もとのPlayerTaskManagerです
+		/// <summary> 元のBattleTaskManager </summary>
 		PlayerBattleTaskManager manager;
 
-		//単体を対象としたsetStateです
-		public void setState(IBattleable target,PlayerBattleTaskManager controller){
+		/// <summary>
+        /// 単体を目標とした初期設定
+        /// </summary>
+        /// <param name="target">担当するキャラクター</param>
+        /// <param name="manager">元のBattleTaskManager</param>
+        public void setState(IBattleable target,PlayerBattleTaskManager manager){
 			this.targets.Clear ();
 			this.targets.Add (target);
-			this.manager = controller;
-			textObject.text = target.getName ();
+			this.manager = manager;
+			targetName.text = target.getName ();
 		}
 
-		//エリアを対象としたsetStateです
-		public void setState(FieldPosition pos,PlayerBattleTaskManager controller){
+		/// <summary>
+        /// エリアを目標とした初期設定
+        /// </summary>
+        /// <param name="pos">担当するエリア</param>
+        /// <param name="manager">元のBattleTaskManager</param>
+        public void setState(FieldPosition pos,PlayerBattleTaskManager manager){
 			this.targets = BattleManager.getInstance().getAreaCharacter(pos);
-			this.manager = controller;
-			textObject.text = Enum.GetName(typeof(FieldPosition),pos);
+			this.manager = manager;
+			targetName.text = Enum.GetName(typeof(FieldPosition),pos);
 		}
 
-		//選ばれた時の処理です
+		/// <summary>
+        /// 選ばれた時の処理
+        /// </summary>
 		public void chosen(){
 			manager.targetChose (targets);
 		}

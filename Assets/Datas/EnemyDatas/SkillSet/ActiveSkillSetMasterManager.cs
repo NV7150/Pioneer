@@ -8,7 +8,7 @@ using Character;
 
 namespace MasterData{
 	public class ActiveSkillSetMasterManager : MasterDataManagerBase{
-		//登録済みのデータのリストです
+		/// <summary> 登録済みのActiveSkillSetBuilderのリスト </summary>
 		private static List<ActiveSkillSetBuilder> dataTable = new List<ActiveSkillSetBuilder>();
 
 		private void Awake(){
@@ -16,7 +16,12 @@ namespace MasterData{
 			constractedBehaviour (activeSkillSetCSV);
 		}
 
-		//idからActiveSkillSetを取得します
+		/// <summary>
+        /// IDからActiveSkillSetを取得します
+        /// </summary>
+        /// <returns>指定されたActiveSkillSet</returns>
+        /// <param name="id">取得したいActiveSkillSetのリスト</param>
+        /// <param name="user">使用者</param>
 		public static ActiveSkillSet getActiveSkillSetFromId(int id,IBattleable user){
 			foreach(ActiveSkillSetBuilder builder in dataTable){
 				if (builder.getId () == id)

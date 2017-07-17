@@ -14,47 +14,52 @@ using Extent = Skill.ActiveSkillParameters.Extent;
 
 namespace BattleSystem{
 	public class PlayerBattleTaskManager : MonoBehaviour ,IBattleTaskManager{
-		//記録されているタスクのリストです
+		/// <summary> 登録済みタスクのリスト </summary>
 		private List<BattleTask> tasks = new List<BattleTask>();
 
-		//スクロールビューのcontentです
+		/// <summary> スクロールビューのcontent </summary>
 		public GameObject contents;
-		//スクロールビューのreactoinContentsです
+		/// <summary> スクロールビューのreactionContent </summary>
 		public GameObject reactoinContents;
-		//アタッチされているスクロールビューです
+		/// <summary> アタッチされているオブジェクト </summary>
 		public GameObject view;
-        //戻るボタン
+        /// <summary> 戻るボタン </summary>
         public Button backButton;
-        //ヘッダのテキスト
+        /// <summary>
+        /// ヘッダのTextオブジェクト
+        /// </summary>
         public Text headerText;
 
-		//元のプレイヤーです
+		/// <summary> 管理対象のキャラクター </summary>
 		private IPlayable player;
-		//現在選ばれているActiveSkillです
+		/// <summary> 現在選択されているIActiveSkillSkill </summary>
 		private IActiveSkill chosenActiveSkill;
-		//現在選ばれているのがmoveか、それ以外かを表します
-		private ActiveSkillType activeSkillType;
-		//現在リアクション中のKeyValuePairです
+		/// <summary> 現在リアクション処理中のスキルと、その攻撃者 </summary>
 		private KeyValuePair<IBattleable,AttackSkill> prosessingPair;
-		//現在リアクションを待っているKeyValuePairたちです
+		/// <summary> リアクション待ちのスキルのリスト </summary>
 		private List<KeyValuePair<IBattleable,AttackSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
-		//現在のステートです
+		/// <summary> 現在のステート </summary>
 		private BattleState battleState = BattleState.ACTION;
 
-		//残り待機フレーム数です
+		/// <summary> 残りディレイ秒数 </summary>
 		private float delay = 0;
-		//残りリアクションフレーム数です
+		/// <summary> 残りリアクソン制限時間 </summary>
 		private float reactionLimit = 0;
 
+        /// <summary> リアクションが必要かどうか </summary>
 		private bool needToReaction = false;
 
+        /// <summary> BattleTaskを識別するIDのカウント </summary>
         private long battletaskIdCount = 0;
 
+        /// <summary> 関連づけられているBattleTaskListView </summary>
         private BattleTaskListView listView;
 
+        /// <summary> 関連づけられているBattleStateNode </summary>
         private BattleStateNode state;
 
+        /// <summary> 戻るボタンを表示する必要があるかどうか </summary>
         private bool isInputingBackButton = false;
 
 		// Use this for initialization
@@ -70,7 +75,7 @@ namespace BattleSystem{
             listView.setManager(this);
 
             GameObject stateView = GameObject.Find("Canvas/StateView");
-            GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/StateNode"));
+            GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleStateNode"));
             stateNode.transform.SetParent(stateView.transform);
             stateNode.GetComponent<BattleStateNode>().setUser(player);
             state = stateNode.GetComponent<BattleStateNode>();
@@ -92,7 +97,9 @@ namespace BattleSystem{
 			}
 		}
 			
-		//update時リアクションが必要な時に呼ばれます
+		/// <summary>
+        /// リアクションが必要な時に毎フレーム行う処理
+        /// </summary>
 		private void reactionState(){
 			reactionLimit -= Time.deltaTime;
 			if(reactionLimit <= 0){
@@ -106,7 +113,9 @@ namespace BattleSystem{
 			}
 		}
 
-		//update時actionステートの時に呼ばれます
+		/// <summary>
+        /// ステートがACTIONの時に毎フレーム行う処理
+        /// </summary>
 		private void actionState(){
 			BattleTask runTask = tasks [0];
 			runTask.getSkill ().action (player, runTask);
@@ -117,7 +126,9 @@ namespace BattleSystem{
             state.resetProgress();
 		}
 
-		//update時idleステート時に呼ばれます
+		/// <summary>
+        /// ステートがIDLEの時に毎フレーム行う処理
+        /// </summary>
 		private void idleState(){
 			delay -= Time.deltaTime;
 			state.advanceProgress(Time.deltaTime);
@@ -126,14 +137,20 @@ namespace BattleSystem{
 			}
 		}
 
-		//プレイヤーをManagerにセットします
+		/// <summary>
+        /// プレイヤーをマネージャに設定します
+        /// </summary>
+        /// <param name="player">Player.</param>
 		public void setPlayer(IPlayable player){
 			this.player = player;
 			inputActiveSkillList ();
 		}
 
-		//タスクを追加します
-        private void setTask(BattleTask addTask){
+		/// <summary>
+        /// タスクを追加します
+        /// </summary>
+        /// <param name="addTask">Add task.</param>
+        private void addTask(BattleTask addTask){
             tasks.Add(addTask);
             listView.setTask(addTask);
 
@@ -143,7 +160,10 @@ namespace BattleSystem{
 			inputActiveSkillList();
 		}
 
-		//skillnodeが選ばれた時の処理です
+		/// <summary>
+        /// skillNodeが選択された時の処理
+        /// </summary>
+        /// <param name="chosenSkill">選択されたIActiveSkill</param>
 		public void skillChose(IActiveSkill chosenSkill){
 			this.chosenActiveSkill = chosenSkill;
 
@@ -159,20 +179,29 @@ namespace BattleSystem{
 			}
 		}
 
-		//targtNodeが選ばれた時の処理です
+		/// <summary>
+        /// taretNodeが選択された時の処理
+        /// </summary>
+        /// <param name="targets">選択されたターゲットのリスト</param>
 		public void targetChose(List<IBattleable> targets){
-			BattleTask addTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, targets, battletaskIdCount);
-            setTask(addTask);
+			BattleTask addingTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, targets, battletaskIdCount);
+            addTask(addingTask);
 		}
 
-		//moveAreaNodeが選ばれた時の処理です
+		/// <summary>
+        /// moveAreaNodeが選択された時の処理
+        /// </summary>
+        /// <param name="pos">選択されたFieldPostion</param>
 		public void moveAreaChose(FieldPosition pos){
 			int move = (int)(pos - BattleManager.getInstance ().searchCharacter(player));
-			BattleTask addTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, move, battletaskIdCount);
-            setTask(addTask);
+			BattleTask addingTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, move, battletaskIdCount);
+            addTask(addingTask);
 		}
 
-		//passiveNodeが選ばれた時の処理です
+		/// <summary>
+        /// reactionSkillNodeが選択された時の処理
+        /// </summary>
+        /// <param name="chosenSkill">選択されたReactionSkill</param>
 		public void reactionChose(ReactionSkill chosenSkill){
 			reaction(chosenSkill);
 
@@ -184,18 +213,23 @@ namespace BattleSystem{
             needToReaction = false;
 		}
 
-		//passiveスキルを使用します
-		private void reaction(ReactionSkill passiveSkill){
+		/// <summary>
+        /// ReactionSkillを使用します
+        /// </summary>
+        /// <param name="reactionSkill"> 使用するReactionSkill </param>
+        private void reaction(ReactionSkill reactionSkill){
 			IBattleable attacker = prosessingPair.Key;
 			AttackSkill skill = prosessingPair.Value;
 			int atk = skill.getAtk (attacker);
 			int hit = skill.getHit(attacker);
-			passiveSkill.reaction (player,atk,hit,skill.getAttackSkillAttribute());
+			reactionSkill.reaction (player,atk,hit,skill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove (prosessingPair);
 			updateProsessingPair ();
 		}
 
-		//スクロールビューにActiveSkillのリストを表示します
+		/// <summary>
+        /// スクロールビューにスキルのリストを表示します
+        /// </summary>
 		private void inputActiveSkillList(){
 			detachContents();
             backButton.gameObject.SetActive(false);
@@ -208,7 +242,11 @@ namespace BattleSystem{
 			}
 		}
 
-		//スクロールビューにTargetのリストを表示します
+		/// <summary>
+        /// スクロールビューにターゲット選択岐を表示します
+        /// </summary>
+        /// <param name="extent">スキルの効果範囲</param>
+        /// <param name="range">スキルの射程</param>
 		private void inputTargetList(Extent extent,int range){
 			detachContents ();
 			switch(extent){
@@ -221,12 +259,13 @@ namespace BattleSystem{
 				case Extent.ALL:
 					targetChose (BattleManager.getInstance().getJoinedBattleCharacter());
 					break;
-				case Extent.NONE:
-					throw new ArgumentException ("invalid skill");
 			}
 		}
 
-		//スキルの効果範囲が単体の時のtargetをビューにインプットします
+		/// <summary>
+        /// スキルの効果範囲が単体の場合のターゲットをスクロールビューに表示します
+        /// </summary>
+        /// <param name="range">スキルの射程</param>
 		private void inputSingleTargetList(int range){
 			List<IBattleable> targets = BattleManager.getInstance().getCharacterInRange(player, range);
 			backButton.gameObject.SetActive(true);
@@ -242,7 +281,10 @@ namespace BattleSystem{
 			}
 		}
 
-		//スキルの効果範囲が範囲の時のtargetをビューにインプットします
+		/// <summary>
+        /// スキルの効果範囲が範囲の場合のターゲットをスクロールビューに表示します
+        /// </summary>
+        /// <param name="range">スキルの射程</param>
 		private void inputAreaTargetList(int range){
 			FieldPosition nowPos = BattleManager.getInstance().searchCharacter(player);
 			backButton.gameObject.SetActive(true);
@@ -260,7 +302,10 @@ namespace BattleSystem{
 			}
 		}
 
-		//スキルの効果範囲が全体の時のtargetをビューにインプットします
+		/// <summary>
+        /// 移動スキルの場合の移動位置の選択岐を表示します
+        /// </summary>
+        /// <param name="move">移動力</param>
 		private void inputMoveAreaList(int move){
 			detachContents ();
             backButton.gameObject.SetActive(true);
@@ -282,7 +327,9 @@ namespace BattleSystem{
 			}
 		}
 
-		//スクロールビューにPassiveSkillのリストを表示します
+		/// <summary>
+        /// スクロールビューにリアクションスキルのリストを表示します
+        /// </summary>
 		private void inputReactionSkillList(){
 			detachReactionContents();
 
@@ -296,7 +343,9 @@ namespace BattleSystem{
 			reactoinContents.SetActive (true);
 		}
 
-		//contentsオブジェクトの子ノードを削除します
+		/// <summary>
+        /// contentsオブジェクトの子ノードを削除します
+        /// </summary>
 		private void detachContents(){
 			Transform children = contents.GetComponentInChildren<Transform> ();
 			foreach(Transform child in children){
@@ -305,7 +354,10 @@ namespace BattleSystem{
 			contents.transform.DetachChildren ();
 		}
 
-		//passiveContentsオブジェクトの子ノードを削除します
+
+		/// <summary>
+		///passiveContentsオブジェクトの子ノードを削除します
+		/// </summary>
 		private void detachReactionContents(){
 			Transform children = reactoinContents.GetComponentInChildren<Transform> ();
 			foreach(Transform child in children){
@@ -314,7 +366,9 @@ namespace BattleSystem{
 			reactoinContents.transform.DetachChildren ();
 		}
 
-		//実行中のアクティブスキルを更新します
+		/// <summary>
+        /// リアクション処理中のスキルを更新します
+        /// </summary>
 		private void updateProsessingPair(){
 			if (waitingReactionActiveSkills.Count > 0) {
 				prosessingPair = waitingReactionActiveSkills[0];

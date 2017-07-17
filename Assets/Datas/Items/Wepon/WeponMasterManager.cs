@@ -8,7 +8,7 @@ using Item;
 namespace MasterData {
 	[System.SerializableAttribute]
 	public class WeponMasterManager :MasterDataManagerBase {
-		//登録済みのデータのリストです
+		/// <summary> 登録したWeponBuilderのリスト </summary>
 		private static List<WeponBuilder> dataTable = new List<WeponBuilder>();
 		
 		void Awake(){
@@ -16,7 +16,11 @@ namespace MasterData {
 			constractedBehaviour (weponCSVText);
 		}
 
-		//IDからWeponを取得します
+		/// <summary>
+        /// IDからWeponを取得します
+        /// </summary>
+        /// <returns>指定されたWepon</returns>
+        /// <param name="id">取得したい武器のID</param>
 		public static Wepon getWeponFromId(int id){
 			foreach (WeponBuilder builder in dataTable)
 				if (builder.getId() == id)

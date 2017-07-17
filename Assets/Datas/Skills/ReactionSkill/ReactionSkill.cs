@@ -15,27 +15,34 @@ namespace Skill{
 	public class ReactionSkill : ISkill{
 		[SerializeField]
 		private readonly int 
-			//このスキルのIDです
+			/// <summary> スキルのID </summary>
 			ID,
-			//このスキルの防御値です
+			/// <summary> スキルの防御修正 </summary>
 			DEF,
-			//このスキルの回避値です
+			/// <summary> スキルの回避修正 </summary>
 			DODGE;
 
-		[SerializeField]
-		private readonly string 
-			//このスキルの名前です
-			NAME, 
-			//このスキルの説明です
-			DESCRIPTION;
+        [SerializeField]
+        private readonly string
+            /// <summary>スキル名</summary>
+            NAME,
+	        /// <summary> スキルの説明 </summary>
+	        DESCRIPTION;
 
 		[SerializeField]
-		//カウンターを行うかを表します
+		/// <summary>
+        /// カウンターを行うか
+        /// 未実装
+        /// </summary>
 		private readonly bool IS_READY_TO_COUNTER;
 
-		//このスキルのカテゴリです
+		/// <summary> スキルのカテゴリ </summary>
 		private ReactionSkillCategory CATEGORY;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="datas">csvによるstring配列</param>
 		public ReactionSkill(string[] datas){
 			ID = int.Parse(datas [0]);
 			NAME = datas [1];
@@ -57,9 +64,15 @@ namespace Skill{
 			return ID;
 		}
 
-		#endregion	
+		#endregion
 
-		//userにreactionを起こさせます
+		/// <summary>
+		/// userにリアクションを起こさせます
+		/// </summary>
+		/// <param name="user">リアクションを起こさせるIBattleable</param>
+		/// <param name="attack">攻撃を試みるスキルの攻撃値</param>
+		/// <param name="hit">攻撃を試みるスキルの命中値</param>
+		/// <param name="attribute">攻撃を試みるスキルの属性</param>
 		public void reaction (IBattleable user,int attack,int hit,AttackSkillAttribute attribute) {
 			if (this.CATEGORY == ReactionSkillCategory.DODGE) {
 				//命中判定
@@ -76,17 +89,26 @@ namespace Skill{
 			}
 		}
 
-		//防御値を返します
+		/// <summary>
+        /// 防御値を取得します
+        /// </summary>
+        /// <returns>防御値</returns>
 		public int getDef(){
 			return DEF;
 		}
 
-		//回避値を返します
+		/// <summary>
+        /// 回避値を取得します
+        /// </summary>
+        /// <returns>回避値</returns>
 		public int getDodge(){
 			return DODGE;
 		}
 
-		//カテゴリを返します
+		/// <summary>
+        /// カテゴリを取得します
+        /// </summary>
+        /// <returns>カテゴリ</returns>
 		public ReactionSkillCategory getCategory(){
 			return CATEGORY;
 		}

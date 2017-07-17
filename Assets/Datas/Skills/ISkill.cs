@@ -2,13 +2,22 @@
 
 namespace Skill {
     public interface ISkill {
-        //スキル名を取得します
+        /// <summary>
+        /// スキル名を取得します
+        /// </summary>
+        /// <returns>スキル名</returns>
         string getName();
 
-        //スキル説明を取得します
+        /// <summary>
+        /// スキルの説明を取得します
+        /// </summary>
+        /// <returns>The description.</returns>
         string getDescription();
 
-		//スキルIDを取得します
+		/// <summary>
+        /// スキル種別IDを取得します
+        /// </summary>
+        /// <returns>スキルID</returns>
 		int getId();
     }
 }

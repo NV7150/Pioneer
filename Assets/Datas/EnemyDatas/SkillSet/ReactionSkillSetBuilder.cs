@@ -18,7 +18,10 @@ namespace MasterData{
 			guardSkillId;
 		private string name;
 
-		//csvによるstring配列から初期化します
+		/// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="datas">csvによるstring配列データ</param>
 		public ReactionSkillSetBuilder(string[] datas){
 			id = int.Parse (datas[0]);
 			name = datas[1];
@@ -43,7 +46,10 @@ namespace MasterData{
 			return skills;
 		}
 
-		//PassiveSkillSetを取得します
+		/// <summary>
+        /// ReactionSkillSetを生成します
+        /// </summary>
+        /// <returns>生成したReactionSkillSet</returns>
 		public ReactionSkillSet build(){
 			return new ReactionSkillSet (this);
 		}

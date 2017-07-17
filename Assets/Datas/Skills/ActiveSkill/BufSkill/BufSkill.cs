@@ -35,8 +35,13 @@ namespace Skill {
 			/// <summary> このスキルの効果時間 </summary>
 			LIMIT;
 
+        /// <summary> スキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="datas">csvによるstring配列データ</param>
 		public BufSkill (string[] datas) {
 			this.ID = int.Parse (datas [0]);
 			this.NAME = datas [1];
@@ -50,10 +55,18 @@ namespace Skill {
 			this.DESCRIPTION = datas [9];
 		}
 
+        /// <summary>
+        /// 効果範囲を取得します
+        /// </summary>
+        /// <returns>効果範囲</returns>
 		public Extent getExtent(){
 			return EXTENT;
 		}
 
+        /// <summary>
+        /// スキル射程を取得します
+        /// </summary>
+        /// <returns>射程</returns>
 		public int getRange(){
 			return RANGE;
 		}

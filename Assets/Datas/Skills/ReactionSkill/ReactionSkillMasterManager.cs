@@ -8,7 +8,9 @@ using Skill;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class ReactionSkillMasterManager : MasterDataManagerBase{
-		//登録済みのデータのリストです
+		/// <summary>
+        /// 登録済みのReactionSkillのリスト
+        /// </summary>
 		private static List<ReactionSkill> dataTable = new List<ReactionSkill>();
 
 		void Awake(){
@@ -16,7 +18,11 @@ namespace MasterData{
 			constractedBehaviour (csv);
 		}
 
-		//idからReactionスキルを取得します
+		/// <summary>
+        /// IDからReactionSkillを取得します
+        /// </summary>
+        /// <returns>指定されたReactionSkill</returns>
+        /// <param name="id">取得したいReactionSkillのID</param>
 		public static ReactionSkill getReactionSkillFromId(int id){
 			foreach(ReactionSkill skill in dataTable){
 				if (skill.getId () == id)

@@ -7,6 +7,9 @@ using Parameter;
 using Skill;
 
 namespace Character{
+    /// <summary>
+    /// プレイヤーが操作可能なキャラクターのinterfaceです
+    /// </summary>
 	public interface IPlayable : IBattleable,IFriendly{
 		
 		/// <summary>
@@ -64,10 +67,16 @@ namespace Character{
         /// <returns>ReactionSkillのList</returns>
 		List<ReactionSkill> getReactionSKills();
 
-		//能動スキルを獲得します。オーバーロードされます。
+		/// <summary>
+        /// IActiveSkillを追加します
+        /// </summary>
+        /// <param name="skill"> 追加するスキル </param>
 		void addSkill(IActiveSkill skill);
 
-		//受動スキルを取得します。オーバーロードされます。
+		/// <summary>
+        /// ReactionSkillを追加します
+        /// </summary>
+        /// <param name="skill"> 追加するスキル </param>
 		void addSkill(ReactionSkill skill);
 	}
 }

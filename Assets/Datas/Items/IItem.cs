@@ -2,19 +2,34 @@
 
 namespace Item {
     public interface IItem {
-        //アイテム名を取得します
+        /// <summary>
+        /// アイテム名を取得します
+        /// </summary>
+        /// <returns>アイテム名</returns>
         string getName();
 
-        //アイテム説明を取得します
+        /// <summary>
+        /// アイテムの説明文を取得します
+        /// </summary>
+        /// <returns>アイテムの説明文</returns>
         string getDescription();
 
-        //アイテムを使用します
+        /// <summary>
+        /// アイテムを取得します
+        /// </summary>
+        /// <param name="user">使用するキャラクター</param>
 		void use(IPlayable user);
 
-        //アイテムの重量を表します
+        /// <summary>
+        /// アイテムの重量を取得します
+        /// </summary>
+        /// <returns>アイテムの重量</returns>
         int getMass();
 
-		//アイテムの基本価格を表します
+		/// <summary>
+        /// アイテムの基本価格を取得します
+        /// </summary>
+        /// <returns>基本価格</returns>
 		int getItemValue();
     }
 }

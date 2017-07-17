@@ -213,8 +213,6 @@ namespace Character{
 		}
 
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
-			if (dammage < 0 || attribute == AttackSkillAttribute.NONE)
-				throw new ArgumentException ("invlit dammage");
 
 			if (attribute == AttackSkillAttribute.PHYSICAL)
 				dammage -= getDef ();
@@ -238,8 +236,6 @@ namespace Character{
 		}
 
 		public void healed (int heal, HealSkillAttribute attribute) {
-			if (heal < 0 || attribute == HealSkillAttribute.NONE)
-				throw new ArgumentException ("invalid heal");
 
 			if (attribute == HealSkillAttribute.HP_HEAL || attribute == HealSkillAttribute.BOTH) {
 				if (this.hp != 0)
@@ -278,8 +274,10 @@ namespace Character{
             return battleAbilities[ability] + bonusKeeper.getBonus(ability);
 		}
 
-		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility) {
+		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
 			int atk = battleAbilities [useAbility] + UnityEngine.Random.Range (0,level);
+            if (useWepon)
+                atk += this.wepon.getAttack();
 			return atk;
 		}
 
@@ -291,6 +289,22 @@ namespace Character{
 		public int getDef () {
 //			return armor.getDef() + (this.battleAbilities[BattleAbility.PHY]/4  + this.battleAbilities[BattleAbility.MFT]/4);
 			return 0;
+		}
+
+		public float getCharacterDelay() {
+			throw new NotImplementedException();
+		}
+
+		public int getCharacterRange() {
+			throw new NotImplementedException();
+		}
+
+		public BattleAbility getCharacterAttackMethod() {
+			throw new NotImplementedException();
+		}
+
+		public void addAbilityBonus(SubBattleAbilityBonus bonus) {
+			throw new NotImplementedException();
 		}
 
 		public bool getIsBattling () {
@@ -334,7 +348,7 @@ namespace Character{
 		}
 
 
-		public int healing (BattleAbility useAbility) {
+		public int getHeal (BattleAbility useAbility) {
             return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,level);
 		}
 
@@ -362,9 +376,6 @@ namespace Character{
 
 		#endregion
 		#region ICharacter implementation
-		public GameObject getModel () {
-			return container.getModel ();
-		}
 
 		public void act () {
             bonusKeeper.advanceLimit();
@@ -495,6 +506,6 @@ namespace Character{
 			return this == obj;
 		}
 
-
+       
     }
 }

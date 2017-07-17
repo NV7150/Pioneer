@@ -1,10 +1,17 @@
 
 namespace Parameter{
 	public interface Mission{
-		//Mission名を返します
+		/// <summary>
+        /// 使命名を取得します
+        /// </summary>
+        /// <returns>使命名</returns>
 		string getName ();
 
-		//渡されたFlugListを元にMissionが達成されているかを返します
+		/// <summary>
+		/// 使命が達成されていたか判定します
+		/// </summary>
+		/// /// <returns><c>true</c>, 達成, <c>false</c> 未達成</returns>
+		/// <param name="flugs">判定したいフラグリスト</param>
 		bool cheak(FlugList flugs);
 	}
 }

@@ -11,33 +11,38 @@ using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 namespace Item{
 	public class  Wepon :  IItem{
 		private readonly int
-			//この武器の攻撃力です
+			/// <summary> 武器の攻撃力 </summary>
 			ATTACK,
-			//この武器の射程です
+			/// <summary> この武器の射程</summary>
 			RANGE,
-			//この武器を装備するのに必要なmftです
+			/// <summary> 装備するのに必要なmft</summary>
 			NEED_MFT,
-			//このアイテムの価格です
+			/// <summary> アイテムの基本価格 </summary>
 			ITEM_VALUE,
-			//このアイテムの重さです
+			/// <summary> アイテムの重さ </summary>
 			MASS;
 
 		private readonly string 
-			//このアイテムの名前です
+			/// <summary> アイテム名 </summary>
 			name,
-			//このアイテムの説明です
+			/// <summary> アイテムの説明 </summary>
 			description,
-			//このアイテムの装備条件の説明です
+			/// <summary> 装備条件の説明 </summary>
 			equipdescription;
 
-		//このアイテムのディレイ値です
+		/// <summary> 武器のディレイ値 </summary>
 		private float DELAY;
 
-		//この武器の種別です
+		/// <summary> 武器の種別 </summary>
 		private WeponType type;
 
+        /// <summary> 武器が使用するBattleAbility </summary>
 		private BattleAbility weponAbility;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="builder">ビルダー</param>
 		public Wepon(WeponBuilder builder){
 			ATTACK = builder.getAttack ();
 			RANGE = builder.getRange ();
@@ -52,67 +57,92 @@ namespace Item{
             weponAbility = builder.getWeponAbility();
 		}
 
-		//攻撃力を取得します
+		/// <summary>
+        /// 攻撃力を取得します
+        /// </summary>
+        /// <returns>攻撃力</returns>
 		public int getAttack() {
 			return ATTACK;
 		}
 
-		//射程を取得します
+		/// <summary>
+        /// 射程を取得します
+        /// </summary>
+        /// <returns>射程</returns>
 		public int getRange() {
 			return RANGE;
 		}
 
-		//必要なmftを取得します
+		/// <summary>
+        /// 装備に必要なMftを取得します
+        /// </summary>
+        /// <returns>必要なmft</returns>
 		public int getNeedMft() {
 			return NEED_MFT;
 		}
 
-		//価格を取得します
-		public int getItemValue() {
-			return ITEM_VALUE;
+		/// <summary>
+		/// 武器の種別を取得します
+		/// </summary>
+		/// <returns>武器の種別</returns>
+		public WeponType getWeponType() {
+			return type;
 		}
 
-		//重さを取得します
-		public int getMass(){
-			return MASS;
+		/// <summary>
+		/// 武器が装備可能かを判定します
+		/// </summary>
+		/// <returns><c>true</c>, 装備可能 , <c>false</c> 装備不可能 </returns>
+		/// <param name="user">装備したいキャラクター</param>
+		public bool canEquip(IPlayable user) {
+			return (NEED_MFT <= user.getMft());
 		}
 
-		//名前を取得します
-		public string getName() {
-			return name;
+		/// <summary>
+		/// 装備条件の説明を取得します
+		/// </summary>
+		/// <returns>装備条件のい説明の文章</returns>
+		public string getEquipDescription() {
+			return equipdescription;
 		}
 
-		//説明文を取得します
-		public string getDescription() {
-			return description;
+		/// <summary>
+		/// 武器を使用するのに使うBattleAbilityを取得します
+		/// </summary>
+		/// <returns>使用するBattleAbility</returns>
+		public BattleAbility getWeponAbility() {
+			return weponAbility;
 		}
 
-		//ディレイ値を取得します
+		/// <summary>
+		/// ディレイ値を取得します
+		/// </summary>
+		/// <returns>The delay.</returns>
 		public float getDelay() {
 			return DELAY;
 		}
 
-		//武器の種別を取得します
-		public WeponType getWeponType(){
-			return type;
+		#region IItem implementation
+
+		public int getItemValue() {
+			return ITEM_VALUE;
 		}
 
-		//武器が装備可能かを確認します
-		public bool canEquip(IPlayable user){
-			return (NEED_MFT <= user.getMft());
+		public int getMass(){
+			return MASS;
 		}
 
-		//装備条件の説明を返します
-		public string getEquipDescription(){
-			return equipdescription;
+		public string getName() {
+			return name;
 		}
 
-		public BattleAbility getWeponAbility(){
-            return weponAbility;
-		}
+        public string getDescription() {
+            return description;
+        }
 
-		public void use (IPlayable user) {
-			user.equipWepon (this);
+		public void use(IPlayable user) {
+			user.equipWepon(this);
 		}
+        #endregion
 	}
 }

@@ -6,22 +6,28 @@ using System;
 
 namespace BattleSystem{
 	public class MoveAreaNode : MonoBehaviour {
-		//アタッチされているGameObjectの子オブジェクトのテキストです
-		public Text text;
-		//担当するFieldPositionです
+		/// <summary> アタッチされているオブジェクトのTextオブジェクト </summary>
+        public Text areaName;
+		/// <summary> 担当するFieldPositon </summary>
 		private FieldPosition pos;
-		//もとのPlayerBattleTaskManagerです
+		/// <summary> 元のBattleTaskManger </summary>
 		private PlayerBattleTaskManager manager;
 
-		//ステートを設定します
+		/// <summary>
+        /// 初期設定を行います
+        /// </summary>
+        /// <param name="pos">担当するFieldPosition</param>
+        /// <param name="manager">元のBattleTaskManager</param>
 		public void setState(FieldPosition pos,PlayerBattleTaskManager manager){
 			this.pos = pos;
 			this.manager = manager;
 
-			text.text = Enum.GetName(typeof(FieldPosition),pos);
+			areaName.text = Enum.GetName(typeof(FieldPosition),pos);
 		}
 
-		//選択された時の処理です
+		/// <summary>
+        /// 選択された時の処理
+        /// </summary>
 		public void chosen(){
 			manager.moveAreaChose (pos);
 		}
