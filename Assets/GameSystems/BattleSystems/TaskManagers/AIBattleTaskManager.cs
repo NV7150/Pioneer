@@ -73,7 +73,7 @@ namespace BattleSystem {
             if(reactionProbality >= rand){
                 return true;
             }else{
-                reactionProbality += 0.0175f;
+                reactionProbality += 0.01f;
                 return false;
             }
         }
@@ -101,9 +101,7 @@ namespace BattleSystem {
 			BattleTask task = getTask ();
 			task.getSkill ().action (user,task);
 
-			delay = task.getSkill ().getDelay (user);
-			//テスト用
-			delay = 3f;
+			delay = task.getSkill ().getDelay (user) * 2;
 			state = BattleState.IDLE;
 		}
 

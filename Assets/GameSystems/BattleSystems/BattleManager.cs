@@ -54,8 +54,6 @@ namespace BattleSystem{
 			isBattleing = true;
             GameObject cameraPrefab =(GameObject) Resources.Load("Prefabs/BattleCamera");
             this.battleCameraControlle = MonoBehaviour.Instantiate(cameraPrefab).GetComponent<BattleCameraController>();
-            Vector3 cameraPos = basicPoint + new Vector3(0,50,0);
-            battleCameraControlle.setTransform(cameraPos);
 		}
 
         /// <summary>
@@ -267,7 +265,6 @@ namespace BattleSystem{
         /// <param name="bal">移動させるキャラクター</param>
         /// <param name="moveness">移動させる量</param>
 		public void moveCommand(IBattleable bal,int moveness){
-            Debug.Log("into moveCommand");
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
 
@@ -285,8 +282,6 @@ namespace BattleSystem{
 			joinedCharacter [movePos].Add (bal);
 
 			bal.syncronizePositioin(field.getNextPosition(nowPos + moveness));
-            Debug.Log(nowPos + "→" + movePos);
-			Debug.Log("end moveCommand");
 		}
 
 		
@@ -315,7 +310,6 @@ namespace BattleSystem{
                     }
                 }
                 if (areaLevel < minAreaLevel) {
-                    Debug.Log(minAreaLevel + " min and now" + areaLevel);
                     minAreaLevel = areaLevel;
                 }
                 dangerLevelTable.Add((FieldPosition)index,areaLevel);

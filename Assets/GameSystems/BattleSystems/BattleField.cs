@@ -7,7 +7,7 @@ namespace BattleSystem{
 		/// <summary> バトルフィールドの起点となる位置 </summary>
 		private readonly Vector3 STARTER_POSITON;
 		/// <summary> FieldPosition間の実距離 </summary>
-		private static readonly int distanceOfArea = 10;
+		private static readonly int distanceOfArea = 50;
 
         /// <summary>
         /// コンストラクタ
@@ -24,8 +24,8 @@ namespace BattleSystem{
         /// <returns>ポジションの座標</returns>
         /// <param name="going">Going.</param>
 		public Vector3 getNextPosition(FieldPosition going){
-            int x = Random.Range(-15,15);
-			int z = distanceOfArea * ((int)going - 3) + Random.Range (0, 11);
+            float x = Random.Range(-37.5f, 37.5f);
+            float z = distanceOfArea * ((int)going - 3) + Random.Range (-25f, 26f);
 
 			return STARTER_POSITON + new Vector3 (x,0,z);
 		}

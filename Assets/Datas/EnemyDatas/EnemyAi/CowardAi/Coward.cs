@@ -519,12 +519,9 @@ namespace AI {
             foreach(FieldPosition pos in keys){
                 if(areaDangerLevelTable[pos] >= rand){
                     FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
-                    Debug.Log("now" + nowPos + "will" + pos);
                     return pos - nowPos;
                 }else{
-                    Debug.Log("rand cange before " + rand);
                     rand -= areaDangerLevelTable[pos];
-                    Debug.Log("after " + rand);
                 }
             }
             throw new InvalidOperationException("cannot dicide advance move");
@@ -552,10 +549,10 @@ namespace AI {
 					FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
 					return pos - nowPos;
 				} else {
-					rand -= areaDangerLevelTable[pos];
+					rand += areaDangerLevelTable[pos];
 				}
 			}
-            throw new InvalidOperationException("cannot dicide advance move");
+            throw new InvalidOperationException("cannot dicide recession move");
         }
 
         /// <summary>

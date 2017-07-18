@@ -25,9 +25,7 @@ namespace BattleSystem{
 		public GameObject view;
         /// <summary> 戻るボタン </summary>
         public Button backButton;
-        /// <summary>
-        /// ヘッダのTextオブジェクト
-        /// </summary>
+        /// <summary> ヘッダのTextオブジェクト </summary>
         public Text headerText;
 
 		/// <summary> 管理対象のキャラクター </summary>
@@ -44,6 +42,7 @@ namespace BattleSystem{
 
 		/// <summary> 残りディレイ秒数 </summary>
 		private float delay = 0;
+        private float maxDelay;
 		/// <summary> 残りリアクソン制限時間 </summary>
 		private float reactionLimit = 0;
 
@@ -114,7 +113,8 @@ namespace BattleSystem{
 		private void actionState(){
 			BattleTask runTask = tasks [0];
 			runTask.getSkill ().action (player, runTask);
-			delay = runTask.getSkill ().getDelay (player);
+			delay = runTask.getSkill ().getDelay (player) * 2;
+            maxDelay = delay;
 			tasks.Remove (runTask);
             listView.deleteTask(runTask);
 			battleState = BattleState.IDLE;
@@ -126,7 +126,7 @@ namespace BattleSystem{
         /// </summary>
 		private void idleState(){
 			delay -= Time.deltaTime;
-			state.advanceProgress(Time.deltaTime);
+            state.advanceProgress(Time.deltaTime / maxDelay);
 			if (delay <= 0) {
 				battleState = BattleState.ACTION;
 			}
@@ -232,6 +232,9 @@ namespace BattleSystem{
         /// </summary>
 		private void inputActiveSkillList(){
 			detachContents();
+
+            headerText.text = "スキル選択";
+
             backButton.gameObject.SetActive(false);
             isInputingBackButton = false;
 
@@ -253,6 +256,7 @@ namespace BattleSystem{
         /// <param name="range">スキルの射程</param>
 		private void inputTargetList(Extent extent,int range){
 			detachContents ();
+            headerText.text = chosenActiveSkill.getName() + "の対象を決定";
 			switch(extent){
 				case Extent.SINGLE:
 					inputSingleTargetList (range);
@@ -316,6 +320,8 @@ namespace BattleSystem{
             backButton.gameObject.SetActive(true);
             isInputingBackButton = true;
 
+            headerText.text = chosenActiveSkill.getName() + "の移動先を決定";
+
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
 
             int index = BattleManager.getInstance().restructionPositionValue(nowPos,-move);
@@ -337,6 +343,11 @@ namespace BattleSystem{
         /// </summary>
 		private void inputReactionSkillList(){
 			detachReactionContents();
+
+            IBattleable attacker = prosessingPair.Key;
+            AttackSkill attackedSkill = prosessingPair.Value;
+
+            headerText.text = attacker.getName() + "の" + attackedSkill.getName() + "へのリアクションを決定";
 
             backButton.gameObject.SetActive(false);
 			contents.SetActive (false);
@@ -378,8 +389,7 @@ namespace BattleSystem{
 			if (waitingReactionActiveSkills.Count > 0) {
 				prosessingPair = waitingReactionActiveSkills[0];
 				inputReactionSkillList ();
-//				reactionLimit = pair.Value.getDelay() ;
-				reactionLimit = 1;
+                reactionLimit = prosessingPair.Value.getDelay(prosessingPair.Key);
 				needToReaction = true;
 			} else {
 				needToReaction = false;

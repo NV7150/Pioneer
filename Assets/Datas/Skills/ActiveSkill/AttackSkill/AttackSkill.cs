@@ -163,8 +163,9 @@ namespace Skill {
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner,BattleTask task) {
-			if (actioner.getMp () < this.COST)
-				return;
+            if (actioner.getMp() < this.COST) 
+                return;
+            
 			attack (actioner,task.getTargets());
 
 			actioner.minusMp (this.COST);

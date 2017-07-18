@@ -218,7 +218,7 @@ namespace Character{
 		}
 
 		public void minusMp (int value) {
-			if (value > 0)
+			if (value < 0)
 				value = 0;
 			
 			this.mp -= value;
@@ -268,19 +268,19 @@ namespace Character{
 		}
 
 		public float getCharacterDelay() {
-			throw new NotImplementedException();
+            return wepon.getDelay();
 		}
 
 		public int getCharacterRange() {
-			throw new NotImplementedException();
+            return wepon.getRange();
 		}
 
 		public BattleAbility getCharacterAttackMethod() {
-			throw new NotImplementedException();
+            return wepon.getWeponAbility();
 		}
 
 		public void addAbilityBonus(SubBattleAbilityBonus bonus) {
-			throw new NotImplementedException();
+            bonusKeeper.setBonus(bonus);
 		}
 
 		public bool getIsBattling () {
