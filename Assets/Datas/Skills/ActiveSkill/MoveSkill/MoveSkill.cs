@@ -53,10 +53,11 @@ namespace Skill {
 		private void move(IBattleable actioner,int move){
 			//値が適切か判断
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (actioner);
+            UnityEngine.Debug.Log(nowPos);
 			int moveAmountMax = Enum.GetNames (typeof(FieldPosition)).Length - (int)nowPos;
 			int moveAmountMin = -1 * (int)nowPos;
-			if (moveAmountMax <= MOVE||moveAmountMin >= MOVE)
-				throw new ArgumentException ("inva  lid moveNess");
+            if (moveAmountMax < move||moveAmountMin > move)
+                throw new ArgumentException ("invalid moveNess" + move);
 
 			BattleManager.getInstance ().moveCommand (actioner,move);
 		}

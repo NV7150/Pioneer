@@ -55,7 +55,7 @@ namespace Character{
             Container container = collision.gameObject.GetComponent<Container>();
             if(container != null){
                 if(container.getCharacter() is IBattleable && isBattleable){
-                    Vector3 averagePos = (transform.position + collision.transform.position) / 2;
+                    Vector3 averagePos = (collision.transform.position + transform.position) / 2;
                     startBattle(container.getCharacter(),averagePos);
                 }
             }
@@ -75,7 +75,7 @@ namespace Character{
             if (oppnentBal.isHostility(userBal.getFaction())) {
 				//バトル開始していなかったら開始
 				if (!BattleManager.getInstance().getIsBattleing()) {
-					BattleManager.getInstance().StartNewBattle(averageEachPos);
+					BattleManager.getInstance().startNewBattle(averageEachPos);
 				}
 
                 //ユーザーをエンカウント

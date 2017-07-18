@@ -27,6 +27,8 @@ namespace BattleSystem{
 		private BattleField field;
         /// <summary> バトルしているか falseだとBattleManagerのほとんどのメソッドがロックされます </summary>
 		private bool isBattleing = false;
+        /// <summary> バトル画面を写しているカメラです </summary>
+        private BattleCameraController battleCameraControlle;
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -47,9 +49,13 @@ namespace BattleSystem{
         /// 新たにバトルを開始します
         /// </summary>
         /// <param name="basicPoint"> 起点とする座標 </param>
-		public void StartNewBattle(Vector3 basicPoint){
+		public void startNewBattle(Vector3 basicPoint){
 			field = new BattleField (basicPoint);
 			isBattleing = true;
+            GameObject cameraPrefab =(GameObject) Resources.Load("Prefabs/BattleCamera");
+            this.battleCameraControlle = MonoBehaviour.Instantiate(cameraPrefab).GetComponent<BattleCameraController>();
+            Vector3 cameraPos = basicPoint + new Vector3(0,50,0);
+            battleCameraControlle.setTransform(cameraPos);
 		}
 
         /// <summary>
@@ -103,6 +109,8 @@ namespace BattleSystem{
 				joinedCharacter [pos].Clear ();
 			}
 			isBattleing = false;
+
+            battleCameraControlle.finished();
 		}
 
 		/// <summary>
@@ -116,7 +124,8 @@ namespace BattleSystem{
 				throw new InvalidOperationException ("battle isn't started");
 
 			bal.setIsBattling (true);
-			joinedCharacter [pos].Add (bal);
+			joinedCharacter[pos].Add(bal);
+            bal.syncronizePositioin(field.getNextPosition(pos));
 
 			AIBattleTaskManager manager = MonoBehaviour.Instantiate ((GameObject)Resources.Load("Prefabs/AIBattleManager")).GetComponent<AIBattleTaskManager>();
 			manager.setCharacter (bal,ai);
@@ -134,6 +143,7 @@ namespace BattleSystem{
 
 			player.setIsBattling (true);
 			joinedCharacter [pos].Add (player);
+            player.syncronizePositioin(field.getNextPosition(pos));
 
 			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/PlayerBattleTaskManager"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
@@ -304,13 +314,15 @@ namespace BattleSystem{
                         areaLevel -= character.getLevel();
                     }
                 }
-                if (areaLevel < minAreaLevel)
-                    minAreaLevel = -areaLevel;
+                if (areaLevel < minAreaLevel) {
+                    Debug.Log(minAreaLevel + " min and now" + areaLevel);
+                    minAreaLevel = areaLevel;
+                }
                 dangerLevelTable.Add((FieldPosition)index,areaLevel);
             }
-            var keys = dangerLevelTable.Keys;
+            var keys = new Dictionary<FieldPosition,int>(dangerLevelTable).Keys;
             foreach(FieldPosition pos in keys){
-                dangerLevelTable[pos] += minAreaLevel;
+                dangerLevelTable[pos] += -minAreaLevel;
             }
             return dangerLevelTable;
         } 

@@ -507,18 +507,24 @@ namespace AI {
             var keys = areaDangerLevelTable.Keys;
             int sumDangerLevel = 0;
             foreach(FieldPosition pos in keys){
+                Debug.Log("added " + areaDangerLevelTable[pos]);
                 sumDangerLevel += areaDangerLevelTable[pos];
             }
+            Debug.Log("sum " + sumDangerLevel);
 
             //最終判定：レベルが高いところへ
-            int rand = UnityEngine.Random.Range(0,sumDangerLevel);
+            int rand = UnityEngine.Random.Range(0,sumDangerLevel) + 1;
+            Debug.Log("rand " + rand);
 
             foreach(FieldPosition pos in keys){
-                if(areaDangerLevelTable[pos] <= rand){
+                if(areaDangerLevelTable[pos] >= rand){
                     FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
+                    Debug.Log("now" + nowPos + "will" + pos);
                     return pos - nowPos;
                 }else{
+                    Debug.Log("rand cange before " + rand);
                     rand -= areaDangerLevelTable[pos];
+                    Debug.Log("after " + rand);
                 }
             }
             throw new InvalidOperationException("cannot dicide advance move");
@@ -542,7 +548,7 @@ namespace AI {
 			int rand = UnityEngine.Random.Range(0, sumDangerLevel);
 
 			foreach (FieldPosition pos in keys) {
-                if (areaDangerLevelTable[pos] <= (sumDangerLevel - rand)) {
+                if (areaDangerLevelTable[pos] >= (sumDangerLevel - rand)) {
 					FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
 					return pos - nowPos;
 				} else {

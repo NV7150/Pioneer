@@ -337,6 +337,15 @@ namespace Character{
 			return true;
 		}
 
+        public override int GetHashCode() {
+            int result = 37;
+            result = result * 31 + MAX_HP;
+            result = result * 31 + MAX_MP;
+            result = result * 31 + ID;
+            result = result * 31 + NAME.GetHashCode();
+            result = result * 31 + ("" + UNIQE_ID).GetHashCode();
+            return result;
+        }
        
     }
 }

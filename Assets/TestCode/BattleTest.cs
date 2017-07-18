@@ -54,16 +54,9 @@ public class BattleTest : MonoBehaviour {
 	private void startBattle(){
         Debug.Log(hero);
 
-		BattleManager.getInstance ().StartNewBattle (new Vector3(100,100,100));
+		BattleManager.getInstance ().startNewBattle (new Vector3(100,0,100));
 
 		hero.encount ();
 		en.encount ();
-
-//		ActiveSkillSet skillset = ActiveSkillSetMasterManager.getActiveSkillSetFromId (0);
-//
-//		Debug.Log (skillset.getSkillFromSkillCategory(ActiveSkillCategory.NORMAL).ToString() + "" + skillset.getSkillFromSkillCategory(ActiveSkillCategory.MOVE));
-//
-//		PassiveSkillSet pskillset = PassiveSkillSetMasterManager.getPassiveSkillSetFromId(0);
-//		Debug.Log(pskillset.getSkillFromCategory(PassiveSkillCategory.DODGE).ToString() + "" + pskillset.getSkillFromCategory(PassiveSkillCategory.DODGE).ToString());
 	}
 }
