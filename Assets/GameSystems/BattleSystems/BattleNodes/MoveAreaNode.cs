@@ -9,20 +9,26 @@ namespace BattleSystem{
 		/// <summary> アタッチされているオブジェクトのTextオブジェクト </summary>
         public Text areaName;
 		/// <summary> 担当するFieldPositon </summary>
-		private FieldPosition pos;
+        private int pos;
 		/// <summary> 元のBattleTaskManger </summary>
 		private PlayerBattleTaskManager manager;
 
 		/// <summary>
         /// 初期設定を行います
         /// </summary>
-        /// <param name="pos">担当するFieldPosition</param>
+        /// <param name="move">前進は正の数、後退は負の数で移動先を設定します</param>
         /// <param name="manager">元のBattleTaskManager</param>
-		public void setState(FieldPosition pos,PlayerBattleTaskManager manager){
-			this.pos = pos;
+		public void setState(int move,PlayerBattleTaskManager manager){
+            this.pos = move;
 			this.manager = manager;
 
-			areaName.text = Enum.GetName(typeof(FieldPosition),pos);
+            if (move > 0) {
+                areaName.text = move + "つ前進";
+            }else if(move < 0){
+                areaName.text = -move + "つ後退";
+            }else{
+                throw new InvalidOperationException("zero moveness");
+            }
 		}
 
 		/// <summary>

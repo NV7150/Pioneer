@@ -61,6 +61,8 @@ namespace BattleSystem{
         /// <summary> 戻るボタンを表示する必要があるかどうか </summary>
         private bool isInputingBackButton = false;
 
+        private FieldPosition goingPos;
+
 		// Use this for initialization
 		void Start () {
             GameObject battleView = GameObject.Find ("Canvas/BattleView");
@@ -72,11 +74,12 @@ namespace BattleSystem{
             battleListNode.transform.SetParent(taskView.transform);
             listView = battleListNode.GetComponent<BattleTaskListView>();
             listView.setManager(this);
-
 		}
 		
 		// Update is called once per frame
 		void Update () {
+            Debug.Log("update "  + goingPos);
+
 			if (player.getHp () <= 0) {
 				BattleManager.getInstance ().deadCharacter (player);
 			}
@@ -143,6 +146,7 @@ namespace BattleSystem{
 			stateNode.transform.SetParent(stateView.transform);
 			state = stateNode.GetComponent<BattleStateNode>();
             state.setUser(player);
+            goingPos = BattleManager.getInstance().searchCharacter(player);
 			inputActiveSkillList ();
 		}
 
@@ -189,12 +193,24 @@ namespace BattleSystem{
 		}
 
 		/// <summary>
+		/// taretNodeが選択された時の処理
+		/// </summary>
+        /// <param name="pos">選択された場所</param>
+        public void targetChose(FieldPosition pos) {
+            BattleTask addingTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, pos, battletaskIdCount);
+			addTask(addingTask);
+		}
+
+		/// <summary>
         /// moveAreaNodeが選択された時の処理
         /// </summary>
         /// <param name="pos">選択されたFieldPostion</param>
-		public void moveAreaChose(FieldPosition pos){
-			int move = (int)(pos - BattleManager.getInstance ().searchCharacter(player));
+		public void moveAreaChose(int move){
+            int moveAmount = move;
 			BattleTask addingTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, move, battletaskIdCount);
+            Debug.Log("before " + goingPos + "move " + move);
+            goingPos += move;
+            Debug.Log(goingPos + " , " + move);
             addTask(addingTask);
 		}
 
@@ -299,7 +315,7 @@ namespace BattleSystem{
 			backButton.gameObject.SetActive(true);
 			isInputingBackButton = true;
 
-            int index = BattleManager.getInstance().restructionPositionValue(nowPos, range);
+            int index = BattleManager.getInstance().restructionPositionValue(nowPos, -range);
             int maxRange = BattleManager.getInstance().restructionPositionValue(nowPos, range);
 
 			for (; index <= maxRange; index++) {
@@ -322,18 +338,16 @@ namespace BattleSystem{
 
             headerText.text = chosenActiveSkill.getName() + "の移動先を決定";
 
-			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (player);
-
-            int index = BattleManager.getInstance().restructionPositionValue(nowPos,-move);
-            int maxpos = BattleManager.getInstance().restructionPositionValue(nowPos, move);
+            int index = BattleManager.getInstance().restructionPositionValue(goingPos,-move);
+            int maxpos = BattleManager.getInstance().restructionPositionValue(goingPos, move);
 
             Debug.Log("index : " + index + " max : " + maxpos);
 
 			for (; index <= maxpos; index++) {
-                if (index == (int)nowPos)
+                if (index == (int)goingPos)
                     continue;
 				GameObject node = Instantiate ((GameObject)Resources.Load ("Prefabs/MoveAreaNode"));
-				node.GetComponent<MoveAreaNode> ().setState ((FieldPosition)index, this);
+                node.GetComponent<MoveAreaNode> ().setState (index - (int)goingPos, this);
 				node.transform.SetParent (contents.transform);
 			}
 		}
@@ -400,9 +414,16 @@ namespace BattleSystem{
         /// タスクをキャンセルします
         /// </summary>
         /// <param name="task"> キャンセルしたいタスク </param>
-		public void canseledTask(BattleTask task) {
+		public void finishedTask(BattleTask task) {
             tasks.Remove(task);
+
 		}
+
+        public void canseledTask(BattleTask task){
+			if (task.getSkill().getActiveSkillType() == ActiveSkillType.MOVE) {
+				goingPos -= task.getMove();
+			}
+        }
 
         /// <summary>
         /// 戻るボタンが選ばれた時の処理です

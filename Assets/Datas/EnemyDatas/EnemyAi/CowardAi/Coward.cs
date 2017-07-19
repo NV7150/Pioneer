@@ -138,71 +138,41 @@ namespace AI {
         /// スキルの対象を決定します
         /// </summary>
         /// <returns>対象のリスト</returns>
-        /// <param name="targets">スキル効果範囲内のキャラクターのリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        public List<IBattleable> decideTarget(IActiveSkill useSkill) {
+        public IBattleable decideSingleTarget(IActiveSkill useSkill) {
             if (!ActiveSkillSupporter.isAffectSkill(useSkill))
                 throw new ArgumentException("the skill " + useSkill + " dosen't has to decide target.");
+            if (ActiveSkillSupporter.searchExtent(useSkill) != Extent.SINGLE)
+                throw new ArgumentException("the skill " + useSkill + " isn't a skill for single");
 
-            switch (useSkill.isFriendly()) {
-                case true:
-                    return this.decideFriendlyTarget(useSkill);
-                case false:
-                    return this.decideHostileTarget(useSkill);
+            if (useSkill.isFriendly()) {
+                return this.decideFriendlySingleTarget(useSkill);
+            }else{
+                return this.decideHostileSingleTarget(useSkill);
             }
-            throw new InvalidOperationException("Wrong isFriendly. (not supported 実装してないです)");
         }
 
         /// <summary>
         /// 友好的なスキルの対象を決定します
         /// </summary>
         /// <returns>スキルの対象のリスト</returns>
-        /// <param name="targets">スキル効果範囲内の対象のリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideFriendlyTarget(IActiveSkill useSkill) {
+        private IBattleable decideFriendlySingleTarget(IActiveSkill useSkill) {
             switch (useSkill.getActiveSkillType()) {
                 case ActiveSkillType.HEAL:
-                    return decideHealTarget(useSkill);
+                    return decideHealSingleTarget((HealSkill)useSkill);
                 case ActiveSkillType.BUF:
-                    return decideBufTarget(useSkill);
+                    return decideBufSingleTarget((BufSkill)useSkill);
             }
             throw new ArgumentException("invalid type of skill");
-        }
-
-        /// <summary>
-        /// healSkillの効果対象を決定します
-        /// </summary>
-        /// <returns>スキル対象のリスト</returns>
-        /// <param name="targets">スキル効果範囲内のキャラクターのリスト</param>
-        /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideHealTarget(IActiveSkill useSkill) {
-            if(!(useSkill is HealSkill)){
-                throw new ArgumentException(useSkill.getName() + " isn't a healSkill");
-            }
-
-            HealSkill healUseSkill = (HealSkill)useSkill;
-
-
-
-            switch (healUseSkill.getExtent()) {
-                case Extent.SINGLE:
-                    return decideHealSingleTarget(healUseSkill);
-                case Extent.AREA:
-                    return decideHealAreaTarget(healUseSkill);
-                case Extent.ALL:
-                    //工夫する予定
-                    return BattleManager.getInstance().getCharacterInRange(user, healUseSkill.getRange()); ;
-            }
-            throw new NotSupportedException("unkown extent");
         }
 
         /// <summary>
         /// スキル効果範囲(Extent)がSINGLEの場合の対象を決定します
         /// </summary>
         /// <returns>対象のリスト</returns>
-        /// <param name="targets">射程内のキャラクターのリスト</param>
         /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideHealSingleTarget(HealSkill useSkill) {
+        private IBattleable decideHealSingleTarget(HealSkill useSkill) {
             //keyに可能性値、要素に対象をもつdictionary
             Dictionary<float, IBattleable> characterAndProbalities = new Dictionary<float, IBattleable>();
             float sumProbality = 0;
@@ -225,7 +195,7 @@ namespace AI {
 
             foreach (float probality in probalities){
                 if(probality > rand){
-                    return new List<IBattleable>() { characterAndProbalities[probality] };
+                    return characterAndProbalities[probality];
                 }else{
                     rand += probality;
                 }
@@ -233,7 +203,95 @@ namespace AI {
             throw new InvalidOperationException("cannot decideHealTarget");
         }
 
-        private List<IBattleable> decideHealAreaTarget(HealSkill useSkill) {
+		/// <summary>
+		/// スキル効果範囲(Extent)がSINGLEの時の対象を決定します
+		/// </summary>
+		/// <returns>対象のリスト</returns>
+		/// <param name="useSkill">使用するスキル</param>
+		private IBattleable decideBufSingleTarget(BufSkill useSkill) {
+			//keyに選択可能性、要素にIBattleable本体を持つリスト
+			Dictionary<int, IBattleable> targetsAndProbality = new Dictionary<int, IBattleable>();
+			int sumFriendlyLevel = 0;
+
+			var targets = BattleManager.getInstance().getCharacterInRange(user, useSkill.getRange());
+
+			foreach (IBattleable target in targets) {
+				if (!target.isHostility(user.getFaction())) {
+					//レベルが高いほど選択可能性が高い
+					targetsAndProbality.Add(target.getLevel(), target);
+					sumFriendlyLevel += target.getLevel();
+				}
+			}
+			//乱数判定
+			int random = UnityEngine.Random.Range(0, sumFriendlyLevel);
+			var probalities = targetsAndProbality.Keys;
+			foreach (int probality in probalities) {
+				if (probality < random) {
+					return targetsAndProbality[probality];
+				} else {
+					random -= probality;
+				}
+			}
+
+			throw new InvalidOperationException("cannot decide singleBufTarget");
+		}
+
+		/// <summary>
+		/// 効果範囲が単体のスキルの対象を決定します
+		/// </summary>
+		/// <returns>対象となったキャラクター</returns>
+		/// <param name="useSkill">使用するスキル</param>
+		private IBattleable decideHostileSingleTarget(IActiveSkill useSkill) {
+			//レベルを合計する
+			int sumLevel = 0;
+			List<IBattleable> hostalityTargets = new List<IBattleable>();
+
+			var targets = BattleManager.getInstance().getCharacterInRange(user, ActiveSkillSupporter.searchRange(useSkill, user));
+
+			foreach (IBattleable target in targets) {
+				if (target.isHostility(user.getFaction())) {
+					hostalityTargets.Add(target);
+					sumLevel += target.getLevel();
+				}
+			}
+			//乱数を出す
+			int choose = UnityEngine.Random.Range(0, sumLevel) + 1;
+
+			//最終判定
+			//弱い敵を積極的に殴るので、レベル合計-レベルが可能性値です
+			foreach (IBattleable target in hostalityTargets) {
+				int probality = sumLevel - target.getLevel();
+				if (probality >= choose || probality <= 0)
+					return target;
+				choose -= probality;
+			}
+			throw new InvalidOperationException("Cannot decideHostileSingleTarget.");
+		}
+
+		public FieldPosition decideAreaTarget(IActiveSkill useSkill) {
+			if (!ActiveSkillSupporter.isAffectSkill(useSkill))
+				throw new ArgumentException("the skill " + useSkill + " dosen't has to decide target.");
+            if (ActiveSkillSupporter.searchExtent(useSkill) != Extent.AREA)
+				throw new ArgumentException("the skill " + useSkill + " isn't a skill for single");
+
+			if (useSkill.isFriendly()) {
+                return this.decideAreaFriendlyTarget(useSkill);
+			} else {
+                return this.decideHostileAreaTarget(useSkill);
+			}
+		}
+
+        private FieldPosition decideAreaFriendlyTarget(IActiveSkill useSkill){
+			switch (useSkill.getActiveSkillType()) {
+				case ActiveSkillType.HEAL:
+                    return decideAreaHealTarget((HealSkill)useSkill);
+				case ActiveSkillType.BUF:
+                    return decideAreaBufTarget((BufSkill)useSkill);
+			}
+			throw new ArgumentException("invalid type of skill");
+        }
+
+        private FieldPosition decideAreaHealTarget(HealSkill useSkill) {
             //keyのposにいる友好的なキャラクターのリスト
             Dictionary<FieldPosition, List<IBattleable>> posCharacters = new Dictionary<FieldPosition, List<IBattleable>>();
             //keyのposの可能性値
@@ -279,7 +337,7 @@ namespace AI {
 
             foreach(FieldPosition pos in poses){
                 if(posProbalities[pos] > rand){
-                    return posCharacters[pos];
+                    return pos;
                 }else{
                     rand += posProbalities[pos];
                 }
@@ -289,71 +347,11 @@ namespace AI {
         }
 
         /// <summary>
-        /// BufSkillの使用対象を決定します
-        /// </summary>
-        /// <returns>スキルの対象のリスト</returns>
-        /// <param name="targets"> スキル射程内のキャラクターのリスト </param>
-        /// <param name="useSkill"> 使用するスキル </param>
-        private List<IBattleable> decideBufTarget(IActiveSkill useSkill){
-            if(!(useSkill is BufSkill)){
-                throw new ArgumentException(useSkill.getName() + " isn't a bufSkill");
-            }
-
-            BufSkill bufUseSkill = (BufSkill)useSkill;
-
-            switch (bufUseSkill.getExtent()){
-                case Extent.SINGLE:
-                    return decideSingleBufTarget(bufUseSkill);
-                case Extent.AREA:
-                    return decideAreaBufTarget(bufUseSkill);
-                case Extent.ALL:
-                    //くふー
-                    return BattleManager.getInstance().getCharacterInRange(user,bufUseSkill.getRange());
-            }
-
-            throw new NotSupportedException("unknown extent value");
-        }
-
-        /// <summary>
-        /// スキル効果範囲(Extent)がSINGLEの時の対象を決定します
-        /// </summary>
-        /// <returns>対象のリスト</returns>
-        /// <param name="targets">スキル射程内のキャラクターのリスト</param>
-        /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideSingleBufTarget(BufSkill useSkill){
-            //keyに選択可能性、要素にIBattleable本体を持つリスト
-            Dictionary<int, IBattleable> targetsAndProbality = new Dictionary<int, IBattleable>();
-            int sumFriendlyLevel = 0;
-
-            var targets = BattleManager.getInstance().getCharacterInRange(user, useSkill.getRange());
-
-            foreach(IBattleable target in targets){
-                if(!target.isHostility(user.getFaction())){
-                    //レベルが高いほど選択可能性が高い
-                    targetsAndProbality.Add(target.getLevel(),target);
-                    sumFriendlyLevel += target.getLevel();
-                }
-            }
-            //乱数判定
-            int random = UnityEngine.Random.Range(0, sumFriendlyLevel);
-            var probalities = targetsAndProbality.Keys;
-            foreach(int probality in probalities){
-                if(probality < random){
-                    return new List<IBattleable>() { targetsAndProbality[probality] };
-                }else{
-                    random -= probality;
-                }
-            }
-
-            throw new InvalidOperationException("cannot decide singleBufTarget");
-        }
-
-        /// <summary>
         /// BufSkillの効果範囲(Extent)がAREAの時の対象を決定します
         /// </summary>
         /// <returns>対象のリスト</returns>
         /// <param name="useSkill">使用するスキル</param>
-        private List<IBattleable> decideAreaBufTarget(BufSkill useSkill){
+        private FieldPosition decideAreaBufTarget(BufSkill useSkill){
             //エリアの友軍
             Dictionary<FieldPosition, List<IBattleable>> areaFriendlyCharacter = new Dictionary<FieldPosition, List<IBattleable>>();
             //エリアの選択可能性
@@ -390,7 +388,7 @@ namespace AI {
             var probalistyKeys = areaProbality.Keys;
             foreach(FieldPosition pos in probalistyKeys){
                 if(areaProbality[pos] > rand){
-                    return areaFriendlyCharacter[pos];
+                    return pos;
                 }else{
                     rand -= areaProbality[pos];
                 }
@@ -398,68 +396,12 @@ namespace AI {
             throw new InvalidOperationException("cannot decide areaTarget");
         }
 
-
-        /// <summary>
-        /// 非友好的スキルの対象を決定します
-        /// </summary>
-        /// <returns>スキルの対象のリスト</returns>
-        /// <param name="useSkill">スキル</param>
-        private List<IBattleable> decideHostileTarget(IActiveSkill useSkill) {
-            Extent extent = ActiveSkillSupporter.searchExtent(useSkill);
-            int range = ActiveSkillSupporter.searchRange(useSkill, user);
-
-            if (extent == Extent.SINGLE) {
-                List<IBattleable> returnList = new List<IBattleable>();
-                returnList.Add(decideHostileSingleTarget(useSkill));
-                return returnList;
-
-            } else if (extent == Extent.AREA) {
-                return decideAreaLevelTarget(useSkill);
-            } else if (extent == Extent.ALL) {
-                
-                return BattleManager.getInstance().getCharacterInRange(user,ActiveSkillSupporter.searchRange(useSkill,user));
-            }
-            throw new Exception("invlit state (未実装)");
-        }
-
-        /// <summary>
-        /// 効果範囲が単体のスキルの対象を決定します
-        /// </summary>
-        /// <returns>対象となったキャラクター</returns>
-        /// <param name="useSkill">使用するスキル</param>
-        private IBattleable decideHostileSingleTarget(IActiveSkill useSkill) {
-            //レベルを合計する
-            int sumLevel = 0;
-            List<IBattleable> hostalityTargets = new List<IBattleable>();
-
-            var targets = BattleManager.getInstance().getCharacterInRange(user, ActiveSkillSupporter.searchRange(useSkill,user));
-
-            foreach (IBattleable target in targets) {
-                if (target.isHostility(user.getFaction())) {
-                    hostalityTargets.Add(target);
-                    sumLevel += target.getLevel();
-                }
-            }
-            //乱数を出す
-            int choose = UnityEngine.Random.Range(0, sumLevel) + 1;
-
-            //最終判定
-            //弱い敵を積極的に殴るので、レベル合計-レベルが可能性値です
-            foreach (IBattleable target in hostalityTargets) {
-                int probality = sumLevel - target.getLevel();
-                if (probality >= choose || probality <= 0)
-                    return target;
-                choose -= probality;
-            }
-            throw new InvalidOperationException("Cannot decideHostileSingleTarget.");
-        }
-
         /// <summary>
         /// 効果範囲が範囲のスキルの対象を決定します
         /// </summary>
         /// <returns>対象のキャラクターのリスト</returns>
-        /// <param name="useSkill">使用するスキルのリスト</param>
-        private List<IBattleable> decideAreaLevelTarget(IActiveSkill useSkill){
+        /// <param name="useSkill">使用するスキル</param>
+        private FieldPosition decideHostileAreaTarget(IActiveSkill useSkill){
             int range = ActiveSkillSupporter.searchRange(useSkill,user);
             Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user,range);
 			var keys = areaDangerLevelTable.Keys;
@@ -473,7 +415,7 @@ namespace AI {
 
 			foreach (FieldPosition pos in keys) {
 				if (areaDangerLevelTable[pos] <= rand) {
-                    return BattleManager.getInstance().getAreaCharacter(pos);
+                    return pos;
 				} else {
 					rand -= areaDangerLevelTable[pos];
 				}
@@ -507,14 +449,10 @@ namespace AI {
             var keys = areaDangerLevelTable.Keys;
             int sumDangerLevel = 0;
             foreach(FieldPosition pos in keys){
-                Debug.Log("added " + areaDangerLevelTable[pos]);
                 sumDangerLevel += areaDangerLevelTable[pos];
             }
-            Debug.Log("sum " + sumDangerLevel);
-
             //最終判定：レベルが高いところへ
             int rand = UnityEngine.Random.Range(0,sumDangerLevel) + 1;
-            Debug.Log("rand " + rand);
 
             foreach(FieldPosition pos in keys){
                 if(areaDangerLevelTable[pos] >= rand){
@@ -601,5 +539,9 @@ namespace AI {
         public override string ToString() {
             return "CowardAI attached with " + user.ToString();
         }
+
+
+
+
     }
 }

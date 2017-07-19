@@ -44,7 +44,7 @@ namespace BattleSystem{
             BattleTaskNode nodeContent = node.GetComponent<BattleTaskNode>();
             nodeContent.setTaskId(task.getBattleTaskId());
             nodeContent.setTask(task);
-            nodeContent.setList(this);
+            nodeContent.setListAndManager(this,manager);
             nodes.Add(nodeContent);
         }
 
@@ -60,7 +60,7 @@ namespace BattleSystem{
                     break;
                 }
             }
-            manager.canseledTask(task);
+            manager.finishedTask(task);
 		}
 	}
 }

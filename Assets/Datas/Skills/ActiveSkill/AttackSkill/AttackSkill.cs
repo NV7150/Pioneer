@@ -164,7 +164,7 @@ namespace Skill {
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner,BattleTask task) {
-            if (ActiveSkillSupporter.canUseAffectSkill(actioner, task.getTargets(), this))
+            if (!ActiveSkillSupporter.canUseAffectSkill(actioner, task.getTargets(), this))
                 return;
 
 			attack (actioner,task.getTargets());

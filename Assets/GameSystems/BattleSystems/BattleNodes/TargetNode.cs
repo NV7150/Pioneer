@@ -12,6 +12,8 @@ namespace BattleSystem{
         public Text targetName;
 		/// <summary> 担当しているIBattleableキャラクターのリスト </summary>
 		List<IBattleable> targets = new List<IBattleable> ();
+
+        FieldPosition pos;
 		/// <summary> 元のBattleTaskManager </summary>
 		PlayerBattleTaskManager manager;
 
@@ -33,7 +35,7 @@ namespace BattleSystem{
         /// <param name="pos">担当するエリア</param>
         /// <param name="manager">元のBattleTaskManager</param>
         public void setState(FieldPosition pos,PlayerBattleTaskManager manager){
-			this.targets = BattleManager.getInstance().getAreaCharacter(pos);
+            this.pos = pos;
 			this.manager = manager;
 			targetName.text = Enum.GetName(typeof(FieldPosition),pos);
 		}
@@ -42,7 +44,11 @@ namespace BattleSystem{
         /// 選ばれた時の処理
         /// </summary>
 		public void chosen(){
-			manager.targetChose (targets);
+            if (targets.Count <= 0) {
+                manager.targetChose(pos);
+            } else {
+                manager.targetChose(targets);
+            }
 		}
 	}
 }

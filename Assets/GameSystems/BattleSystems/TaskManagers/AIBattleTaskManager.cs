@@ -9,6 +9,7 @@ using Character;
 using Parameter;
 
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
+using Extent = Skill.ActiveSkillParameters.Extent;
 
 namespace BattleSystem {
 	public class AIBattleTaskManager : MonoBehaviour,IBattleTaskManager{
@@ -98,7 +99,7 @@ namespace BattleSystem {
         /// ステートがACTIONの時に毎フレーム行う処理
         /// </summary>
 		private void actionState(){
-			BattleTask task = getTask ();
+			BattleTask task = creatTask ();
 			task.getSkill ().action (user,task);
 
 			delay = task.getSkill ().getDelay (user) * 2;
@@ -119,15 +120,34 @@ namespace BattleSystem {
         /// BattleTaskを生成します
         /// </summary>
         /// <returns>生成したタスク</returns>
-		private BattleTask getTask(){
+        private BattleTask creatTask(){
             if (!isReady)
                 throw new InvalidOperationException("manager hasn't readied yet");
 
 			IActiveSkill skill = ai.decideSkill ();
+            if (ActiveSkillSupporter.isAffectSkill(skill)) {
+                Extent extent = ActiveSkillSupporter.searchExtent(skill);
+                BattleTask returnTask;
+                //効果範囲に応じてタスクを生成
+                switch (extent) {
+                    case Extent.SINGLE:
+						IBattleable target = ai.decideSingleTarget(skill);
+						List<IBattleable> singleTargetList = new List<IBattleable>() { target };
+						returnTask = new BattleTask(user.getUniqueId(), skill, singleTargetList, battletaskIdCount);
+                        break;
 
-			if (ActiveSkillSupporter.isAffectSkill (skill)) {
-				List<IBattleable> targets = ai.decideTarget (skill);
-                BattleTask returnTask = new BattleTask (user.getUniqueId (), skill, targets,battletaskIdCount);
+                    case Extent.AREA:
+						FieldPosition pos = ai.decideAreaTarget(skill);
+						returnTask = new BattleTask(user.getUniqueId(), skill, pos, battletaskIdCount);
+                        break;
+
+                    case Extent.ALL:
+						List<IBattleable> allTargetList = BattleManager.getInstance().getJoinedBattleCharacter();
+						returnTask = new BattleTask(user.getUniqueId(), skill, allTargetList, battletaskIdCount);
+                        break;
+
+                    default: throw new NotSupportedException("unkonwn extent");
+                }
                 battletaskIdCount++;
                 return returnTask;
 			} else if(skill.getActiveSkillType() == ActiveSkillType.MOVE){

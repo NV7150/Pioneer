@@ -45,6 +45,7 @@ public class BattleTest : MonoBehaviour {
 		hero.addSkill(DebufSkillMasterManager.getDebufSkillFromId(0));
 		hero.addSkill(HealSkillMasterManager.getHealSkillFromId(0));
         hero.addSkill(DebufSkillMasterManager.getDebufSkillFromId(2));
+        hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(7));
 
 		con.setCharacter(hero);
 

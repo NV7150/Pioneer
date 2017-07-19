@@ -27,7 +27,9 @@ namespace AI {
         /// </summary>
         /// <returns>使用対象のリスト</returns>
         /// <param name="useSkill">使用するスキル</param>
-		List<IBattleable> decideTarget (IActiveSkill useSkill);
+		IBattleable decideSingleTarget (IActiveSkill useSkill);
+
+        FieldPosition decideAreaTarget(IActiveSkill useSkill);
 
 		/// <summary>
         /// moveSkillによる移動量を決定します
