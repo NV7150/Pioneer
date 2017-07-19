@@ -92,7 +92,7 @@ namespace AI {
             foreach (ActiveSkillCategory category in categories) {
                 IActiveSkill categorySkill = activeSkills.getSkillFromSkillCategory(category);
 
-                if (!ActiveSkillSupporter.needsTarget(categorySkill))
+                if (!ActiveSkillSupporter.isAffectSkill(categorySkill))
                     continue;
 
                 int range = ActiveSkillSupporter.searchRange(categorySkill, user);
@@ -141,7 +141,7 @@ namespace AI {
         /// <param name="targets">スキル効果範囲内のキャラクターのリスト</param>
         /// <param name="useSkill">使用するスキル</param>
         public List<IBattleable> decideTarget(IActiveSkill useSkill) {
-            if (!ActiveSkillSupporter.needsTarget(useSkill))
+            if (!ActiveSkillSupporter.isAffectSkill(useSkill))
                 throw new ArgumentException("the skill " + useSkill + " dosen't has to decide target.");
 
             switch (useSkill.isFriendly()) {

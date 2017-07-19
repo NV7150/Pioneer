@@ -85,8 +85,9 @@ namespace Skill {
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner, BattleTask task) {
-			if (actioner.getMp () < this.COST)
+			if (ActiveSkillSupporter.canUseAffectSkill(actioner, task.getTargets(), this))
 				return;
+            
 			setBounsToCharacter (task.getTargets());
 			actioner.minusMp (this.COST);
 		}

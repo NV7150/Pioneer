@@ -67,7 +67,7 @@ namespace BattleSystem{
         /// </summary>
         /// <returns>スキル対象のリスト</returns>
 		public List<IBattleable> getTargets(){
-			if (targets.Count == 0)
+			if (targets.Count <= 0)
 				throw new InvalidOperationException ("this task isn't an action");
 			return targets;
 		}

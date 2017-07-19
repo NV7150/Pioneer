@@ -51,7 +51,7 @@ namespace AI {
 			int maxRange = 0;
 			var keys = skillSet.Keys;
 			foreach(ActiveSkillCategory category in keys){
-				if (ActiveSkillSupporter.needsTarget (skillSet [category])) {
+				if (ActiveSkillSupporter.isAffectSkill (skillSet [category])) {
 					int skillRange = ActiveSkillSupporter.searchRange (skillSet[category],user);
 					if (skillRange > maxRange)
 						maxRange = skillRange;

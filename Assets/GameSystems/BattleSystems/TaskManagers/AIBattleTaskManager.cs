@@ -125,7 +125,7 @@ namespace BattleSystem {
 
 			IActiveSkill skill = ai.decideSkill ();
 
-			if (ActiveSkillSupporter.needsTarget (skill)) {
+			if (ActiveSkillSupporter.isAffectSkill (skill)) {
 				List<IBattleable> targets = ai.decideTarget (skill);
                 BattleTask returnTask = new BattleTask (user.getUniqueId (), skill, targets,battletaskIdCount);
                 battletaskIdCount++;
