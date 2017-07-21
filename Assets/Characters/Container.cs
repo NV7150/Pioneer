@@ -55,8 +55,7 @@ namespace Character{
             Container container = collision.gameObject.GetComponent<Container>();
             if(container != null){
                 if(container.getCharacter() is IBattleable && isBattleable){
-                    Vector3 averagePos = (collision.transform.position + transform.position) / 2;
-                    startBattle(container.getCharacter(),averagePos);
+                    startBattle(container.getCharacter());
                 }
             }
         }
@@ -67,7 +66,7 @@ namespace Character{
         /// <param name="opponent">エンカウントしたキャラクター</param>
         /// <param name="averageEachPos">エンカウントしたキャラクターと自身の位置の平均</param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
-        private void startBattle(ICharacter opponent,Vector3 averageEachPos){
+        private void startBattle(ICharacter opponent){
             //ICharacterをIBattleableにキャスト
             IBattleable oppnentBal = (IBattleable)opponent;
             IBattleable userBal = (IBattleable)user;
@@ -75,7 +74,7 @@ namespace Character{
             if (oppnentBal.isHostility(userBal.getFaction())) {
 				//バトル開始していなかったら開始
 				if (!BattleManager.getInstance().getIsBattleing()) {
-					BattleManager.getInstance().startNewBattle(averageEachPos);
+					BattleManager.getInstance().startNewBattle();
 				}
 
                 //ユーザーをエンカウント

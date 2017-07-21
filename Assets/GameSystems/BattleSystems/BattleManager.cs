@@ -49,8 +49,8 @@ namespace BattleSystem{
         /// 新たにバトルを開始します
         /// </summary>
         /// <param name="basicPoint"> 起点とする座標 </param>
-		public void startNewBattle(Vector3 basicPoint){
-			field = new BattleField (basicPoint);
+		public void startNewBattle(){
+            field = new BattleField (new Vector3(500,100,500));
 			isBattleing = true;
             GameObject cameraPrefab =(GameObject) Resources.Load("Prefabs/BattleCamera");
             this.battleCameraControlle = MonoBehaviour.Instantiate(cameraPrefab).GetComponent<BattleCameraController>();
@@ -123,7 +123,7 @@ namespace BattleSystem{
 
 			bal.setIsBattling (true);
 			joinedCharacter[pos].Add(bal);
-            bal.syncronizePositioin(field.getNextPosition(pos));
+            bal.syncronizePositioin(field.getObjectPosition(pos,bal));
 
 			AIBattleTaskManager manager = MonoBehaviour.Instantiate ((GameObject)Resources.Load("Prefabs/AIBattleManager")).GetComponent<AIBattleTaskManager>();
 			manager.setCharacter (bal,ai);
@@ -141,7 +141,7 @@ namespace BattleSystem{
 
 			player.setIsBattling (true);
 			joinedCharacter [pos].Add (player);
-            player.syncronizePositioin(field.getNextPosition(pos));
+            player.syncronizePositioin(field.getObjectPosition(pos,player));
 
 			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/PlayerBattleTaskManager"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
@@ -268,6 +268,8 @@ namespace BattleSystem{
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
 
+            field.deleteCharacterPos(bal);
+
 			//引数に渡されたIBattleableキャラの位置を検索
 			FieldPosition nowPos = searchCharacter (bal);
 
@@ -281,7 +283,7 @@ namespace BattleSystem{
 			joinedCharacter [nowPos].Remove (bal);
 			joinedCharacter [movePos].Add (bal);
 
-			bal.syncronizePositioin(field.getNextPosition(nowPos + moveness));
+            bal.syncronizePositioin(field.getObjectPosition(nowPos + moveness,bal));
 		}
 
 		

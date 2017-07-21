@@ -107,7 +107,6 @@ namespace Skill {
         /// <param name="targets">スキル対象</param>
         /// <param name="skill">使用するスキル　AffectSkillである必要があります</param>
         public static bool canUseAffectSkill(IBattleable actioner,List<IBattleable> targets,IActiveSkill skill){
-            UnityEngine.Debug.Log("start judge " + skill.getName());
 
             if (!isAffectSkill(skill))
                 throw new ArgumentException("gave skill isn't an affectSkill");
@@ -127,8 +126,6 @@ namespace Skill {
             if(distance > searchRange(skill, actioner)) {
                 return false;
             }
-
-            UnityEngine.Debug.Log("end judge " + skill.getName());
 
             //以上が満たされればtrue
             return true;

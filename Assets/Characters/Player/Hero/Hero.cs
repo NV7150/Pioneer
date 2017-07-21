@@ -485,16 +485,5 @@ namespace Character{
 		public override bool Equals (object obj) {
 			return this == obj;
 		}
-
-        public override int GetHashCode() {
-            int result = 31;
-            result = result * 37 + getName().GetHashCode();
-            result = result * 37 + ("" + UNIQUE_ID).GetHashCode();
-            result = result * 37 + level;
-            result = result * 37 + maxMp;
-            result = result * 37 + hp;
-            return result;
-        }
-       
     }
 }

@@ -55,7 +55,7 @@ public class BattleTest : MonoBehaviour {
 	private void startBattle(){
         Debug.Log(hero);
 
-		BattleManager.getInstance ().startNewBattle (new Vector3(250,100,250));
+		BattleManager.getInstance ().startNewBattle ();
 
 		hero.encount ();
 		en.encount ();

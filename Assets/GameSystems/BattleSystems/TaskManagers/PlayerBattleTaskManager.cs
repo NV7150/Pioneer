@@ -61,7 +61,11 @@ namespace BattleSystem{
         /// <summary> 戻るボタンを表示する必要があるかどうか </summary>
         private bool isInputingBackButton = false;
 
+        /// <summary> ディレイ抜きにして行く予定のポジション </summary>
         private FieldPosition goingPos;
+
+        /// <summary> スキルをkeyとする現在表示中のターゲットラインのdictionary </summary>
+        private Dictionary<IBattleable, List<GameObject>> targetLines = new Dictionary<IBattleable, List<GameObject>>();
 
 		// Use this for initialization
 		void Start () {
@@ -78,8 +82,6 @@ namespace BattleSystem{
 		
 		// Update is called once per frame
 		void Update () {
-            Debug.Log("update "  + goingPos);
-
 			if (player.getHp () <= 0) {
 				BattleManager.getInstance ().deadCharacter (player);
 			}
@@ -115,14 +117,38 @@ namespace BattleSystem{
         /// </summary>
 		private void actionState(){
 			BattleTask runTask = tasks [0];
-			runTask.getSkill ().action (player, runTask);
+            IActiveSkill runSkill = runTask.getSkill();
+            runSkill.action (player, runTask);
+
+            deleteTargetingLine(player);
+
 			delay = runTask.getSkill ().getDelay (player) * 2;
             maxDelay = delay;
+
 			tasks.Remove (runTask);
             listView.deleteTask(runTask);
+
 			battleState = BattleState.IDLE;
             state.resetProgress();
+
+            updateTargetLine();
 		}
+
+        /// <summary>
+        /// 自分から出すターゲットラインを更新します
+        /// </summary>
+        private void updateTargetLine(){
+            if (tasks.Count <= 0)
+                return;
+            
+			BattleTask task = tasks[0];
+            IActiveSkill useSkill = task.getSkill();
+
+            if (ActiveSkillSupporter.isAffectSkill(useSkill) && ! targetLines.ContainsKey(player)) {
+                List<IBattleable> targets = task.getTargets();
+                drawTargetingLine(player, targets, useSkill);
+            }
+        }
 
 		/// <summary>
         /// ステートがIDLEの時に毎フレーム行う処理
@@ -162,6 +188,8 @@ namespace BattleSystem{
 
 			chosenActiveSkill = null;
 			inputActiveSkillList();
+
+            updateTargetLine();
 		}
 
 		/// <summary>
@@ -171,7 +199,7 @@ namespace BattleSystem{
 		public void skillChose(IActiveSkill chosenSkill){
 			this.chosenActiveSkill = chosenSkill;
 
-			if (chosenSkill.getActiveSkillType () != ActiveSkillType.MOVE) {
+            if (ActiveSkillSupporter.isAffectSkill(chosenSkill)) {
 				Extent extent = ActiveSkillSupporter.searchExtent (chosenSkill);
 				int range = ActiveSkillSupporter.searchRange (chosenSkill, player);
 				inputTargetList (extent, range);
@@ -241,6 +269,9 @@ namespace BattleSystem{
 			reactionSkill.reaction (player,atk,hit,skill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove (prosessingPair);
 			updateProsessingPair ();
+
+            deleteTargetingLine(attacker);
+            activateLines();
 		}
 
 		/// <summary>
@@ -361,6 +392,10 @@ namespace BattleSystem{
             IBattleable attacker = prosessingPair.Key;
             AttackSkill attackedSkill = prosessingPair.Value;
 
+            unactivateLines();
+            List<IBattleable> drawLineTarget = new List<IBattleable>() { player };
+            drawTargetingLine(attacker,drawLineTarget,attackedSkill);
+
             headerText.text = attacker.getName() + "の" + attackedSkill.getName() + "へのリアクションを決定";
 
             backButton.gameObject.SetActive(false);
@@ -373,13 +408,72 @@ namespace BattleSystem{
 			reactoinContents.SetActive (true);
 		}
 
+        /// <summary>
+        /// ターゲットラインを対象の間に引きます
+        /// </summary>
+        /// <param name="user">スキル使用者</param>
+        /// <param name="targets">スキル対象者のリスト</param>
+        /// <param name="skill">使用するスキル</param>
+        private void drawTargetingLine(IBattleable user,List<IBattleable> targets,IActiveSkill skill){
+            GameObject targetingLinePrefab = (GameObject)Resources.Load("Prefabs/TargetLine");
+            GameObject attackerModel = user.getContainer().getModel();
+
+            List<GameObject> addedLines = new List<GameObject>();
+            foreach(IBattleable target in targets){
+                GameObject targetingLine = Instantiate(targetingLinePrefab);
+
+                TargetLine line = targetingLine.GetComponent<TargetLine>();
+				GameObject targetModel = target.getContainer().getModel();
+                line.setState(attackerModel, targetModel, skill.getName(), skill.isFriendly());
+
+                addedLines.Add(targetingLine);
+            }
+
+            targetLines.Add(user,addedLines);
+        }
+
+        /// <summary>
+        /// スキルのターゲットラインを削除します
+        /// </summary>
+        private void deleteTargetingLine(IBattleable user){
+            if (targetLines.ContainsKey(user)) {
+                List<GameObject> lines = targetLines[user];
+                foreach (GameObject line in lines) {
+                    Destroy(line);
+                }
+                targetLines.Remove(user);
+            }
+        }
+
+        private void unactivateLines(){
+            var keys = targetLines.Keys;
+            foreach(IBattleable bal in keys){
+                foreach(GameObject line in targetLines[bal]){
+                    line.SetActive(false);
+                }
+            }
+        }
+
+        private void activateLines(){
+            var keys = targetLines.Keys;
+            Debug.Log("before" + keys.Count);
+            foreach(IBattleable bal in keys){
+                Debug.Log(bal);
+                var keys2 = targetLines.Keys;
+                Debug.Log("after " + targetLines.Count);
+                foreach(GameObject line in targetLines[bal]){
+                    line.SetActive(true);
+                }
+            }
+        }
+
 		/// <summary>
         /// contentsオブジェクトの子ノードを削除します
         /// </summary>
 		private void detachContents(){
 			Transform children = contents.GetComponentInChildren<Transform> ();
 			foreach(Transform child in children){
-				MonoBehaviour.Destroy (child.gameObject);
+				Destroy (child.gameObject);
 			}
 			contents.transform.DetachChildren ();
 		}
@@ -391,7 +485,7 @@ namespace BattleSystem{
 		private void detachReactionContents(){
 			Transform children = reactoinContents.GetComponentInChildren<Transform> ();
 			foreach(Transform child in children){
-				MonoBehaviour.Destroy (child.gameObject);
+				Destroy (child.gameObject);
 			}
 			reactoinContents.transform.DetachChildren ();
 		}
