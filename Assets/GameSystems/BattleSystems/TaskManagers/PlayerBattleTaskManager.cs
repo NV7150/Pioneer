@@ -517,6 +517,9 @@ namespace BattleSystem{
 			if (task.getSkill().getActiveSkillType() == ActiveSkillType.MOVE) {
 				goingPos -= task.getMove();
 			}
+            if(ActiveSkillSupporter.isAffectSkill(task.getSkill())){
+                deleteTargetingLine(player);
+            }
         }
 
         /// <summary>
