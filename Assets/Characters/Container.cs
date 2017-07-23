@@ -13,6 +13,9 @@ namespace Character{
 		public GameObject model;
         public ICharacter user;
         private bool isBattleable = false;
+        private bool isPlayer = false;
+        private Camera camera;
+        private int distance = 10000;
 
 		// Use this for initialization
 		void Start () {
@@ -24,7 +27,32 @@ namespace Character{
 			} else {
 				user.act ();
 			}
+
+            if (isPlayer) {
+                if (Input.GetKeyDown(KeyCode.Return)) {
+                    searchFront();
+                }
+            }
 		}
+
+        private void searchFront() {
+            Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2);
+            Ray ray = camera.ScreenPointToRay(center);
+            RaycastHit hitInfo;
+            if (Physics.Raycast(ray, out hitInfo, distance)) {
+                Container hitContainer = hitInfo.transform.GetComponent<Container>();
+                if(hitContainer != null) {
+                    ICharacter character = hitContainer.getCharacter();
+                    if(character is IFriendly) {
+                        startTalk((IFriendly)character);
+                    }
+                }
+            }
+        }
+
+        private void startTalk(IFriendly character) {
+            character.talk((IFriendly)character);
+        }
 
         /// <summary>
         /// ContainerがアタッチされているGameObjectを取得します
@@ -41,6 +69,9 @@ namespace Character{
 		public void setCharacter(ICharacter chara){
 			this.user = chara;
             isBattleable = chara is IBattleable;
+            isPlayer = chara is Hero;
+            if (isPlayer)
+                camera = GameObject.Find("MainCamera").GetComponent<Camera>();
 		}
 
         /// <summary>
