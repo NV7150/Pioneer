@@ -40,10 +40,13 @@ namespace Character{
             Ray ray = camera.ScreenPointToRay(center);
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, distance)) {
+                Debug.Log("into raycast");
                 Container hitContainer = hitInfo.transform.GetComponent<Container>();
                 if(hitContainer != null) {
+                    Debug.Log("into hitcontainer");
                     ICharacter character = hitContainer.getCharacter();
                     if(character is IFriendly) {
+                        Debug.Log("into startTalk");
                         startTalk((IFriendly)character);
                     }
                 }
@@ -51,7 +54,7 @@ namespace Character{
         }
 
         private void startTalk(IFriendly character) {
-            character.talk((IFriendly)character);
+            character.talk((IFriendly)getCharacter());
         }
 
         /// <summary>
