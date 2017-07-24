@@ -37,13 +37,10 @@ namespace Character {
         public void talk(IFriendly friendly) {
             Debug.Log("into talk");
             //かり
-            List<string> introduction = new List<string>() {
-                "何が欲しいんだい?"
-            };
-
-            List<string> post = new List<string>() {
+            List<string> massages = new List<string>() {
+                "何が欲しいんだい?",
                 "武器は装備しないと意味がないぞ！",
-                "装備を忘れないでな!"
+                "気をつけろよ!"
             };
 
             List<IItem> goods = new List<IItem>() {
@@ -52,7 +49,7 @@ namespace Character {
                 ArmorMasterManager.getArmorFromId(0)
             };
 
-            TalkManager.getInstance().trade(introduction, post, goods, (Hero)friendly, this);
+            TalkManager.getInstance().trade(massages,1, goods, (Hero)friendly, this);
         }
     }
 }

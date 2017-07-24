@@ -10,19 +10,21 @@ public class TradeWindow : MonoBehaviour {
 
     List<IItem> goods;
     GameObject tradeItemNodePrefab;
+    public GameObject view;
     //かり
     Hero player;
     IFriendly trader;
     List<string> post;
-    MassageWindow win;
+    MassageWindow window;
 
 	// Use this for initialization
-	void Start () {
-	}
+    void Start () {
+        transform.position = new Vector3(Screen.width ,Screen.height,0);
+    }
 	
 	// Update is called once per frame
 	void Update () {
-		
+        
 	}
 
     public void setState(List<IItem> goods,Hero player,IFriendly trader,MassageWindow window) {
@@ -35,6 +37,7 @@ public class TradeWindow : MonoBehaviour {
         }
         this.player = player;
         this.trader = trader;
+        this.window = window;
     }
 
     public void itemChose(IItem item) {
@@ -42,7 +45,8 @@ public class TradeWindow : MonoBehaviour {
     }
 
     public void finishChose() {
-        win.tradeFinished();
-        Destroy(this.gameObject);
+        Debug.Log("into finishchose");
+		window.tradeFinished();
+        Destroy(view);
     }
 }
