@@ -28,6 +28,8 @@ namespace MasterData{
 
 		private float delay;
 
+        private bool canStore;
+
         private BattleAbility weponAbility;
         private WeponType weponType;
 
@@ -103,8 +105,9 @@ namespace MasterData{
 			this.mass = int.Parse (datas[7]);
 			this.weponType = (WeponType)Enum.Parse(typeof(WeponType), datas[8]);
 			this.weponAbility = (BattleAbility)Enum.Parse(typeof(BattleAbility), datas[9]);
-			this.description = datas [10];
-			this.flavorText = datas [11];
+            this.canStore = datas[10] == "TRUE";
+			this.description = datas [11];
+			this.flavorText = datas [12];
 		}
 
 		/// <summary>

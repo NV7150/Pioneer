@@ -34,6 +34,9 @@ namespace Item {
         /// <summary> 防具のディレイへの修正値 </summary>
 		private float DELAY_BONUS;
 
+        /// <summary> アイテムとしてインベントリに格納できるか </summary>
+        private bool canStore;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -122,7 +125,11 @@ namespace Item {
 			user.equipArmor(this);
 		}
 
-		#endregion
-	}
+        public bool getCanStore() {
+            return canStore;
+        }
+
+        #endregion
+    }
 }
 

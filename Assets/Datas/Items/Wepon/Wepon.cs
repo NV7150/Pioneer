@@ -11,6 +11,7 @@ using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 namespace Item{
 	public class  Wepon :  IItem{
 		private readonly int
+            ID,
 			/// <summary> 武器の攻撃力 </summary>
 			ATTACK,
 			/// <summary> この武器の射程 </summary>
@@ -39,11 +40,14 @@ namespace Item{
         /// <summary> 武器が使用するBattleAbility </summary>
 		private BattleAbility weponAbility;
 
+        private bool canStore;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="builder">ビルダー</param>
 		public Wepon(WeponBuilder builder){
+            ID = builder.getId();
 			ATTACK = builder.getAttack ();
 			RANGE = builder.getRange ();
 			NEED_ABILITY = builder.getNeedMft ();
@@ -124,6 +128,10 @@ namespace Item{
 
 		#region IItem implementation
 
+        public int getId(){
+            return ID;
+        }
+
 		public int getItemValue() {
 			return ITEM_VALUE;
 		}
@@ -143,6 +151,10 @@ namespace Item{
 		public void use(IPlayable user) {
 			user.equipWepon(this);
 		}
+
+        public bool getCanStore() {
+            return canStore;
+        }
         #endregion
-	}
+    }
 }

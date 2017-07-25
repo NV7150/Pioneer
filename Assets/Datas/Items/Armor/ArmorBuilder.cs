@@ -26,6 +26,8 @@ namespace MasterData {
 		private float
 			delayBonus;
 
+        private bool canStore;
+
 		/// <summary>
         /// コンストラクタ
         /// </summary>
@@ -89,8 +91,9 @@ namespace MasterData {
 			this.needPhy = int.Parse (datas[5]);
 			this.itemValue = int.Parse (datas[6]);
 			this.mass = int.Parse (datas[7]);
-			this.description = datas [8];
-			this.flavorText = datas [9];
+            this.canStore = datas[8] == "TRUE";
+			this.description = datas [9];
+			this.flavorText = datas [10];
 		}
 
 		/// <summary>

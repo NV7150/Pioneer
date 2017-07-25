@@ -478,6 +478,18 @@ namespace Character{
 				throw new ArgumentException ("invalit parameter");
 		}
 
+        public int getMetal(){
+            return this.mt;
+        }
+
+        public void addMetal(int metal){
+            this.mt += metal;
+        }
+
+        public void minusMetal(int metal){
+            this.mt -= metal;
+        }
+
 		public override string ToString () {
 			return "Hero No." + UNIQUE_ID;
 		}

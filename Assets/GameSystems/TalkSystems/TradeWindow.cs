@@ -6,31 +6,37 @@ using Character;
 using Item;
 
 public class TradeWindow : MonoBehaviour {
+    /// <summary> スクロールビューのcontent </summary>
     public GameObject content;
 
-    List<IItem> goods;
+    /// <summary> 商品のリスト </summary>
+    Goods goods;
+    /// <summary> 商品を表示するnodeのプレファブ </summary>
     GameObject tradeItemNodePrefab;
-    public GameObject view;
-    //かり
+    /// <summary> 取引に参加するプレイヤー </summary>
     Hero player;
+    /// <summary> 取引に参加するIFriendlyキャラクター </summary>
     IFriendly trader;
-    List<string> post;
+    /// <summary> 親となるメッセージウィンドウ </summary>
     MassageWindow window;
 
 	// Use this for initialization
     void Start () {
         transform.position = new Vector3(Screen.width ,Screen.height,0);
     }
-	
-	// Update is called once per frame
-	void Update () {
-        
-	}
 
-    public void setState(List<IItem> goods,Hero player,IFriendly trader,MassageWindow window) {
+    /// <summary>
+    /// 初期設定を行います
+    /// </summary>
+    /// <param name="goods">商品のリスト</param>
+    /// <param name="player">取引に参加するプレイヤー</param>
+    /// <param name="trader">取引に参加するIFriendlyキャラクター</param>
+    /// <param name="window">親となるメッセージウィンドウ</param>
+    public void setState(Goods goods,Hero player,IFriendly trader,MassageWindow window) {
         tradeItemNodePrefab = (GameObject)Resources.Load("Prefabs/TradeItemNode");
         this.goods = goods;
-        foreach (IItem item in goods) {
+        Debug.Log("gc " + goods.getGoods().Count);
+        foreach (IItem item in goods.getGoods()) {
             TradeItemNode node = Instantiate(tradeItemNodePrefab).GetComponent<TradeItemNode>();
             node.setGoods(item,this);
             node.transform.SetParent(content.transform);
@@ -40,13 +46,24 @@ public class TradeWindow : MonoBehaviour {
         this.window = window;
     }
 
+    /// <summary>
+    /// 購入するアイテムが決定した時の処理
+    /// </summary>
+    /// <param name="item">購入するアイテム</param>
     public void itemChose(IItem item) {
-        player.addItem(item);
+        if (item.getItemValue() > player.getMetal()) {
+            window.tradeFailed();
+            return;
+        }
+
+        player.addItem(goods.getItemFromId(item.getId()));
+        player.minusMetal(item.getItemValue());
     }
 
+    /// <summary> 終了ボタンが選択された時の処理 </summary>
     public void finishChose() {
         Debug.Log("into finishchose");
 		window.tradeFinished();
-        Destroy(view);
+        Destroy(gameObject);
     }
 }

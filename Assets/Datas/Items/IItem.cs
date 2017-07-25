@@ -3,6 +3,12 @@
 namespace Item {
     public interface IItem {
         /// <summary>
+        /// アイテムのIDを取得します
+        /// </summary>
+        /// <returns>アイテムのID</returns>
+        int getId();
+
+        /// <summary>
         /// アイテム名を取得します
         /// </summary>
         /// <returns>アイテム名</returns>
@@ -31,5 +37,11 @@ namespace Item {
         /// </summary>
         /// <returns>基本価格</returns>
 		int getItemValue();
+
+        /// <summary>
+        /// アイテムをインベントリに格納できるかを取得します
+        /// </summary>
+        /// <returns><c>true</c>, 格納可能, <c>false</c> 不可能</returns>
+        bool getCanStore();
     }
 }

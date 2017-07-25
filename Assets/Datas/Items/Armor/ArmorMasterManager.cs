@@ -27,6 +27,15 @@ namespace MasterData {
 					return builder.build ();
 			throw new ArgumentException ("invlit armorID");
 		}
+
+        public static ArmorBuilder getArmorBuilderFromId(int id){
+            foreach(ArmorBuilder builder in dataTable){
+                if (builder.getId() == id)
+                    return builder;
+			}
+			throw new ArgumentException("invlit armorID");
+        }
+
 		#region implemented abstract members of MasterDataManagerBase
 
 		protected override void addInstance (string[] datas) {
