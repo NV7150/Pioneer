@@ -13,14 +13,14 @@ public class TradeItemNode : MonoBehaviour {
     /// <summary> アイテム価格を表示するテキストオブジェクト </summary>
     public Text value;
     /// <summary> 親となるトレードウィンドウ </summary>
-    private TradeWindow window;
+    private ITradeWindow window;
 
     /// <summary>
     /// 商品とウィンドウを設定します
     /// </summary>
     /// <param name="item">商品</param>
     /// <param name="window">親となるウィンドウ</param>
-    public void setGoods(IItem item,TradeWindow window) {
+    public void setGoods(IItem item,ITradeWindow window) {
         this.item = item;
         name.text = this.item.getName();
         //かり
@@ -33,7 +33,7 @@ public class TradeItemNode : MonoBehaviour {
     /// </summary>
     public void chosen() {
         if (item != null) {
-            window.itemChose(item);
+            window.itemChose(item,this);
         }
     }
 }

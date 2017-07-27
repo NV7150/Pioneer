@@ -78,6 +78,10 @@ namespace MasterData {
 			return flavorText;
 		}
 
+        public bool getCanStore(){
+            return canStore;
+        }
+
 		/// <summary>
         /// string配列から初期化します
         /// </summary>

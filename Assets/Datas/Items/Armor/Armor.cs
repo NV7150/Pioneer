@@ -23,7 +23,7 @@ namespace Item {
 			/// <summary> アイテムの基本価格 </summary>
 			ITEM_VALUE;
 
-		private string
+		private readonly string
 			/// <summary> アイテム名 </summary>
 			NAME,
 			/// <summary> アイテムの説明 </summary>
@@ -32,10 +32,10 @@ namespace Item {
             FLAVOR_TEXT;
 
         /// <summary> 防具のディレイへの修正値 </summary>
-		private float DELAY_BONUS;
+        private readonly float DELAY_BONUS;
 
         /// <summary> アイテムとしてインベントリに格納できるか </summary>
-        private bool canStore;
+        private readonly bool CAN_STORE;
 
         /// <summary>
         /// コンストラクタ
@@ -52,6 +52,7 @@ namespace Item {
 			this.DELAY_BONUS = builder.getDelayBonus ();
 			this.MASS = builder.getMass ();
 			this.ITEM_VALUE = builder.getItemValue ();
+            this.CAN_STORE = builder.getCanStore();
 		}
 
 		/// <summary>
@@ -77,14 +78,6 @@ namespace Item {
         /// <param name="user">装備したいキャラウター</param>
 		public bool canEquip(IPlayable user){
             return (user.getRawAbility (BattleAbility.PHY) >= NEED_PHY);
-		}
-
-		/// <summary>
-        /// 装備条件を文章として取得します
-        /// </summary>
-        /// <returns>装備条件の文章</returns>
-		public string getEquipDescription (){
-			return FLAVOR_TEXT;
 		}
 
 		/// <summary>
@@ -126,10 +119,30 @@ namespace Item {
 		}
 
         public bool getCanStore() {
-            return canStore;
+            return CAN_STORE;
         }
 
+        public string getFlavorText() {
+            return FLAVOR_TEXT;
+        }
+
+		public bool getCanStack() {
+            return false;
+		}
         #endregion
+
+        public override bool Equals(object obj) {
+            //Armorであり、IDが同じなら等価
+            if(!(obj is Armor)){
+                return false;
+            }
+
+            Armor armor = (Armor)obj;
+
+            return armor.getId() == this.getId();
+        }
+
+
     }
 }
 

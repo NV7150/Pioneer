@@ -1,5 +1,5 @@
-id,name,attack,range,delay,needMft,itemValue,mass,weponType,weponAbility,description,flavorText
-0,装備なし,0,0,3,0,0,0,BLUNT,MFT,装備条件なし。,武器を持っていない状態。
-1,木剣,1,0,3.5,1,30,1,SWORD,MFT,mftが1以上で装備できる剣。,練習用の木製の剣。
-2,鉄の剣,3,0,4,3,100,2,SWORD,MFT,mftが3以上で装備できる剣。,鉄製の一般的な剣。
-3,棍棒,1,0,4,1,10,1,BLUNT,MFT,mftが1以上で装備できる鈍器。,ゴブリンなどが使う粗い棍棒。
+id,name,attack,range,delay,needMft,itemValue,mass,weponType,weponAbility,canStore,description,flavorText
+0,装備なし,0,0,3,0,0,0,BLUNT,MFT,FALSE,装備条件なし。,武器を持っていない状態。
+1,木剣,1,0,3.5,1,30,1,SWORD,MFT,TRUE,mftが1以上で装備できる剣。,練習用の木製の剣。
+2,鉄の剣,3,0,4,3,100,2,SWORD,MFT,TRUE,mftが3以上で装備できる剣。,鉄製の一般的な剣。
+3,棍棒,1,0,4,1,10,1,BLUNT,MFT,TRUE,mftが1以上で装備できる鈍器。,ゴブリンなどが使う粗い棍棒。

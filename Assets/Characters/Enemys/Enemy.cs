@@ -328,11 +328,11 @@ namespace Character{
 		}
 
 		public override bool Equals (object obj) {
-			//Enemyであり、IDとユニークIDが同値ならば等価と判断します
+			//Enemyであり、IDが同値ならば等価と判断します
 			if (!(obj is Enemy))
 				return false;
 			Enemy target = (Enemy)obj;
-			if (target.getUniqueId () != this.getUniqueId() && target.getId() != this.getId())
+			if (target.getId() != this.getId())
 				return false;
 			return true;
 		}

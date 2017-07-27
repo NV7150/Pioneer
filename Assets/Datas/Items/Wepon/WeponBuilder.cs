@@ -90,6 +90,10 @@ namespace MasterData{
             return weponAbility;
         }
 
+        public bool getCanStore(){
+            return canStore;
+        }
+
 		/// <summary>
         /// csvから初期化を行います
         /// </summary>

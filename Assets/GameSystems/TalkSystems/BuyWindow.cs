@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using Character;
 using Item;
 
-public class TradeWindow : MonoBehaviour {
+public class BuyWindow : MonoBehaviour ,ITradeWindow{
     /// <summary> スクロールビューのcontent </summary>
     public GameObject content;
+    public Text headerText;
 
     /// <summary> 商品のリスト </summary>
     Goods goods;
@@ -20,9 +22,15 @@ public class TradeWindow : MonoBehaviour {
     /// <summary> 親となるメッセージウィンドウ </summary>
     MassageWindow window;
 
+
+	/// <summary> 売却ウィンドウのプレファブ </summary>
+	private GameObject sellWindowPrefab;
+    /// <summary> 売却ウィンドウ </summary>
+    SellWindow sellWindow;
+
 	// Use this for initialization
     void Start () {
-        transform.position = new Vector3(Screen.width ,Screen.height,0);
+		transform.position = new Vector3(Screen.width, Screen.height, 0);
     }
 
     /// <summary>
@@ -44,26 +52,33 @@ public class TradeWindow : MonoBehaviour {
         this.player = player;
         this.trader = trader;
         this.window = window;
+
+        headerText.text = trader.getName();
+
+        sellWindow = transform.root.GetComponent<TradeView>().getSellWindow();
+		sellWindow.setState(player, trader);
+        sellWindow.transform.SetParent(this.transform.root);
     }
 
     /// <summary>
     /// 購入するアイテムが決定した時の処理
     /// </summary>
     /// <param name="item">購入するアイテム</param>
-    public void itemChose(IItem item) {
+    public void itemChose(IItem item,TradeItemNode node) {
         if (item.getItemValue() > player.getMetal()) {
             window.tradeFailed();
             return;
         }
-
         player.addItem(goods.getItemFromId(item.getId()));
         player.minusMetal(item.getItemValue());
+
+        sellWindow.updateItem();
     }
 
     /// <summary> 終了ボタンが選択された時の処理 </summary>
     public void finishChose() {
-        Debug.Log("into finishchose");
 		window.tradeFinished();
+        Destroy(sellWindow.gameObject);
         Destroy(gameObject);
     }
 }

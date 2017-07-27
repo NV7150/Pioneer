@@ -43,5 +43,17 @@ namespace Item {
         /// </summary>
         /// <returns><c>true</c>, 格納可能, <c>false</c> 不可能</returns>
         bool getCanStore();
+
+        /// <summary>
+        /// アイテムのフレーバーテキストを取得します
+        /// </summary>
+        /// <returns>フレーバーテキスト</returns>
+        string getFlavorText();
+
+        /// <summary>
+        /// スタック(複数のアイテムを一つのアイテムとして所持)可能かを表すフラグを取得します
+        /// </summary>
+        /// <returns><c>true</c>, スタック可能, <c>false</c> スタック不可</returns>
+        bool getCanStack();
     }
 }

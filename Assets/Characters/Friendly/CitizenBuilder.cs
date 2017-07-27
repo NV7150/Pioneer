@@ -23,9 +23,7 @@ namespace MasterData {
             id = int.Parse(datas[0]);
             name = datas[1];
 			modelId = datas[2];
-			UnityEngine.Debug.Log("start loop");
             for (int i = 3; datas[i] != "end";i++){
-                UnityEngine.Debug.Log("i = " + i);
                 massage.Add(datas[i]);
             }
         }

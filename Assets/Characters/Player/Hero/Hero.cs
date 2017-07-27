@@ -64,8 +64,8 @@ namespace Character{
 		/// <summary> 装備中の防具 </summary>
 		private Armor armor;
 
-		/// <summary> キャラクターが所持しているアイテム(keyをstring以外にする予定) </summary>
-		private Dictionary<string,ItemStack> inventry = new Dictionary<string,ItemStack>();
+        /// <summary> キャラクターが所持しているアイテム(keyをstring以外にする予定) </summary>
+        private Inventry inventry = new Inventry();
 
 		/// <summary> キャラクターが持つActiveSkillのリスト </summary>
 		private List<IActiveSkill> activeSkills = new List<IActiveSkill>();
@@ -117,7 +117,7 @@ namespace Character{
 		#region IPlayable implementation
 		public bool equipWepon (Wepon wepon) {
 			if (wepon.canEquip(this)) {
-				if (this.wepon != null)
+                if (this.wepon != null && this.wepon.getCanStore())
 					addItem (this.wepon);
 				this.wepon = wepon;
 				return true;
@@ -129,7 +129,7 @@ namespace Character{
 
 		public bool equipArmor (Armor armor) {
 			if (armor.canEquip (this)) {
-				if (this.armor != null)
+                if (this.armor != null && this.armor.getCanStore())
 					addItem (this.armor);
 				this.armor = armor;
 				return true;
@@ -205,7 +205,9 @@ namespace Character{
 		}
 
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
-
+            if (dammage < 0)
+                dammage = 0;
+            
 			if (attribute == AttackSkillAttribute.PHYSICAL)
 				dammage -= getDef ();
 			if(attribute == weakAttribute)
@@ -228,6 +230,9 @@ namespace Character{
 		}
 
 		public void healed (int heal, HealSkillAttribute attribute) {
+            if (heal < 0)
+                heal = 0;
+
 
 			if (attribute == HealSkillAttribute.HP_HEAL || attribute == HealSkillAttribute.BOTH) {
 				if (this.hp != 0)
@@ -235,11 +240,15 @@ namespace Character{
 			}
 			if (attribute == HealSkillAttribute.MP_HEAL || attribute == HealSkillAttribute.BOTH) {
 				this.mp += heal;
+
 			}
 			if (attribute == HealSkillAttribute.RESURRECTITION) {
 				if(this.hp == 0)
 					this.hp += heal;
 			}
+
+            hp = (hp > maxHp) ? hp = maxHp : hp;
+            mp = (mp > maxMp) ? mp = maxMp : mp;
 		}
 
         public int getRawAbility(BattleAbility ability){
@@ -379,14 +388,14 @@ namespace Character{
         /// </summary>
         /// <param name="item">追加するアイテム</param>
 		public void addItem(IItem item){
-			if (inventry.ContainsKey (item.getName ())) {
-				inventry [item.getName()].add (item);
-			} else {
-				ItemStack stack = new ItemStack ();
-				stack.add (item);
-				inventry [item.getName ()] = stack;
-			}
+            if (!item.getCanStore())
+                throw new ArgumentException("item " + item.getName() +"can't be stored");
+            inventry.addItem(item);
 		}
+
+        public Inventry getInventry(){
+            return inventry;
+        }
 
 		/// <summary>
         /// 最大HPを設定します

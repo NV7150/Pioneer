@@ -1,3 +1,4 @@
-id,name,model ID,goodsID,dex,spc,failText,introduction,trade,postText,end,,
-0,蒋介石,Test,0,1,1,金が足りないぞ！,何が欲しいんだい？,trade,武器は装備しないと意味がないぞ！,気をつけろよ！,end,,
-1,毛沢東,Test,1,1,1,そんな金じゃこれは買えないぞ！,うちの防具は最高級だよ！,trade,ご利用ありがとうございました！,またお越しください！,end,,
+id,name,model ID,goodsID,dex,spc,failText,introduction,trade,postText,,end
+0,蒋介石,Test,0,1,1,金が足りないぞ！,何が欲しいんだい？,trade,武器は装備しないと意味がないぞ！,気をつけろよ！,end
+1,毛沢東,Test,1,1,1,そんな金じゃこれは買えないぞ！,うちの防具は最高級だよ！,trade,ご利用ありがとうございました！,またお越しください！,end
+2,ヒトラー,Test,2,1,1,You don’t have enough money to buy it!,May I help you?,trade,Thank you for buying.,俺実は日本語しゃべれたんだよなぁwwwww,end

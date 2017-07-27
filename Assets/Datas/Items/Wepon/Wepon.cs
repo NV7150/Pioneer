@@ -25,22 +25,23 @@ namespace Item{
 
 		private readonly string 
 			/// <summary> アイテム名 </summary>
-			name,
+            NAME,
 			/// <summary> アイテムの説明 </summary>
-			description,
-			/// <summary> 装備条件の説明 </summary>
-            flavorText;
+            DESCRIPTION,
+			/// <summary> アイテムのフレーバーテキスト </summary>
+            FLAVOR_TEXT;
 
 		/// <summary> 武器のディレイ値 </summary>
-		private float DELAY;
+        private readonly float DELAY;
 
 		/// <summary> 武器の種別 </summary>
-		private WeponType type;
+        private readonly WeponType TYPE;
 
         /// <summary> 武器が使用するBattleAbility </summary>
-		private BattleAbility weponAbility;
+        private readonly BattleAbility WEPON_ABILITY;
 
-        private bool canStore;
+        /// <summary> 武器がストックできるかを表すフラグ </summary>
+        private readonly bool CAN_STORE;
 
         /// <summary>
         /// コンストラクタ
@@ -53,12 +54,13 @@ namespace Item{
 			NEED_ABILITY = builder.getNeedMft ();
 			ITEM_VALUE = builder.getItemValue ();
 			MASS = builder.getMass ();
-			name = builder.getName ();
-			description = builder.getDescription ();
-			flavorText = builder.getFlavorText ();
-			type = builder.getWeponType ();
+			NAME = builder.getName ();
+			DESCRIPTION = builder.getDescription ();
+			FLAVOR_TEXT = builder.getFlavorText ();
+			TYPE = builder.getWeponType ();
 			DELAY = builder.getDelay ();
-            weponAbility = builder.getWeponAbility();
+            WEPON_ABILITY = builder.getWeponAbility();
+            CAN_STORE = builder.getCanStore();
 		}
 
 		/// <summary>
@@ -90,7 +92,7 @@ namespace Item{
 		/// </summary>
 		/// <returns>武器の種別</returns>
 		public WeponType getWeponType() {
-			return type;
+			return TYPE;
 		}
 
 		/// <summary>
@@ -99,15 +101,7 @@ namespace Item{
 		/// <returns><c>true</c>, 装備可能 , <c>false</c> 装備不可能 </returns>
 		/// <param name="user">装備したいキャラクター</param>
 		public bool canEquip(IPlayable user) {
-            return (NEED_ABILITY <= user.getRawAbility(weponAbility));
-		}
-
-		/// <summary>
-		/// 装備条件の説明を取得します
-		/// </summary>
-		/// <returns>装備条件のい説明の文章</returns>
-		public string getEquipDescription() {
-			return flavorText;
+            return (NEED_ABILITY <= user.getRawAbility(WEPON_ABILITY));
 		}
 
 		/// <summary>
@@ -115,7 +109,7 @@ namespace Item{
 		/// </summary>
 		/// <returns>使用するBattleAbility</returns>
 		public BattleAbility getWeponAbility() {
-			return weponAbility;
+			return WEPON_ABILITY;
 		}
 
 		/// <summary>
@@ -141,11 +135,11 @@ namespace Item{
 		}
 
 		public string getName() {
-			return name;
+			return NAME;
 		}
 
         public string getDescription() {
-            return description;
+            return DESCRIPTION;
         }
 
 		public void use(IPlayable user) {
@@ -153,8 +147,28 @@ namespace Item{
 		}
 
         public bool getCanStore() {
-            return canStore;
+            return CAN_STORE;
         }
+
+        public string getFlavorText() {
+            return FLAVOR_TEXT;
+        }
+
+		public bool getCanStack() {
+			return false;
+		}
         #endregion
+
+        public override bool Equals(object obj) {
+            if(!(obj is Wepon)){
+                return false;
+            }
+
+            Wepon item = (Wepon)obj;
+
+            return (item.getId() == this.getId());
+        }
+
+
     }
 }

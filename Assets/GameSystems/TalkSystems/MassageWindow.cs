@@ -1,8 +1,8 @@
 ﻿using System.Collections;using System.Collections.Generic;using UnityEngine;using UnityEngine.UI;using System;using Character;using Item;public class MassageWindow : MonoBehaviour {    /// <summary> テキストを表示するオブジェクト </summary>    public Text massageTextObject;    /// <summary> 表示する予定のメッセージのリスト </summary>    private List<string> massageList = new List<string>();    private string failMassage;    /// <summary> 現在表示中のメッセージ </summary>    private string printingMassage;    /// <summary> 表示するコルーチン </summary>    private Coroutine printCoroutine;    /// <summary> 現在メッセージを表示しているかを表すフラグ </summary>    private bool massagePrinting = false;    /// <summary>    /// massageListに対応するフラグ    /// printingMassageの一つ先を示す    /// </summary>    private int massageIndex = 0;    /// <summary>     /// 取引をする場合にそれを開始するインデックス    /// 示されたインデックスのメッセージ終了時に取引を開始する    /// </summary>    private int startTradeIndex = -1;    /// <summary> キー操作なしでメッセージの表示の必要があるかのフラグ </summary>    private bool needToAutoPrint = false;
 
-    /// <summary> 取引ウィンドウのプレファブ </summary>
-    private GameObject tradeWindowPrefab;    /// <summary> 取引をするアイテムのリスト </summary>    private Goods tradegoods;    /// <summary> 取引をするプレイヤー </summary>    private Hero player;    /// <summary> playerの取引相手であるIFriendlyキャラクター </summary>    private IFriendly trader;    /// <summary> 取引中であるかを表すフラグ </summary>    private bool isTrading = false;    private void Start() {        //Debug.Log(trader.getName() + massageList.Count);        printCoroutine = StartCoroutine(showText(massageList[massageIndex]));        massageIndex++;
-		tradeWindowPrefab = (GameObject)Resources.Load("Prefabs/TradeWindow");    }
+    /// <summary> 購入ウィンドウのプレファブ </summary>
+    private GameObject tradeViewPrefab;    /// <summary> 購入できるアイテムのリスト </summary>    private Goods tradegoods;    /// <summary> 取引をするプレイヤー </summary>    private Hero player;    /// <summary> playerの取引相手であるIFriendlyキャラクター </summary>    private IFriendly trader;    /// <summary> 取引中であるかを表すフラグ </summary>    private bool isTrading = false;    private void Start() {        //Debug.Log(trader.getName() + massageList.Count);        printCoroutine = StartCoroutine(showText(massageList[massageIndex]));        massageIndex++;
+		tradeViewPrefab = (GameObject)Resources.Load("Prefabs/TradeView");    }
 
 	// Update is called once per frame
 	void Update() {
@@ -16,12 +16,13 @@
 			printCoroutine = StartCoroutine(showText(massageList[massageIndex]));
 			massageIndex++;            needToAutoPrint = false;        }
 
-		if (tradeWindowPrefab == null) {
-			tradeWindowPrefab = (GameObject)Resources.Load("Prefabs/TradeWindow");        }	}    /// <summary>    /// 取引を開始します    /// </summary>    private void startTrade() {        Debug.Log("into startTrade");
-        TradeWindow tradeWindow = MonoBehaviour.Instantiate(tradeWindowPrefab).GetComponent<TradeWindow>();
-        tradeWindow.setState(tradegoods, player, trader,this);
+		if (tradeViewPrefab == null) {
+			tradeViewPrefab = (GameObject)Resources.Load("Prefabs/TradeView");        }	}    /// <summary>    /// 取引を開始します    /// </summary>    private void startTrade() {        GameObject tradeViewNode = MonoBehaviour.Instantiate(tradeViewPrefab);        BuyWindow buyWindow = tradeViewNode.GetComponent<TradeView>().getBuyWindow();
+        buyWindow.setState(tradegoods, player, trader,this);
         //かり
-        tradeWindow.transform.SetParent(CanvasGetter.getCanvas().transform);        isTrading = true;
+        tradeViewNode.transform.SetParent(CanvasGetter.getCanvas().transform);        float posX = (Screen.width / 2 - tradeViewNode.GetComponent<RectTransform>().sizeDelta.x / 2);
+        tradeViewNode.transform.localPosition = new Vector3(posX, 0, 0);        Canvas.ForceUpdateCanvases();
+		isTrading = true;
     }    /// <summary>    /// 取引が必要かを判断し、必要なら開始します    /// </summary>    private void judgeTrade(){        Debug.Log("mi " + (massageIndex - 1) + "t " + startTradeIndex);
         if (massageIndex - 1 >= 0 && massageIndex - 1 == startTradeIndex) {
 			startTrade();

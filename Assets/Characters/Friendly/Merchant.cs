@@ -39,6 +39,11 @@ namespace Character {
             abilities.Add(FriendlyAbility.SPC,builder.getSpc());
 
             failMassage = builder.getFailMassage();
+
+            foreach(IItem item in goods.getGoods()){
+                if (!item.getCanStore())
+                    throw new InvalidProgramException("item " + item.getName() + " is can't be sold because it can't be stored");
+            }
         }
 
         public void act() {

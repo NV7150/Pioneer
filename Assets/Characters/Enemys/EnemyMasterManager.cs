@@ -9,7 +9,7 @@ using Character;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class EnemyMasterManager : MasterDataManagerBase{
-		/// <summary> 登録済みEnemのリスト </summary>
+		/// <summary> 登録済みEnemySのリスト </summary>
 		private static List<EnemyBuilder> dataTable = new List<EnemyBuilder>();
 
 		private void Awake(){

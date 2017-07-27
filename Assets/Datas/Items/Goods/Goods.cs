@@ -30,6 +30,9 @@ namespace Item {
                     case ItemType.WEPON:
                         items.Add(WeponMasterManager.getWeponFromId(id));
                         break;
+                    case ItemType.HEAL_ITEM:
+                        items.Add(HealItemMasterManager.getHealItemFromId(id));
+                        break;
                     default:
                         throw new NotSupportedException("the goodsType hasn't made yet");
                 }
@@ -42,7 +45,9 @@ namespace Item {
 				case ItemType.ARMOR:
                     return ArmorMasterManager.getArmorFromId(id);
 				case ItemType.WEPON:
-                    return ArmorMasterManager.getArmorFromId(id);
+                    return WeponMasterManager.getWeponFromId(id);
+                case ItemType.HEAL_ITEM:
+                    return HealItemMasterManager.getHealItemFromId(id);
 				default:
 					throw new NotSupportedException("the goodsType hasn't made yet");
 			}
