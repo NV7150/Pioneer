@@ -73,6 +73,10 @@ namespace Skill{
 			return ID;
 		}
 
+		public int getCost() {
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		/// <summary>

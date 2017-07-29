@@ -7,6 +7,7 @@ using Item;
 using Skill;
 using Parameter;
 using BattleSystem;
+using Menus;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
@@ -82,6 +83,10 @@ namespace Character{
 		/// <summary> プレイヤーの苦手属性 </summary>
 		private AttackSkillAttribute weakAttribute;
 
+        private GameObject menuPrefab;
+
+        private Party party = new Party();
+
         /// <summary>
         /// <see cref="T:Character.Hero"/> classのコンストラクタです
         /// </summary>
@@ -112,6 +117,10 @@ namespace Character{
 			UNIQUE_ID = UniqueIdCreator.creatUniqueId ();
 
 			this.level = 2;
+
+            menuPrefab = (GameObject)Resources.Load("Prefabs/Menu");
+
+            party.join(this);
 		}
 
 		#region IPlayable implementation
@@ -368,6 +377,13 @@ namespace Character{
 
 		public void act () {
             bonusKeeper.advanceLimit();
+
+            if(Input.GetKeyDown(KeyCode.E)){
+                GameObject menuObject = MonoBehaviour.Instantiate(menuPrefab,new Vector3(874f, 384f, 0f),new Quaternion(0,0,0,0));
+                Menu menu = menuObject.GetComponent<Menu>();
+                menu.transform.SetParent(CanvasGetter.getCanvas().transform);
+                menu.setState(this,party);
+            }
 		}
 
 		public void death () {

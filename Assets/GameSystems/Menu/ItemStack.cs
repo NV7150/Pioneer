@@ -23,8 +23,9 @@ namespace Item{
         /// </summary>
         /// <param name="item">アイテム</param>
         public void add(IItem item) {
-            if (item.Equals(ITEM))
+            if (!item.Equals(ITEM))
                 throw new System.ArgumentException("item " + item.getName() + " can't be stored!");
+            
             numberOfStack++;
 
             UnityEngine.Debug.Log("add stack is " + numberOfStack);
@@ -54,6 +55,10 @@ namespace Item{
             numberOfStack--;
             UnityEngine.Debug.Log("remove stack is " + numberOfStack);
             return (numberOfStack > 0);
+        }
+
+        public int getNumberOfStack(){
+            return numberOfStack;
         }
 	}
 }

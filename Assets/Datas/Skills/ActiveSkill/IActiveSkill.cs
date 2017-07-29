@@ -16,12 +16,6 @@ namespace Skill {
 		void action(IBattleable actioner,BattleTask task);
 
 		/// <summary>
-		/// MPコストを取得します
-		/// </summary>
-		/// <returns> コスト </returns>
-		int getCost();
-
-		/// <summary>
 		/// ディレイ秒数を取得します
 		/// </summary>
 		/// <returns>ディレイするフレーム数</returns>

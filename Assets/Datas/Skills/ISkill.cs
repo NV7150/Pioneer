@@ -25,5 +25,11 @@ namespace Skill {
         /// </summary>
         /// <returns>スキルID</returns>
 		int getId();
+
+        /// <summary>
+        /// スキルのMPコストを取得します
+        /// </summary>
+        /// <returns>コスト</returns>
+        int getCost();
     }
 }

@@ -204,7 +204,7 @@ namespace Skill {
 		}
 
 		public string getFlavorText() {
-			throw new NotImplementedException();
+            return this.FLAVOR_TEXT;
 		}
 
 		public int getId () {

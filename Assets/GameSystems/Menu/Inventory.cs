@@ -29,12 +29,11 @@ namespace Item {
 
                 if (stack == null) {
                     //スタックがインベントリになければ作成
-                    ItemStack newStack = new ItemStack(item);
-                    stackables.Add(newStack);
-                } else {
-                    //すでにあったら追加
-                    stack.add(item);
+                    stack = new ItemStack(item);
+                    stackables.Add(stack);
                 }
+                //すでにあったら追加
+                stack.add(item);
             } else {
                 //スタック不可は問答無用で追加
                 unstackables.Add(item);
@@ -57,6 +56,18 @@ namespace Item {
             }
 
             return items;
+        }
+
+        public ItemStack getStack(IItem item){
+			if (!item.getCanStack())
+				throw new System.ArgumentException("item " + item + " can't stack");
+
+            foreach(ItemStack stack in stackables){
+                if (stack.getItem().Equals(item))
+                    return stack;
+			}
+
+            throw new System.ArgumentException("item " + item + " wasn't found");
         }
 
         /// <summary>
