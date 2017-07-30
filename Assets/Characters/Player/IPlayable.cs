@@ -6,6 +6,9 @@ using Item;
 using Parameter;
 using Skill;
 
+using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
+
 namespace Character{
     /// <summary>
     /// プレイヤーが操作可能なキャラクターのinterfaceです
@@ -26,11 +29,17 @@ namespace Character{
         /// <param name="armor"> 装備したい防具 </param>
 		bool equipArmor(Armor armor);
 
+        Wepon getWepon();
+
 		/// <summary>
         /// 装備している防具を取得します
         /// </summary>
         /// <returns> 装備している防具 </returns>
 		Armor getArmor();
+
+        Dictionary<BattleAbility, int> getBattleAbilities();
+
+        Dictionary<FriendlyAbility, int> getFriendlyAbilities();
 
 		/// <summary>
         /// レベルアップし、各能力値の更新を行います

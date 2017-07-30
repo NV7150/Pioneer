@@ -53,7 +53,7 @@ namespace Character{
 		/// <summary> キャラクターの職業 </summary>
 		private Job job;
 		/// <summary> このキャラクターの特徴 </summary>
-		private IIdentity identity;
+		private Identity identity;
 		/// <summary> このキャラクターの使命 </summary>
 		private Mission mission;
 
@@ -522,5 +522,13 @@ namespace Character{
 		public override bool Equals (object obj) {
 			return this == obj;
 		}
+
+        public Dictionary<BattleAbility, int> getBattleAbilities() {
+            return new Dictionary<BattleAbility, int>(battleAbilities);
+        }
+
+        public Dictionary<FriendlyAbility, int> getFriendlyAbilities() {
+            return new Dictionary<FriendlyAbility, int>(friendlyAbilities);
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace Menus{
 
         public void chosen(){
             if (isStack) {
-                menu.itemChosen(stack);
+                menu.itemChose(stack);
             } else {
                 menu.itemChosen(item);
             }

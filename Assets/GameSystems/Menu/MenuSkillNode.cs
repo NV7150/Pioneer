@@ -31,7 +31,7 @@ namespace Menus {
         }
 
         public void chosen(){
-            menu.skillChosen(skill);
+            menu.skillChose(skill);
         }
     }
 }

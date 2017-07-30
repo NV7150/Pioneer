@@ -19,12 +19,15 @@ namespace Menus {
         private GameObject menuItemViewPrefab;
         private GameObject menuSkillViewPrefab;
 		private GameObject useWindowPrefab;
+        private GameObject menuCharacterNodePrefab;
+        private GameObject menuCharacterViewPrefab;
 
         Party party;
         private Hero player;
 
         MenuItemView itemView;
         MenuSkillView skillView;
+        MenuCharacterStateView stateView;
 
         // Use this for initialization
         void Awake() {
@@ -33,6 +36,8 @@ namespace Menus {
             menuSkillNodePrefab = (GameObject)Resources.Load("Prefabs/MenuSkillNode");
             menuItemViewPrefab = (GameObject)Resources.Load("Prefabs/MenuItemView");
             menuSkillViewPrefab = (GameObject)Resources.Load("Prefabs/MenuSkillView");
+            menuCharacterNodePrefab = (GameObject)Resources.Load("Prefabs/MenuCharacterNode");
+            menuCharacterViewPrefab = (GameObject)Resources.Load("Prefabs/MenuCharacterStateView");
             useWindowPrefab = (GameObject)Resources.Load("Prefabs/UseWindow");
         }
 
@@ -60,6 +65,9 @@ namespace Menus {
             detachContents();
 
             switch(menuContent){
+                case MenuContents.STATUS:
+                    inputCharacters();
+                    break;
                 case MenuContents.ITEM:
                     inputItems();
                     break;
@@ -71,6 +79,24 @@ namespace Menus {
                 default:
                     throw new NotSupportedException("unkonwn content " + menuContent);
             }
+        }
+
+        public void inputCharacters(){
+            foreach(IPlayable character in party.getParty()){
+                GameObject characterNodeObject = Instantiate(menuCharacterNodePrefab);
+                MenuCharacterNode characterNode = characterNodeObject.GetComponent<MenuCharacterNode>();
+                characterNode.setCharacter(character,this);
+                characterNode.transform.SetParent(content.transform);
+            }
+        }
+
+        public void characterChose(IPlayable character){
+            if (stateView == null) {
+                GameObject viewObject = Instantiate(menuCharacterViewPrefab, new Vector3(360, 384, 0), new Quaternion(0, 0, 0, 0));
+                stateView = viewObject.GetComponent<MenuCharacterStateView>();
+                stateView.transform.SetParent(CanvasGetter.getCanvas().transform);
+            }
+            stateView.setCharacter(character);
         }
 
 		public void inputItems() {
@@ -93,7 +119,7 @@ namespace Menus {
             itemView.setItem(item,party,this);
         }
 
-		public void itemChosen(ItemStack stack) {
+		public void itemChose(ItemStack stack) {
             inputItemView();
 
             itemView.setItem(stack, party, this);
@@ -125,7 +151,7 @@ namespace Menus {
 			}
         }
 
-        public void skillChosen(ISkill skill){
+        public void skillChose(ISkill skill){
             if(skillView == null){
                 skillView = Instantiate(menuSkillViewPrefab,new Vector3(360, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuSkillView>();
                 skillView.transform.SetParent(CanvasGetter.getCanvas().transform);
@@ -143,16 +169,17 @@ namespace Menus {
 			}
 		}
 
-        public void backChosen(){
+        public void backChose(){
             detachContents();
 
             skillView = null;
             itemView = null;
+            stateView = null;
 
             inputIndex();
         }
 
-        public void finishChosen(){
+        public void finishChose(){
             if(skillView != null )
                 Destroy(skillView.gameObject);
 
