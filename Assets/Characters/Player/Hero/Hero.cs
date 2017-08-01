@@ -92,7 +92,7 @@ namespace Character{
         /// </summary>
         /// <param name="job">職業</param>
         /// <param name="con">Container</param>
-		public Hero(Job job,Container con){
+        public Hero(Job job,Humanity humanity,List<Identity> identities, Container con){
 			Dictionary<BattleAbility,int> battleParameters = job.defaultSettingBattleAbility ();
 			Dictionary<FriendlyAbility,int> friendlyParameters = job.defaultSettingFriendlyAbility ();
 
@@ -121,6 +121,33 @@ namespace Character{
             menuPrefab = (GameObject)Resources.Load("Prefabs/Menu");
 
             party.join(this);
+
+			//もうちとくふうするかも
+
+			var bKeys = Enum.GetValues(typeof(BattleAbility));
+			var fKeys = Enum.GetValues(typeof(FriendlyAbility));
+
+			foreach (Identity identity in identities) {
+                var battleBonus = identity.getBattleAbilityBonuses();
+                foreach(BattleAbility ability in bKeys){
+                    battleAbilities[ability] += battleBonus[ability];
+                }
+
+                var friBonus = identity.getFriendlyAblityBonuses();
+                foreach (FriendlyAbility ability in fKeys){
+                    friendlyAbilities[ability] += friBonus[ability];
+                }
+
+                identity.activateSkill(this);
+            }
+
+            humanity.activate(this);
+            foreach(BattleAbility ability in bKeys){
+                battleAbilities[ability] = (int)((float)battleAbilities[ability] * humanity.getAbilityMagnification(ability));
+            }
+            foreach (FriendlyAbility ability in fKeys) {
+                friendlyAbilities[ability] = (int)((float)friendlyAbilities[ability] * humanity.getAbilityMagnification(ability));
+			}
 		}
 
 		#region IPlayable implementation

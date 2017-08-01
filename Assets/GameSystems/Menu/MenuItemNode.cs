@@ -9,24 +9,25 @@ using System;
 
 namespace Menus{
     public class MenuItemNode : MonoBehaviour {
-        IItem item;
-        ItemStack stack;
-        Menu menu;
+		/// <summary> 担当するアイテム </summary>
+		IItem item;
+		/// <summary> 担当するアイテムスタック </summary>
+		ItemStack stack;
+		/// <summary> 元のメニュー </summary>
+		Menu menu;
 
-        bool isStack = false;
+		/// <summary> 担当するアイテムがスタックかのフラグ </summary>
+		bool isStack = false;
 
+
+        /// <summary> 名前を表示させるテキスト </summary>
         public Text nameText;
 
-        // Use this for initialization
-        void Start() {
-
-        }
-
-        // Update is called once per frame
-        void Update() {
-
-        }
-
+        /// <summary>
+        /// 初期設定を行います
+        /// </summary>
+        /// <param name="item">担当するアイテム</param>
+        /// <param name="menu">元のメニュー</param>
         public void setState(IItem item, Menu menu) {
             this.item = item;
             this.menu = menu;
@@ -35,7 +36,12 @@ namespace Menus{
             isStack = false;
         }
 
-        public void setState(ItemStack stack ,Menu menu){
+		/// <summary>
+		/// 初期設定を行います
+		/// </summary>
+		/// <param name="stack">担当するアイテムスタック</param>
+		/// <param name="menu">元のメニュー</param>
+		public void setState(ItemStack stack ,Menu menu){
             this.stack = stack;
             this.menu = menu;
             nameText.text = stack.getItem().getName();
@@ -43,6 +49,9 @@ namespace Menus{
             isStack = true;
         }
 
+        /// <summary>
+        /// 選ばれた時の処理
+        /// </summary>
         public void chosen(){
             if (isStack) {
                 menu.itemChose(stack);

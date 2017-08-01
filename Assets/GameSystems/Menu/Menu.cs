@@ -11,8 +11,10 @@ using MenuContents = Menus.MenuParameters.MenuContents;
 
 namespace Menus {
     public class Menu : MonoBehaviour {
+        /// <summary> スクロールビューのコンテント </summary>
         public GameObject content;
 
+        //各ノード・ビューのプレファブ
         private GameObject menuIndexNodePrefab;
         private GameObject menuItemNodePrefab;
         private GameObject menuSkillNodePrefab;
@@ -22,12 +24,17 @@ namespace Menus {
         private GameObject menuCharacterNodePrefab;
         private GameObject menuCharacterViewPrefab;
 
+        /// <summary> プレイヤーが所属するパーティ </summary>
         Party party;
+        /// <summary> PC </summary>
         private Hero player;
 
-        MenuItemView itemView;
-        MenuSkillView skillView;
-        MenuCharacterStateView stateView;
+		/// <summary> アクティブなアイテムビュー </summary>
+		MenuItemView itemView;
+		/// <summary> アクティブなスキルビュー </summary>
+		MenuSkillView skillView;
+		/// <summary> アクティブなステートビュー </summary>
+		MenuCharacterStateView stateView;
 
         // Use this for initialization
         void Awake() {
@@ -46,12 +53,20 @@ namespace Menus {
 
         }
 
+        /// <summary>
+        /// 初期設定を行います
+        /// </summary>
+        /// <param name="player">プレイヤー</param>
+        /// <param name="party">playerが所属するパーティ</param>
         public void setState(Hero player,Party party){
             this.player = player;
             this.party = party;
             inputIndex();
         }
 
+        /// <summary>
+        /// インデックスをスクロールビューに表示させます
+        /// </summary>
         private void inputIndex(){
             var contents = Enum.GetValues(typeof(MenuContents));
             foreach(MenuContents menuContent in contents){
@@ -61,7 +76,10 @@ namespace Menus {
             }
         }
 
-        public void indexChosen(MenuContents menuContent){
+		/// <summary>
+		/// インデックスが選ばれた時の処理
+		/// </summary>
+		public void indexChosen(MenuContents menuContent){
             detachContents();
 
             switch(menuContent){
@@ -81,7 +99,10 @@ namespace Menus {
             }
         }
 
-        public void inputCharacters(){
+		/// <summary>
+		/// パーティのキャラクターをスクロールビューに表示させます
+		/// </summary>
+		public void inputCharacters(){
             foreach(IPlayable character in party.getParty()){
                 GameObject characterNodeObject = Instantiate(menuCharacterNodePrefab);
                 MenuCharacterNode characterNode = characterNodeObject.GetComponent<MenuCharacterNode>();
@@ -90,7 +111,10 @@ namespace Menus {
             }
         }
 
-        public void characterChose(IPlayable character){
+		/// <summary>
+		/// キャラクターが選ばれた時の処理
+		/// </summary>
+		public void characterChose(IPlayable character){
             if (stateView == null) {
                 GameObject viewObject = Instantiate(menuCharacterViewPrefab, new Vector3(360, 384, 0), new Quaternion(0, 0, 0, 0));
                 stateView = viewObject.GetComponent<MenuCharacterStateView>();
@@ -99,6 +123,9 @@ namespace Menus {
             stateView.setCharacter(character);
         }
 
+		/// <summary>
+		/// インベントリ内のアイテムをスクロールビューに表示させます
+		/// </summary>
 		public void inputItems() {
 			var inventry = player.getInventry();
             var items = inventry.getItems();
@@ -113,18 +140,28 @@ namespace Menus {
             }
         }
 
+		/// <summary>
+        /// アイテムが選択された時の処理
+        /// </summary>
+        /// <param name="item">選択されたアイテム</param>
 		public void itemChosen(IItem item) {
 			inputItemView();
 
             itemView.setItem(item,party,this);
         }
 
+		/// <summary>
+		/// アイテムが選択された時の処理
+		/// </summary>
 		public void itemChose(ItemStack stack) {
             inputItemView();
 
             itemView.setItem(stack, party, this);
         }
 
+        /// <summary>
+        /// アイテムビューにアイテムを表示させます
+        /// </summary>
         private void inputItemView(){
 			if (itemView == null) {
                 itemView = Instantiate(menuItemViewPrefab,new Vector3(360,384,0),new Quaternion(0,0,0,0)).GetComponent<MenuItemView>();
@@ -132,7 +169,10 @@ namespace Menus {
 			}
         }
 
-        public void inputSkills(){
+		/// <summary>
+		/// スキルをスクロールビューに表示させます
+		/// </summary>
+		public void inputSkills(){
             //修正可
             List<IActiveSkill> askills = new List<IActiveSkill>();
             askills.AddRange(player.getActiveSkills());
@@ -151,6 +191,10 @@ namespace Menus {
 			}
         }
 
+        /// <summary>
+        /// スキル選択時の処理
+        /// </summary>
+        /// <param name="skill">選択されたスキル</param>
         public void skillChose(ISkill skill){
             if(skillView == null){
                 skillView = Instantiate(menuSkillViewPrefab,new Vector3(360, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuSkillView>();
@@ -169,6 +213,9 @@ namespace Menus {
 			}
 		}
 
+        /// <summary>
+        /// 戻るが選択された時の処理
+        /// </summary>
         public void backChose(){
             detachContents();
 
@@ -179,6 +226,9 @@ namespace Menus {
             inputIndex();
         }
 
+        /// <summary>
+        /// 終了が選択された時の処理
+        /// </summary>
         public void finishChose(){
             if(skillView != null )
                 Destroy(skillView.gameObject);

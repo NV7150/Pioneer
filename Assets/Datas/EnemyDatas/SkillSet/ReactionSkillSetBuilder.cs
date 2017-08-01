@@ -6,7 +6,7 @@ using System;
 using Skill;
 using AI;
 
-using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategory;
+using ReactionSkillType = Skill.ReactionSkillParameters.ReactionSkillType;
 
 namespace MasterData{
 	[SerializableAttribute]
@@ -39,10 +39,10 @@ namespace MasterData{
 			return name;
 		}
 
-		public Dictionary<ReactionSkillCategory,ReactionSkill> getSet(){
-			Dictionary<ReactionSkillCategory,ReactionSkill> skills = new Dictionary<ReactionSkillCategory, ReactionSkill> ();
-			skills.Add (ReactionSkillCategory.DODGE,ReactionSkillMasterManager.getReactionSkillFromId(dodgeSkillId));
-			skills.Add (ReactionSkillCategory.GUARD, ReactionSkillMasterManager.getReactionSkillFromId (guardSkillId));
+		public Dictionary<ReactionSkillType,ReactionSkill> getSet(){
+			Dictionary<ReactionSkillType,ReactionSkill> skills = new Dictionary<ReactionSkillType, ReactionSkill> ();
+			skills.Add (ReactionSkillType.DODGE,ReactionSkillMasterManager.getReactionSkillFromId(dodgeSkillId));
+			skills.Add (ReactionSkillType.GUARD, ReactionSkillMasterManager.getReactionSkillFromId (guardSkillId));
 			return skills;
 		}
 

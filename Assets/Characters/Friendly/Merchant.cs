@@ -6,6 +6,7 @@ using UnityEngine;
 
 using MasterData;
 using Item;
+using TalkSystem;
 
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
 

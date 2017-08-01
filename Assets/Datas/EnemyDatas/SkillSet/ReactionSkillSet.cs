@@ -6,7 +6,7 @@ using Skill;
 using AI;
 using MasterData;
 
-using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategory;
+using ReactionSkillType = Skill.ReactionSkillParameters.ReactionSkillType;
 
 namespace AI {
 	public class ReactionSkillSet {
@@ -16,7 +16,7 @@ namespace AI {
 		/// <summary> スキルセット名 </summary>
 		private readonly string NAME;
 		/// <summary> スキルセットを表すDictionary </summary>
-		private Dictionary<ReactionSkillCategory,ReactionSkill> skillSet;
+		private Dictionary<ReactionSkillType,ReactionSkill> skillSet;
 
         /// <summary>
         /// コンストラクタ
@@ -49,7 +49,7 @@ namespace AI {
 		/// </summary>
 		/// <returns> 指定されたReactionSkill </returns>
 		/// <param name="category"> 取得したいスキルのカテゴリ </param>
-		public ReactionSkill getReactionSkillFromCategory(ReactionSkillCategory category){
+		public ReactionSkill getReactionSkillFromCategory(ReactionSkillType category){
 			return skillSet [category];
 		}
 	}

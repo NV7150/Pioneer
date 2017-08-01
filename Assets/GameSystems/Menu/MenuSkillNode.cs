@@ -8,21 +8,20 @@ using System;
 
 namespace Menus {
     public class MenuSkillNode : MonoBehaviour {
-        private ISkill skill;
-        private Menu menu;
+		/// <summary> 担当するスキル </summary>
+		private ISkill skill;
+		/// <summary> 元となるメニュー </summary>
+		private Menu menu;
 
+
+        /// <summary> 名前を表示するテキスト </summary>
         public Text nameText;
 
-        // Use this for initialization
-        void Start() {
-
-        }
-
-        // Update is called once per frame
-        void Update() {
-
-        }
-
+        /// <summary>
+        /// 初期設定
+        /// </summary>
+        /// <param name="skill">担当するスキル</param>
+        /// <param name="menu">Menu.</param>
         public void setState(ISkill skill, Menu menu) {
             this.skill = skill;
             this.menu = menu;
@@ -30,6 +29,9 @@ namespace Menus {
             nameText.text = skill.getName();
         }
 
+        /// <summary>
+        /// 選択された時の処理
+        /// </summary>
         public void chosen(){
             menu.skillChose(skill);
         }

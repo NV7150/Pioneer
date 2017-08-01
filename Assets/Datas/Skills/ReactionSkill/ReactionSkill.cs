@@ -7,7 +7,7 @@ using Character;
 using AI;
 
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
-using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategory;
+using ReactionSkillType = Skill.ReactionSkillParameters.ReactionSkillType;
 
 namespace Skill{
 	//受動的に使用するスキルです。
@@ -39,7 +39,7 @@ namespace Skill{
 		private readonly bool IS_READY_TO_COUNTER;
 
 		/// <summary> スキルのカテゴリ </summary>
-		private ReactionSkillCategory CATEGORY;
+		private ReactionSkillType CATEGORY;
 
         /// <summary>
         /// コンストラクタ
@@ -51,7 +51,7 @@ namespace Skill{
 			DEF = int.Parse (datas[2]);
 			DODGE = int.Parse (datas[3]);
 			IS_READY_TO_COUNTER = (0 == int.Parse (datas [4]));
-			CATEGORY = (ReactionSkillCategory) Enum.Parse (typeof(ReactionSkillCategory), datas [5]);
+			CATEGORY = (ReactionSkillType) Enum.Parse (typeof(ReactionSkillType), datas [5]);
             DESCRIPTION = datas[6];
             FLAVOR_TEXT = datas[7];
 		}
@@ -87,17 +87,17 @@ namespace Skill{
 		/// <param name="hit">攻撃を試みるスキルの命中値</param>
 		/// <param name="attribute">攻撃を試みるスキルの属性</param>
 		public void reaction (IBattleable user,int attack,int hit,AttackSkillAttribute attribute) {
-			if (this.CATEGORY == ReactionSkillCategory.DODGE) {
+			if (this.CATEGORY == ReactionSkillType.DODGE) {
 				//命中判定
 				if (hit > user.getDodge () + DODGE)
 					//ダメージ処理
 					user.dammage (attack, attribute);
-			} else if (this.CATEGORY == ReactionSkillCategory.GUARD) {
+			} else if (this.CATEGORY == ReactionSkillType.GUARD) {
 				int def = user.getDef () + DEF;
 				int dammage = attack - def;
 				dammage = (dammage >= 0) ? dammage : 0;
 				user.dammage (dammage, attribute);
-			} else if (this.CATEGORY == ReactionSkillCategory.MISS) {
+			} else if (this.CATEGORY == ReactionSkillType.MISS) {
 				user.dammage (attack,attribute);
 			}
 		}
@@ -122,7 +122,7 @@ namespace Skill{
         /// カテゴリを取得します
         /// </summary>
         /// <returns>カテゴリ</returns>
-		public ReactionSkillCategory getCategory(){
+		public ReactionSkillType getCategory(){
 			return CATEGORY;
 		}
 

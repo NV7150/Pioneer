@@ -9,24 +9,36 @@ using System;
 
 namespace Menus {
     public class MenuItemView : MonoBehaviour {
-        private IItem item;
-        private ItemStack stack;
-        private Party party;
+		/// <summary> 担当するアイテム </summary>
+		private IItem item;
+		/// <summary> 担当するアイテムスタック </summary>
+		private ItemStack stack;
+		/// <summary> プレイヤーが所属するパーティ </summary>
+		private Party party;
 
-        public Text nameText;
-        public Text descritionText;
-        public Text valueText;
-        public Text massText;
-        public Text numberText;
-        public Text flavorText;
+		/// <summary> 名前を表示するテキスト </summary>
+		public Text nameText;
+		/// <summary> 説明文を表示するテキスト </summary>
+		public Text descritionText;
+		/// <summary> アイテム価格を表示するテキスト </summary>
+		public Text valueText;
+		/// <summary> アイテム重量を表示するテキスト </summary>
+		public Text massText;
+		/// <summary> アイテム数量を表示するテキスト </summary>
+		public Text numberText;
+		/// <summary> アイテムのフレーバーテキストを表示するテキスト </summary>
+		public Text flavorText;
 
+        /// <summary> 使うウィンドウのプレファブ </summary>
         private GameObject menuUseWindowPrefab;
 
+        /// <summary> 元のメニュー </summary>
         private Menu menu;
 
+        /// <summary> 担当するアイテムがスタックを持つかのフラグ </summary>
         private bool hasStack;
 
-
+        /// <summary> ウィンドウを表示するカンヴァス </summary>
         private Canvas frontCanvas;
 
         // Use this for initialization
@@ -35,11 +47,12 @@ namespace Menus {
             menuUseWindowPrefab = (GameObject)Resources.Load("Prefabs/MenuUseWindow");
         }
 
-        // Update is called once per frame
-        void Update() {
-
-        }
-
+        /// <summary>
+        /// アイテムを設定します
+        /// </summary>
+        /// <param name="item">アイテム</param>
+        /// <param name="targets">PCのパーティ</param>
+        /// <param name="menu">元のパーティ</param>
         public void setItem(IItem item,Party targets,Menu menu){
             numberText.gameObject.SetActive(false);
             this.item = item;
@@ -57,7 +70,13 @@ namespace Menus {
             this.menu = menu;
         }
 
-        public void setItem(ItemStack stack,Party targets,Menu menu){
+		/// <summary>
+		/// アイテムを設定します
+		/// </summary>
+		/// <param name="stack">アイテムスタック</param>
+		/// <param name="targets">PCのパーティ</param>
+		/// <param name="menu">元のパーティ</param>
+		public void setItem(ItemStack stack,Party targets,Menu menu){
 			numberText.gameObject.SetActive(true);
             this.stack = stack;
             item = stack.getItem();
@@ -76,6 +95,9 @@ namespace Menus {
             this.menu = menu;
         }
 
+        /// <summary>
+        /// 使うが選ばれた時の処理
+        /// </summary>
         public void useChose(){
             Vector3 windowPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
             MenuUseWindow useWindow = Instantiate(menuUseWindowPrefab,windowPos,new Quaternion(0,0,0,0)).GetComponent<MenuUseWindow>();
@@ -86,6 +108,11 @@ namespace Menus {
             useWindow.setState(this,item,party);
         }
 
+        /// <summary>
+        /// 使う対象が決定した時の処理
+        /// </summary>
+        /// <param name="target">使う対象のリスト</param>
+        /// <param name="window">操作された使うウィンドウ</param>
         public void useTargetChose(IPlayable target,MenuUseWindow window){
             if(hasStack){
                 if (!stack.take()) {
@@ -98,6 +125,9 @@ namespace Menus {
             item.use(target);
         }
 
+        /// <summary>
+        /// 削除が選ばれた時の処理
+        /// </summary>
         public void deleteChosen(){
             Destroy(gameObject);
         }

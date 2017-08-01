@@ -4,46 +4,54 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Character;
-using Parameter;
 
-public class MenuCharacterStateView : MonoBehaviour {
-    public Text nameText;
+namespace Menus {
+    public class MenuCharacterStateView : MonoBehaviour {
+        /// <summary> 名前を表示させるテキスト </summary>
+        public Text nameText;
 
-    public MenuCharacterParameterView parameterView;
+        /// <summary> パラメータを表示させるテキスト群 </summary>
+        public MenuCharacterParameterView parameterView;
 
-    public Text weponText;
-    public Text armorText;
+        /// <summary> 武器を表示させるテキスト </summary>
+        public Text weponText;
+        /// <summary> 防具を表示させるテキスト </summary>
+        public Text armorText;
 
-    public Image hpBar;
-    public Text hpValue;
-    public Image mpBar;
-    public Text mpValue;
+        /// <summary> HPを表すバー </summary>
+        public Image hpBar;
+        /// <summary> HPを表示させるテキスト </summary>
+        public Text hpValue;
+        /// <summary> MPを表すバー </summary>
+        public Image mpBar;
+        /// <summary> MPを表示させるテキスト </summary>
+        public Text mpValue;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        /// <summary>
+        /// キャラクターのパラメータを表示せます
+        /// </summary>
+        /// <param name="character">表示させたいキャラクター</param>
+        public void setCharacter(IPlayable character) {
+            nameText.text = character.getName();
 
-    public void setCharacter(IPlayable character){
-        nameText.text = character.getName();
+            parameterView.setAbilities(character.getLevel(), character.getBattleAbilities(), character.getFriendlyAbilities());
 
-        parameterView.setAbilities(character.getLevel(),character.getBattleAbilities(),character.getFriendlyAbilities());
+            //武器テキストまだ実装していないので注意
 
-        //weponText.text += character.getWepon().getName();
-        //armorText.text += character.getArmor().getName();
+            //weponText.text = "E:" + character.getWepon().getName();
+            //armorText.text = "E:" + character.getArmor().getName();
 
-        hpBar.fillAmount = (float)character.getHp() / (float)character.getMaxHp();
-        mpBar.fillAmount = (float)character.getMp() / (float)character.getMaxMp();
-        hpValue.text = character.getHp() + "/" + character.getMaxHp();
-        mpValue.text = character.getMp() + "/" + character.getMaxMp();
-    }
+            hpBar.fillAmount = (float)character.getHp() / (float)character.getMaxHp();
+            mpBar.fillAmount = (float)character.getMp() / (float)character.getMaxMp();
+            hpValue.text = character.getHp() + "/" + character.getMaxHp();
+            mpValue.text = character.getMp() + "/" + character.getMaxMp();
+        }
 
-    public void finishchose(){
-        Destroy(gameObject);
+        /// <summary>
+        /// 終了が選択された時の処理
+        /// </summary>
+        public void finishchose() {
+            Destroy(gameObject);
+        }
     }
 }

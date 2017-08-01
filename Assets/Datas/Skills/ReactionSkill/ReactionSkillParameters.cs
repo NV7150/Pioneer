@@ -5,7 +5,7 @@ namespace Skill {
         /// <summary>
         /// ReactionSkillの種別
         /// </summary>
-		public enum ReactionSkillCategory {
+		public enum ReactionSkillType {
 			GUARD,DODGE,MISS
 		}
 	}

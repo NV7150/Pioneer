@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using BattleSystem;
 using Character;
+using MasterData;
 
 using Extent = Skill.ActiveSkillParameters.Extent;
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
@@ -129,6 +130,24 @@ namespace Skill {
 
             //以上が満たされればtrue
             return true;
+        }
+
+        public static IActiveSkill getActiveSkill(ActiveSkillType type,int id){
+            switch(type){
+                case ActiveSkillType.ATTACK:
+                    return AttackSkillMasterManager.getAttackSkillFromId(id);
+
+                case ActiveSkillType.BUF:
+                    return BufSkillMasterManager.getBufSkillFromId(id);
+
+                case ActiveSkillType.DEBUF:
+                    return DebufSkillMasterManager.getDebufSkillFromId(id);
+
+                case ActiveSkillType.HEAL:
+                    return HealSkillMasterManager.getHealSkillFromId(id);
+
+                default : throw new NotSupportedException("unkonwn skillType " + type);
+            }
         }
 	}
 }

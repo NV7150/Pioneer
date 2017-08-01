@@ -8,7 +8,7 @@ using Skill;
 using BattleSystem;
 
 using Extent = Skill.ActiveSkillParameters.Extent;
-using ReactionSkillCategory = Skill.ReactionSkillParameters.ReactionSkillCategory;
+using ReactionSkillType = Skill.ReactionSkillParameters.ReactionSkillType;
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 
 namespace AI {
@@ -500,7 +500,7 @@ namespace AI {
         /// <param name="attacker">攻撃者</param>
         /// <param name="skill">攻撃されるスキル</param>
         public ReactionSkill decideReaction(IBattleable attacker, AttackSkill skill) {
-            Dictionary<ReactionSkillCategory, float> riskTable = new Dictionary<ReactionSkillCategory, float>();
+            Dictionary<ReactionSkillType, float> riskTable = new Dictionary<ReactionSkillType, float>();
 
             //ダメージからのリスク:攻撃側の攻撃力/現在HP
             int atk = skill.getAtk(attacker);
@@ -509,23 +509,23 @@ namespace AI {
             hp = (hp > 0) ? hp : 1;
             float dodgeDammageRisk = atk / hp;
             //命中からのリスク:命中値/回避値 - 1
-            float dodgeHitRisk = (skill.getHit(attacker)) / (user.getDodge() + reactionSkills.getReactionSkillFromCategory(ReactionSkillCategory.DODGE).getDodge()) - 1;
+            float dodgeHitRisk = (skill.getHit(attacker)) / (user.getDodge() + reactionSkills.getReactionSkillFromCategory(ReactionSkillType.DODGE).getDodge()) - 1;
             //回避合計リスク
             float dodgeRisk = dodgeHitRisk + dodgeDammageRisk;
             if (dodgeRisk != 0)
                 dodgeRisk /= 2;
-            riskTable.Add(ReactionSkillCategory.DODGE, dodgeRisk);
+            riskTable.Add(ReactionSkillType.DODGE, dodgeRisk);
 
             //攻撃を受けるリスク
             int sumHpGuard = user.getHp() + user.getDef();
             sumHpGuard = (sumHpGuard > 0) ? sumHpGuard : 1;
             float guardRisk = atk / sumHpGuard;
-            riskTable.Add(ReactionSkillCategory.GUARD, guardRisk);
+            riskTable.Add(ReactionSkillType.GUARD, guardRisk);
 
             //乱数判定
             float random = UnityEngine.Random.Range(0, dodgeRisk + guardRisk);
             var keys = riskTable.Keys;
-            foreach (ReactionSkillCategory category in keys) {
+            foreach (ReactionSkillType category in keys) {
                 if (riskTable[category] >= random) {
                     return reactionSkills.getReactionSkillFromCategory(category);
                 } else {

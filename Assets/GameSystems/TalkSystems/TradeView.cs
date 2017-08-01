@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TradeView : MonoBehaviour {
-    public BuyWindow buyWindow;
-    public SellWindow sellWindow;
+namespace TalkSystem {
+    public class TradeView : MonoBehaviour {
+        public BuyWindow buyWindow;
+        public SellWindow sellWindow;
 
-    public BuyWindow getBuyWindow(){
-        return buyWindow;
-    }
+        public BuyWindow getBuyWindow() {
+            return buyWindow;
+        }
 
-    public SellWindow getSellWindow(){
-        return sellWindow;
+        public SellWindow getSellWindow() {
+            return sellWindow;
+        }
     }
 }
