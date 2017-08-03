@@ -76,11 +76,10 @@ namespace Character{
 		/// <summary> このキャラクターが使うReactionSkillSet </summary>
 		private ReactionSkillSet reactionSkillSet;
 
-		/// <summary> このキャラクターが装備中の武器 </summary>
-		private Wepon equipedWepon;
-
 		/// <summary> このキャラクターの能力値ボーナスを管理を管理するBonusKeeper </summary>
 		private BonusKeeper bonusKeeper = new BonusKeeper();
+
+        private Wepon equipedWepon;
 
         /// <summary>
         ///  <see cref="T:Character.Enemy"/> classのコンストラクタ
@@ -96,7 +95,6 @@ namespace Character{
 			this.RARE_DROP_ID = builder.getRareDropId ();
 			this.MODEL_ID = builder.getModelName ();
 			this.FACTION = builder.getFaction ();
-			this.equipedWepon = builder.getWepon ();
 
 			this.MAX_HP = 100;
 
@@ -147,7 +145,7 @@ namespace Character{
 			//もっとくふうすする予定
             int atk = getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,10 + LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
             if (useWepon)
-                atk += equipedWepon.getAttack();
+                atk += (equipedWepon != null) ? equipedWepon.attackWith() : 0;
             return atk;
 		}
 
@@ -201,15 +199,23 @@ namespace Character{
 		}
 
 		public float getCharacterDelay() {
-            return equipedWepon.getDelay();
+            float delay;
+            if(equipedWepon != null){
+                delay = equipedWepon.getDelay();
+            }else {
+                float delayBonus = (float)abilities[BattleAbility.AGI] / 20;
+                delayBonus = (delayBonus < 1.0f) ? delayBonus : 1.0f;
+                delay = 2.0f - delayBonus;
+            }
+            return delay;
 		}
 
 		public int getCharacterRange() {
-            return equipedWepon.getRange();
+            return (equipedWepon != null) ? equipedWepon.getRange() : 0;
 		}
 
 		public BattleAbility getCharacterAttackMethod() {
-            return equipedWepon.getWeponAbility();
+            return (equipedWepon != null) ? equipedWepon.getWeponAbility() : BattleAbility.MFT;
 		}
 
 		public void addAbilityBonus(SubBattleAbilityBonus bonus) {

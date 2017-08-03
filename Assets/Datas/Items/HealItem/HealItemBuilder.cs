@@ -17,7 +17,8 @@ namespace MasterData{
 			/// <summary> アイテムの基本価格 </summary>
 			ITEM_VALUE,
 			/// <summary> アイテムの重量 </summary>
-			MASS;
+			MASS,
+            LEVEL;
 
 		private readonly string
 			/// <summary> アイテム名 </summary>
@@ -41,10 +42,11 @@ namespace MasterData{
             NAME = datas[1];
             HEAL = int.Parse(datas[2]);
             ITEM_VALUE = int.Parse(datas[3]);
-            MASS = int.Parse(datas[4]);
-            ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas[5]);
-            DESCRITION = datas[6];
-            FLAVOR_TEXT = datas[7];
+			MASS = int.Parse(datas[4]);
+			LEVEL = int.Parse(datas[5]);
+            ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas[6]);
+            DESCRITION = datas[7];
+            FLAVOR_TEXT = datas[8];
         }
 
 		public int getHeal() {
@@ -77,6 +79,10 @@ namespace MasterData{
 
 		public string getFlavorText() {
 			return FLAVOR_TEXT;
+		}
+
+		public int getLevel() {
+			return LEVEL;
 		}
 
         public HealItem build(){

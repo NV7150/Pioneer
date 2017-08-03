@@ -19,7 +19,7 @@ public class Humanity : MonoBehaviour {
     DESCRIPTION,
     FLAVOR_TEXT;
 
-    private Dictionary<ApplyObject, float> applyList = new Dictionary<ApplyObject, float>();
+    private Dictionary<ApplyObject, int> applyList = new Dictionary<ApplyObject, int>();
     private Dictionary<BattleAbility, List<ApplyObject>> battleAbilityAplies = new Dictionary<BattleAbility, List<ApplyObject>>();
     private Dictionary<FriendlyAbility, List<ApplyObject>> friendlyAbilityAplies = new Dictionary<FriendlyAbility, List<ApplyObject>>();
 
@@ -36,7 +36,7 @@ public class Humanity : MonoBehaviour {
         var keys = Enum.GetValues(typeof(ApplyObject));
         int count = 4;
         foreach(ApplyObject applyObject in keys){
-            applyList.Add(applyObject, float.Parse(datas[count]));
+            applyList.Add(applyObject, int.Parse(datas[count]));
             count++;
         }
 
@@ -175,11 +175,11 @@ public class Humanity : MonoBehaviour {
     /// </summary>
     /// <returns>ボーナス倍率</returns>
     /// <param name="ability">取得したい能力値</param>
-    public float getAbilityMagnification(BattleAbility ability){
+    public int getAbilityBonus(BattleAbility ability){
         var applyObjects = battleAbilityAplies[ability];
-        float sum = applyList[ApplyObject.ALL];
+        int sum = applyList[ApplyObject.ALL];
         foreach (ApplyObject applyObject in applyObjects){
-            sum *= applyList[applyObject];
+            sum += applyList[applyObject];
         }
         return sum;
     }
@@ -189,11 +189,11 @@ public class Humanity : MonoBehaviour {
 	/// </summary>
 	/// <returns>ボーナス倍率</returns>
 	/// <param name="ability">取得したい能力値</param>
-	public float getAbilityMagnification(FriendlyAbility ability) {
+    public int getAbilityBonus(FriendlyAbility ability) {
 		var applyObjects = friendlyAbilityAplies[ability];
-		float sum = applyList[ApplyObject.ALL];
+        int sum = applyList[ApplyObject.ALL];
 		foreach (ApplyObject applyObject in applyObjects) {
-			sum *= applyList[applyObject];
+			sum += applyList[applyObject];
 		}
 		return sum;
 	}

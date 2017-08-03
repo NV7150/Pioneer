@@ -5,23 +5,20 @@ using Character;
 using MasterData;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using static Item.ItemParameters.ItemType;
+using ItemType = Item.ItemParameters.ItemType;
 
 namespace Item {
 	[System.SerializableAttribute]
 	public class Armor : IItem{
-		private readonly int
-			/// <summary> この防具のID </summary>
-			ID,
-			/// <summary> 防具の防御力への修正値 </summary>
-			DEF,
-			/// <summary> 防具の回避への修正値 </summary>
-			DODGE,
-			/// <summary> 装備に必要とするphy </summary>
-			NEED_PHY,
-			/// <summary> アイテムの重さ </summary>
-			MASS,
-			/// <summary> アイテムの基本価格 </summary>
-			ITEM_VALUE;
+        private readonly int
+            CLASSIFICATION_CODE,
+            /// <summary> 防具の防御力への修正値 </summary>
+            BASE_DEF,
+            /// <summary> アイテムの基本価格 </summary>
+            ITEM_VALUE,
+            HEAVINESS,
+            MASS;
 
 		private readonly string
 			/// <summary> アイテム名 </summary>
@@ -32,27 +29,31 @@ namespace Item {
             FLAVOR_TEXT;
 
         /// <summary> 防具のディレイへの修正値 </summary>
-        private readonly float DELAY_BONUS;
+        private readonly float
+	        DELAY_DISTURB_MAG,
+	        DODGE_DISTURB_MAG,
+	        MAGIC_DISTURB_MAG,
+            CONSUMABILITY;
 
-        /// <summary> アイテムとしてインベントリに格納できるか </summary>
-        private readonly bool CAN_STORE;
+        private float quality;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="builder">ビルダー</param>
-		public Armor(ArmorBuilder builder){
-			this.ID = builder.getId ();
-			this.DEF = builder.getDef ();
-			this.DODGE = builder.getDodge ();
-			this.NEED_PHY = builder.getNeedPhy ();
-			this.NAME = builder.getName ();
-			this.DESCRIPTION = builder.getDescription ();
-			this.FLAVOR_TEXT = builder.getFlavorText ();
-			this.DELAY_BONUS = builder.getDelayBonus ();
-			this.MASS = builder.getMass ();
-			this.ITEM_VALUE = builder.getItemValue ();
-            this.CAN_STORE = builder.getCanStore();
+        public Armor(ArmorShape shape, ItemMaterial material, float quality){
+            CLASSIFICATION_CODE = shape.getId() + material.getId();
+            BASE_DEF = shape.getDef();
+            ITEM_VALUE = shape.getItemValue();
+            DELAY_DISTURB_MAG = shape.getDelayDisturbMag();
+            DODGE_DISTURB_MAG = shape.getDodgeDisturbMag();
+            MAGIC_DISTURB_MAG = shape.getMagicDisturbMag();
+            this.quality = quality;
+            CONSUMABILITY = material.getConsumability();
+            NAME = material.getName() + "の" + shape.getName();
+			DESCRIPTION = material.getAdditionalDescription() + shape.getAdditionalDescription();
+			FLAVOR_TEXT = material.getAdditionalFlavor() + shape.getAdditionalFlavor();
+            MASS = shape.getMass() + material.getMass();
+            HEAVINESS = material.getHeaviness();
 		}
 
 		/// <summary>
@@ -60,24 +61,22 @@ namespace Item {
         /// </summary>
         /// <returns>防御値</returns>
 		public int getDef(){
-			return DEF;
+            int def =(int)((float)BASE_DEF * (quality / 100));
+            return def;
 		}
+
+        public int defenceWith(){
+            quality -= CONSUMABILITY;
+            return getDef();
+        }
 
 		/// <summary>
         /// 回避への修正値を取得します
         /// </summary>
         /// <returns>修正値</returns>
-		public int getDodge(){
-			return DODGE;
-		}
-
-		/// <summary>
-        /// 装備可能かを判定します
-        /// </summary>
-        /// <returns><c>true</c>, 装備可能, <c>false</c> 装備不可能</returns>
-        /// <param name="user">装備したいキャラウター</param>
-		public bool canEquip(IPlayable user){
-            return (user.getRawAbility (BattleAbility.PHY) >= NEED_PHY);
+		public int getDodgeCorrection(){
+            int dodgeCorrection = (int)( (DODGE_DISTURB_MAG / 80) * (20 * HEAVINESS + quality) );
+            return dodgeCorrection;
 		}
 
 		/// <summary>
@@ -85,7 +84,8 @@ namespace Item {
 		/// </summary>
 		/// <returns>修正値</returns>
 		public float getDelayBonus() {
-			return DELAY_BONUS;
+            float delayCorrection = (DELAY_DISTURB_MAG / 800) * (20 * HEAVINESS + quality);
+            return delayCorrection;
 		}
 
         /// <summary>
@@ -93,8 +93,12 @@ namespace Item {
         /// </summary>
         /// <returns>The identifier.</returns>
 		public int getId() {
-			return ID;
+            return CLASSIFICATION_CODE;
 		}
+
+        public float getQuality(){
+            return quality;
+        }
 
 		#region IItem implementation
 
@@ -119,7 +123,7 @@ namespace Item {
 		}
 
         public bool getCanStore() {
-            return CAN_STORE;
+            return true;
         }
 
         public string getFlavorText() {
@@ -129,7 +133,11 @@ namespace Item {
 		public bool getCanStack() {
             return false;
 		}
-        #endregion
+
+		public ItemType getItemType() {
+            return ARMOR;
+		}
+		#endregion
 
         public override bool Equals(object obj) {
             //Armorであり、IDが同じなら等価
@@ -139,7 +147,7 @@ namespace Item {
 
             Armor armor = (Armor)obj;
 
-            return armor.getId() == this.getId();
+            return armor.getId() == this.getId() && armor.getQuality() == armor.getQuality();
         }
 
 

@@ -7,6 +7,8 @@ using Character;
 using MasterData;
 
 using HealAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
+using ItemType = Item.ItemParameters.ItemType;
+using static Item.ItemParameters.ItemType;
 
 namespace Item {
     public class HealItem : IItem {
@@ -19,7 +21,8 @@ namespace Item {
 			/// <summary> アイテムの基本価格 </summary>
 			ITEM_VALUE,
 			/// <summary> アイテムの重量 </summary>
-			MASS;
+			MASS,
+            LEVEL;
 
 
         private readonly string
@@ -43,6 +46,7 @@ namespace Item {
             DESCRITION = builder.getDescription();
             FLAVOR_TEXT = builder.getFlavorText();
             ATTRIBUTE = builder.getAttribute();
+            LEVEL = builder.getLevel();
         }
 
         /// <summary>
@@ -112,6 +116,8 @@ namespace Item {
             return item.getId() == this.getId();
         }
 
-
+        public ItemType getItemType() {
+            return HEAL_ITEM;
+        }
     }
 }

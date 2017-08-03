@@ -33,7 +33,7 @@ namespace MasterData{
 		rareDropId,
 		activeSkillSetId,
 		reactionSkillSetId,
-		weponId;
+		weponLevel;
 
 		[SerializeField]
 		private string 
@@ -54,7 +54,11 @@ namespace MasterData{
 
 		public int getAiId() {
 			return aiId;
-		}
+		}  
+
+        public int getWeponLevel(){
+            return weponLevel;
+        }
 
 		public int getDef() {
 			return def;
@@ -82,10 +86,6 @@ namespace MasterData{
 
 		public string getName() {
 			return name;
-		}
-
-		public Wepon getWepon(){
-			return WeponMasterManager.getWeponFromId (weponId);
 		}
 
 		public string getModelName() {
@@ -138,7 +138,7 @@ namespace MasterData{
 			rareDropId = int.Parse (parameters [13]);
 			activeSkillSetId = int.Parse (parameters [14]);
 			reactionSkillSetId = int.Parse (parameters[15]);
-			weponId = int.Parse (parameters[16]);
+			weponLevel = int.Parse (parameters[16]);
 			faction = parameters [17];
 			modelName = "Models/" + parameters [18];
 		}

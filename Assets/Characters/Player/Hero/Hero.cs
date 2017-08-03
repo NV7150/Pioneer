@@ -143,35 +143,39 @@ namespace Character{
 
             humanity.activate(this);
             foreach(BattleAbility ability in bKeys){
-                battleAbilities[ability] = (int)((float)battleAbilities[ability] * humanity.getAbilityMagnification(ability));
+                battleAbilities[ability] += humanity.getAbilityBonus(ability);
             }
             foreach (FriendlyAbility ability in fKeys) {
-                friendlyAbilities[ability] = (int)((float)friendlyAbilities[ability] * humanity.getAbilityMagnification(ability));
+                friendlyAbilities[ability] += humanity.getAbilityBonus(ability);
 			}
+
+            checkAbilities();
 		}
+
+        private void checkAbilities(){
+			var bKeys = Enum.GetValues(typeof(BattleAbility));
+			var fKeys = Enum.GetValues(typeof(FriendlyAbility));
+			foreach (BattleAbility ability in bKeys) {
+                if (battleAbilities[ability] < 0)
+                    battleAbilities[ability] = 0;
+			}
+			foreach (FriendlyAbility ability in fKeys) {
+                if (friendlyAbilities[ability] < 0)
+                    friendlyAbilities[ability] = 0;
+			}
+        }
 
 		#region IPlayable implementation
-		public bool equipWepon (Wepon wepon) {
-			if (wepon.canEquip(this)) {
-                if (this.wepon != null && this.wepon.getCanStore())
-					addItem (this.wepon);
-				this.wepon = wepon;
-				return true;
-			} else {
-				return false;
-			}
-
+        public void equipWepon (Wepon wepon) {
+            if (this.wepon != null && this.wepon.getCanStore())
+				addItem (this.wepon);
+			this.wepon = wepon;
 		}
 
-		public bool equipArmor (Armor armor) {
-			if (armor.canEquip (this)) {
-                if (this.armor != null && this.armor.getCanStore())
-					addItem (this.armor);
-				this.armor = armor;
-				return true;
-			} else {
-				return false;
-			}
+        public void equipArmor (Armor armor) {
+            if (this.armor != null && this.armor.getCanStore())
+				addItem (this.armor);
+			this.armor = armor;
 		}
 
 		public void levelUp () {
@@ -223,7 +227,7 @@ namespace Character{
 		}
 		#endregion
 		#region IFriendly implementation
-        public int getRawFriendlyAbility(FriendlyAbility ability){
+        public int getFriendlyAbility(FriendlyAbility ability){
             return friendlyAbilities[ability];
         }
 
@@ -298,7 +302,7 @@ namespace Character{
 		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
 			int atk = battleAbilities [useAbility] + UnityEngine.Random.Range (0,level);
             if (useWepon)
-                atk += this.wepon.getAttack();
+                atk += this.wepon.attackWith();
 			return atk;
 		}
 

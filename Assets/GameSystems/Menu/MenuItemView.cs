@@ -22,6 +22,8 @@ namespace Menus {
 		public Text descritionText;
 		/// <summary> アイテム価格を表示するテキスト </summary>
 		public Text valueText;
+        /// <summary> アイテム品質を表示するテキスト </summary>
+        public Text qualityText;
 		/// <summary> アイテム重量を表示するテキスト </summary>
 		public Text massText;
 		/// <summary> アイテム数量を表示するテキスト </summary>
@@ -59,9 +61,15 @@ namespace Menus {
 
             nameText.text = item.getName();
             descritionText.text = item.getDescription();
-            valueText.text = "" + item.getItemValue();
-            massText.text = "" + item.getMass();
+            valueText.text = "価格 " + item.getItemValue();
+            massText.text = "重さ " + item.getMass();
             flavorText.text = item.getFlavorText();
+
+            if(ItemHelper.isEquipment(item)){
+                string text = "品質 " + (int)ItemHelper.searchQuality(item);
+                qualityText.text = text;
+                Debug.Log(text);
+            }
 
             this.party = targets;
 

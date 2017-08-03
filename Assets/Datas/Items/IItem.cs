@@ -1,5 +1,7 @@
 ﻿using Character;
 
+using ItemType = Item.ItemParameters.ItemType;
+
 namespace Item {
     public interface IItem {
         /// <summary>
@@ -55,5 +57,7 @@ namespace Item {
         /// </summary>
         /// <returns><c>true</c>, スタック可能, <c>false</c> スタック不可</returns>
         bool getCanStack();
+
+        ItemType getItemType();
     }
 }

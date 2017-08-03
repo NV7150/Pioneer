@@ -48,8 +48,6 @@ public class BattleTest : MonoBehaviour {
         hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(7));
 
 		con.setCharacter(hero);
-
-		WeponMasterManager.getWeponFromId(1).use(hero);
     }
 
 	private void startBattle(){

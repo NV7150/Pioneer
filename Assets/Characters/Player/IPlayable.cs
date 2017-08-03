@@ -20,14 +20,14 @@ namespace Character{
         /// </summary>
         /// <returns><c>true</c>,武器が装備できた時 <c>false</c> 武器が装備できなかった時</returns>
         /// <param name="wepon">装備したい武器</param>
-		bool equipWepon(Wepon wepon);
+        void equipWepon(Wepon wepon);
 
 		/// <summary>
         /// 防具を装備します
         /// </summary>
         /// <returns><c>true</c>, 防具が装備できなかった時, <c>false</c> 防具が装備できなかった時</returns>
         /// <param name="armor"> 装備したい防具 </param>
-		bool equipArmor(Armor armor);
+        void equipArmor(Armor armor);
 
         Wepon getWepon();
 

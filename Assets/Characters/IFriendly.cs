@@ -12,7 +12,7 @@ namespace Character {
         /// </summary>
         /// <returns>指定された能力値</returns>
         /// <param name="ability">取得したい能力値</param>
-        int getRawFriendlyAbility(FriendlyAbility ability);
+        int getFriendlyAbility(FriendlyAbility ability);
 
 		/// <summary>
         /// 話します

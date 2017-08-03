@@ -13,8 +13,9 @@ namespace MasterData{
         /// <param name="row">行数</param>
 		protected string[] GetRaw (string[,] csv, int row) {
 			string[] data = new string[ csv.GetLength(0) ];
-			for (int i = 0; i < csv.GetLength(0); i++) 
-				data[i] = csv[i, row];
+            for (int i = 0; i < csv.GetLength(0); i++) {
+                data[i] = csv[i, row];
+            }
 			return data;
 		}
 

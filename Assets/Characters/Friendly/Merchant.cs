@@ -9,6 +9,7 @@ using Item;
 using TalkSystem;
 
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
+using ItemType = Item.ItemParameters.ItemType;
 
 namespace Character {
     public class Merchant : IFriendly {
@@ -18,9 +19,13 @@ namespace Character {
 
         private readonly string NAME;
 
-        private readonly Goods goods;
+        private readonly List<IItem> GOODS = new List<IItem>();
+        private readonly int NUMBER_OF_GOODS;
+        private readonly int GOODS_LEVEL;
         private readonly List<string> massages = new List<string>();
         private readonly string failMassage;
+
+        private readonly ItemType GOODS_TYPE;
 
         private Container container;
 
@@ -31,20 +36,48 @@ namespace Character {
             NAME = builder.getName();
             GameObject modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
             container = MonoBehaviour.Instantiate(modelPrefab).GetComponent<Container>();
-            this.goods = builder.getGoods();
+            container.setCharacter(this);
+
             this.massages = builder.getMassges();
             this.TRADE_INDEX = builder.getStartTradeIndex();
             UNIQUE_ID = UniqueIdCreator.creatUniqueId();
+            GOODS_TYPE = builder.getGoodsType();
+            NUMBER_OF_GOODS = builder.getNumberOfGoods();
+            GOODS_LEVEL = builder.getGoodsLevel();
 
             abilities.Add(FriendlyAbility.DEX,builder.getDex());
             abilities.Add(FriendlyAbility.SPC,builder.getSpc());
 
             failMassage = builder.getFailMassage();
 
-            foreach(IItem item in goods.getGoods()){
-                if (!item.getCanStore())
-                    throw new InvalidProgramException("item " + item.getName() + " is can't be sold because it can't be stored");
+            if(GOODS_TYPE == ItemType.WEPON || GOODS_TYPE == ItemType.ARMOR){
+                for (int i = 0; i < NUMBER_OF_GOODS;i++){
+                    GOODS.Add(creatEquipment());
+                }
+            }else{
+                GOODS.AddRange(creatItem());
             }
+
+        }
+
+        private IItem creatEquipment(){
+            switch(GOODS_TYPE){
+                case ItemType.WEPON:
+                    return ItemHelper.creatRandomLevelWepon(GOODS_LEVEL, this, abilities[FriendlyAbility.DEX] / 2);
+                case ItemType.ARMOR:
+                    return ItemHelper.creatRandomLevelArmor(GOODS_LEVEL, this, abilities[FriendlyAbility.DEX] / 2);
+            }
+            throw new NotSupportedException("unkown itemType");
+        }
+
+        private List<IItem> creatItem(){
+            switch(GOODS_TYPE){
+                case ItemType.HEAL_ITEM:
+                    return ItemHelper.creatRandomLevelHealItem(GOODS_LEVEL, NUMBER_OF_GOODS).ConvertAll(c => (IItem)c);
+                case ItemType.ITEM_MATERIAL:
+                    return ItemHelper.creatRandomLevelItemMaterial(GOODS_LEVEL, NUMBER_OF_GOODS).ConvertAll(c => (IItem)c);
+			}
+			throw new NotSupportedException("unkown itemType");
         }
 
         public void act() {
@@ -63,7 +96,7 @@ namespace Character {
             return NAME;
         }
 
-        public int getRawFriendlyAbility(FriendlyAbility ability) {
+        public int getFriendlyAbility(FriendlyAbility ability) {
             return abilities[ability];
         }
 
@@ -72,7 +105,19 @@ namespace Character {
         }
 
         public void talk(IFriendly friendly) {
-            TalkManager.getInstance().trade(massages, failMassage,TRADE_INDEX, goods, (Hero)friendly, this);
+            TalkManager.getInstance().trade(massages, failMassage,TRADE_INDEX, GOODS, (Hero)friendly, this);
+        }
+
+		public int getNumberOfGoods() {
+            return NUMBER_OF_GOODS;
+		}
+
+		public ItemType getGoodsType() {
+            return GOODS_TYPE;
+		}
+
+        public int getGoodsLevel(){
+            return GOODS_LEVEL;
         }
     }
 }

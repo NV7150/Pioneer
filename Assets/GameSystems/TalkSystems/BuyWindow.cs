@@ -13,7 +13,7 @@ namespace TalkSystem {
         public Text headerText;
 
         /// <summary> 商品のリスト </summary>
-        Goods goods;
+        List<IItem> goods;
         /// <summary> 商品を表示するnodeのプレファブ </summary>
         GameObject tradeItemNodePrefab;
         /// <summary> 取引に参加するプレイヤー </summary>
@@ -41,11 +41,11 @@ namespace TalkSystem {
         /// <param name="player">取引に参加するプレイヤー</param>
         /// <param name="trader">取引に参加するIFriendlyキャラクター</param>
         /// <param name="window">親となるメッセージウィンドウ</param>
-        public void setState(Goods goods, Hero player, IFriendly trader, MassageWindow window) {
+        public void setState(List<IItem> goods, Hero player, IFriendly trader, MassageWindow window) {
             tradeItemNodePrefab = (GameObject)Resources.Load("Prefabs/TradeItemNode");
             this.goods = goods;
-            Debug.Log("gc " + goods.getGoods().Count);
-            foreach (IItem item in goods.getGoods()) {
+            Debug.Log("gc " + goods.Count);
+            foreach (IItem item in goods) {
                 TradeItemNode node = Instantiate(tradeItemNodePrefab).GetComponent<TradeItemNode>();
                 node.setGoods(item, this);
                 node.transform.SetParent(content.transform);
@@ -58,7 +58,7 @@ namespace TalkSystem {
 
             sellWindow = transform.root.GetComponent<TradeView>().getSellWindow();
             sellWindow.setState(player, trader);
-            sellWindow.transform.SetParent(this.transform.root);
+            sellWindow.transform.SetParent(transform.root);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace TalkSystem {
                 window.tradeFailed();
                 return;
             }
-            player.addItem(goods.getItemFromId(item.getId()));
+            player.addItem(item);
             player.minusMetal(item.getItemValue());
 
             sellWindow.updateItem();

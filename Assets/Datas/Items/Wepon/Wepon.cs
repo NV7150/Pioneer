@@ -7,60 +7,62 @@ using BattleSystem;
 using MasterData;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
+using ItemType = Item.ItemParameters.ItemType;
+using static Item.ItemParameters.ItemType;
 
-namespace Item{
-	public class  Wepon :  IItem{
-		private readonly int
-            ID,
-			/// <summary> 武器の攻撃力 </summary>
-			ATTACK,
-			/// <summary> この武器の射程 </summary>
-			RANGE,
-			/// <summary> 装備するのに必要な能力値　この能力値はweponAbitliyで設定します </summary>
-            NEED_ABILITY,
-			/// <summary> アイテムの基本価格 </summary>
-			ITEM_VALUE,
-			/// <summary> アイテムの重さ </summary>
-			MASS;
+namespace Item {
+    public class Wepon : IItem {
+        private readonly int
+            CLASSIFICATION_CODE,
+            /// <summary> 武器の基礎_攻撃力 </summary>
+            BASE_ATTACK,
+            /// <summary> この武器の射程 </summary>
+            RANGE,
+            /// <summary> アイテムの基本価格 </summary>
+            BASE_VALUE,
+            /// <summary> アイテムの重さ </summary>
+            MASS,
+            BASE_HIT;
 
-		private readonly string 
-			/// <summary> アイテム名 </summary>
+        private readonly string
+            /// <summary> アイテム名 </summary>
             NAME,
-			/// <summary> アイテムの説明 </summary>
+            /// <summary> アイテムの説明 </summary>
             DESCRIPTION,
-			/// <summary> アイテムのフレーバーテキスト </summary>
+            /// <summary> アイテムのフレーバーテキスト </summary>
             FLAVOR_TEXT;
 
-		/// <summary> 武器のディレイ値 </summary>
-        private readonly float DELAY;
+        /// <summary> 武器のディレイ値 </summary>
+        private readonly float 
+	        BASE_DELAY,
+	        CONSUMABILITY;
 
-		/// <summary> 武器の種別 </summary>
+        /// <summary> 武器の種別 </summary>
         private readonly WeponType TYPE;
 
         /// <summary> 武器が使用するBattleAbility </summary>
         private readonly BattleAbility WEPON_ABILITY;
 
-        /// <summary> 武器がストックできるかを表すフラグ </summary>
-        private readonly bool CAN_STORE;
+        private float quality;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="builder">ビルダー</param>
-		public Wepon(WeponBuilder builder){
-            ID = builder.getId();
-			ATTACK = builder.getAttack ();
-			RANGE = builder.getRange ();
-			NEED_ABILITY = builder.getNeedMft ();
-			ITEM_VALUE = builder.getItemValue ();
-			MASS = builder.getMass ();
-			NAME = builder.getName ();
-			DESCRIPTION = builder.getDescription ();
-			FLAVOR_TEXT = builder.getFlavorText ();
-			TYPE = builder.getWeponType ();
-			DELAY = builder.getDelay ();
-            WEPON_ABILITY = builder.getWeponAbility();
-            CAN_STORE = builder.getCanStore();
+        public Wepon(WeponShape shape, ItemMaterial material,float quality){
+            CLASSIFICATION_CODE = shape.getId() + material.getId();
+            BASE_ATTACK = shape.getAttack();
+            RANGE = shape.getRange();
+            BASE_VALUE = material.getItemValue();
+            MASS = shape.getMass() + material.getMass();
+            BASE_HIT = shape.getHit();
+            NAME = material.getName() + "の" + shape.getName();
+            BASE_DELAY = shape.getDelay();
+            TYPE = shape.getWeponType();
+            CONSUMABILITY = material.getConsumability();
+            this.quality = quality;
+            DESCRIPTION = material.getAdditionalDescription() + shape.getAdditionalDescription();
+            FLAVOR_TEXT = material.getAdditionalFlavor() + shape.getAdditionalFlavor();
+            WEPON_ABILITY = WeponTypeHelper.getTypeAbility(TYPE);
 		}
 
 		/// <summary>
@@ -68,8 +70,15 @@ namespace Item{
         /// </summary>
         /// <returns>攻撃力</returns>
 		public int getAttack() {
-			return ATTACK;
+            int attack = (int)((float)BASE_ATTACK * (quality / 100f));
+            return attack;
 		}
+
+        public int attackWith(){
+            quality -= CONSUMABILITY;
+            quality = (quality > 0) ? quality : 0;
+            return this.getAttack();
+        }
 
 		/// <summary>
         /// 射程を取得します
@@ -80,28 +89,11 @@ namespace Item{
 		}
 
 		/// <summary>
-        /// 装備に必要な能力値を取得します
-        /// </summary>
-        /// <returns>必要な能力値</returns>
-        public int getNeedAbility() {
-			return NEED_ABILITY;
-		}
-
-		/// <summary>
 		/// 武器の種別を取得します
 		/// </summary>
 		/// <returns>武器の種別</returns>
 		public WeponType getWeponType() {
 			return TYPE;
-		}
-
-		/// <summary>
-		/// 武器が装備可能かを判定します
-		/// </summary>
-		/// <returns><c>true</c>, 装備可能 , <c>false</c> 装備不可能 </returns>
-		/// <param name="user">装備したいキャラクター</param>
-		public bool canEquip(IPlayable user) {
-            return (NEED_ABILITY <= user.getRawAbility(WEPON_ABILITY));
 		}
 
 		/// <summary>
@@ -117,17 +109,24 @@ namespace Item{
 		/// </summary>
 		/// <returns>The delay.</returns>
 		public float getDelay() {
-			return DELAY;
+            float delay = BASE_DELAY + (0.3f * (quality * 0.003f));
+            delay = (delay >= 0.5f) ? delay : 0.5f;
+            return delay;
 		}
+
+        public float getQuality(){
+            return quality;
+        }
 
 		#region IItem implementation
 
         public int getId(){
-            return ID;
+            return CLASSIFICATION_CODE;
         }
 
 		public int getItemValue() {
-			return ITEM_VALUE;
+            int itemValue = (int)((float)BASE_VALUE * (quality / 100));
+            return itemValue;
 		}
 
 		public int getMass(){
@@ -147,7 +146,7 @@ namespace Item{
 		}
 
         public bool getCanStore() {
-            return CAN_STORE;
+            return true;
         }
 
         public string getFlavorText() {
@@ -157,16 +156,19 @@ namespace Item{
 		public bool getCanStack() {
 			return false;
 		}
+
+		public ItemType getItemType() {
+            return WEPON;
+		}
         #endregion
 
         public override bool Equals(object obj) {
             if(!(obj is Wepon)){
                 return false;
             }
-
             Wepon item = (Wepon)obj;
-
-            return (item.getId() == this.getId());
+            //種別IDが同じ（同じ素材でできている）で、品質値が同じなら等価
+            return item.getId() == this.getId() && item.getQuality() == this.getQuality();
         }
 
 

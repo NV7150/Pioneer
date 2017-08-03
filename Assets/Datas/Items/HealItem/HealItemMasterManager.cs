@@ -22,6 +22,16 @@ namespace MasterData {
             throw new ArgumentException("invalid healItemId");
         }
 
+
+        public static List<HealItem> getHealItemsFromLevel(int level){
+            var items = new List<HealItem>();
+            foreach(HealItemBuilder builder in dataTable){
+                if (builder.getLevel() == level)
+                    items.Add(builder.build());
+            }
+            return items;
+        }
+
         protected override void addInstance(string[] datas) {
             dataTable.Add(new HealItemBuilder(datas));
         }
