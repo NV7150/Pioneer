@@ -32,7 +32,6 @@ namespace Item {
             int shpeRand = Random.Range(0, numberOfWeponShape);
             WeponShape shape = WeponShapeMasterManager.getShapeFromId(shpeRand);
 
-            Debug.Log("level " + level);
             var weponMaterials = ItemMaterialMasterManager.getMaterialFromLevel(level);
             int materialRand = Random.Range(0, weponMaterials.Count);
             ItemMaterial material = weponMaterials[materialRand];

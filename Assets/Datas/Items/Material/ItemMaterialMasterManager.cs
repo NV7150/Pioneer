@@ -26,7 +26,6 @@ namespace MasterData {
         public static List<ItemMaterial> getMaterialFromLevel(int level){
             var materials = new List<ItemMaterial>();
             foreach(ItemMaterialBuilder builder in dataTable){
-                Debug.Log("m level " + builder.getLevel());
                 if (builder.getLevel() == level)
                     materials.Add(builder.build());
             }

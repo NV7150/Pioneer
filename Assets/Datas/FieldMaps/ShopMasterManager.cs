@@ -24,12 +24,10 @@ namespace MasterData {
 
         public static List<int> getLevelShopsId(int level){
             var ids = new List<int>();
-            Debug.Log("lv" + level);
             foreach(ShopBuilder builder in dataTable){
                 if (builder.getLevel() == level)
                     ids.Add(builder.getId());
             }
-            Debug.Log(ids.Count + "" + dataTable.Count);
             return ids;
         }
 

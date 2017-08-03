@@ -12,6 +12,8 @@ namespace FieldMap {
         }
 
         public static Building getRandomLevelShop(int level,Vector3 pos){
+            //かり
+            level = 1;
             var randomList = ShopMasterManager.getLevelShopsId(level);
             int rand = Random.Range(0,randomList.Count);
             return ShopMasterManager.getShopFromId(randomList[rand], pos);

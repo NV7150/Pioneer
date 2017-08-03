@@ -31,7 +31,6 @@ namespace FieldMap {
         }
 
         private void Start() {
-            setState(1,1,1);
         }
 
         public void setState(int level,int size, float priseMag){
@@ -65,6 +64,7 @@ namespace FieldMap {
 
         private void buildBuildings(){
             int buildingMax = size + 2;
+            Debug.Log("buildingmax = " + buildingMax);
 
             for (int x = 0; x < grid.GetLength(0) && buildings.Count < buildingMax;x++){
                 for (int z = 0; z < grid.GetLength(1) && buildings.Count < buildingMax; z++){
