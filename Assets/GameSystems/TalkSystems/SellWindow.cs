@@ -49,7 +49,7 @@ namespace TalkSystem{
             foreach (IItem item in inventry.getItems()) {
                 GameObject nodeObject = Instantiate(tradeItemNodePrefab);
                 TradeItemNode node = nodeObject.GetComponent<TradeItemNode>();
-                node.setGoods(item, this);
+                node.setGoods(item,TradeHelper.getSellValue(item,player,(Merchant)trader), this);
                 nodeObject.transform.SetParent(content.transform);
             }
         }
@@ -63,7 +63,7 @@ namespace TalkSystem{
             foreach (IItem item in inventry.getItems()) {
                 GameObject nodeObject = Instantiate(tradeItemNodePrefab);
                 TradeItemNode node = nodeObject.GetComponent<TradeItemNode>();
-                node.setGoods(item, this);
+                node.setGoods(item, TradeHelper.getSellValue(item, player, (Merchant)trader), this);
                 nodeObject.transform.SetParent(content.transform);
             }
         }
@@ -85,9 +85,10 @@ namespace TalkSystem{
         /// <param name="item">選択されたアイテム</param>
         /// <param name="node">選択されたノード</param>
         public void itemChose(IItem item, TradeItemNode node) {
+            int itemValue = TradeHelper.getSellValue(item, player, (Merchant)trader);
             inventry.removeItem(item);
             //かり
-            player.addMetal(item.getItemValue());
+            player.addMetal(itemValue);
             Destroy(node.gameObject);
         }
     }

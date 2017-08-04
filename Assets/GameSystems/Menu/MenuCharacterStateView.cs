@@ -14,7 +14,7 @@ namespace Menus {
         public MenuCharacterParameterView parameterView;
 
         /// <summary> 武器を表示させるテキスト </summary>
-        public Text weponText;
+        public Text weaponText;
         /// <summary> 防具を表示させるテキスト </summary>
         public Text armorText;
 

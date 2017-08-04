@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Item;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 
 namespace MasterData {
     public class ItemMaterialBuilder {
@@ -23,6 +24,8 @@ namespace MasterData {
 	        ADDITIONAL_DESCRIPTION,
 	        ADDITIONAL_FLAVOR;
 
+        private readonly ItemAttribute ITEM_ATTRIBUTE;
+
         public ItemMaterialBuilder(string[] datas) {
             ID = int.Parse(datas[0]);
             NAME = datas[1];
@@ -32,10 +35,11 @@ namespace MasterData {
             CONSUMABILITY = float.Parse(datas[5]);
             LEVEL = int.Parse(datas[6]);
             HEAVINESS = int.Parse(datas[7]);
-            DESCRIPTOIN = datas[8];
-            FLAVOR_TEXT = datas[9];
-            ADDITIONAL_DESCRIPTION = datas[10];
-			ADDITIONAL_FLAVOR = datas[11];
+            ITEM_ATTRIBUTE = (ItemAttribute)System.Enum.Parse(typeof(ItemAttribute), datas[8]);
+            DESCRIPTOIN = datas[9];
+            FLAVOR_TEXT = datas[10];
+            ADDITIONAL_DESCRIPTION = datas[11];
+			ADDITIONAL_FLAVOR = datas[12];
         }
 
         public int getQuality() {
@@ -84,6 +88,10 @@ namespace MasterData {
 
         public string getAdditionalFlavor(){
             return ADDITIONAL_FLAVOR;
+        }
+
+        public ItemAttribute getItemAttribute(){
+            return ITEM_ATTRIBUTE;
         }
 
         public ItemMaterial build(){

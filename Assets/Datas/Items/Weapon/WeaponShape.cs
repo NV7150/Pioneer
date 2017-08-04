@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Item {
-    public class WeponShape {
+    public class WeaponShape {
         private readonly int
             ID,
             ATTACK,
@@ -23,9 +23,9 @@ namespace Item {
 	        ADDITIONAL_DESCRIPTION,
 	        ADDITIONAL_FLAVOR;
 
-        private readonly WeponType TYPE;
+        private readonly WeaponType TYPE;
 
-        public WeponShape(string[]datas){
+        public WeaponShape(string[]datas){
             ID = int.Parse(datas[0]);
             NAME = datas[1];
             ATTACK = int.Parse(datas[2]);
@@ -35,7 +35,7 @@ namespace Item {
             RANGE = int.Parse(datas[6]);
             MASS = int.Parse(datas[7]);
             CREAT_DIFFICULTY = int.Parse(datas[8]);
-            TYPE = (WeponType)System.Enum.Parse(typeof(WeponType), datas[9]);
+            TYPE = (WeaponType)System.Enum.Parse(typeof(WeaponType), datas[9]);
             DESRIPTION = datas[10];
             FLAVOR_TEXT = datas[11];
             ADDITIONAL_DESCRIPTION = datas[12];
@@ -86,7 +86,7 @@ namespace Item {
             return MASS;
         }
 
-        public WeponType getWeponType(){
+        public WeaponType getWeaponType(){
             return TYPE;
         }
 

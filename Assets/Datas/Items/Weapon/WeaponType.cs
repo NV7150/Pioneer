@@ -9,7 +9,7 @@ namespace Item {
     /// <summary>
     /// 武器の種別
     /// </summary>
-    public enum WeponType {
+    public enum WeaponType {
         SWORD = 0,
         BOW = 1,
         SPEAR = 2,
@@ -18,20 +18,20 @@ namespace Item {
         GUN = 5
     }
 
-    public static class WeponTypeHelper{
-        public static BattleAbility getTypeAbility(WeponType type){
+    public static class WeaponTypeHelper{
+        public static BattleAbility getTypeAbility(WeaponType type){
             switch(type){
-                case WeponType.SWORD:
+                case WeaponType.SWORD:
 					return BattleAbility.MFT;
-                case WeponType.SPEAR:
+                case WeaponType.SPEAR:
 					return BattleAbility.MFT;
-                case WeponType.AX:
+                case WeaponType.AX:
 					return BattleAbility.MFT;
-                case WeponType.BLUNT:
+                case WeaponType.BLUNT:
 					return BattleAbility.MFT;
-                case WeponType.BOW:
+                case WeaponType.BOW:
                     return BattleAbility.FFT;
-                case WeponType.GUN:
+                case WeaponType.GUN:
                     return BattleAbility.FFT;
             }
             throw new ArgumentException("unkonwn WeponType");

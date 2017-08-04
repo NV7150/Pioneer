@@ -7,6 +7,7 @@ using UnityEngine;
 using MasterData;
 
 using ItemType = Item.ItemParameters.ItemType;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 using static Item.ItemParameters.ItemType;
 
 namespace Item {
@@ -28,6 +29,8 @@ namespace Item {
 			ADDITIONAL_DESCRIPTION,
 			ADDITIONAL_FLAVOR;
 
+        private readonly ItemAttribute ITEM_ATTRIBUTE;
+
         public ItemMaterial(ItemMaterialBuilder builder){
             this.ID = builder.getId();
             this.QUALITY = builder.getQuality();
@@ -41,6 +44,7 @@ namespace Item {
             this.HEAVINESS = builder.getHeaviness();
             this.ADDITIONAL_DESCRIPTION = builder.getAdditionalDescription();
             this.ADDITIONAL_FLAVOR = builder.getAdditionalFlavor();
+            this.ITEM_ATTRIBUTE = builder.getItemAttribute();
         }
 
         public int getQuality(){
@@ -106,6 +110,10 @@ namespace Item {
 
         public ItemType getItemType() {
             return ITEM_MATERIAL;
+        }
+
+        public ItemAttribute getItemAttribute() {
+            return ITEM_ATTRIBUTE;
         }
     }
 }

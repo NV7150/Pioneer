@@ -4,6 +4,7 @@ using UnityEngine;
 
 using Character;
 using Item;
+using FieldMap;
 
 using ItemType = Item.ItemParameters.ItemType;
 
@@ -69,8 +70,8 @@ namespace MasterData {
             return this.ModelId;
         }
 
-        public Merchant build() {
-            return new Merchant(this);
+        public Merchant build(Town livingTown) {
+            return new Merchant(this,livingTown);
         }
 
         public int getStartTradeIndex(){

@@ -5,12 +5,6 @@
             hphItem.use(hero);
             mphItem.use(hero);
             Debug.Log("afterheal hp " + hero.getHp() + "/" + hero.getMaxHp() + " mp " + hero.getMp() + "/" + hero.getMaxMp());        }else if(Input.GetKeyDown(KeyCode.I)){
-			Merchant mer = MerchantMasterManager.getMerchantFromId(0);
-			maCon.setCharacter(mer);
-
-			Merchant mer2 = MerchantMasterManager.getMerchantFromId(2);
-			matsuco.setCharacter(mer2);
-
 			hphItem = HealItemMasterManager.getHealItemFromId(0);
 			mphItem = HealItemMasterManager.getHealItemFromId(1);
 

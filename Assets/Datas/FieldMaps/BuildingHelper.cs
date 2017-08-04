@@ -11,12 +11,12 @@ namespace FieldMap {
             return HouseMasterManager.getHouseFromId(rand,pos);
         }
 
-        public static Building getRandomLevelShop(int level,Vector3 pos){
+        public static Building getRandomLevelShop(int level,Vector3 pos,Town livingTown){
             //かり
             level = 1;
             var randomList = ShopMasterManager.getLevelShopsId(level);
             int rand = Random.Range(0,randomList.Count);
-            return ShopMasterManager.getShopFromId(randomList[rand], pos);
+            return ShopMasterManager.getShopFromId(randomList[rand], pos,livingTown);
         }
     }
 }

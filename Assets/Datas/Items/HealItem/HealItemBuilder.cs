@@ -6,6 +6,7 @@ using System;
 using Item;
 
 using HealAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 
 namespace MasterData{
     public class HealItemBuilder {
@@ -32,6 +33,8 @@ namespace MasterData{
 		/// <summary> アイテムの回復属性 </summary>
 		private readonly HealAttribute ATTRIBUTE;
 
+        private readonly ItemAttribute ITEM_ATTRIBUTE;
+
         /// <summary>
         /// コンストラクタ
         /// csvから初期化します
@@ -45,8 +48,9 @@ namespace MasterData{
 			MASS = int.Parse(datas[4]);
 			LEVEL = int.Parse(datas[5]);
             ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas[6]);
-            DESCRITION = datas[7];
-            FLAVOR_TEXT = datas[8];
+            ITEM_ATTRIBUTE = (ItemAttribute)System.Enum.Parse(typeof(ItemAttribute), datas[7]);
+            DESCRITION = datas[8];
+            FLAVOR_TEXT = datas[9];
         }
 
 		public int getHeal() {
@@ -87,6 +91,10 @@ namespace MasterData{
 
         public HealItem build(){
             return new HealItem(this);
+        }
+
+        public ItemAttribute getItemAttribute(){
+            return ITEM_ATTRIBUTE;
         }
     }
 }

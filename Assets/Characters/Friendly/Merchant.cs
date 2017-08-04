@@ -6,10 +6,12 @@ using UnityEngine;
 
 using MasterData;
 using Item;
+using FieldMap;
 using TalkSystem;
 
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
 using ItemType = Item.ItemParameters.ItemType;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 
 namespace Character {
     public class Merchant : IFriendly {
@@ -31,7 +33,9 @@ namespace Character {
 
         private Dictionary<FriendlyAbility, int> abilities = new Dictionary<FriendlyAbility, int>();
 
-        public Merchant(MerchantBuiler builder){
+        private Town livingTown;
+
+        public Merchant(MerchantBuiler builder,Town livingTown){
             ID = builder.getId();
             NAME = builder.getName();
             GameObject modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
@@ -50,7 +54,7 @@ namespace Character {
 
             failMassage = builder.getFailMassage();
 
-            if(GOODS_TYPE == ItemType.WEPON || GOODS_TYPE == ItemType.ARMOR){
+            if(GOODS_TYPE == ItemType.WEAPON || GOODS_TYPE == ItemType.ARMOR){
                 for (int i = 0; i < NUMBER_OF_GOODS;i++){
                     GOODS.Add(creatEquipment());
                 }
@@ -58,12 +62,13 @@ namespace Character {
                 GOODS.AddRange(creatItem());
             }
 
+            this.livingTown = livingTown;
         }
 
         private IItem creatEquipment(){
             switch(GOODS_TYPE){
-                case ItemType.WEPON:
-                    return ItemHelper.creatRandomLevelWepon(GOODS_LEVEL, this, abilities[FriendlyAbility.DEX] / 2);
+                case ItemType.WEAPON:
+                    return ItemHelper.creatRandomLevelWeapon(GOODS_LEVEL, this, abilities[FriendlyAbility.DEX] / 2);
                 case ItemType.ARMOR:
                     return ItemHelper.creatRandomLevelArmor(GOODS_LEVEL, this, abilities[FriendlyAbility.DEX] / 2);
             }
@@ -118,6 +123,10 @@ namespace Character {
 
         public int getGoodsLevel(){
             return GOODS_LEVEL;
+        }
+
+        public float getValueMag(ItemAttribute itemAttribute){
+            return livingTown.getItemValueMag(itemAttribute);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Character;
 
 using ItemType = Item.ItemParameters.ItemType;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 
 namespace Item {
     public interface IItem {
@@ -59,5 +60,7 @@ namespace Item {
         bool getCanStack();
 
         ItemType getItemType();
+
+        ItemAttribute getItemAttribute();
     }
 }

@@ -1,3 +1,3 @@
-id,name,quality,mass,value,consumability,level,heaviness,description,flavorText,additional description,additional flavor
-0,木,50,1,50,0.5,1,5,低位の装備品の素材。,一般的な木材。オークの木が多く流通している。,低位の素材である木で作られた,練習用の
-1,鉄,100,2,100,0.25,1,7,中位の装備品の素材。,鉱山で生産される鉄材。実用性が高く安価なので装備品の素材としては人気が高い。,中位の素材である鉄で作られた,汎用的な
+id,name,quality,mass,value,consumability,level,heaviness,ItemAttribute,description,flavorText,additional description,additional flavor
+0,木,50,1,50,0.5,1,5,FOREST,低位の装備品の素材。,一般的な木材。オークの木が多く流通している。,低位の素材である木で作られた,練習用の
+1,鉄,100,2,100,0.25,1,7,METAL,中位の装備品の素材。,鉱山で生産される鉄材。実用性が高く安価なので装備品の素材としては人気が高い。,中位の素材である鉄で作られた,汎用的な

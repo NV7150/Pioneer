@@ -5,7 +5,7 @@ using UnityEngine;
 namespace FieldMap {
     public class World : MonoBehaviour {
         public List<GameObject> townPositions;
-        private List<Town> towns;
+        private List<Town> towns = new List<Town>();
         private GameObject townPrefab;
 
         private void Awake() {
@@ -27,7 +27,6 @@ namespace FieldMap {
         private void creatTown() {
             int townNumberMin = (townPositions.Count > 5) ? townPositions.Count - 5 : 0;
             int numberOfTown = Random.Range(townNumberMin, townPositions.Count);
-            Debug.Log(numberOfTown);
             int lowTown = numberOfTown / 3;
             int middleTown = numberOfTown / 3;
             int highTown = numberOfTown / 3;
@@ -52,7 +51,8 @@ namespace FieldMap {
             for (int i = 0; i < numberOfTown;i++){
                 GameObject townObject = Instantiate(townPrefab, positoins[i].transform.position,new Quaternion(0, 0, 0, 0));
                 Town town = townObject.GetComponent<Town>();
-                town.setState(getLevel(levels[i]),getSize(sizes[i]),0);
+                town.setState(getLevel(levels[i]),getSize(sizes[i]));
+                towns.Add(town);
             }
         }
 

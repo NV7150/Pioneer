@@ -18,19 +18,19 @@ namespace Item {
         /// <param name="material">武器の素材</param>
         /// <param name="creator">武器の作成者</param>
         /// <param name="qualityBonus">品質の補正値</param>
-        public static Wepon creatWeopn(WeponShape shape, ItemMaterial material, IFriendly creator, float qualityBonus) {
+        public static Weapon creatWeaopn(WeaponShape shape, ItemMaterial material, IFriendly creator, float qualityBonus) {
             float dex = creator.getFriendlyAbility(FriendlyAbility.DEX);
             float diffculty = shape.getCreatDifficulty();
             float baseQuality = material.getQuality();
 
-            float quality = weponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
-            return new Wepon(shape, material, quality);
+            float quality = weaponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
+            return new Weapon(shape, material, quality);
         }
 
-        public static Wepon creatRandomLevelWepon(int level,IFriendly creator = null, float qualityBonus = 0){
-            int numberOfWeponShape = WeponShapeMasterManager.getNumberOfShapes();
+        public static Weapon creatRandomLevelWeapon(int level,IFriendly creator = null, float qualityBonus = 0){
+            int numberOfWeponShape = WeaponShapeMasterManager.getNumberOfShapes();
             int shpeRand = Random.Range(0, numberOfWeponShape);
-            WeponShape shape = WeponShapeMasterManager.getShapeFromId(shpeRand);
+            WeaponShape shape = WeaponShapeMasterManager.getShapeFromId(shpeRand);
 
             var weponMaterials = ItemMaterialMasterManager.getMaterialFromLevel(level);
             int materialRand = Random.Range(0, weponMaterials.Count);
@@ -42,10 +42,10 @@ namespace Item {
                 float baseQuality = material.getQuality();
                 qualityBonus = dex / 2;
 
-                float quality = weponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
-                return new Wepon(shape, material, quality);
+                float quality = weaponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
+                return new Weapon(shape, material, quality);
             } else {
-                return creatWeopn(shape, material, creator, qualityBonus);
+                return creatWeaopn(shape, material, creator, qualityBonus);
             }
         }
 
@@ -54,12 +54,12 @@ namespace Item {
             float diffculty = shape.getCreatDifficulty();
 			float baseQuality = material.getQuality();
 
-            float quality = weponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
+            float quality = weaponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
             return new Armor(shape, material, quality);
         }
 
         public static Armor creatRandomLevelArmor(int level,IFriendly creator = null, float qualityBonus = 0){
-            int numberOfWeponShape = WeponShapeMasterManager.getNumberOfShapes();
+            int numberOfWeponShape = WeaponShapeMasterManager.getNumberOfShapes();
             int shpeRand = Random.Range(0, numberOfWeponShape);
             ArmorShape shape = ArmorShapeManager.getShapeFromId(shpeRand);
 
@@ -73,14 +73,14 @@ namespace Item {
                 float baseQuality = material.getQuality();
                 qualityBonus = dex / 2;
 
-                float quality = weponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
+                float quality = weaponQualityCaliculate(dex, diffculty, baseQuality, qualityBonus);
                 return new Armor(shape, material, quality);
             } else {
                 return creatArmor(shape, material, creator, qualityBonus);
             }
         }
 
-        private static float weponQualityCaliculate(float dex, float difficulty, float baseQuality, float qualityBonus){
+        private static float weaponQualityCaliculate(float dex, float difficulty, float baseQuality, float qualityBonus){
             float rand = 2 * baseQuality * Random.Range( - ( dex + qualityBonus ) , dex + qualityBonus );
             float quality = (20 * baseQuality * (dex + qualityBonus) + rand) / (baseQuality + 20 * difficulty);
             return quality;
@@ -110,8 +110,8 @@ namespace Item {
 
         public static float searchQuality(IItem item){
             switch(item.getItemType()){
-                case WEPON:
-                    Wepon wepon = (Wepon)item;
+                case WEAPON:
+                    Weapon wepon = (Weapon)item;
                     return wepon.getQuality();
                 case ARMOR:
                     Armor armor = (Armor)item;
@@ -121,7 +121,7 @@ namespace Item {
         }
 
         public static bool isEquipment(IItem item){
-            return item.getItemType() == WEPON || item.getItemType() == ARMOR;
+            return item.getItemType() == WEAPON || item.getItemType() == ARMOR;
         }
     }
 }

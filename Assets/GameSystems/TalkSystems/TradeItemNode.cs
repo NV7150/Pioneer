@@ -21,11 +21,11 @@ namespace TalkSystem {
         /// </summary>
         /// <param name="item">商品</param>
         /// <param name="window">親となるウィンドウ</param>
-        public void setGoods(IItem item, ITradeWindow window) {
+        public void setGoods(IItem item,int itemValue, ITradeWindow window) {
             this.item = item;
             name.text = this.item.getName();
             //かり
-            value.text = "" + item.getItemValue();
+            value.text = "" + itemValue;
             this.window = window;
         }
 

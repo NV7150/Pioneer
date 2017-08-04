@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Character;
+using FieldMap;
 
 namespace MasterData {
     public class MerchantMasterManager : MasterDataManagerBase {
@@ -14,10 +15,10 @@ namespace MasterData {
             constractedBehaviour(csv);
         }
 
-        public static Merchant getMerchantFromId(int id){
+        public static Merchant getMerchantFromId(int id,Town livingTown){
             foreach(MerchantBuiler builder in dataTable){
                 if (builder.getId() == id)
-                    return builder.build();
+                    return builder.build(livingTown);
             }
             throw new ArgumentException("invalid id");
         }

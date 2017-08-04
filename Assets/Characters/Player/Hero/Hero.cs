@@ -61,7 +61,7 @@ namespace Character{
 		private Faction faction = Faction.PLAYER;
 
 		/// <summary> 装備中の武器 </summary>
-		private Wepon wepon;
+        private Weapon weapon;
 		/// <summary> 装備中の防具 </summary>
 		private Armor armor;
 
@@ -166,10 +166,10 @@ namespace Character{
         }
 
 		#region IPlayable implementation
-        public void equipWepon (Wepon wepon) {
-            if (this.wepon != null && this.wepon.getCanStore())
-				addItem (this.wepon);
-			this.wepon = wepon;
+        public void equipWeapon (Weapon wepon) {
+            if (this.weapon != null && this.weapon.getCanStore())
+				addItem (this.weapon);
+			this.weapon = wepon;
 		}
 
         public void equipArmor (Armor armor) {
@@ -302,7 +302,7 @@ namespace Character{
 		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
 			int atk = battleAbilities [useAbility] + UnityEngine.Random.Range (0,level);
             if (useWepon)
-                atk += this.wepon.attackWith();
+                atk += this.weapon.attackWith();
 			return atk;
 		}
 
@@ -317,15 +317,15 @@ namespace Character{
 		}
 
 		public float getCharacterDelay() {
-            return wepon.getDelay();
+            return weapon.getDelay();
 		}
 
 		public int getCharacterRange() {
-            return wepon.getRange();
+            return weapon.getRange();
 		}
 
 		public BattleAbility getCharacterAttackMethod() {
-            return wepon.getWeponAbility();
+            return weapon.getWeaponAbility();
 		}
 
 		public void addAbilityBonus(SubBattleAbilityBonus bonus) {
@@ -399,8 +399,8 @@ namespace Character{
             bonusKeeper.setBonus(bonus);
 		}
 
-		public Wepon getWepon() {
-			return wepon;
+		public Weapon getWeapon() {
+			return weapon;
 		}
 
 		#endregion

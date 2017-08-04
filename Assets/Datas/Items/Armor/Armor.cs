@@ -5,8 +5,9 @@ using Character;
 using MasterData;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
-using static Item.ItemParameters.ItemType;
 using ItemType = Item.ItemParameters.ItemType;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
+using static Item.ItemParameters.ItemType;
 
 namespace Item {
 	[System.SerializableAttribute]
@@ -137,6 +138,10 @@ namespace Item {
 		public ItemType getItemType() {
             return ARMOR;
 		}
+
+		public ItemAttribute getItemAttribute() {
+			return ItemAttribute.ARMOR;
+		}
 		#endregion
 
         public override bool Equals(object obj) {
@@ -149,8 +154,6 @@ namespace Item {
 
             return armor.getId() == this.getId() && armor.getQuality() == armor.getQuality();
         }
-
-
     }
 }
 

@@ -8,6 +8,7 @@ using MasterData;
 
 using HealAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 using ItemType = Item.ItemParameters.ItemType;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 using static Item.ItemParameters.ItemType;
 
 namespace Item {
@@ -37,6 +38,8 @@ namespace Item {
 		/// <summary> アイテムの回復属性 </summary>
 		private readonly HealAttribute ATTRIBUTE;
 
+        private readonly ItemAttribute ITEM_ATTRIBUTE;
+
         public HealItem(HealItemBuilder builder){
             ID = builder.getId();
             NAME = builder.getName();
@@ -47,6 +50,7 @@ namespace Item {
             FLAVOR_TEXT = builder.getFlavorText();
             ATTRIBUTE = builder.getAttribute();
             LEVEL = builder.getLevel();
+            ITEM_ATTRIBUTE = builder.getItemAttribute();
         }
 
         /// <summary>
@@ -101,6 +105,10 @@ namespace Item {
 
 		public bool getCanStack() {
             return true;
+		}
+
+		public ItemAttribute getItemAttribute() {
+            return ITEM_ATTRIBUTE;
 		}
 
         #endregion

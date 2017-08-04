@@ -4,6 +4,9 @@ using UnityEngine;
 using System;
 
 using Character;
+using MasterData;
+
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 
 namespace FieldMap {
     public class Town : MonoBehaviour {
@@ -26,19 +29,21 @@ namespace FieldMap {
 
         private GameObject roadPrefab;
 
+        private TownAttribute attribute;
+
         private void Awake() {
             roadPrefab = (GameObject)Resources.Load("Models/road");
         }
 
-        private void Start() {
-        }
-
-        public void setState(int level,int size, float priseMag){
+        public void setState(int level,int size){
             this.level = level;
             this.size = size;
-            this.priseMag = priseMag;
             layRoad();
             buildBuildings();
+
+            this.attribute = TownAttributeMasterManager.getRandomAttribute();
+            priseMag = attribute.getPriseMag() * UnityEngine.Random.Range(0.8f, 1.2f) + (level - size) / 100; 
+            Debug.Log(attribute.getName());
         }
 
         private void layRoad(){
@@ -64,7 +69,6 @@ namespace FieldMap {
 
         private void buildBuildings(){
             int buildingMax = size + 2;
-            Debug.Log("buildingmax = " + buildingMax);
 
             for (int x = 0; x < grid.GetLength(0) && buildings.Count < buildingMax;x++){
                 for (int z = 0; z < grid.GetLength(1) && buildings.Count < buildingMax; z++){
@@ -80,7 +84,7 @@ namespace FieldMap {
                             characters.Add(building.getOwnerCharacter());
                             buildings.Add(building);
                         }else{
-                            building = BuildingHelper.getRandomLevelShop(level,pos);
+                            building = BuildingHelper.getRandomLevelShop(level,pos,this);
                             characters.Add(building.getOwnerCharacter());
                             buildings.Add(building);
                         }
@@ -102,6 +106,10 @@ namespace FieldMap {
                         grid[x + i, z + j] = true;
 				}
 			}
+        }
+
+        public float getItemValueMag(ItemAttribute itemAttribute){
+            return priseMag * attribute.getAttributeMag(itemAttribute);
         }
 
         // Update is called once per frame

@@ -20,7 +20,7 @@ namespace Character{
         /// </summary>
         /// <returns><c>true</c>,武器が装備できた時 <c>false</c> 武器が装備できなかった時</returns>
         /// <param name="wepon">装備したい武器</param>
-        void equipWepon(Wepon wepon);
+        void equipWeapon(Weapon wepon);
 
 		/// <summary>
         /// 防具を装備します
@@ -29,7 +29,7 @@ namespace Character{
         /// <param name="armor"> 装備したい防具 </param>
         void equipArmor(Armor armor);
 
-        Wepon getWepon();
+        Weapon getWeapon();
 
 		/// <summary>
         /// 装備している防具を取得します

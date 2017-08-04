@@ -40,10 +40,10 @@ namespace MasterData {
             return LEVEL;
         }
 
-        public Building build(Vector3 position) {
+        public Building build(Vector3 position,Town livingTown) {
             GameObject buildingObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Models/" + MODEL_ID));
             var building = buildingObject.GetComponent<Building>();
-            IFriendly owner = MerchantMasterManager.getMerchantFromId(MERCHANT_ID);
+            IFriendly owner = MerchantMasterManager.getMerchantFromId(MERCHANT_ID,livingTown);
             building.setState(NAME, owner, position,LEVEL);
             return building;
         }

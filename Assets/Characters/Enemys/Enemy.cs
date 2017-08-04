@@ -79,7 +79,7 @@ namespace Character{
 		/// <summary> このキャラクターの能力値ボーナスを管理を管理するBonusKeeper </summary>
 		private BonusKeeper bonusKeeper = new BonusKeeper();
 
-        private Wepon equipedWepon;
+        private Weapon equipedWeapon;
 
         /// <summary>
         ///  <see cref="T:Character.Enemy"/> classのコンストラクタ
@@ -145,7 +145,7 @@ namespace Character{
 			//もっとくふうすする予定
             int atk = getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,10 + LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
             if (useWepon)
-                atk += (equipedWepon != null) ? equipedWepon.attackWith() : 0;
+                atk += (equipedWeapon != null) ? equipedWeapon.attackWith() : 0;
             return atk;
 		}
 
@@ -200,8 +200,8 @@ namespace Character{
 
 		public float getCharacterDelay() {
             float delay;
-            if(equipedWepon != null){
-                delay = equipedWepon.getDelay();
+            if(equipedWeapon != null){
+                delay = equipedWeapon.getDelay();
             }else {
                 float delayBonus = (float)abilities[BattleAbility.AGI] / 20;
                 delayBonus = (delayBonus < 1.0f) ? delayBonus : 1.0f;
@@ -211,11 +211,11 @@ namespace Character{
 		}
 
 		public int getCharacterRange() {
-            return (equipedWepon != null) ? equipedWepon.getRange() : 0;
+            return (equipedWeapon != null) ? equipedWeapon.getRange() : 0;
 		}
 
 		public BattleAbility getCharacterAttackMethod() {
-            return (equipedWepon != null) ? equipedWepon.getWeponAbility() : BattleAbility.MFT;
+            return (equipedWeapon != null) ? equipedWeapon.getWeaponAbility() : BattleAbility.MFT;
 		}
 
 		public void addAbilityBonus(SubBattleAbilityBonus bonus) {
@@ -263,8 +263,8 @@ namespace Character{
     			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE,ai);
 		}
 
-		public Wepon getWepon () {
-			return this.equipedWepon;
+        public Weapon getWeapon () {
+			return this.equipedWeapon;
 		}
 
 		public void addAbilityBonus (BattleAbilityBonus bonus) {

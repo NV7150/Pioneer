@@ -8,10 +8,11 @@ using MasterData;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using ItemType = Item.ItemParameters.ItemType;
+using ItemAttribute = Item.ItemParameters.ItemAttribute;
 using static Item.ItemParameters.ItemType;
 
 namespace Item {
-    public class Wepon : IItem {
+    public class Weapon : IItem {
         private readonly int
             CLASSIFICATION_CODE,
             /// <summary> 武器の基礎_攻撃力 </summary>
@@ -38,17 +39,17 @@ namespace Item {
 	        CONSUMABILITY;
 
         /// <summary> 武器の種別 </summary>
-        private readonly WeponType TYPE;
+        private readonly WeaponType TYPE;
 
         /// <summary> 武器が使用するBattleAbility </summary>
-        private readonly BattleAbility WEPON_ABILITY;
+        private readonly BattleAbility WEAPON_ABILITY;
 
         private float quality;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public Wepon(WeponShape shape, ItemMaterial material,float quality){
+        public Weapon(WeaponShape shape, ItemMaterial material,float quality){
             CLASSIFICATION_CODE = shape.getId() + material.getId();
             BASE_ATTACK = shape.getAttack();
             RANGE = shape.getRange();
@@ -57,12 +58,12 @@ namespace Item {
             BASE_HIT = shape.getHit();
             NAME = material.getName() + "の" + shape.getName();
             BASE_DELAY = shape.getDelay();
-            TYPE = shape.getWeponType();
+            TYPE = shape.getWeaponType();
             CONSUMABILITY = material.getConsumability();
             this.quality = quality;
             DESCRIPTION = material.getAdditionalDescription() + shape.getAdditionalDescription();
             FLAVOR_TEXT = material.getAdditionalFlavor() + shape.getAdditionalFlavor();
-            WEPON_ABILITY = WeponTypeHelper.getTypeAbility(TYPE);
+            WEAPON_ABILITY = WeaponTypeHelper.getTypeAbility(TYPE);
 		}
 
 		/// <summary>
@@ -92,7 +93,7 @@ namespace Item {
 		/// 武器の種別を取得します
 		/// </summary>
 		/// <returns>武器の種別</returns>
-		public WeponType getWeponType() {
+        public WeaponType getWeaponType() {
 			return TYPE;
 		}
 
@@ -100,8 +101,8 @@ namespace Item {
 		/// 武器を使用するのに使うBattleAbilityを取得します
 		/// </summary>
 		/// <returns>使用するBattleAbility</returns>
-		public BattleAbility getWeponAbility() {
-			return WEPON_ABILITY;
+		public BattleAbility getWeaponAbility() {
+			return WEAPON_ABILITY;
 		}
 
 		/// <summary>
@@ -142,7 +143,7 @@ namespace Item {
         }
 
 		public void use(IPlayable user) {
-			user.equipWepon(this);
+			user.equipWeapon(this);
 		}
 
         public bool getCanStore() {
@@ -158,15 +159,19 @@ namespace Item {
 		}
 
 		public ItemType getItemType() {
-            return WEPON;
+            return WEAPON;
+		}
+
+		public ItemAttribute getItemAttribute() {
+            return ItemAttribute.WEAPON;
 		}
         #endregion
 
         public override bool Equals(object obj) {
-            if(!(obj is Wepon)){
+            if(!(obj is Weapon)){
                 return false;
             }
-            Wepon item = (Wepon)obj;
+            Weapon item = (Weapon)obj;
             //種別IDが同じ（同じ素材でできている）で、品質値が同じなら等価
             return item.getId() == this.getId() && item.getQuality() == this.getQuality();
         }

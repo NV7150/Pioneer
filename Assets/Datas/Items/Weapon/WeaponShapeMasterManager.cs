@@ -6,16 +6,16 @@ using UnityEngine;
 using Item;
 
 namespace MasterData {
-    public class WeponShapeMasterManager : MasterDataManagerBase {
-        private static List<WeponShape> dataTable = new List<WeponShape>();
+    public class WeaponShapeMasterManager : MasterDataManagerBase {
+        private static List<WeaponShape> dataTable = new List<WeaponShape>();
 
         private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/WeponShapeMasterData");
+            var csv = (TextAsset)Resources.Load("MasterDatas/WeaponShapeMasterData");
             constractedBehaviour(csv);
         }
 
-        public static WeponShape getShapeFromId(int id){
-            foreach(WeponShape shape in dataTable){
+        public static WeaponShape getShapeFromId(int id){
+            foreach(WeaponShape shape in dataTable){
                 if (shape.getId() == id)
                     return shape;
             }
@@ -27,7 +27,7 @@ namespace MasterData {
         }
 
         protected override void addInstance(string[] datas) {
-            dataTable.Add(new WeponShape(datas));
+            dataTable.Add(new WeaponShape(datas));
         }
     }
 }

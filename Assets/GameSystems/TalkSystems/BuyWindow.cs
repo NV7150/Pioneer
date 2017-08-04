@@ -47,7 +47,7 @@ namespace TalkSystem {
             Debug.Log("gc " + goods.Count);
             foreach (IItem item in goods) {
                 TradeItemNode node = Instantiate(tradeItemNodePrefab).GetComponent<TradeItemNode>();
-                node.setGoods(item, this);
+                node.setGoods(item, TradeHelper.getBuyValue(item, player, (Merchant)trader), this);
                 node.transform.SetParent(content.transform);
             }
             this.player = player;
@@ -66,12 +66,14 @@ namespace TalkSystem {
         /// </summary>
         /// <param name="item">購入するアイテム</param>
         public void itemChose(IItem item, TradeItemNode node) {
-            if (item.getItemValue() > player.getMetal()) {
+            int itemValue = TradeHelper.getBuyValue(item, player, (Merchant)trader);
+
+            if (itemValue > player.getMetal()) {
                 window.tradeFailed();
                 return;
             }
             player.addItem(item);
-            player.minusMetal(item.getItemValue());
+            player.minusMetal(itemValue);
 
             sellWindow.updateItem();
         }
