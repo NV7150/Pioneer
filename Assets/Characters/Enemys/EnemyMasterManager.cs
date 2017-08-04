@@ -31,6 +31,15 @@ namespace MasterData{
 			throw new ArgumentException ("invalit enemyId " + id);
 		}
 
+        public static List<int> getEnemyIdsFromLevel(int level){
+            var ids = new List<int>();
+            foreach(EnemyBuilder builder in dataTable){
+                if (builder.getLevel() == level)
+                    ids.Add(builder.getId());
+            }
+            return ids;
+        }
+
 		#region implemented abstract members of MasterDataManagerBase
 
 		protected override void addInstance (string[] datas) {

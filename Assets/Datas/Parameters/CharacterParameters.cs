@@ -33,7 +33,6 @@ namespace Parameter{
 			DEX
 		}
 
-
 		/// <summary>
         /// BattleAbilityに依存して設定される能力値
         /// </summary>
@@ -50,7 +49,15 @@ namespace Parameter{
         /// 所属している派閥
         /// </summary>
 		public enum Faction {
-			PLAYER,ENEMY
+			PLAYER,
+            ENEMY
 		}
-	}
+
+        public enum FriendlyCharacterType {
+            CITIZEN,
+            MERCHANT,
+            PLAYABLE,
+            QUESTER
+        }
+    }
 }

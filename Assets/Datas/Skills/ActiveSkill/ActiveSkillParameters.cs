@@ -3,9 +3,9 @@
 namespace Skill{
 	public static class ActiveSkillParameters {
 		/// <summary>
-        /// ActiveSkillの種別
-        /// </summary>
-		public enum ActiveSkillType{
+		/// ActiveSkillの種別
+		/// </summary>
+		public enum ActiveSkillType {
 			//攻撃
 			ATTACK,
 			//移動

@@ -1,5 +1,4 @@
-
-namespace Parameter{
+namespace Quest{
 	public interface Mission{
 		/// <summary>
         /// 使命名を取得します
@@ -12,6 +11,6 @@ namespace Parameter{
 		/// </summary>
 		/// /// <returns><c>true</c>, 達成, <c>false</c> 未達成</returns>
 		/// <param name="flugs">判定したいフラグリスト</param>
-		bool cheak(FlugList flugs);
+		bool cheak(FlagList flugs);
 	}
 }

@@ -8,12 +8,14 @@ using Skill;
 using Parameter;
 using BattleSystem;
 using Menus;
+using Quest;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
 using Faction = Parameter.CharacterParameters.Faction;
 using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
+using FriendlyCharacterType = Parameter.CharacterParameters.FriendlyCharacterType;
 
 namespace Character{
 	public class Hero :IPlayable {
@@ -48,7 +50,7 @@ namespace Character{
         private int mt = 0;
 
         /// <summary> 使命達成を判定するフラグの記憶インスタンス </summary>
-		private FlugList flugs;
+        private FlagList flags;
 
 		/// <summary> キャラクターの職業 </summary>
 		private Job job;
@@ -86,6 +88,8 @@ namespace Character{
         private GameObject menuPrefab;
 
         private Party party = new Party();
+
+        private List<IQuest> undertakingQuests = new List<IQuest>();
 
         /// <summary>
         /// <see cref="T:Character.Hero"/> classのコンストラクタです
@@ -150,6 +154,8 @@ namespace Character{
 			}
 
             checkAbilities();
+
+            flags = new FlagList(this);
 		}
 
         private void checkAbilities(){
@@ -403,6 +409,13 @@ namespace Character{
 			return weapon;
 		}
 
+		public FriendlyCharacterType getCharacterType() {
+			return FriendlyCharacterType.PLAYABLE;
+		}
+
+        public int getId() {
+            throw new InvalidOperationException("hero's getId is called");
+        }
 		#endregion
 		#region ICharacter implementation
 
@@ -442,6 +455,22 @@ namespace Character{
 
         public Inventry getInventry(){
             return inventry;
+        }
+
+        public void undertake(IQuest quest){
+            this.undertakingQuests.Add(quest);
+        }
+
+        public void deleteQuest(IQuest quest){
+            this.undertakingQuests.Remove(quest);
+        }
+
+        public List<IQuest> getUndertakingQuests(){
+            return new List<IQuest>(undertakingQuests);
+        }
+
+        public FlagList getFlagList(){
+            return flags;
         }
 
 		/// <summary>
@@ -561,5 +590,6 @@ namespace Character{
         public Dictionary<FriendlyAbility, int> getFriendlyAbilities() {
             return new Dictionary<FriendlyAbility, int>(friendlyAbilities);
         }
+
     }
 }

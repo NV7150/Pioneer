@@ -12,6 +12,7 @@ using TalkSystem;
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
 using ItemType = Item.ItemParameters.ItemType;
 using ItemAttribute = Item.ItemParameters.ItemAttribute;
+using FriendlyCharacterType = Parameter.CharacterParameters.FriendlyCharacterType;
 
 namespace Character {
     public class Merchant : IFriendly {
@@ -127,6 +128,14 @@ namespace Character {
 
         public float getValueMag(ItemAttribute itemAttribute){
             return livingTown.getItemValueMag(itemAttribute);
+        }
+
+        public FriendlyCharacterType getCharacterType() {
+            return FriendlyCharacterType.MERCHANT;
+        }
+
+        public int getId() {
+            return ID;
         }
     }
 }

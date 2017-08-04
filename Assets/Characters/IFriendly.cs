@@ -1,6 +1,7 @@
 ﻿using System;
 
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
+using FriendlyChracterType = Parameter.CharacterParameters.FriendlyCharacterType;
 
 namespace Character {
     /// <summary>
@@ -19,6 +20,10 @@ namespace Character {
         /// </summary>
         /// <param name="friendly">話す対象のIFriendlyキャラクター</param>
 		void talk(IFriendly friendly);
+
+        int getId();
+
+        FriendlyChracterType getCharacterType();
 	}
 }
 
