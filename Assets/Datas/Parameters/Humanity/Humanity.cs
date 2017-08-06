@@ -12,6 +12,7 @@ using Object = System.Object;
 public class Humanity : MonoBehaviour {
     private readonly int
     ID,
+    LEVEL = 1,
     NUMBER_OF_OBJECT;
 
     private readonly string
@@ -29,13 +30,15 @@ public class Humanity : MonoBehaviour {
     /// <param name="datas">csvによるstring配列</param>
     public Humanity(string[] datas){
         ID = int.Parse(datas[0]);
-        NAME = datas[1];
-        DESCRIPTION = datas[2];
-        FLAVOR_TEXT = datas[3];
+		NAME = datas[1];
+		LEVEL = int.Parse(datas[2]);
+        DESCRIPTION = datas[3];
+        FLAVOR_TEXT = datas[4];
 
         var keys = Enum.GetValues(typeof(ApplyObject));
-        int count = 4;
+        int count = 5;
         foreach(ApplyObject applyObject in keys){
+            Debug.Log(datas[count]);
             applyList.Add(applyObject, int.Parse(datas[count]));
             count++;
         }
@@ -204,6 +207,10 @@ public class Humanity : MonoBehaviour {
     /// <returns>ID</returns>
     public int getId(){
         return ID;
+    }
+
+    public int getLevel(){
+        return LEVEL;
     }
 
     /// <summary>

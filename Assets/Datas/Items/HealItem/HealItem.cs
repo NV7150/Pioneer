@@ -69,6 +69,10 @@ namespace Item {
             return ATTRIBUTE;
         }
 
+        public int getLevel(){
+            return LEVEL;
+        }
+
 		#region IItem implementation
 
 		public bool getCanStore() {

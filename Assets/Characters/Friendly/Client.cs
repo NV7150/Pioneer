@@ -53,7 +53,7 @@ namespace Character {
         }
 
         public FriendlyCharacterType getCharacterType() {
-            return FriendlyCharacterType.QUESTER;
+            return FriendlyCharacterType.CLIENT;
         }
 
         public Container getContainer() {

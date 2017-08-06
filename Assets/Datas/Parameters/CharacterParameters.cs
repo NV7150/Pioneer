@@ -57,7 +57,7 @@ namespace Parameter{
             CITIZEN,
             MERCHANT,
             PLAYABLE,
-            QUESTER
+            CLIENT
         }
     }
 }

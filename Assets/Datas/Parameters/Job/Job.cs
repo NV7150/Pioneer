@@ -13,6 +13,7 @@ namespace Parameter{
 		private readonly int
 			/// <summary> 職業のID </summary>
 			ID,
+            LEVEL,
 			/// <summary> 基礎mft </summary>
 			MFT,
 			/// <summary> 基礎fft </summary>
@@ -39,13 +40,14 @@ namespace Parameter{
 		public Job(string[] parameters){
 			ID = int.Parse (parameters[0]);
 			name = parameters [1];
-			MFT = int.Parse (parameters[2]);
-			FFT = int.Parse (parameters[3]);
-			MGP = int.Parse (parameters[4]);
-			PHY = int.Parse (parameters[5]);
-			AGI = int.Parse (parameters[6]);
-			DEX = int.Parse (parameters[7]);
-			SPC = int.Parse (parameters[8]);
+            LEVEL = int.Parse(parameters[2]);
+			MFT = int.Parse (parameters[3]);
+			FFT = int.Parse (parameters[4]);
+			MGP = int.Parse (parameters[5]);
+			PHY = int.Parse (parameters[6]);
+			AGI = int.Parse (parameters[7]);
+			DEX = int.Parse (parameters[8]);
+			SPC = int.Parse (parameters[9]);
 		}
 
 		/// <summary>
@@ -55,6 +57,10 @@ namespace Parameter{
 		public string getName (){
 			return name;
 		}
+
+        public int getLevel(){
+            return LEVEL;
+        }
 
 		/// <summary>
         /// BattleAbilityの初期化する値が入ったDictionaryを取得します

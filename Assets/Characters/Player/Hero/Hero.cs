@@ -56,8 +56,6 @@ namespace Character{
 		private Job job;
 		/// <summary> このキャラクターの特徴 </summary>
 		private Identity identity;
-		/// <summary> このキャラクターの使命 </summary>
-		private Mission mission;
 
 		/// <summary> プレイヤーの所属派閥 </summary>
 		private Faction faction = Faction.PLAYER;

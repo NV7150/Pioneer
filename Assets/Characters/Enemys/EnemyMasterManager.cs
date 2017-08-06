@@ -40,6 +40,15 @@ namespace MasterData{
             return ids;
         }
 
+        public static string getEnemyNameFromId(int id){
+            foreach(EnemyBuilder builder in dataTable){
+                if(builder.getId() == id){
+                    return builder.getName();
+                }
+			}
+			throw new ArgumentException("invalit enemyId " + id);
+        }
+
 		#region implemented abstract members of MasterDataManagerBase
 
 		protected override void addInstance (string[] datas) {

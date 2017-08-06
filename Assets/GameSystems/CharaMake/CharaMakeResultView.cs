@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Parameter;
+using Quest;
 
 namespace CharaMake{
     public class CharaMakeResultView : MonoBehaviour {
@@ -25,6 +26,7 @@ namespace CharaMake{
         public Text humanityText;
         /// <summary> 特徴を表示させるテキストのリスト </summary>
         public List<Text> identityTexts;
+        public Text missionText;
 
         // Use this for initialization
         void Start() {
@@ -39,10 +41,11 @@ namespace CharaMake{
         /// <param name="humanity">人間性</param>
         /// <param name="identities">特徴のリスト</param>
         /// <param name="manager">元となるマネージャ</param>
-        public void setParameters(Job job, Humanity humanity, List<Identity> identities, CharaMakeManager manager) {
+        public void setParameters(Job job, Humanity humanity, List<Identity> identities,IMissionBuilder builder, CharaMakeManager manager) {
             nameField.interactable = false;
             jobText.text = job.getName();
             humanityText.text = humanity.getName();
+            missionText.text = builder.getName();
             int i = 0;
             foreach (Text text in identityTexts) {
                 text.text = identities[i].getName();

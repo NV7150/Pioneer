@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 using MasterData;
@@ -15,6 +16,17 @@ namespace Quest {
                 case EXTERMINATION: return new ExterminationQuest(flags, client);
             }
             throw new System.ArgumentException("unkown QuestType");
+        }
+
+        public static IMissionBuilder getRandomMission(int baseLevel){
+            var types = Enum.GetValues(typeof(QuestType));
+            int typeRand = UnityEngine.Random.Range(0, types.Length);
+            QuestType type = (QuestType)types.GetValue(typeRand);
+
+            switch(type){
+                case EXTERMINATION:return new ExterminationMissonBuilder(baseLevel);
+            }
+            throw new NotSupportedException("unkown QuestType");
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 using Parameter;
 using Character;
+using Quest;
 using SelectView;
 
 namespace CharaMake {
@@ -14,6 +15,7 @@ namespace CharaMake {
         private Humanity choseHumanity;
         /// <summary> 選択された特徴のリスト </summary>
         private List<Identity> choseIdentities = new List<Identity>();
+        private IMissionBuilder choseMission;
         /// <summary> 入力された名前 </summary>
         private string name;
 
@@ -32,6 +34,7 @@ namespace CharaMake {
         private GameObject parameterViewPrefab;
         private GameObject selectViewPrefab;
         private GameObject resultViewPrefab;
+        private GameObject missionNodePrefab;
 
         /// <summary> アクティブなセレクトビューコンテナ </summary>
         private SelectViewContainer selectView;
@@ -41,6 +44,7 @@ namespace CharaMake {
         private SelectView<HumanityNode, Humanity> humanitySelectView;
         /// <summary> アクティブな特徴のセレクトビュー </summary>
         private SelectView<IdentityNode, Identity> identitySelectView;
+        private SelectView<MissionNode, IMissionBuilder> missionSelectView;
         /// <summary> アクティブな職業の表示ビュー </summary>
         private CharaMakeJobView jobView;
         /// <summary> アクティブなパラメータの表示ビュー </summary>
@@ -57,6 +61,7 @@ namespace CharaMake {
             jobViewPrefab = (GameObject)Resources.Load("Prefabs/CharaMakeJobView");
             parameterViewPrefab = (GameObject)Resources.Load("Prefabs/CharaMakeParameterView");
             resultViewPrefab = (GameObject)Resources.Load("Prefabs/CharaMakeResultView");
+            missionNodePrefab = (GameObject)Resources.Load("Prefabs/missionNode");
         }
 
         private void Update() {
@@ -80,6 +85,9 @@ namespace CharaMake {
                     break;
                 case CharaMakeState.IDENTITY:
                     identityChose();
+                    break;
+                case CharaMakeState.MISSION:
+                    missionChose();
                     break;
             }
         }
@@ -113,9 +121,16 @@ namespace CharaMake {
             if (this.choseIdentities.Count >= 3) {
                 identitySelectView.delete();
                 selectView.detach();
-                Destroy(parameterView.gameObject);
-                inputResult();
+                inputMission();
             }
+        }
+
+        public void missionChose(){
+            this.choseMission = missionSelectView.getElement();
+            missionSelectView.delete();
+			selectView.detach();
+			Destroy(parameterView.gameObject);
+			inputResult();
         }
 
         /// <summary>
@@ -136,13 +151,20 @@ namespace CharaMake {
                         Job job = jobSelectView.moveTo(jobSelectView.getIndex() + axis);
                         jobView.printText(job);
                         break;
+
                     case CharaMakeState.HUMANITY:
                         Humanity humanity = humanitySelectView.moveTo(humanitySelectView.getIndex() + axis);
                         parameterView.printText(humanity.getName(), humanity.getDescription(), humanity.getFlavorText());
                         break;
+
                     case CharaMakeState.IDENTITY:
                         Identity identity = identitySelectView.moveTo(identitySelectView.getIndex() + axis);
                         parameterView.printText(identity.getName(), identity.getDescription(), identity.getFlavorText());
+                        break;
+
+                    case CharaMakeState.MISSION:
+                        IMissionBuilder mission = missionSelectView.moveTo(missionSelectView.getIndex() + axis);
+                        parameterView.printText(mission.getName(),mission.getDescription(),mission.getFlavorText());
                         break;
                 }
             }
@@ -176,7 +198,12 @@ namespace CharaMake {
                 jobNodes.Add(jobNode);
             }
             jobSelectView = selectView.creatSelectView<JobNode, Job>(jobNodes);
-            this.jobView = Instantiate(jobViewPrefab).GetComponent<CharaMakeJobView>();
+
+            Vector3 viewPos = new Vector3(712f, Screen.height / 2);
+			this.jobView = Instantiate(jobViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<CharaMakeJobView>();
+
+            jobView.printText(jobSelectView.getElement());
+
             jobView.transform.SetParent(CanvasGetter.getCanvas().transform);
             state = CharaMakeState.JOB;
         }
@@ -192,8 +219,15 @@ namespace CharaMake {
                 humanityNodes.Add(humanityNode);
             }
             humanitySelectView = selectView.creatSelectView<HumanityNode, Humanity>(humanityNodes);
-            this.parameterView = Instantiate(parameterViewPrefab).GetComponent<CharaMakeParameterView>();
+
+            Vector3 viewPos = new Vector3(712f, Screen.height / 2);
+            this.parameterView = Instantiate(parameterViewPrefab,viewPos,new Quaternion(0,0,0,0)).GetComponent<CharaMakeParameterView>();
+
             parameterView.transform.SetParent(CanvasGetter.getCanvas().transform);
+
+            var printHumanity = humanitySelectView.getElement();
+			parameterView.printText(printHumanity.getName(), printHumanity.getDescription(), printHumanity.getFlavorText());
+
             state = CharaMakeState.HUMANITY;
         }
 
@@ -208,7 +242,35 @@ namespace CharaMake {
                 identityNodes.Add(identityNode);
             }
             identitySelectView = selectView.creatSelectView<IdentityNode, Identity>(identityNodes);
+
+            var printIdentity = identitySelectView.getElement();
+            parameterView.printText(printIdentity.getName(),printIdentity.getDescription(),printIdentity.getFlavorText());
+
             state = CharaMakeState.IDENTITY;
+        }
+
+        private void inputMission(){
+            int charamakeLevel = 0;
+            foreach(Identity identity in choseIdentities){
+                charamakeLevel += identity.getLevel();
+            }
+            charamakeLevel += choseJob.getLevel();
+            charamakeLevel += choseHumanity.getLevel();
+
+            List<MissionNode> missionNodes = new List<MissionNode>();
+            for (int i = 0; i < 5;i++){
+                Debug.Log("rooped");
+                IMissionBuilder builder = QuestHelper.getRandomMission(charamakeLevel);
+                var missionNode = Instantiate(missionNodePrefab).GetComponent<MissionNode>();
+                missionNode.setQuest(builder);
+                missionNodes.Add(missionNode);
+            }
+            missionSelectView = selectView.creatSelectView<MissionNode, IMissionBuilder>(missionNodes);
+
+            var printMission = missionSelectView.getElement();
+            parameterView.printText(printMission.getName(),printMission.getDescription(),printMission.getFlavorText());
+
+            state = CharaMakeState.MISSION;
         }
 
         /// <summary>
@@ -220,7 +282,7 @@ namespace CharaMake {
             CharaMakeResultView resultView = Instantiate(resultViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<CharaMakeResultView>();
             Destroy(selectView.gameObject);
             resultView.transform.SetParent(CanvasGetter.getCanvas().transform);
-            resultView.setParameters(choseJob, choseHumanity, choseIdentities, this);
+            resultView.setParameters(choseJob, choseHumanity, choseIdentities ,choseMission, this);
         }
 
         /// <summary>

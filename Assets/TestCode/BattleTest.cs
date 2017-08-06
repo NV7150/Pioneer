@@ -34,7 +34,10 @@ public class BattleTest : MonoBehaviour {
 
     private void setBattle(){
 		en = EnemyMasterManager.getEnemyFromId(0);
-		//hero = new Hero(JobMasterManager.getJobFromId(0), con);
+        var list = new List<Identity>(){
+            IdentityMasterManager.getIdentityFromId(0)
+        };
+        hero = new Hero(JobMasterManager.getJobFromId(0),HumanityMasterManager.getHumanityFromId(0), list,con);
 
 		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(0));
 		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(1));

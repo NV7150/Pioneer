@@ -51,6 +51,16 @@ namespace Quest {
             Debug.Log(EnemyMasterManager.getEnemyFromId(TARGET_ID).getName() + "こすう" + EXTERMINATION_NUMBER);
 		}
 
+        public ExterminationQuest(ExterminationMissonBuilder builder, FlagList flags){
+            this.flags = flags;
+
+            this.LEVEL = builder.getLevel();
+            this.TARGET_ID = builder.getTargetId();
+            this.type = CompentionType.FINISH;
+            this.EXTERMINATION_NUMBER = builder.getExterminationNumber();
+            INTERNAL_NUMBER = flags.getEnemyKilled(TARGET_ID);
+        }
+
         public void activateCompensation(Hero player) {
             if(type == CompentionType.FINISH){
                 
@@ -115,6 +125,62 @@ namespace Quest {
             HEAL_ITEM,
             METAL,
             FINISH
+        }
+    }
+
+    public class ExterminationMissonBuilder : IMissionBuilder{
+        private readonly int
+        TARGET_ID,
+        LEVEL,
+        EXTERMINATION_NUMBER;
+
+        private readonly string
+        NAME,
+        DESCRIPTION,
+        FLAVOR_TEXT;
+
+        public ExterminationMissonBuilder(int baseLevel){
+			this.LEVEL = 1;
+
+			var ids = EnemyMasterManager.getEnemyIdsFromLevel(LEVEL);
+			int idRand = UnityEngine.Random.Range(0, ids.Count);
+			this.TARGET_ID = ids[idRand];
+
+			EXTERMINATION_NUMBER = LEVEL + UnityEngine.Random.Range(10, 15);
+
+            this.NAME = "修行";
+            this.DESCRIPTION = EnemyMasterManager.getEnemyNameFromId(TARGET_ID) + "を" + EXTERMINATION_NUMBER + "体倒す";
+            this.FLAVOR_TEXT = "あなたは強さを求めている。";
+            this.FLAVOR_TEXT += "そのために、" + EnemyMasterManager.getEnemyNameFromId(TARGET_ID) + "を倒すのが最適だと考えた。";
+
+        }
+
+        public int getTargetId(){
+            return TARGET_ID;
+        }
+
+        public int getLevel(){
+            return LEVEL;
+        }
+
+        public int getExterminationNumber(){
+            return EXTERMINATION_NUMBER;
+        }
+
+        public IQuest build(FlagList flags){
+            return new ExterminationQuest(this, flags);
+        }
+
+        public string getName() {
+            return NAME;
+        }
+
+        public string getDescription() {
+            return DESCRIPTION;
+        }
+
+        public string getFlavorText() {
+            return FLAVOR_TEXT;
         }
     }
 }

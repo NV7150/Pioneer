@@ -14,6 +14,7 @@ namespace Parameter{﻿
     public class Identity {
         private readonly int
             ID,
+            LEVEL,
 	        MFT_BONUS,
 	        FFT_BONUS,
 	        MGP_BONUS,
@@ -32,21 +33,26 @@ namespace Parameter{﻿
         public Identity(string[] datas){
             this.ID = int.Parse(datas[0]);
             this.NAME = datas[1];
-            this.MFT_BONUS = int.Parse(datas[2]);
-            this.FFT_BONUS = int.Parse(datas[3]);
-            this.MGP_BONUS = int.Parse(datas[4]);
-            this.PHY_BONUS = int.Parse(datas[5]);
-            this.AGI_BONUS = int.Parse(datas[6]);
-            this.SPC_BONUS = int.Parse(datas[7]);
-            this.DEX_BONUS = int.Parse(datas[8]);
-            this.SKILL_TYPE = datas[9];
-            this.SKILL_ID = int.Parse(datas[10]);
-            this.DESCRIPTION = datas[11];
-            this.FLAVOR_TEXT = datas[12];
+            this.LEVEL = int.Parse(datas[2]);
+            this.MFT_BONUS = int.Parse(datas[3]);
+            this.FFT_BONUS = int.Parse(datas[4]);
+            this.MGP_BONUS = int.Parse(datas[5]);
+            this.PHY_BONUS = int.Parse(datas[6]);
+            this.AGI_BONUS = int.Parse(datas[7]);
+            this.SPC_BONUS = int.Parse(datas[8]);
+            this.DEX_BONUS = int.Parse(datas[9]);
+            this.SKILL_TYPE = datas[10];
+            this.SKILL_ID = int.Parse(datas[11]);
+            this.DESCRIPTION = datas[12];
+            this.FLAVOR_TEXT = datas[13];
         }
 
         public int getId(){
             return ID;
+        }
+
+        public int getLevel(){
+            return LEVEL;
         }
 
         public string getName(){
