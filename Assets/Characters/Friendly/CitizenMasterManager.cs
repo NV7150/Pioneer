@@ -31,5 +31,13 @@ namespace MasterData {
             }
             throw new ArgumentException("invalid citizenId");
         }
+
+		public static CitizenBuilder getCitizenBuilderFromId(int id) {
+			foreach (CitizenBuilder builder in dataTable) {
+				if (builder.getId() == id)
+					return builder;
+			}
+			throw new ArgumentException("invalid citizenId");
+        }
     }
 }

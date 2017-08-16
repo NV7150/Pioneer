@@ -10,6 +10,7 @@ using Item;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using Faction = Parameter.CharacterParameters.Faction;
+using static Parameter.CharacterParameters.BattleAbility;
 
 namespace MasterData{
 	[System.SerializableAttribute]
@@ -142,6 +143,17 @@ namespace MasterData{
 			faction = parameters [17];
 			modelName = "Models/" + parameters [18];
 		}
+
+        public void setProgress(EnemyProgress progress){
+            mft += progress.Abilities[MFT];
+            fft += progress.Abilities[FFT];
+            mgp += progress.Abilities[MGP];
+            agi += progress.Abilities[AGI];
+            phy += progress.Abilities[PHY];
+
+            weaponLevel += progress.WeponLevel;
+            level += progress.Level;
+        }
 
 		public override string ToString () {
 			return "EnemyBuilder " + name;

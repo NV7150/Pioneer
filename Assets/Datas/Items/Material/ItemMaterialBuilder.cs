@@ -9,13 +9,22 @@ namespace MasterData {
     public class ItemMaterialBuilder {
         private readonly int
             ID,
-            QUALITY,
             MASS,
-            VALUE,
-            LEVEL,
-            HEAVINESS;
+            HEAVINESS,
+            RAW_ITEM_VALUE;
 
-        private readonly float CONSUMABILITY;
+		private readonly float
+            CONSUMABILITY,
+            RAW_QUALITY;
+
+        private int
+	        level,
+	        itemValue;
+
+            
+
+        private float
+            quality;
 
         private readonly string
             NAME,
@@ -29,11 +38,13 @@ namespace MasterData {
         public ItemMaterialBuilder(string[] datas) {
             ID = int.Parse(datas[0]);
             NAME = datas[1];
-            QUALITY = int.Parse(datas[2]);
+            quality = float.Parse(datas[2]);
+            RAW_QUALITY = quality;
             MASS = int.Parse(datas[3]);
-            VALUE = int.Parse(datas[4]);
+            itemValue = int.Parse(datas[4]);
+            RAW_ITEM_VALUE = itemValue;
             CONSUMABILITY = float.Parse(datas[5]);
-            LEVEL = int.Parse(datas[6]);
+            level = int.Parse(datas[6]);
             HEAVINESS = int.Parse(datas[7]);
             ITEM_ATTRIBUTE = (ItemAttribute)System.Enum.Parse(typeof(ItemAttribute), datas[8]);
             DESCRIPTOIN = datas[9];
@@ -42,8 +53,8 @@ namespace MasterData {
 			ADDITIONAL_FLAVOR = datas[12];
         }
 
-        public int getQuality() {
-            return QUALITY;
+        public float getQuality() {
+            return quality;
         }
 
         public float getConsumability() {
@@ -63,7 +74,7 @@ namespace MasterData {
         }
 
         public int getItemValue() {
-            return VALUE;
+            return itemValue;
         }
 
         public int getMass() {
@@ -75,7 +86,7 @@ namespace MasterData {
         }
 
         public int getLevel(){
-            return LEVEL;
+            return level;
         }
 
         public int getHeaviness(){
@@ -94,8 +105,22 @@ namespace MasterData {
             return ITEM_ATTRIBUTE;
         }
 
+        public float getRawQuality(){
+            return RAW_QUALITY;
+        }
+
+        public int getRawItemValue(){
+            return RAW_ITEM_VALUE;
+        }
+
         public ItemMaterial build(){
             return new ItemMaterial(this);
+        }
+
+        public void addProgress(ItemMaterialProgress progress){
+            this.quality = RAW_QUALITY +  progress.Quality;
+            this.itemValue = RAW_ITEM_VALUE + progress.ItemValue;
+            this.level = progress.Level;
         }
     }
 }

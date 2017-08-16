@@ -37,6 +37,6 @@ namespace MasterData{
 			dataTable.Add(new ReactionSkill (datas));
 		}
 
-		#endregion
-	}
+        #endregion
+    }
 }

@@ -10,7 +10,8 @@ public abstract class ItemObserver : IObserver{
     protected int useFrequency = 0;
 
     protected ItemObserver(int itemId){
-        OBSERVE_ITEM_ID = itemId;
+		OBSERVE_ITEM_ID = itemId;
+		PioneerManager.getInstance().setObserver(this);
     }
 
     public void usedItem(){

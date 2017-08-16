@@ -32,7 +32,7 @@ namespace Quest {
         private CompentionType type;
 
         public ExterminationQuest(FlagList flags, Client client) {
-            this.LEVEL = client.getLevel();
+            this.LEVEL = client.Level;
             this.client = client;
             this.flags = flags;
 

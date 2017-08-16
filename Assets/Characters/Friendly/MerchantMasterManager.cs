@@ -23,6 +23,14 @@ namespace MasterData {
             throw new ArgumentException("invalid id");
         }
 
+        public static MerchantBuiler getMerchantBuilderFromId(int id){
+			foreach (MerchantBuiler builder in dataTable) {
+                if (builder.getId() == id)
+                    return builder;
+			}
+			throw new ArgumentException("invalid id");
+        }
+
         protected override void addInstance(string[] datas) {
             dataTable.Add(new MerchantBuiler(datas));
         }

@@ -9,7 +9,7 @@ using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
 using Object = System.Object;
 
-public class Humanity : MonoBehaviour {
+public class Humanity{
     private readonly int
     ID,
     LEVEL = 1,
@@ -38,7 +38,6 @@ public class Humanity : MonoBehaviour {
         var keys = Enum.GetValues(typeof(ApplyObject));
         int count = 5;
         foreach(ApplyObject applyObject in keys){
-            Debug.Log(datas[count]);
             applyList.Add(applyObject, int.Parse(datas[count]));
             count++;
         }

@@ -14,13 +14,14 @@ namespace Item {
     public class ItemMaterial : IItem {
         private readonly int
 	        ID,
-	        QUALITY,
 	        MASS,
 	        VALUE,
             LEVEL,
             HEAVINESS;
 
-        private readonly float CONSUMABILITY;
+		private readonly float
+			QUALITY, 
+            CONSUMABILITY;
 
         private readonly string
 	        NAME,
@@ -47,7 +48,7 @@ namespace Item {
             this.ITEM_ATTRIBUTE = builder.getItemAttribute();
         }
 
-        public int getQuality(){
+        public float getQuality(){
             return QUALITY;
         }
 

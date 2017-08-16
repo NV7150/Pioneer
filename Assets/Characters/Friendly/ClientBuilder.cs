@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using FieldMap;
 using Character;
 
 using QuestType = Quest.QuestParameters.QuestType;
@@ -97,8 +98,14 @@ namespace MasterData {
             return spc;
         }
 
-        public Client build(){
-            return new Client(this);
+        public Client build(Town town){
+            var client = new Client(this,town);
+            client.setTown(town);
+            return client;
+        }
+
+        public void addProgress(string[] datas){
+            
         }
     }
 }

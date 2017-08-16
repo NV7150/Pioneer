@@ -34,12 +34,15 @@ namespace MasterData {
             return MODEL_ID;
         }
 
-        public Building build(Vector3 position) {
+        public Building build(Vector3 position,long id) {
             GameObject buildingObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Models/" + MODEL_ID));
             var building = buildingObject.GetComponent<Building>();
-            IFriendly owner = CitizenMasterManager.getCitizenFromId(CITIZEN_ID);
-            building.setState(NAME, owner, position);
+            building.setState(position,id);
             return building;
+        }
+
+        public Citizen creatCitizen(){
+            return CitizenMasterManager.getCitizenFromId(CITIZEN_ID);
         }
     }
 }

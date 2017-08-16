@@ -9,7 +9,7 @@ using FieldMap;
 using ItemType = Item.ItemParameters.ItemType;
 
 namespace MasterData {
-    public class MerchantBuiler : MonoBehaviour {
+    public class MerchantBuiler{
         //各フィールド
         private readonly int 
             Id,
@@ -70,10 +70,6 @@ namespace MasterData {
             return this.ModelId;
         }
 
-        public Merchant build(Town livingTown) {
-            return new Merchant(this,livingTown);
-        }
-
         public int getStartTradeIndex(){
             return StartTradeIndex;
         }
@@ -100,6 +96,14 @@ namespace MasterData {
 
         public ItemType getGoodsType(){
             return GoodsType;
+        }
+
+		public Merchant build(Town livingTown) {
+			return new Merchant(this, livingTown);
+		}
+
+        public void addProgress(string[] datas){
+            
         }
     }
 }

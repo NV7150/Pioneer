@@ -16,12 +16,16 @@ namespace Skill {
 		private readonly int
 			/// <summary> このスキルのID </summary>
 			ID,
-			/// <summary> このスキルによる補正値 </summary>
-			BONUS,
 			/// <summary> このスキルの射程 </summary>
-			RANGE,
-			/// <summary> このスキルのMPコスト </summary>
-			COST;
+            RAW_RANGE,
+            RAW_BONUS,
+            RAW_COST;
+
+        private int
+	        bonus,
+	        cost;
+
+        private float delay;
 
 		private readonly string
 			/// <summary> スキル名 </summary>
@@ -31,14 +35,15 @@ namespace Skill {
 	        /// <summary> スキルのフレーバーテキスト </summary>
 	        FLAVOR_TEXT;
 
-		private readonly float 
-			/// <summary> このスキルのディレイ秒数です </summary>
-			DELAY,
+		private readonly float
 			/// <summary> このスキルの効果時間 </summary>
-			LIMIT;
+			LIMIT,
+            RAW_DELAY;
 
         /// <summary> スキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
+
+        private BufSkillObserver observer;
 
         /// <summary>
         /// コンストラクタ
@@ -47,15 +52,20 @@ namespace Skill {
 		public BufSkill (string[] datas) {
 			this.ID = int.Parse (datas [0]);
 			this.NAME = datas [1];
-			this.BONUS = int.Parse(datas [2]);
+            this.RAW_BONUS = int.Parse(datas [2]);
+            this.bonus = RAW_BONUS;
 			this.LIMIT = int.Parse(datas [3]);
-			this.RANGE = int.Parse (datas[4]);
-			this.COST = int.Parse (datas[5]);
-			this.DELAY = float.Parse (datas[6]);
+			this.RAW_RANGE = int.Parse (datas[4]);
+			this.RAW_COST = int.Parse (datas[5]);
+            this.cost = RAW_COST;
+			this.RAW_DELAY = float.Parse (datas[6]);
+            this.delay = RAW_DELAY;
 			setBonusParameter (datas[7]);
 			this.EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[8]);
 			this.DESCRIPTION = datas [9];
             FLAVOR_TEXT = datas[10];
+
+            this.observer = new BufSkillObserver(ID);
 		}
 
         /// <summary>
@@ -71,17 +81,35 @@ namespace Skill {
         /// </summary>
         /// <returns>射程</returns>
 		public int getRange(){
-			return RANGE;
+			return RAW_RANGE;
+		}
+
+		public float getRawDelay() {
+            return RAW_DELAY;
+		}
+
+		public int getRawCost() {
+            return RAW_COST;
+		}
+
+        public int getRawBonus(){
+            return RAW_BONUS;
+        }
+
+		public void addProgress(ActiveSkillProgress progress) {
+            this.cost = RAW_COST - progress.Cost;
+            this.delay = RAW_DELAY - progress.Delay;
+            this.bonus = RAW_BONUS + progress.Effect;
 		}
 
 		#region implemented abstract members of SupportSkillBase
 
 		protected override BattleAbilityBonus getAbilityBonus(){
-			return new BattleAbilityBonus(NAME,bonusAbility,LIMIT,BONUS);
+			return new BattleAbilityBonus(NAME,bonusAbility,LIMIT,bonus);
 		}
 
 		protected override SubBattleAbilityBonus getSubAbilityBonus(){
-			return new SubBattleAbilityBonus (NAME,bonusSubAbility,LIMIT,BONUS);
+			return new SubBattleAbilityBonus (NAME,bonusSubAbility,LIMIT,bonus);
 		}
 
 		#endregion
@@ -93,15 +121,17 @@ namespace Skill {
 				return;
 
 			setBounsToCharacter(task.getTargets());
-			actioner.minusMp (this.COST);
+			actioner.minusMp (this.cost);
+
+            observer.used();
 		}
 
 		public int getCost () {
-			return COST;
+			return cost;
 		}
 
 		public float getDelay (IBattleable user) {
-			return DELAY;
+			return delay;
 		}
 
 		public ActiveSkillType getActiveSkillType () {

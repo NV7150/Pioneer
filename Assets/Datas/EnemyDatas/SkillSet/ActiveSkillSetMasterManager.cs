@@ -36,6 +36,6 @@ namespace MasterData{
 			dataTable.Add (new ActiveSkillSetBuilder(datas));
 		}
 
-		#endregion
-	}
+        #endregion
+    }
 }

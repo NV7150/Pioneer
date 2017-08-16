@@ -2,26 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using MasterData;
+
 namespace FieldMap {
     public class World : MonoBehaviour {
-        public List<GameObject> townPositions;
-        private List<Town> towns = new List<Town>();
+        private int id = 0;
+        public List<Transform> townPositions;
         private GameObject townPrefab;
+
+        private Dictionary<int, Vector3> towns = new Dictionary<int, Vector3>();
+        private List<Town> enableTowns = new List<Town>();
 
         private void Awake() {
             townPrefab = (GameObject)Resources.Load("Models/Town");
         }
 
         // Use this for initialization
-        void Start() {
-
-        }
+        void Start() {}
 
         // Update is called once per frame
         void Update() {
             if (Input.GetKeyDown(KeyCode.C))
-                creatTown();
+                depict(0);
+            if (Input.GetKeyDown(KeyCode.Z)) {
+                Debug.Log("into keydonz");
+                saveTowns();
+            }
+          
+        }
 
+        public void depict(int id){
+			if (ES2.Exists(MasterDataManagerBase.getLoadPass(id, "WorldData"))) {
+                loadTowns();
+            }else{
+                creatTown();
+                this.id = id;
+            }
         }
 
         private void creatTown() {
@@ -47,20 +63,25 @@ namespace FieldMap {
 
             var positoins = shufflePositoin();
             var levels = shuffleTownLevel(lowTown,middleTown,highTown);
-            var sizes = shuffleTownSize(lowTown, middleTown, highTown);
+			var sizes = shuffleTownSize(lowTown, middleTown, highTown);
+
             for (int i = 0; i < numberOfTown;i++){
-                GameObject townObject = Instantiate(townPrefab, positoins[i].transform.position,new Quaternion(0, 0, 0, 0));
+                GameObject townObject = Instantiate(townPrefab, positoins[i],new Quaternion(0, 0, 0, 0));
                 Town town = townObject.GetComponent<Town>();
-                town.setState(getLevel(levels[i]),getSize(sizes[i]));
-                towns.Add(town);
+                town.setState(getLevel(levels[i]),getSize(sizes[i]),id);
+                enableTowns.Add(town);
+                towns.Add(town.getId(),positoins[i]);
+                id++;
             }
         }
 
-        private List<GameObject> shufflePositoin(){
-            List<GameObject> positions = new List<GameObject>(townPositions);
+		private List<Vector3> shufflePositoin() {
+			List<Vector3> positions = new List<Vector3>();
+            foreach (Transform transfrom in townPositions)
+                positions.Add(transfrom.position);
             int index = positions.Count - 1;
             while(index > 1){
-                GameObject indexPosition = positions[index];
+                Vector3 indexPosition = positions[index];
                 int rand = Random.Range(0, index + 1);
                 positions[index] = positions[rand];
                 positions[rand] = indexPosition;
@@ -134,6 +155,42 @@ namespace FieldMap {
 			}
 			throw new System.ArgumentException("unkonwn sizeDigest");
 		}
+
+        public Town getTownFromId(int id){
+            foreach(Town town in enableTowns){
+                if (town.getId() == id)
+                    return town;
+            }
+            throw new System.ArgumentException("unkown townId");
+        }
+
+        private void loadTowns(){
+			var data = MasterDataManagerBase.loadSaveData<WorldData>(id, "WorldData");
+			this.towns = data.Save;
+
+            var ids = towns.Keys;
+            Debug.Log("coutn ids" + ids.Count);
+            foreach(int id in ids){
+                var townBuilder = MasterDataManagerBase.loadSaveData<TownBuilder>(id, "TownData");
+                GameObject townObject = Instantiate(townPrefab);
+				Town town = townObject.GetComponent<Town>();
+                town.setState(townBuilder);
+                enableTowns.Add(town);
+            }
+        }
+
+        private void saveTowns(){
+            //ES2.DeleteDefaultFolder();
+            var saveData = new WorldData();
+            saveData.Save = this.towns;
+            Debug.Log("sc " + saveData.Save.Keys.Count);
+            ObserverHelper.saveToFile<WorldData>(saveData,"WorldData",id);
+            foreach(Town town in enableTowns){
+                Debug.Log("<color=blue>into roop1</color>");
+                var builder = town.compressIntoBuilder();
+                ObserverHelper.saveToFile<TownBuilder>(builder,"TownData",town.getId());
+            }
+        }
 
         private enum TownLevelDigest{
             LOW,MIDDLE,HIGH

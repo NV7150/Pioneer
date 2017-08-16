@@ -32,7 +32,7 @@ namespace MasterData {
 		protected override void addInstance (string[] datas) {
 			dataTable.Add(new MoveSkill(datas));
 		}
-		#endregion
-	}
+        #endregion
+    }
 }
 

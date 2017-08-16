@@ -6,7 +6,7 @@ using Character;
 using FieldMap;
 
 namespace MasterData {
-    public class ShopBuilder : MonoBehaviour {
+    public class ShopBuilder {
         private readonly int
         ID,
         MERCHANT_ID,
@@ -40,12 +40,15 @@ namespace MasterData {
             return LEVEL;
         }
 
-        public Building build(Vector3 position,Town livingTown) {
+        public Building build(Vector3 position,long id) {
             GameObject buildingObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Models/" + MODEL_ID));
             var building = buildingObject.GetComponent<Building>();
-            IFriendly owner = MerchantMasterManager.getMerchantFromId(MERCHANT_ID,livingTown);
-            building.setState(NAME, owner, position,LEVEL);
+            building.setState(position,id);
             return building;
+        }
+
+        public Merchant creatMerchant(Town livingTown){
+            return MerchantMasterManager.getMerchantFromId(MERCHANT_ID, livingTown);
         }
     }
 }

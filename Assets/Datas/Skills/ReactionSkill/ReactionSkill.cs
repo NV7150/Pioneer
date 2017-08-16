@@ -56,6 +56,10 @@ namespace Skill{
             FLAVOR_TEXT = datas[7];
 		}
 
+        public void addProgress(string[] datas){
+            
+        }
+
 		#region ISkill implementation
 		public string getName () {
 			return NAME;

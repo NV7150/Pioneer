@@ -44,25 +44,6 @@ namespace MasterData{
 			Debug.Log(textOutput);
 		}
 
-        public static void writeCsvGrid(string[,] grid, string filePass){
-            Debug.Log("called");
-            FileInfo fileInfo = new FileInfo(Application.dataPath + filePass);
-            StreamWriter writer = fileInfo.AppendText();
-
-            for (int y = 0; y < grid.GetLength(1); y++) {
-                Debug.Log("into roop");
-                StringBuilder builder = new StringBuilder();
-                for (int x = 0; x < grid.GetLength(0); x++) {
-                    builder.Append(grid[x,y] + ",");
-                    Debug.Log("get " + grid[x,y]);
-                }
-                writer.WriteLine(builder.ToString());
-			}
-
-            writer.Flush();
-            writer.Close();
-        }
-
 		// splits a CSV file into a 2D string array
 		static public string[,] SplitCsvGrid(string csvText)
 		{

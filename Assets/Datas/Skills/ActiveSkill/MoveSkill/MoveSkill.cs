@@ -78,6 +78,10 @@ namespace Skill {
 			return MOVE;
 		}
 
+        public void addProgress(string[] datas){
+            
+        }
+
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner, BattleTask task) {

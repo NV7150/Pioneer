@@ -9,6 +9,18 @@
 			mphItem = HealItemMasterManager.getHealItemFromId(1);
 
 			hero.addItem(hphItem);
-			hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(0));        }else if(Input.GetKeyDown(KeyCode.L)){            ClientMasterManager.getClientFromId(0);        }else if(Input.GetKeyDown(KeyCode.P)){
+			hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(0));        }else if(Input.GetKeyDown(KeyCode.L)){            //ClientMasterManager.getClientFromId(0);        }else if(Input.GetKeyDown(KeyCode.P)){
 			hero.getFlagList().addEnemyKilled(EnemyMasterManager.getEnemyFromId(0));
-			hero.getFlagList().addEnemyKilled(EnemyMasterManager.getEnemyFromId(1));        }	}}
+			hero.getFlagList().addEnemyKilled(EnemyMasterManager.getEnemyFromId(1));        }        if(Input.GetKeyDown(KeyCode.O)){            Debug.Log("called");            progressData();        }
+
+		if (Input.GetKeyDown(KeyCode.M)) {
+			Debug.Log("called");            saveTest();        }	}
+
+	private void progressData() {
+        var progress = HealItemMasterManager.getHealItemFromId(0);        for (int i = 0; i < 100; i++)
+            progress.use(hero);
+	}    private void saveTest(){
+		PioneerManager.getInstance().finished();
+		HealItemMasterManager.updateProgress();
+
+        Debug.Log("heal " + HealItemMasterManager.getHealItemFromId(0).getHeal());    }}

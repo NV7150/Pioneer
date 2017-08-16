@@ -28,7 +28,7 @@ namespace MasterData {
 		protected override void addInstance (string[] datas) {
 			dataTable.Add (new ReactionSkillSetBuilder(datas));
 		}
-		#endregion
-	}
+        #endregion
+    }
 }
 

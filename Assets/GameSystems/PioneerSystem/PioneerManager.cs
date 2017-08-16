@@ -9,10 +9,19 @@ public class PioneerManager{
 
     private PioneerManager(){}
 
-    public void finished(){
+    public static PioneerManager getInstance(){
+        return INSTANCE;
+    }
+
+	public void finished() {
+		ES2.DeleteDefaultFolder();
         foreach(IObserver observer in observers){
             observer.report();
             observer.reset();
         }
+    }
+
+    public void setObserver(IObserver observer){
+        observers.Add(observer);
     }
 }

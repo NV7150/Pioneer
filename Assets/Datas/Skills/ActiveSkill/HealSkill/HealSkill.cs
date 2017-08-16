@@ -16,11 +16,15 @@ namespace Skill {
 			/// <summary> スキルのID </summary>
 			ID,
 			/// <summary> 回復基本量 </summary>
-			HEAL,
+            RAW_HEAL_VALUE,
 			/// <summary> 射程 </summary>
 			RANGE,
 			/// <summary> MPコスト </summary>
-			COST;
+            RAW_COST;
+
+        private int
+            healValue,
+	        cost;
 
 		private readonly string
 			/// <summary> スキル名 </summary>
@@ -31,7 +35,9 @@ namespace Skill {
 	        FLAVOR_TEXT;
 
 		/// <summary> ディレイ秒数  </summary>
-		private readonly float DELAY;
+        private readonly float RAW_DELAY;
+
+        private float delay;
 
         /// <summary> スキルに使用するBattleAbilty </summary>
 		private readonly BattleAbility USE_ABILITY;
@@ -42,6 +48,8 @@ namespace Skill {
         /// <summary> スキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
 
+        private HealSkillObserver observer;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -49,15 +57,20 @@ namespace Skill {
 		public HealSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
-			HEAL = int.Parse (datas[2]);
+			RAW_HEAL_VALUE = int.Parse (datas[2]);
+            healValue = RAW_HEAL_VALUE;
 			RANGE = int.Parse (datas[3]);
-			DELAY = float.Parse (datas[4]);
-			COST = int.Parse (datas[5]);
+			RAW_DELAY = float.Parse (datas[4]);
+            delay = RAW_DELAY;
+			RAW_COST = int.Parse (datas[5]);
+            cost = RAW_COST;
 			ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas [6]);
 			EXTENT = (Extent)Enum.Parse(typeof(Extent),datas [7]);
 			USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility),datas[8]);
 			DESCRIPTION = datas [9];
             FLAVOR_TEXT = datas[10];
+
+            observer = new HealSkillObserver(ID);
 		}
 
 		/// <summary>
@@ -67,8 +80,8 @@ namespace Skill {
 		/// <param name="targets"> 対象のリスト </param>
 		private void heal(IBattleable actioner,List<IBattleable> targets){
 			foreach(IBattleable target in targets){
-				int heal = actioner.getHeal(this.USE_ABILITY);
-				target.healed (heal,this.ATTRIBUTE);
+				int heal = actioner.getHeal(USE_ABILITY);
+				target.healed (heal,ATTRIBUTE);
 			}
 		}
 
@@ -77,7 +90,7 @@ namespace Skill {
 		/// </summary>
 		/// <returns> 回復基礎値 </returns>
 		public int getHeal(){
-			return HEAL;
+			return RAW_HEAL_VALUE;
 		}
 
 		/// <summary>
@@ -96,6 +109,24 @@ namespace Skill {
 			return RANGE;
 		}
 
+        public int getRawHeal(){
+            return RAW_HEAL_VALUE;
+        }
+
+		public float getRawDelay() {
+			return RAW_DELAY;
+		}
+
+		public int getRawCost() {
+			return RAW_COST;
+		}
+
+		public void addProgress(ActiveSkillProgress progress) {
+            healValue = RAW_HEAL_VALUE + progress.Effect;
+            cost = RAW_COST - progress.Cost;
+            delay = RAW_DELAY - progress.Delay;
+		}
+
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner, BattleTask task) {
@@ -103,15 +134,17 @@ namespace Skill {
 				return;
             
 			heal (actioner,task.getTargets());
-			actioner.minusMp(this.COST);
+            actioner.minusMp(cost);
+
+            observer.used();
 		}
 
 		public int getCost () {
-			return COST;
+            return cost;
 		}
 
 		public float getDelay (IBattleable actioner) {
-			return DELAY;
+            return cost;
 		}
 
 		public ActiveSkillType getActiveSkillType () {

@@ -10,30 +10,34 @@ using ItemAttribute = Item.ItemParameters.ItemAttribute;
 
 namespace MasterData{
     public class HealItemBuilder {
-		private readonly int
-			/// <summary> アイテムID </summary>
-			ID,
-			/// <summary> アイテムの回復量 </summary>
-			HEAL,
-			/// <summary> アイテムの基本価格 </summary>
-			ITEM_VALUE,
-			/// <summary> アイテムの重量 </summary>
-			MASS,
-            LEVEL;
+        private readonly int
+            /// <summary> アイテムID </summary>
+            ID,
+            /// <summary> アイテムの重量 </summary>
+            MASS,
+	        RAW_HEAL,
+	        RAW_ITEM_VALUE;
+
+        private int
+	        heal,
+	        level,
+	        itemValue;
 
 		private readonly string
 			/// <summary> アイテム名 </summary>
-			NAME,
+            NAME,
 			/// <summary> アイテムの説明文 </summary>
-			DESCRITION,
+            DESCRIPTION,
 			/// <summary> アイテムのフレーバーテキスト </summary>
-			FLAVOR_TEXT;
+            FLAVOR_TEXT;
 
 
 		/// <summary> アイテムの回復属性 </summary>
 		private readonly HealAttribute ATTRIBUTE;
 
         private readonly ItemAttribute ITEM_ATTRIBUTE;
+
+        private readonly HealItemObserver observer;
 
         /// <summary>
         /// コンストラクタ
@@ -43,18 +47,22 @@ namespace MasterData{
         public HealItemBuilder(string[] datas){
             ID = int.Parse(datas[0]);
             NAME = datas[1];
-            HEAL = int.Parse(datas[2]);
-            ITEM_VALUE = int.Parse(datas[3]);
+            heal = int.Parse(datas[2]);
+            RAW_HEAL = heal;            
+            itemValue = int.Parse(datas[3]);
+            RAW_ITEM_VALUE = itemValue; 
 			MASS = int.Parse(datas[4]);
-			LEVEL = int.Parse(datas[5]);
+			level = int.Parse(datas[5]);
             ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas[6]);
             ITEM_ATTRIBUTE = (ItemAttribute)System.Enum.Parse(typeof(ItemAttribute), datas[7]);
-            DESCRITION = datas[8];
+            DESCRIPTION = datas[8];
             FLAVOR_TEXT = datas[9];
+
+            observer = new HealItemObserver(ID);
         }
 
 		public int getHeal() {
-			return HEAL;
+			return heal;
 		}
 
 		public HealAttribute getAttribute() {
@@ -62,7 +70,7 @@ namespace MasterData{
 		}
 
 		public string getDescription() {
-			return DESCRITION;
+			return DESCRIPTION;
 		}
 
 		public int getId() {
@@ -70,7 +78,7 @@ namespace MasterData{
 		}
 
 		public int getItemValue() {
-			return ITEM_VALUE;
+			return itemValue;
 		}
 
 		public int getMass() {
@@ -86,15 +94,29 @@ namespace MasterData{
 		}
 
 		public int getLevel() {
-			return LEVEL;
+			return level;
 		}
 
+        public int getRawHeal(){
+            return RAW_HEAL;
+        }
+
+        public int getRawItemValue(){
+            return RAW_ITEM_VALUE;
+        }
+
         public HealItem build(){
-            return new HealItem(this);
+            return new HealItem(this,observer);
         }
 
         public ItemAttribute getItemAttribute(){
             return ITEM_ATTRIBUTE;
+        }
+
+        public void addProgress(HealItemProgress progress){
+            this.heal = RAW_HEAL + progress.Heal;
+            this.itemValue = RAW_ITEM_VALUE + progress.ItemValue;
+            this.level = progress.Level;
         }
     }
 }

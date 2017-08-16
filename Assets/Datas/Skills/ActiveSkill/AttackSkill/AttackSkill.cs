@@ -17,13 +17,18 @@ namespace Skill {
 			/// <summary> このスキルのID </summary>
 			ID,
 			/// <summary> このスキルの攻撃力 </summary>
-			ATK,
+            RAW_ATK,
 			/// <summary> このスキルの射程 </summary>
 			RANGE,
 			/// <summary> このスキルの命中率 </summary>
-			HIT,
+            RAW_HIT,
 			/// <summary> このスキルのMPコスト </summary>
-			COST;
+            RAW_COST;
+
+        private int
+	        atk,
+	        hit,
+	        cost;
 
 		private readonly string
 			/// <summary> このスキルの名称 </summary>
@@ -46,7 +51,8 @@ namespace Skill {
 			DEPEND_ABILITY;
 
 		/// <summary> ディレイ秒数 </summary>
-		private readonly float DELAY;
+        private readonly float RAW_DELAY;
+        private float delay;
 
 		/// <summary> このスキルの属性 </summary>
 		private readonly AttackSkillAttribute ATTRIBUTE;
@@ -57,14 +63,20 @@ namespace Skill {
 		/// <summary> このスキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
 
+        private AttackSkillObserver observer;
+
 		public AttackSkill (string[] datas) {
 			ID = int.Parse(datas [0]);
 			NAME = datas [1];
-			ATK = int.Parse(datas [2]);
+			atk = int.Parse(datas [2]);
+            RAW_ATK = atk;
 			RANGE = int.Parse(datas [3]);
-			HIT = int.Parse(datas [4]);
-			DELAY = float.Parse(datas [5]);
-			COST = int.Parse (datas[6]);
+			hit = int.Parse(datas [4]);
+            RAW_HIT = hit;
+			delay = float.Parse(datas [5]);
+            RAW_DELAY = delay;
+			cost = int.Parse (datas[6]);
+            RAW_COST = cost;
 			DEPEND_ATK  = (datas[7] == "TRUE");
 			DEPEND_HIT = (datas [8] == "TRUE");
 			DEPEND_RANGE = (datas [9] == "TRUE");
@@ -80,6 +92,8 @@ namespace Skill {
 			EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[13]);
 			DESCRIPTON = datas [14];
             FLAVOR_TEXT = datas[15];
+
+            observer = new AttackSkillObserver(ID);
 		}
 
 
@@ -104,7 +118,7 @@ namespace Skill {
 		/// </summary>
 		/// <returns> 攻撃力 </returns>
 		public int getAtk(IBattleable actioner){
-            return ATK + actioner.getAtk (getAttackSkillAttribute(),getUseAbility(actioner),DEPEND_ATK);
+            return atk + actioner.getAtk (getAttackSkillAttribute(),getUseAbility(actioner),DEPEND_ATK);
 		}
 
 		/// <summary>
@@ -114,9 +128,9 @@ namespace Skill {
 		public int getHit(IBattleable actioner){
 			int bonus = 0;
 			if (DEPEND_HIT) {
-//				bonus += actioner.getWepon ().getHit() ;
+//				bonus += actioner.getWepon ().getHit();
 			}
-			return HIT + actioner.getHit(getUseAbility(actioner)) + bonus;
+			return hit + actioner.getHit(getUseAbility(actioner)) + bonus;
 		}
 
 		/// <summary>
@@ -146,21 +160,42 @@ namespace Skill {
 		public Extent getExtent(){
 			return this.EXTENT;
 		}
-			
-		/// <summary>
-		/// 射程を取得します
-		/// </summary>
-		/// <returns> 射程 </returns>
-		/// <param name="actioner"> 射程を算出したいIBattleableキャラクター </param>
-		public int getRange(IBattleable actioner){
-			int bonus = 0;
-			if (DEPEND_RANGE) {
+
+        /// <summary>
+        /// 射程を取得します
+        /// </summary>
+        /// <returns> 射程 </returns>
+        /// <param name="actioner"> 射程を算出したいIBattleableキャラクター </param>
+        public int getRange(IBattleable actioner) {
+            int bonus = 0;
+            if (DEPEND_RANGE) {
                 bonus += actioner.getCharacterRange();
-			}
-			return this.RANGE + bonus; 
+            }
+            return this.RANGE + bonus;
+        }
+
+        public int getRawAttack(){
+            return RAW_ATK;
+        }
+
+        public int getRawHit(){
+            return RAW_HIT;
+        }
+
+        public float getRawDelay(){
+            return RAW_DELAY;
+        }
+
+        public int getRawCost(){
+            return RAW_COST;
+        }
+
+		public void addProgress(ActiveAttackSkillProgress progress) {
+            atk = RAW_ATK + progress.Effect;
+            hit = RAW_HIT +  progress.Hit;
+            delay = RAW_DELAY - progress.Delay;
+            cost = RAW_COST - progress.Cost;
 		}
-
-
 		#region IActiveSkill implementation
 
 		public void action (IBattleable actioner,BattleTask task) {
@@ -169,11 +204,13 @@ namespace Skill {
 
 			attack (actioner,task.getTargets());
 
-			actioner.minusMp (this.COST);
+			actioner.minusMp(this.cost);
+
+			observer.used();
 		}
 			
 		public int getCost () {
-			return COST;
+			return cost;
 		}
 
 		public float getDelay(IBattleable actioner){
@@ -181,7 +218,7 @@ namespace Skill {
 			if (DEPEND_DELAY) {
                 bonus += actioner.getCharacterDelay();
 			}
-			return this.DELAY + bonus;
+			return this.delay + bonus;
 		}
 
 		public ActiveSkillType getActiveSkillType () {

@@ -24,7 +24,6 @@ namespace MasterData{
 		/// <returns>指定された職業</returns>
 		/// <param name="id">取得したい職業のID</param>
 		public static Job getJobFromId(int id){
-            Debug.Log("called job");
 			foreach(Job job in dataTable){
 				if (job.getId () == id)
 					return job;
@@ -36,6 +35,6 @@ namespace MasterData{
 		protected override void addInstance(string[] datas) {
 			dataTable.Add(new Job (datas));
 		}
-		#endregion
-	}
+        #endregion
+    }
 }

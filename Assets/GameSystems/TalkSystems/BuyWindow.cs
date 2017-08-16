@@ -19,10 +19,9 @@ namespace TalkSystem {
         /// <summary> 取引に参加するプレイヤー </summary>
         Hero player;
         /// <summary> 取引に参加するIFriendlyキャラクター </summary>
-        IFriendly trader;
+        Merchant trader;
         /// <summary> 親となるメッセージウィンドウ </summary>
         MassageWindow window;
-
 
         /// <summary> 売却ウィンドウのプレファブ </summary>
         private GameObject sellWindowPrefab;
@@ -51,7 +50,7 @@ namespace TalkSystem {
                 node.transform.SetParent(content.transform);
             }
             this.player = player;
-            this.trader = trader;
+            this.trader = (Merchant)trader;
             this.window = window;
 
             headerText.text = trader.getName();
@@ -74,6 +73,7 @@ namespace TalkSystem {
             }
             player.addItem(item);
             player.minusMetal(itemValue);
+            trader.traded(itemValue,item);
 
             sellWindow.updateItem();
         }

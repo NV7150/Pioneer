@@ -11,6 +11,7 @@ namespace MasterData {
         /// 登録済みのDebufSkillのリスト
         /// </summary>
 		private static List<DebufSkill> dataTable = new List<DebufSkill>();
+        private static Dictionary<int, ActiveSkillProgress> progressTable = new Dictionary<int, ActiveSkillProgress>();
 
 		void Awake(){
 			var csv = Resources.Load ("MasterDatas/DebufSkillMasterData") as TextAsset;
@@ -30,11 +31,23 @@ namespace MasterData {
 			throw new ArgumentException ("invalid DebufSkillId");
 		}
 
+        public static ActiveSkillProgress getProgressFromId(int id){
+            return progressTable[id];
+        }
+
 		#region implemented abstract members of MasterDataManagerBase
 		protected override void addInstance (string[] datas) {
-			dataTable.Add (new DebufSkill(datas));
+            var builder = new DebufSkill(datas);
+            dataTable.Add (builder);
+            int id = int.Parse(datas[0]);
+            if (ES2.Exists(getLoadPass(id, "DebufSkillProgress.txt"))) {
+                var progress = loadSaveData<ActiveSkillProgress>(int.Parse(datas[0]), "DebufProgress.txt");
+                progressTable.Add(id, progress);
+            }else{
+                progressTable.Add(id,new ActiveSkillProgress());
+            }
 		}
-		#endregion
-	}
+        #endregion
+    }
 }
 

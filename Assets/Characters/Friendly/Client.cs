@@ -7,14 +7,18 @@ using UnityEngine;
 using MasterData;
 using TalkSystem;
 using Quest;
+using FieldMap;
 
 using QuestType = Quest.QuestParameters.QuestType;
 using FriendlyCharacterType = Parameter.CharacterParameters.FriendlyCharacterType;
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
+using Random = UnityEngine.Random;
+
+using static Parameter.CharacterParameters.FriendlyAbility;
 
 namespace Character {
     public class Client : IFriendly{
-		private readonly int ID;
+        private int id;
 		private readonly long UNIQUE_ID;
 		private readonly string NAME;
 		private readonly List<string> MASSAGES;
@@ -22,27 +26,74 @@ namespace Character {
 		private readonly List<string> CLEAR_MASSAGES;
         private Dictionary<FriendlyAbility, int> abilities = new Dictionary<FriendlyAbility, int>();
 
-        private readonly int LEVEL;
+        private int level;
         private readonly QuestType QUEST_TYPE;
         private IQuest quest;
 		private Container container;
+        private Town livingTown;
 
-        public Client(ClientBuilder builer) {
-			this.ID = builer.getId();
-			this.NAME = builer.getName();
-			this.MASSAGES = builer.getMassges();
-            this.UNDERTOOK_MASSAGES = builer.getUnderTookMassges();
-            this.CLEAR_MASSAGES = builer.getClearedMassges();
-            this.LEVEL = builer.getLevel();
-            this.QUEST_TYPE = builer.getQuestType();
-            this.abilities.Add(FriendlyAbility.DEX,builer.getDex());
-            this.abilities.Add(FriendlyAbility.SPC,builer.getSpc());
+        private bool townSetted = false;
+
+        public int Id{
+            get { return id; }
+        }
+
+        public Transform ContainerTransform{
+            get { return container.transform; }
+        }
+
+        public Dictionary<FriendlyAbility,int> Abilities{
+            get { return new Dictionary<FriendlyAbility, int>(abilities); }
+        }
+
+        public int Level{
+            get { return level; }
+        }
+
+        public Client(ClientBuilder builder,Town livingTown) {
+			this.id = builder.getId();
+			this.NAME = builder.getName();
+			this.MASSAGES = builder.getMassges();
+            this.UNDERTOOK_MASSAGES = builder.getUnderTookMassges();
+            this.CLEAR_MASSAGES = builder.getClearedMassges();
+            this.level = builder.getLevel();
+            this.QUEST_TYPE = builder.getQuestType();
+            this.abilities.Add(DEX, builder.getDex());
+            this.abilities.Add(SPC,builder.getSpc());
 			this.UNIQUE_ID = UniqueIdCreator.creatUniqueId();
 
-			var modelPrefab = (GameObject)Resources.Load("Models/" + builer.getModelId());
+			var modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
 			container = MonoBehaviour.Instantiate(modelPrefab).GetComponent<Container>();
 			container.setCharacter(this);
+
+            this.livingTown = livingTown;
 		}
+
+        public Client(int id, Dictionary<FriendlyAbility, int> abilities, int level, Transform transfrom){
+            this.id = id;
+            this.level = level;
+            this.abilities = new Dictionary<FriendlyAbility, int>(abilities);
+
+            var builder = ClientMasterManager.getClientBuilderFromId(id);
+
+			this.NAME = builder.getName();
+			this.MASSAGES = builder.getMassges();
+			this.UNDERTOOK_MASSAGES = builder.getUnderTookMassges();
+			this.CLEAR_MASSAGES = builder.getClearedMassges();
+			this.QUEST_TYPE = builder.getQuestType();
+			this.UNIQUE_ID = UniqueIdCreator.creatUniqueId();
+			var modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
+            container = MonoBehaviour.Instantiate(modelPrefab,transfrom.position,transfrom.rotation).GetComponent<Container>();
+			container.setCharacter(this);
+
+            MonoBehaviour.Destroy(transfrom.gameObject);
+        }
+
+
+        public void setTown(Town livingTown){
+            this.livingTown = livingTown;
+            townSetted = true;
+        }
 
         public void act() {
             
@@ -65,7 +116,7 @@ namespace Character {
         }
 
         public int getId() {
-            return ID;
+            return id;
         }
 
         public string getName() {
@@ -76,22 +127,20 @@ namespace Character {
             return UNIQUE_ID;
         }
 
-        public int getLevel(){
-            return LEVEL;
-        }
-
         public void talk(IFriendly friendly) {
-			if (friendly is Hero) {
-				var player = (Hero)friendly;
+            if(townSetted){
+                if (friendly is Hero) {
+                    var player = (Hero)friendly;
 
-                if(this.quest != null){
-                    if(quest.isCleared()){
-                        clearedTalk(player);
-                    }else{
-                        undertakingTalk();
+                    if (quest != null) {
+                        if (quest.isCleared()) {
+                            clearedTalk(player);
+                        } else {
+                            undertakingTalk();
+                        }
+                    } else {
+                        requestTalk(player.getFlagList());
                     }
-                }else{
-                    requestTalk(player.getFlagList());
                 }
             }
         }
@@ -114,6 +163,13 @@ namespace Character {
             TalkManager.getInstance().talk(CLEAR_MASSAGES);
             quest.activateCompensation(player);
             player.deleteQuest(quest);
+            livingTown.questCleared(this);
+        }
+
+        public void levelup(){
+            this.level++;
+            this.abilities[SPC] += Random.Range(0, 2);
+            this.abilities[DEX] += Random.Range(1, 3);
         }
     }
 }

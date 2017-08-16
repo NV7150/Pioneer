@@ -40,7 +40,9 @@ namespace Item {
 
         private readonly ItemAttribute ITEM_ATTRIBUTE;
 
-        public HealItem(HealItemBuilder builder){
+        private HealItemObserver observer;
+
+        public HealItem(HealItemBuilder builder,HealItemObserver observer){
             ID = builder.getId();
             NAME = builder.getName();
             HEAL = builder.getHeal();
@@ -51,6 +53,8 @@ namespace Item {
             ATTRIBUTE = builder.getAttribute();
             LEVEL = builder.getLevel();
             ITEM_ATTRIBUTE = builder.getItemAttribute();
+
+            this.observer = observer;
         }
 
         /// <summary>
@@ -101,6 +105,7 @@ namespace Item {
 
         public void use(IPlayable user) {
             user.healed(HEAL, ATTRIBUTE);
+            observer.usedItem();
         }
 
         public string getFlavorText() {

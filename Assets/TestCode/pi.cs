@@ -17,11 +17,20 @@ public class pi : MonoBehaviour {
 	}
 
     private void saveTest(){
-        HealItemObserver observer = new HealItemObserver(0);
-        for (int i = 0; i < 100; i++) {
-            observer.usedItem();
-        }
-        observer.report();
-        HealItemObserver.saveToFile();
+        Debug.Log("loaded");
+		HealItemProgress progress = new HealItemProgress();
+        progress.Heal = 10;
+        progress.Level = 10;
+        progress.ItemValue = 1;
+
+		Debug.Log("loaded");
+        ES2Writer writer = ES2Writer.Create("Progresses/HealItemProgeress?tag=Test");
+        writer.Write(progress,"Test");
+        writer.Save();
+
+        Debug.Log("loaded");
+        ES2Reader reader = ES2Reader.Create("Progresses/HealItemProgeress?tag=Test");
+        HealItemProgress progressTwo = reader.Read<HealItemProgress>("Test");
+        Debug.Log(progressTwo.Heal + " " + progressTwo.Level + " " + progressTwo.ItemValue);
     }
 }

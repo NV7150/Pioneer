@@ -8,32 +8,29 @@ using MasterData;
 namespace FieldMap {
     [System.SerializableAttribute]
     public class Building : MonoBehaviour {
-        IFriendly ownerCharacter;
+        bool isTransformEnabled = false;
+        long id;
 
-        [SerializeField]
-        string buildingName;
-        int level;
-
-        public string getName() {
-            return buildingName;
+        public Transform buildingtransfrom{
+            get { return this.transform; }
+            set{
+                if (!isTransformEnabled) {
+                    this.transform.position = value.position;
+                    this.transform.rotation = value.rotation;
+                    isTransformEnabled = true;
+                }else{
+                    throw new System.ArgumentException("building has already been enabled");
+                }
+            }
         }
 
-        public int getLevel() {
-            return level;
+        public long Id{
+            get { return id; }
         }
 
-        public IFriendly getOwnerCharacter() {
-            return ownerCharacter;
-        }
-
-        public void setState(string name, IFriendly character, Vector3 pos ,int level = 0) {
-			this.buildingName = name;
-			this.level = level;
-
+        public void setState(Vector3 pos,long id) {
             transform.position = pos;
-
-            ownerCharacter = character;
-            ownerCharacter.getContainer().transform.position = transform.position;
+            this.id = id;
         }
     }
 }

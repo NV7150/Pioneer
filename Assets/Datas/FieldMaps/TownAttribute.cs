@@ -39,5 +39,9 @@ namespace FieldMap {
         public float getAttributeMag(ItemAttribute attribute){
             return attributeMag[attribute];
         }
+
+        public Dictionary<ItemAttribute, float> getAttributeMags(){
+            return new Dictionary<ItemAttribute, float>(attributeMag);
+        }
     }
 }

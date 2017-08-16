@@ -14,10 +14,10 @@ namespace MasterData {
             constractedBehaviour(csv);
         }
 
-        public static Building getShopFromId(int id,Vector3 pos,Town livingTown){
+        public static ShopBuilder getShopFromId(int id){
             foreach(ShopBuilder builder in dataTable){
                 if (builder.getId() == id)
-                    return builder.build(pos,livingTown);
+                    return builder;
             }
             throw new ArgumentException("invalid shopId");
         }

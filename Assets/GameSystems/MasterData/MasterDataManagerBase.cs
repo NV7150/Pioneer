@@ -30,6 +30,28 @@ namespace MasterData{
 			}
 		}
 
+        /// <summary>
+        /// 指定されたセーブデータファイルのデータ
+        /// </summary>
+        /// <returns>セーブデータのインスタンス</returns>
+        /// <param name="id">取得したいもののID</param>
+        /// <param name="fileName">記録ファイルのアドレス</param>
+        /// <typeparam name="E">セーブデータのクラスの型</typeparam>
+        public static E loadSaveData<E>(int id ,string fileName){
+            Debug.Log("into sd");
+            ES2Reader reader = ES2Reader.Create(getLoadPass(id,fileName));
+            Debug.Log("goto read");
+            return reader.Read<E>("" + id);
+		}
+
+        public static string getLoadPass(int id, string fileName){
+            return getLoadPassExceptTag(fileName) + "?tag=" + id;
+        }
+
+        public static string getLoadPassExceptTag(string fileName){
+            return "Progresses/" + fileName;
+        }
+
 		/// <summary>
         /// 与えられたstring配列データからインスタンスを生成し、登録します
         /// </summary>

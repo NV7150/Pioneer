@@ -11,6 +11,7 @@ namespace Character{
     /// </summary>
 	public class Container : MonoBehaviour {
 		public GameObject model;
+
         public ICharacter user;
         private bool isBattleable = false;
         private bool isPlayer = false;
