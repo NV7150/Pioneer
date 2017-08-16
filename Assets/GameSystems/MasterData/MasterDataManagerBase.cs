@@ -38,9 +38,7 @@ namespace MasterData{
         /// <param name="fileName">記録ファイルのアドレス</param>
         /// <typeparam name="E">セーブデータのクラスの型</typeparam>
         public static E loadSaveData<E>(int id ,string fileName){
-            Debug.Log("into sd");
             ES2Reader reader = ES2Reader.Create(getLoadPass(id,fileName));
-            Debug.Log("goto read");
             return reader.Read<E>("" + id);
 		}
 

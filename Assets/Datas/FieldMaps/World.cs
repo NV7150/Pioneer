@@ -169,7 +169,6 @@ namespace FieldMap {
 			this.towns = data.Save;
 
             var ids = towns.Keys;
-            Debug.Log("coutn ids" + ids.Count);
             foreach(int id in ids){
                 var townBuilder = MasterDataManagerBase.loadSaveData<TownBuilder>(id, "TownData");
                 GameObject townObject = Instantiate(townPrefab);

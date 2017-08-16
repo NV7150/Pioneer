@@ -9,9 +9,9 @@
 			bool isHavingMassage = (massageList.Count > 0);
 			bool isIndexInCount = (massageList.Count > massageIndex);	        if (Input.GetKeyDown(KeyCode.Return)) {	            if (isHavingMassage && isIndexInCount && !isTrading && !massagePrinting){
 					printCoroutine = StartCoroutine(showText(massageList[massageIndex]));
-					massageIndex++;	            } else if(massagePrinting){
+					massageIndex++;                } else if(massagePrinting && !isTrading){
 					//メッセージプリント中ならキャンセル
-					cancelPrint();	                //トレードしてない状態ならトレード判定してインデックスを進める	                if(!isTrading || isIndexInCount || isHavingMassage){	                    judgeTrade();	                }	            }else if (!isIndexInCount) {
+					cancelPrint();	                //トレードしてない状態ならトレード判定してインデックスを進める	                if(!isTrading || isIndexInCount || isHavingMassage){	                    judgeTrade();	                }                }else if (!isIndexInCount && !isTrading) {
 					TalkManager.getInstance().finishTalk();	                Destroy(this.gameObject);	            }	        }else if(needToAutoPrint && isHavingMassage && isIndexInCount){
 				printCoroutine = StartCoroutine(showText(massageList[massageIndex]));
 				massageIndex++;	            needToAutoPrint = false;	        }
@@ -22,8 +22,8 @@
 	        //かり
 	        tradeViewNode.transform.SetParent(CanvasGetter.getCanvas().transform);	        float posX = (Screen.width / 2 - tradeViewNode.GetComponent<RectTransform>().sizeDelta.x / 2);
 	        tradeViewNode.transform.localPosition = new Vector3(posX, 0, 0);	        Canvas.ForceUpdateCanvases();
-			isTrading = true;
-	    }	    /// <summary>	    /// 取引が必要かを判断し、必要なら開始します	    /// </summary>	    private void judgeTrade(){	        Debug.Log("mi " + (massageIndex - 1) + "t " + startTradeIndex);
+			isTrading = true;            massagePrinting = false;
+	    }	    /// <summary>	    /// 取引が必要かを判断し、必要なら開始します	    /// </summary>	    private void judgeTrade(){
 	        if (massageIndex - 1 >= 0 && massageIndex - 1 == startTradeIndex) {
 				startTrade();
 			}	    }	    /// <summary>	    /// テキストを表示するコルーチン	    /// </summary>	    /// <returns>コルーチンのIEnumertor</returns>	    private IEnumerator showText(string massage) {	        massagePrinting = true;	        printingMassage = massage;	        for(int i = 0;i <= massage.Length; i++) {	            yield return new WaitForSeconds(0.1f);	            massageTextObject.text = massage.Substring(0,i);	        }	        massagePrinting = false;
@@ -33,6 +33,7 @@
 			massageTextObject.text = printingMassage;	    }	    /// <summary>	    /// 表示するメッセージを設定します	    /// </summary>	    /// <param name="massages">表示するメッセージのリスト</param>	    public void setMassageList(List<string> massages) {	        massageList = massages;	    }	    /// <summary>	    /// 取引する場合のメッセージを設定します	    /// </summary>	    /// <param name="massages">表示するメッセージのリスト</param>	    /// <param name="tradeIndex">取引するインデックス</param>	    /// <param name="goods">商品のリスト</param>	    /// <param name="player">取引に参加するプレイヤー</param>	    /// <param name="trader">取引に参加するIFriendlyキャラクター</param>	    public void setMassageList(List<string> massages, string failMassage,int tradeIndex,List<IItem> goods, Hero player, IFriendly trader) {
 	        massageList = massages;
 	        startTradeIndex = tradeIndex;	        this.tradegoods = goods;	        this.player = player;	        this.trader = trader;	        this.failMassage = failMassage;
-	    }	    /// <summary>	    /// 取引を終了します	    /// </summary>	    public void tradeFinished() {
-	        isTrading = false;	        needToAutoPrint = true;
-	    }	    /// <summary>	    /// 金がたりないなどの理由で取引に失敗した時の処理	    /// </summary>	    public void tradeFailed(){	        if (!isTrading)	            throw new InvalidOperationException("isn't trading");	        printCoroutine = StartCoroutine(showText(failMassage));	    }	}}
+	    }	    /// <summary>	    /// 取引を終了します	    /// </summary>        public void tradeFinished(GameObject tradeview) {
+	        isTrading = false;	        needToAutoPrint = true;            Debug.Log(tradeview);            Destroy(tradeview);
+	    }	    /// <summary>	    /// 金がたりないなどの理由で取引に失敗した時の処理	    /// </summary>	    public void tradeFailed(){	        if (!isTrading)	            throw new InvalidOperationException("isn't trading");            if (!massagePrinting) {                Debug.Log("into !massage");
+                printCoroutine = StartCoroutine(showText(failMassage));            }	    }	}}

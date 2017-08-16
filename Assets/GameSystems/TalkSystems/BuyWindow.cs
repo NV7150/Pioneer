@@ -43,7 +43,6 @@ namespace TalkSystem {
         public void setState(List<IItem> goods, Hero player, IFriendly trader, MassageWindow window) {
             tradeItemNodePrefab = (GameObject)Resources.Load("Prefabs/TradeItemNode");
             this.goods = goods;
-            Debug.Log("gc " + goods.Count);
             foreach (IItem item in goods) {
                 TradeItemNode node = Instantiate(tradeItemNodePrefab).GetComponent<TradeItemNode>();
                 node.setGoods(item, TradeHelper.getBuyValue(item, player, (Merchant)trader), this);
@@ -80,7 +79,7 @@ namespace TalkSystem {
 
         /// <summary> 終了ボタンが選択された時の処理 </summary>
         public void finishChose() {
-            window.tradeFinished();
+            window.tradeFinished(transform.parent.gameObject);
             Destroy(sellWindow.gameObject);
             Destroy(gameObject);
         }

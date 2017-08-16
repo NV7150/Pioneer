@@ -97,11 +97,12 @@ namespace Character {
 			TRADE_INDEX = builder.getStartTradeIndex();
 			UNIQUE_ID = UniqueIdCreator.creatUniqueId();
 			GOODS_TYPE = builder.getGoodsType();
+            failMassage = builder.getFailMassage();
 
 			GameObject modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
-			MonoBehaviour.Destroy(transform.gameObject);
             this.container = MonoBehaviour.Instantiate(modelPrefab,transform.position,transform.rotation).GetComponent<Container>();
-            container.setCharacter(this);
+			container.setCharacter(this);
+			MonoBehaviour.Destroy(transform.gameObject);
 
             Debug.Log("<color=yellow>called</color>");
 
