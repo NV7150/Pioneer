@@ -31,6 +31,7 @@ namespace SelectView{
         /// 子ノードを削除します
         /// </summary>
         public void detach() {
+            Debug.Log("detached");
             foreach (Transform child in this.content.transform) {
                 Destroy(child.gameObject);
             }

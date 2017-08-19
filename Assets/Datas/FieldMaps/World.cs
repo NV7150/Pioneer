@@ -13,12 +13,12 @@ namespace FieldMap {
         private Dictionary<int, Vector3> towns = new Dictionary<int, Vector3>();
         private List<Town> enableTowns = new List<Town>();
 
-        private void Awake() {
-            townPrefab = (GameObject)Resources.Load("Models/Town");
-        }
+        private GameObject fieldKeeper;
 
-        // Use this for initialization
-        void Start() {}
+        private void Awake() {
+			townPrefab = (GameObject)Resources.Load("Models/Town");
+			fieldKeeper = GameObject.Find("FieldKeeper");
+        }
 
         // Update is called once per frame
         void Update() {
@@ -70,6 +70,7 @@ namespace FieldMap {
                 Town town = townObject.GetComponent<Town>();
                 town.setState(getLevel(levels[i]),getSize(sizes[i]),id);
                 enableTowns.Add(town);
+                town.transform.SetParent(fieldKeeper.transform);
                 towns.Add(town.getId(),positoins[i]);
                 id++;
             }
@@ -107,7 +108,6 @@ namespace FieldMap {
                 levels[rand] = level;
 				index--;
             }
-
             return levels;
         }
 
@@ -174,6 +174,7 @@ namespace FieldMap {
                 GameObject townObject = Instantiate(townPrefab);
 				Town town = townObject.GetComponent<Town>();
                 town.setState(townBuilder);
+                town.transform.SetParent(fieldKeeper.transform);
                 enableTowns.Add(town);
             }
         }

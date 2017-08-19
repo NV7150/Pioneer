@@ -4,15 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Skill;
+using SelectView;
 using System;
 
 namespace Menus {
-    public class MenuSkillNode : MonoBehaviour {
+    public class MenuSkillNode : MonoBehaviour ,INode<ISkill>{
 		/// <summary> 担当するスキル </summary>
 		private ISkill skill;
-		/// <summary> 元となるメニュー </summary>
-		private Menu menu;
-
 
         /// <summary> 名前を表示するテキスト </summary>
         public Text nameText;
@@ -21,19 +19,14 @@ namespace Menus {
         /// 初期設定
         /// </summary>
         /// <param name="skill">担当するスキル</param>
-        /// <param name="menu">Menu.</param>
-        public void setState(ISkill skill, Menu menu) {
+        public void setSkill(ISkill skill) {
             this.skill = skill;
-            this.menu = menu;
 
             nameText.text = skill.getName();
         }
 
-        /// <summary>
-        /// 選択された時の処理
-        /// </summary>
-        public void chosen(){
-            menu.skillChose(skill);
+        public ISkill getElement() {
+            return skill;
         }
     }
 }

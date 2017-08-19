@@ -28,7 +28,8 @@ namespace SelectView {
 
             GameObject cursorObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Prefabs/CursorContainer"));
             this.cursor = cursorObject.GetComponent<CursorContainer>().creatCursor<Node>();
-            cursorObject.transform.SetParent(CanvasGetter.getCanvas().transform);
+            cursorObject.transform.SetParent(container.transform);
+
 
             cursor.setList(nodes);
         }
@@ -37,7 +38,7 @@ namespace SelectView {
         /// ハイライトしているオブジェクトを取得します
         /// </summary>
         /// <returns>ハイライトしているオブジェクト</returns>
-        public Element getElement() {
+        public Element getElement(){
             return cursor.getNode().getElement();
         }
 
@@ -63,8 +64,10 @@ namespace SelectView {
         /// 終了処理を行います
         /// </summary>
         public void delete() {
-            cursor.delete();
-            this.cursor = null;
+            if (cursor != null) {
+                cursor.delete();
+                cursor = null;
+            }
         }
     }
 }

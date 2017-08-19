@@ -78,7 +78,7 @@ namespace Skill{
 		}
 
 		public int getCost() {
-			throw new NotImplementedException();
+            return 0;
 		}
 
 		#endregion

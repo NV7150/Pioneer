@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Skill;
- 
+using System;
+
 namespace BattleSystem{
-	public class ActiveSkillNode : MonoBehaviour {
+    public class ActiveSkillNode : MonoBehaviour{
 		/// <summary> アタッチされているGameObjectのTextオブジェクト </summary>
 		public Text textObject;
 		/// <summary> 担当するActiveSkill </summary>
@@ -31,5 +32,5 @@ namespace BattleSystem{
 		public void chosen(){
 			manager.skillChose (skill);
 		}
-	}
+    }
 }

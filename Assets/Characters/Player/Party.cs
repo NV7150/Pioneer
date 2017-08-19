@@ -8,9 +8,10 @@ namespace Character {
         private readonly static int PARTY_MAX = 4;
 
         public bool join(IPlayable character) {
-            if (party.Count >= PARTY_MAX)
+            if (party.Count >= PARTY_MAX) {
+                Debug.Log("into false");
                 return false;
-
+            }
             party.Add(character);
             return true;
         }

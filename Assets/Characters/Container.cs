@@ -15,11 +15,24 @@ namespace Character{
         public ICharacter user;
         private bool isBattleable = false;
         private bool isPlayer = false;
-        private Camera camera;
-        private int distance = 10000;
 
-		// Use this for initialization
-		void Start () {
+        private static GameObject fieldKeeper;
+        private static GameObject battleCharacterKeeper;
+
+        private void Awake(){
+            do {
+                fieldKeeper = GameObject.Find("FieldKeeper");
+            } while (fieldKeeper == null);
+
+            do {
+                battleCharacterKeeper = GameObject.Find("BattleCharacterKeeper");
+            } while (battleCharacterKeeper == null);
+
+            transform.SetParent(fieldKeeper.transform);
+        }
+
+        // Use this for initialization
+        void Start () {
 		}
 
 		// Update is called once per frame
@@ -28,32 +41,9 @@ namespace Character{
 			} else {
 				user.act ();
 			}
-
-            if (isPlayer) {
-                if (Input.GetKeyDown(KeyCode.Return)) {
-                    searchFront();
-                }
-            }
 		}
 
-        private void searchFront() {
-            Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2);
-            Ray ray = camera.ScreenPointToRay(center);
-            RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo, distance)) {
-                Container hitContainer = hitInfo.transform.GetComponent<Container>();
-                if(hitContainer != null) {
-                    ICharacter character = hitContainer.getCharacter();
-                    if(character is IFriendly) {
-                        startTalk((IFriendly)character);
-                    }
-                }
-            }
-        }
 
-        private void startTalk(IFriendly character) {
-            character.talk((IFriendly)getCharacter());
-        }
 
         /// <summary>
         /// ContainerがアタッチされているGameObjectを取得します
@@ -71,8 +61,6 @@ namespace Character{
 			this.user = chara;
             isBattleable = chara is IBattleable;
             isPlayer = chara is Hero;
-            if (isPlayer)
-                camera = GameObject.Find("MainCamera").GetComponent<Camera>();
 		}
 
         /// <summary>
@@ -96,7 +84,6 @@ namespace Character{
         /// エンカウントし、キャラクターをバトルに参加させます
         /// </summary>
         /// <param name="opponent">エンカウントしたキャラクター</param>
-        /// <param name="averageEachPos">エンカウントしたキャラクターと自身の位置の平均</param>
 		[MethodImpl(MethodImplOptions.Synchronized)]
         private void startBattle(ICharacter opponent){
             //ICharacterをIBattleableにキャスト

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 using Character;
 using Skill;
@@ -27,8 +28,9 @@ namespace BattleSystem{
 		private BattleField field;
         /// <summary> バトルしているか falseだとBattleManagerのほとんどのメソッドがロックされます </summary>
 		private bool isBattleing = false;
-        /// <summary> バトル画面を写しているカメラです </summary>
-        private BattleCameraController battleCameraControlle;
+
+        private GameObject battleCharacterKeeper;
+        private GameObject fieldKeeper;
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -43,17 +45,18 @@ namespace BattleSystem{
 			foreach(FieldPosition pos in System.Enum.GetValues(typeof(FieldPosition))){
 				joinedCharacter.Add (pos, new List<IBattleable> ());
 			}
+            battleCharacterKeeper = GameObject.Find("BattleCharacterKeeper");
+            fieldKeeper = GameObject.Find("FieldKeeper");
 		}
 
-        /// <summary>
-        /// 新たにバトルを開始します
-        /// </summary>
-        /// <param name="basicPoint"> 起点とする座標 </param>
-		public void startNewBattle(){
-            field = new BattleField (new Vector3(500,100,500));
+		/// <summary>
+		/// 新たにバトルを開始します
+		/// </summary>
+		public void startNewBattle() {
+			field = new BattleField(new Vector3(500, 100, 500));
 			isBattleing = true;
-            GameObject cameraPrefab =(GameObject) Resources.Load("Prefabs/BattleCamera");
-            this.battleCameraControlle = MonoBehaviour.Instantiate(cameraPrefab).GetComponent<BattleCameraController>();
+			fieldKeeper.SetActive(false);
+			SceneManager.LoadScene("BattleScene");
 		}
 
         /// <summary>
@@ -95,6 +98,8 @@ namespace BattleSystem{
 		}
 
 		private void finishBattle(){
+            Debug.Log("into finish");
+
 			var uniqueIds = joinedManager.Keys;
 			foreach(long id in uniqueIds){
 				joinedManager [id].win ();
@@ -108,7 +113,8 @@ namespace BattleSystem{
 			}
 			isBattleing = false;
 
-            battleCameraControlle.finished();
+            SceneManager.LoadScene("FieldScene");
+            fieldKeeper.SetActive(true);
 		}
 
 		/// <summary>
@@ -119,14 +125,19 @@ namespace BattleSystem{
         /// <param name="ai">キャラクターのAI</param>
 		public void joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
 			if (!isBattleing)
-				throw new InvalidOperationException ("battle isn't started");
+				throw new InvalidOperationException("battle isn't started");
 
+            Debug.Log("into battle " + bal.getName());
+
+            loadContainer(bal);
 			bal.setIsBattling (true);
 			joinedCharacter[pos].Add(bal);
-            bal.syncronizePositioin(field.getObjectPosition(pos,bal));
+			bal.syncronizePositioin(field.getObjectPosition(pos, bal));
 
 			AIBattleTaskManager manager = MonoBehaviour.Instantiate ((GameObject)Resources.Load("Prefabs/AIBattleManager")).GetComponent<AIBattleTaskManager>();
+            manager.transform.SetParent(bal.getContainer().transform);
 			manager.setCharacter (bal,ai);
+            Debug.Log(manager);
 			joinedManager.Add (bal.getUniqueId(),manager);
 		}
 
@@ -137,8 +148,11 @@ namespace BattleSystem{
 		/// <param name="pos">参加させる位置</param>
 		public void joinBattle(IPlayable player,FieldPosition pos){
 			if (!isBattleing)
-				throw new InvalidOperationException ("battle isn't started");
+				throw new InvalidOperationException("battle isn't started");
 
+            Debug.Log("into join " + player.getName());
+
+            loadContainer(player);
 			player.setIsBattling (true);
 			joinedCharacter [pos].Add (player);
             player.syncronizePositioin(field.getObjectPosition(pos,player));
@@ -149,6 +163,10 @@ namespace BattleSystem{
 			joinedManager.Add (player.getUniqueId(),manager);
 		}
 
+        private void loadContainer(IBattleable bal){
+            bal.getContainer().transform.SetParent(battleCharacterKeeper.transform);
+        }
+
 		/// <summary>
         /// 与えられたキャラクターの位置から与えられた位置までにいるキャラクターを返します
         /// </summary>
@@ -158,6 +176,7 @@ namespace BattleSystem{
 		public List<IBattleable> getCharacterInRange(IBattleable bal,int range){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
+            
 			//Range内のIBattleableを検索
 			List<IBattleable> list = new List<IBattleable>();
 			FieldPosition pos =  searchCharacter(bal);

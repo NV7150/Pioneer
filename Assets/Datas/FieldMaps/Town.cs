@@ -88,7 +88,9 @@ namespace FieldMap {
             Debug.Log("attributeMag count " + attributeMag.Count);
 
             foreach(var buildingData in buildingDatas){
-                buildings.Add(buildingData.restore());
+                var building = buildingData.restore();
+                buildings.Add(building);
+                building.transform.SetParent(transform);
             }
 
             characters.AddRange(citizens);
@@ -99,11 +101,15 @@ namespace FieldMap {
 
             characters.AddRange(clients);
 
+            foreach (IFriendly friendlyCharacter in characters){
+                friendlyCharacter.getContainer().transform.SetParent(transform);
+            }
+
             Destroy(builder.Transfrom.gameObject);
         }
 
         private void layRoad(){
-            Instantiate(roadPrefab,transform.position,new Quaternion(0,0,0,0));
+            Instantiate(roadPrefab,transform.position,new Quaternion(0,0,0,0)).transform.SetParent(transform);
             for (int i = 0; i < 10; i++){
                 grid[4, i] = true;
                 grid[5, i] = true;
@@ -152,8 +158,9 @@ namespace FieldMap {
                 Building building;
                 if (rand == 0) {
                     var builder = BuildingHelper.getRandomHouse();
-                    var character = builder.creatCitizen();          
-                    character.getContainer().transform.position = pos;
+                    var character = builder.creatCitizen();
+					character.getContainer().transform.position = pos;
+                    character.getContainer().transform.SetParent(transform);
                     building = builder.build(pos, character.getUniqueId());
                     characters.Add(character);
                     citizens.Add(character);
@@ -162,7 +169,8 @@ namespace FieldMap {
                     var builder = BuildingHelper.getRandomLevelShop(level);
                     var character = builder.creatMerchant(this);
                     building = builder.build(pos, character.getUniqueId());
-                    character.getContainer().transform.position = pos;
+					character.getContainer().transform.position = pos;
+					character.getContainer().transform.SetParent(transform);
                     characters.Add(character);
                     merchants.Add(character);
                     buildingDatas.Add(new BuildingSaveData(builder.getModelId(), building.transform));
@@ -170,6 +178,8 @@ namespace FieldMap {
                 if (x > 5) {
                     building.transform.Rotate(new Vector3(0, 180, 0));
                 }
+
+                building.transform.SetParent(transform);
 
                 fillGrid(x, z);
             }

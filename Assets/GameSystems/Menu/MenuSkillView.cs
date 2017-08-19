@@ -35,7 +35,7 @@ namespace Menus {
 
         /// <summary> 削除が選ばれた時の処理 </summary>
         public void deleteChosen(){
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
     }
 }

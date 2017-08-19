@@ -7,6 +7,7 @@ using AI;
 using Skill;
 using Character;
 using Parameter;
+using MasterData;
 
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 using Extent = Skill.ActiveSkillParameters.Extent;
@@ -40,6 +41,8 @@ namespace BattleSystem {
         /// <summary> BattleTaskを判別するためのIDのカウント </summary>
         private long battletaskIdCount = 0;
 
+        private ReactionSkill choseReaction;
+
 		void Update(){
 			if (isReady) {
 				if (needToReaction) {
@@ -60,8 +63,13 @@ namespace BattleSystem {
         /// リアクションが必要な時に毎フレーム行う処理
         /// </summary>
         private void reactionState() {
+            reactionLimit -= Time.deltaTime;
             if (isGoingToDoReaction())
                 reaction();
+
+            if(reactionLimit <= 0){
+                dammage();
+            }
         }
 
         /// <summary>
@@ -70,29 +78,36 @@ namespace BattleSystem {
         /// </summary>
         /// <returns><c>true</c>, リアクションを行う, <c>false</c> otherwise.</returns>
         private bool isGoingToDoReaction(){
-            float rand = UnityEngine.Random.Range(0f, 1f);
+			float rand = UnityEngine.Random.Range(0f, 1f);
+			reactionProbality += 0.01f;
             if(reactionProbality >= rand){
                 return true;
             }else{
-                reactionProbality += 0.01f;
                 return false;
             }
         }
 
-        /// <summary>
-        /// リアクションを行います
-        /// </summary>
-        private void reaction(){
+		private void reaction() {
 			IBattleable attacker = prosessingPair.Key;
 			AttackSkill useSkill = prosessingPair.Value;
 
-			ReactionSkill reactoin = ai.decideReaction(attacker, useSkill);
+            choseReaction = ai.decideReaction(attacker, useSkill);
+        }
+
+        /// <summary>
+        /// ダメージを与えられます
+        /// </summary>
+        private void dammage(){
+			IBattleable attacker = prosessingPair.Key;
+			AttackSkill useSkill = prosessingPair.Value;
 
 			int atk = useSkill.getAtk(attacker);
 			int hit = useSkill.getHit(attacker);
-			reactoin.reaction(user, atk, hit, useSkill.getAttackSkillAttribute());
+            choseReaction.reaction(user, atk, hit, useSkill.getAttackSkillAttribute());
 			waitingReactionActiveSkills.Remove(prosessingPair);
 			updateProsessingPair();
+
+            choseReaction = ReactionSkillMasterManager.getReactionSkillFromId(2);
         }
 
 		/// <summary>

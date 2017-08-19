@@ -23,7 +23,8 @@
             /// セーブ画面
             /// 未実装
             /// </summary>
-            SAVE
+            SAVE,
+            INDEX
         }
     }
 }

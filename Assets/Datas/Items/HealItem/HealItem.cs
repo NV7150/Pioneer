@@ -104,7 +104,9 @@ namespace Item {
         }
 
         public void use(IPlayable user) {
-            user.healed(HEAL, ATTRIBUTE);
+            Debug.Log("into use " + user.getHp());
+			user.healed(HEAL, ATTRIBUTE);
+			Debug.Log("outto use " + user.getHp());
             observer.usedItem();
         }
 

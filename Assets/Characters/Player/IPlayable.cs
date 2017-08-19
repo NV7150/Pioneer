@@ -68,7 +68,7 @@ namespace Character{
         /// キャラクターが取得したReactionSkillのListを取得します
         /// </summary>
         /// <returns>ReactionSkillのList</returns>
-		List<ReactionSkill> getReactionSKills();
+		List<ReactionSkill> getReactionSkills();
 
 		/// <summary>
         /// IActiveSkillを追加します

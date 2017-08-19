@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -66,7 +67,7 @@ namespace Character{
 		private Armor armor;
 
         /// <summary> キャラクターが所持しているアイテム(keyをstring以外にする予定) </summary>
-        private Inventry inventry = new Inventry();
+        private Inventry inventory = new Inventry();
 
 		/// <summary> キャラクターが持つActiveSkillのリスト </summary>
 		private List<IActiveSkill> activeSkills = new List<IActiveSkill>();
@@ -88,6 +89,9 @@ namespace Character{
         private Party party = new Party();
 
         private List<IQuest> undertakingQuests = new List<IQuest>();
+
+        private Camera camera;
+        private int distance = 10000;
 
         /// <summary>
         /// <see cref="T:Character.Hero"/> classのコンストラクタです
@@ -154,6 +158,8 @@ namespace Character{
             checkAbilities();
 
             flags = new FlagList(this);
+
+            camera = GameObject.Find("MainCamera").GetComponent<Camera>();
 		}
 
         private void checkAbilities(){
@@ -205,9 +211,8 @@ namespace Character{
 		}
 
 
-		public List<ReactionSkill> getReactionSKills () {
+		public List<ReactionSkill> getReactionSkills () {
 			return new List<ReactionSkill> (reactionSkills);
-
 		}
 
 		public void addSkill (IActiveSkill skill) {
@@ -274,6 +279,8 @@ namespace Character{
 		}
 
 		public void healed (int heal, HealSkillAttribute attribute) {
+            Debug.Log("heal " + heal + " attribute ");
+
             if (heal < 0)
                 heal = 0;
 
@@ -390,8 +397,9 @@ namespace Character{
 		}
 			
 		public void encount () {
-            if(!isBattleing)
-    			BattleManager.getInstance().joinBattle(this,FieldPosition.ONE);
+			if (!isBattleing) {
+                BattleManager.getInstance().joinBattle(this, FieldPosition.ONE);
+			}
 		}
 
 		public void addAbilityBonus (BattleAbilityBonus bonus) {
@@ -421,10 +429,13 @@ namespace Character{
             bonusKeeper.advanceLimit();
 
             if(Input.GetKeyDown(KeyCode.E)){
+                Debug.Log("into inputMenu");
                 GameObject menuObject = MonoBehaviour.Instantiate(menuPrefab,new Vector3(874f, 384f, 0f),new Quaternion(0,0,0,0));
                 Menu menu = menuObject.GetComponent<Menu>();
                 menu.transform.SetParent(CanvasGetter.getCanvas().transform);
                 menu.setState(this,party);
+            }else if(Input.GetKeyDown(KeyCode.Return)){
+                searchFront();
             }
 		}
 
@@ -448,11 +459,11 @@ namespace Character{
 		public void addItem(IItem item){
             if (!item.getCanStore())
                 throw new ArgumentException("item " + item.getName() +"can't be stored");
-            inventry.addItem(item);
+            inventory.addItem(item);
 		}
 
-        public Inventry getInventry(){
-            return inventry;
+        public Inventry getInventory(){
+            return inventory;
         }
 
         public void undertake(IQuest quest){
@@ -589,5 +600,23 @@ namespace Character{
             return new Dictionary<FriendlyAbility, int>(friendlyAbilities);
         }
 
+		private void searchFront() {
+			Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2);
+			Ray ray = camera.ScreenPointToRay(center);
+			RaycastHit hitInfo;
+			if (Physics.Raycast(ray, out hitInfo, distance)) {
+				Container hitContainer = hitInfo.transform.GetComponent<Container>();
+				if (hitContainer != null) {
+					ICharacter character = hitContainer.getCharacter();
+					if (character is IFriendly) {
+						startTalk((IFriendly)character);
+					}
+				}
+			}
+		}
+
+		private void startTalk(IFriendly character) {
+            character.talk(this);
+		}
     }
 }

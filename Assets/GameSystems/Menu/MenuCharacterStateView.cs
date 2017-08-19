@@ -51,7 +51,7 @@ namespace Menus {
         /// 終了が選択された時の処理
         /// </summary>
         public void finishchose() {
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
     }
 }

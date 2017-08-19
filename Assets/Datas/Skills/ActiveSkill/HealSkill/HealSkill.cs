@@ -80,8 +80,8 @@ namespace Skill {
 		/// <param name="targets"> 対象のリスト </param>
 		private void heal(IBattleable actioner,List<IBattleable> targets){
 			foreach(IBattleable target in targets){
-				int heal = actioner.getHeal(USE_ABILITY);
-				target.healed (heal,ATTRIBUTE);
+				int healVal = actioner.getHeal(USE_ABILITY);
+                target.healed (healVal,ATTRIBUTE);
 			}
 		}
 

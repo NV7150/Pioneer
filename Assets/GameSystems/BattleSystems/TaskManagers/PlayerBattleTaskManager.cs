@@ -7,7 +7,8 @@ using System;
 using Skill;
 using Character;
 using MasterData;
-using Parameter;
+using SelectView;
+using Item;
 
 using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
 using Extent = Skill.ActiveSkillParameters.Extent;
@@ -32,10 +33,8 @@ namespace BattleSystem{
 		private IPlayable player;
 		/// <summary> 現在選択されているIActiveSkillSkill </summary>
 		private IActiveSkill chosenActiveSkill;
-		/// <summary> 現在リアクション処理中のスキルと、その攻撃者 </summary>
-		private KeyValuePair<IBattleable,AttackSkill> prosessingPair;
 		/// <summary> リアクション待ちのスキルのリスト </summary>
-		private List<KeyValuePair<IBattleable,AttackSkill>> waitingReactionActiveSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
+        private List<KeyValuePair<IBattleable,AttackSkill>> waitingDecideReactionSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
 		/// <summary> 現在のステート </summary>
 		private BattleState battleState = BattleState.ACTION;
@@ -66,6 +65,12 @@ namespace BattleSystem{
 
         /// <summary> スキルをkeyとする現在表示中のターゲットラインのdictionary </summary>
         private Dictionary<IBattleable, List<GameObject>> targetLines = new Dictionary<IBattleable, List<GameObject>>();
+
+        private List<KeyValuePair<ReactionSkill,KeyValuePair<IBattleable, AttackSkill>>> waitingProgressSkills = new List<KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>>();
+
+        private bool choosingReaction = false;
+
+        private IItem choseItem;
 
 		// Use this for initialization
 		void Start () {
@@ -102,13 +107,18 @@ namespace BattleSystem{
 		private void reactionState(){
 			reactionLimit -= Time.deltaTime;
 			if(reactionLimit <= 0){
-				reaction (ReactionSkillMasterManager.getReactionSkillFromId(2));
+                var reactionedSkill = waitingProgressSkills[0].Key;
+                reaction ();
+                var missReaction = ReactionSkillMasterManager.getReactionSkillFromId(2);
 
-				reactoinContents.SetActive (false);
-				contents.SetActive (true);
-				detachReactionContents ();
-
-				backButton.gameObject.SetActive(isInputingBackButton);
+                if (reactionedSkill.Equals(missReaction)) {
+                    reactoinContents.SetActive(false);
+                    contents.SetActive(true);
+                    detachReactionContents();
+                    backButton.gameObject.SetActive(isInputingBackButton);
+                    choosingReaction = false;
+                    updateProsessingPair();
+                }
 			}
 		}
 
@@ -119,8 +129,6 @@ namespace BattleSystem{
 			BattleTask runTask = tasks [0];
             IActiveSkill runSkill = runTask.getSkill();
             runSkill.action (player, runTask);
-
-            deleteTargetingLine(player);
 
 			delay = runTask.getSkill ().getDelay (player) * 2;
             maxDelay = delay;
@@ -144,7 +152,7 @@ namespace BattleSystem{
 			BattleTask task = tasks[0];
             IActiveSkill useSkill = task.getSkill();
 
-            if (ActiveSkillSupporter.isAffectSkill(useSkill) && ! targetLines.ContainsKey(player)) {
+            if (ActiveSkillSupporter.isAffectSkill(useSkill)) {
                 List<IBattleable> targets = task.getTargets();
                 drawTargetingLine(player, targets, useSkill);
             }
@@ -157,7 +165,8 @@ namespace BattleSystem{
 			delay -= Time.deltaTime;
             state.advanceProgress(Time.deltaTime / maxDelay);
 			if (delay <= 0) {
-				battleState = BattleState.ACTION;
+				battleState = BattleState.ACTION; 
+				deleteTargetingLine(player);
 			}
 		}
 
@@ -169,6 +178,7 @@ namespace BattleSystem{
 			this.player = player;
 			GameObject stateView = GameObject.Find("Canvas/StateView");
 			GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleStateNode"));
+            Debug.Log(stateNode + " and " + stateView);
 			stateNode.transform.SetParent(stateView.transform);
 			state = stateNode.GetComponent<BattleStateNode>();
             state.setUser(player);
@@ -211,6 +221,10 @@ namespace BattleSystem{
 			}
 		}
 
+        public void itemChose(IItem item){
+            
+        }
+
 		/// <summary>
         /// taretNodeが選択された時の処理
         /// </summary>
@@ -232,7 +246,6 @@ namespace BattleSystem{
 		/// <summary>
         /// moveAreaNodeが選択された時の処理
         /// </summary>
-        /// <param name="pos">選択されたFieldPostion</param>
 		public void moveAreaChose(int move){
             int moveAmount = move;
 			BattleTask addingTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, move, battletaskIdCount);
@@ -247,31 +260,34 @@ namespace BattleSystem{
         /// </summary>
         /// <param name="chosenSkill">選択されたReactionSkill</param>
 		public void reactionChose(ReactionSkill chosenSkill){
-			reaction(chosenSkill);
+            Debug.Log("<color=greeen>into reactionChose</color>");
+            waitingProgressSkills[0] = new KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>(chosenSkill, waitingProgressSkills[0].Value);
 
 			reactoinContents.SetActive (false);
 			contents.SetActive (true);
 			detachReactionContents ();
 
-            backButton.gameObject.SetActive(isInputingBackButton);
-            needToReaction = false;
+            backButton.gameObject.SetActive(isInputingBackButton); 
+            choosingReaction = false;
+			updateProsessingPair();
+            Debug.Log("<color=blue>into chosen</color>" + waitingProgressSkills[0].Key.getName() + "" + waitingProgressSkills[0].Value.Key.getName());
 		}
 
 		/// <summary>
         /// ReactionSkillを使用します
         /// </summary>
-        /// <param name="reactionSkill"> 使用するReactionSkill </param>
-        private void reaction(ReactionSkill reactionSkill){
-			IBattleable attacker = prosessingPair.Key;
-			AttackSkill skill = prosessingPair.Value;
+        private void reaction(){
+            Debug.Log("<color=red>intoreaction</color>");
+            ReactionSkill reactionSkill = waitingProgressSkills[0].Key;
+            IBattleable attacker = waitingProgressSkills[0].Value.Key;
+			AttackSkill skill = waitingProgressSkills[0].Value.Value;
+			deleteTargetingLine(attacker);
 			int atk = skill.getAtk (attacker);
 			int hit = skill.getHit(attacker);
 			reactionSkill.reaction (player,atk,hit,skill.getAttackSkillAttribute());
-			waitingReactionActiveSkills.Remove (prosessingPair);
+            waitingProgressSkills.Remove(waitingProgressSkills[0]);
+            choosingReaction = false;
 			updateProsessingPair ();
-
-            deleteTargetingLine(attacker);
-            activateLines();
 		}
 
 		/// <summary>
@@ -389,18 +405,14 @@ namespace BattleSystem{
 		private void inputReactionSkillList(){
 			detachReactionContents();
 
-            IBattleable attacker = prosessingPair.Key;
-            AttackSkill attackedSkill = prosessingPair.Value;
-
-            unactivateLines();
-            List<IBattleable> drawLineTarget = new List<IBattleable>() { player };
-            drawTargetingLine(attacker,drawLineTarget,attackedSkill);
+            IBattleable attacker = waitingProgressSkills[0].Value.Key;
+            AttackSkill attackedSkill = waitingProgressSkills[0].Value.Value;
 
             headerText.text = attacker.getName() + "の" + attackedSkill.getName() + "へのリアクションを決定";
 
             backButton.gameObject.SetActive(false);
 			contents.SetActive (false);
-			foreach(ReactionSkill skill in player.getReactionSKills()){
+			foreach(ReactionSkill skill in player.getReactionSkills()){
 				GameObject node = Instantiate((GameObject)Resources.Load ("Prefabs/ReactionSkillNode"));
 				node.GetComponent<ReactionSkillNode> ().setState (skill,this);
 				node.transform.SetParent (reactoinContents.transform);
@@ -429,43 +441,40 @@ namespace BattleSystem{
                 addedLines.Add(targetingLine);
             }
 
-            targetLines.Add(user,addedLines);
+            if (targetLines.ContainsKey(user)) {
+                targetLines[user].AddRange(addedLines);
+            } else {
+                targetLines.Add(user, addedLines);
+            }
         }
 
         /// <summary>
         /// スキルのターゲットラインを削除します
         /// </summary>
         private void deleteTargetingLine(IBattleable user){
-            if (targetLines.ContainsKey(user)) {
-                List<GameObject> lines = targetLines[user];
-                foreach (GameObject line in lines) {
-                    Destroy(line);
-                }
-                targetLines.Remove(user);
+			if (targetLines.ContainsKey(user)) {
+				Destroy(targetLines[user][0]);
+                targetLines[user].Remove(targetLines[user][0]);
             }
         }
 
-        private void unactivateLines(){
-            var keys = targetLines.Keys;
-            foreach(IBattleable bal in keys){
-                foreach(GameObject line in targetLines[bal]){
-                    line.SetActive(false);
-                }
-            }
-        }
+        //private void unactivateLines(){
+        //    var keys = targetLines.Keys;
+        //    foreach(IBattleable bal in keys){
+        //        foreach(GameObject line in targetLines[bal]){
+        //            line.SetActive(false);
+        //        }
+        //    }
+        //}
 
-        private void activateLines(){
-            var keys = targetLines.Keys;
-            Debug.Log("before" + keys.Count);
-            foreach(IBattleable bal in keys){
-                Debug.Log(bal);
-                var keys2 = targetLines.Keys;
-                Debug.Log("after " + targetLines.Count);
-                foreach(GameObject line in targetLines[bal]){
-                    line.SetActive(true);
-                }
-            }
-        }
+        //private void activateLines(){
+        //    var keys = targetLines.Keys;
+        //    foreach(IBattleable bal in keys){
+        //        foreach(GameObject line in targetLines[bal]){
+        //            line.SetActive(true);
+        //        }
+        //    }
+        //}
 
 		/// <summary>
         /// contentsオブジェクトの子ノードを削除します
@@ -494,23 +503,31 @@ namespace BattleSystem{
         /// リアクション処理中のスキルを更新します
         /// </summary>
 		private void updateProsessingPair(){
-			if (waitingReactionActiveSkills.Count > 0) {
-				prosessingPair = waitingReactionActiveSkills[0];
-				inputReactionSkillList ();
-                reactionLimit = prosessingPair.Value.getDelay(prosessingPair.Key);
-				needToReaction = true;
-			} else {
-				needToReaction = false;
-			}
+            if (!choosingReaction) {
+                if (waitingDecideReactionSkills.Count > 0) {
+                    var missReaction = ReactionSkillMasterManager.getReactionSkillFromId(2);
+                    var prosessingPair = waitingDecideReactionSkills[0];
+                    waitingProgressSkills.Add(new KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>(missReaction, prosessingPair));
+                    waitingDecideReactionSkills.Remove(prosessingPair);
+
+                    inputReactionSkillList();
+
+                    reactionLimit = prosessingPair.Value.getDelay(prosessingPair.Key);
+                    needToReaction = true;
+                    choosingReaction = true;
+                    Debug.Log("1" + waitingProgressSkills[0].Key.getName());
+                } else if(waitingProgressSkills.Count <= 0){
+                    needToReaction = false;
+                }
+            }
 		}
 
         /// <summary>
-        /// タスクをキャンセルします
+        /// タスクを削除します
         /// </summary>
-        /// <param name="task"> キャンセルしたいタスク </param>
+        /// <param name="task"> 削除したいタスク </param>
 		public void finishedTask(BattleTask task) {
             tasks.Remove(task);
-
 		}
 
         public void canseledTask(BattleTask task){
@@ -543,7 +560,10 @@ namespace BattleSystem{
 
 		public void offerReaction (IBattleable attacker, AttackSkill skill) {
 			KeyValuePair<IBattleable,AttackSkill> pair = new KeyValuePair<IBattleable, AttackSkill> (attacker,skill);
-			waitingReactionActiveSkills.Add (pair);
+			waitingDecideReactionSkills.Add (pair);
+
+			List<IBattleable> drawLineTarget = new List<IBattleable>() { player };
+			drawTargetingLine(attacker, drawLineTarget, skill);
 
 			updateProsessingPair ();
 		}
@@ -562,7 +582,7 @@ namespace BattleSystem{
             Destroy (state.gameObject);
 		}
 		#endregion
-
-
 	}
+
+
 }

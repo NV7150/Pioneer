@@ -22,7 +22,6 @@ namespace BattleSystem{
         /// <param name="position">起点</param>
 		public BattleField(Vector3 position){
 			STARTER_POSITON = position;
-			Debug.Log (STARTER_POSITON);
 
             int vertical = distanceOfArea;
             int holizontal = widthOfArea;

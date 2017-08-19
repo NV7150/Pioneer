@@ -58,7 +58,11 @@ namespace SelectView {
         /// </summary>
         /// <returns>ノード</returns>
         public Node getNode() {
-            return datas[selecting];
+            if (datas.Count > 0) {
+                return datas[selecting];
+            }else{
+                return null;
+            }
         }
 
         /// <summary>

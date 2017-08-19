@@ -16,6 +16,7 @@ namespace AI {
     /// 臆病なAIです
     /// 基本的に高LVな味方キャラクターを優先して支援し、低LVな敵キャラクターを優先して攻撃します
     /// </summary>
+
     public class Coward : IEnemyAI {
         /// <summary> ベースの行動の可能性値です </summary>
         private Dictionary<ActiveSkillCategory, int> probalityTable = new Dictionary<ActiveSkillCategory, int>(){

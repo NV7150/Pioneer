@@ -23,12 +23,21 @@ namespace Menus {
         public void setState(IPlayable character,MenuUseWindow window) {
             this.character = character;
             this.window = window;
+
+            Debug.Log("character " + character.getName());
+            //デバッグ
+            character.healed(1,Skill.ActiveSkillParameters.HealSkillAttribute.HP_HEAL);
+
+            nameText.text = character.getName();
         }
 
         /// <summary>
         /// 選ばれた時の処理
         /// </summary>
         public void chosen() {
+            Debug.Log("character " + character.getName());
+            //デバッグ
+            character.healed(1,Skill.ActiveSkillParameters.HealSkillAttribute.HP_HEAL);
             window.targetChosen(character);
         }
     }

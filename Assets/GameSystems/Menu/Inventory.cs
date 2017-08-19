@@ -6,15 +6,13 @@ using Character;
 
 namespace Item {
     public class Inventry {
-        /// <summary>
-        /// アイテムスタックオブジェクトのリスト
-        /// </summary>
-        private List<ItemStack> stackables = new List<ItemStack>();
 
         /// <summary>
         /// スタック不可なアイテムのリスト
         /// </summary>
-        private List<IItem> unstackables = new List<IItem>();
+        private List<IItem> inventory = new List<IItem>();
+
+
 
         /// <summary>
         /// アイテムをインベントリに追加します
@@ -30,13 +28,14 @@ namespace Item {
                 if (stack == null) {
                     //スタックがインベントリになければ作成
                     stack = new ItemStack(item);
-                    stackables.Add(stack);
+                    inventory.Add(stack);
                 }
+
                 //すでにあったら追加
                 stack.add(item);
             } else {
                 //スタック不可は問答無用で追加
-                unstackables.Add(item);
+                inventory.Add(item);
             }
         }
 
@@ -45,26 +44,16 @@ namespace Item {
         /// </summary>
         /// <returns>アイテムのリスト</returns>
         public List<IItem> getItems() {
-            List<IItem> items = new List<IItem>();
-
-            foreach (ItemStack stack in stackables) {
-                items.Add(stack.getItem());
-            }
-
-            foreach (IItem item in unstackables) {
-                items.Add(item);
-            }
-
-            return items;
+            return new List<IItem>(inventory);
         }
 
         public ItemStack getStack(IItem item){
 			if (!item.getCanStack())
 				throw new System.ArgumentException("item " + item + " can't stack");
 
-            foreach(ItemStack stack in stackables){
-                if (stack.getItem().Equals(item))
-                    return stack;
+            foreach(IItem inventoryItem in inventory){
+                if (inventoryItem.getCanStack() && item.Equals(inventoryItem))
+                    return (ItemStack)inventoryItem;
 			}
 
             throw new System.ArgumentException("item " + item + " wasn't found");
@@ -91,11 +80,15 @@ namespace Item {
             if (!item.getCanStack())
                 throw new System.ArgumentException("item " + item.getName() + " can't be stack");
 
-            foreach (ItemStack stack in stackables) {
-                if (stack.getItem().Equals(item)) {
-                    return stack;
+            foreach (IItem inventoryItem in inventory) {
+                if (inventoryItem.getCanStack()) {
+                    var stack = (ItemStack)inventoryItem;
+                    if (item.Equals(stack.getItem())) {
+                        return stack;
+                    }
                 }
             }
+
             return null;
         }
 
@@ -113,11 +106,11 @@ namespace Item {
 
 				//スタックがなくなったらインベントリから削除
 				if (!stack.take()) {
-					stackables.Remove(stack);
+                    inventory.Remove(stack);
 				}
 			} else {
 				//スタック不可は無条件でインベントリから削除
-				unstackables.Remove(item);
+                inventory.Remove(item);
 			}
         }
     }

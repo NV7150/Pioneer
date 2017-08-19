@@ -11,8 +11,6 @@ namespace Menus {
     public class MenuItemView : MonoBehaviour {
 		/// <summary> 担当するアイテム </summary>
 		private IItem item;
-		/// <summary> 担当するアイテムスタック </summary>
-		private ItemStack stack;
 		/// <summary> プレイヤーが所属するパーティ </summary>
 		private Party party;
 
@@ -56,7 +54,6 @@ namespace Menus {
         /// <param name="targets">PCのパーティ</param>
         /// <param name="menu">元のパーティ</param>
         public void setItem(IItem item,Party targets,Menu menu){
-            numberText.gameObject.SetActive(false);
             this.item = item;
 
             nameText.text = item.getName();
@@ -65,40 +62,28 @@ namespace Menus {
             massText.text = "重さ " + item.getMass();
             flavorText.text = item.getFlavorText();
 
+            this.hasStack = item is ItemStack;
+
+			if (hasStack) {
+                var stack = (ItemStack)item;
+				numberText.gameObject.SetActive(true);
+				numberText.text = "" + stack.getNumberOfStack();
+            }else{
+				numberText.gameObject.SetActive(false);
+            }
+
+
             if(ItemHelper.isEquipment(item)){
                 string text = "品質 " + (int)ItemHelper.searchQuality(item);
                 qualityText.text = text;
                 Debug.Log(text);
+			}
+			this.party = targets;
+
+            foreach(ICharacter chara in party.getParty()){
+                Debug.Log(chara.getName());
             }
 
-            this.party = targets;
-
-            this.hasStack = false;
-
-            this.menu = menu;
-        }
-
-		/// <summary>
-		/// アイテムを設定します
-		/// </summary>
-		/// <param name="stack">アイテムスタック</param>
-		/// <param name="targets">PCのパーティ</param>
-		/// <param name="menu">元のパーティ</param>
-		public void setItem(ItemStack stack,Party targets,Menu menu){
-			numberText.gameObject.SetActive(true);
-            this.stack = stack;
-            item = stack.getItem();
-
-			nameText.text = item.getName();
-			descritionText.text = item.getDescription();
-			valueText.text = "" + item.getItemValue();
-			massText.text = "" + item.getMass();
-            numberText.text = "" + stack.getNumberOfStack();
-			flavorText.text = item.getFlavorText();
-
-            this.party = targets;
-
-            this.hasStack = true;
 
             this.menu = menu;
         }
@@ -116,28 +101,30 @@ namespace Menus {
             useWindow.setState(this,item,party);
         }
 
-        /// <summary>
-        /// 使う対象が決定した時の処理
-        /// </summary>
-        /// <param name="target">使う対象のリスト</param>
-        /// <param name="window">操作された使うウィンドウ</param>
-        public void useTargetChose(IPlayable target,MenuUseWindow window){
+		/// <summary>
+		/// 使う対象が決定した時の処理
+		/// </summary>
+		/// <param name="target">使う対象のリスト</param>
+		/// <param name="window">操作された使うウィンドウ</param>
+		public void useTargetChose(IPlayable target, MenuUseWindow window) {
+			item.use(target);
+
             if(hasStack){
-                if (!stack.take()) {
+                var stack = (ItemStack)item;
+                if(!stack.hasStack()){
                     window.cancelChose();
                 }
             }else{
                 window.cancelChose();
             }
-
-            item.use(target);
+            Debug.Log("into useChosen " + item.getName());
         }
 
         /// <summary>
         /// 削除が選ばれた時の処理
         /// </summary>
         public void deleteChosen(){
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
     }
 }

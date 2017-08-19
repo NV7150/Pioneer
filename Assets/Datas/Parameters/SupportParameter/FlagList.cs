@@ -86,7 +86,7 @@ namespace Quest{
         }
 
         public bool hasReactionSkill(int id){
-            var skills = player.getReactionSKills();
+            var skills = player.getReactionSkills();
             var targetReactionSkill = ReactionSkillMasterManager.getReactionSkillFromId(id);
             return skills.Contains(targetReactionSkill);
         }

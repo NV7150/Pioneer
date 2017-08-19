@@ -40,7 +40,7 @@ namespace TalkSystem{
         public void setState(Hero player, IFriendly trader) {
             this.player = player;
             this.trader = trader;
-            this.inventry = player.getInventry();
+            this.inventry = player.getInventory();
 
             headerText.text = player.getName();
 
