@@ -67,7 +67,7 @@ namespace Character{
 		private Armor armor;
 
         /// <summary> キャラクターが所持しているアイテム(keyをstring以外にする予定) </summary>
-        private Inventry inventory = new Inventry();
+        private Inventory inventory = new Inventory();
 
 		/// <summary> キャラクターが持つActiveSkillのリスト </summary>
 		private List<IActiveSkill> activeSkills = new List<IActiveSkill>();
@@ -462,7 +462,7 @@ namespace Character{
             inventory.addItem(item);
 		}
 
-        public Inventry getInventory(){
+        public Inventory getInventory(){
             return inventory;
         }
 

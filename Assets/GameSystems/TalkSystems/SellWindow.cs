@@ -13,7 +13,7 @@ namespace TalkSystem{
         /// <summary> 取引に参加しているIFriendlyキャラクター </summary>
         private IFriendly trader;
         /// <summary> playerのインベントリ </summary>
-        private Inventry inventry;
+        private Inventory inventry;
 
         /// <summary> tradeItemNodeのプレファブ </summary>
         private GameObject tradeItemNodePrefab;

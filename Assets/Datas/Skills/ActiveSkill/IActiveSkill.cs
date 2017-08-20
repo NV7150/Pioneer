@@ -11,7 +11,6 @@ namespace Skill {
 		/// <summary>
 		/// このスキルを使用します
 		/// </summary>
-		/// <param name="actoner"> スキルを使用するIBattleableキャラクター </param>
 		/// <param name="task"> スキルを使用したタスク </param>
 		void action(IBattleable actioner,BattleTask task);
 

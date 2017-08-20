@@ -261,6 +261,10 @@ namespace FieldMap {
             return builder;
         }
 
+        private void creatEnemy(){
+            
+        }
+
         public enum RoadDirection{
             HORIZONTAL,
             VERTICAL

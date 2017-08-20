@@ -6,6 +6,8 @@ using System;
 using Skill;
 using Character;
 
+using Item;
+
 using Extent = Skill.ActiveSkillParameters.Extent;
 
 namespace BattleSystem{
@@ -13,7 +15,7 @@ namespace BattleSystem{
 		/// <summary> タスク名 </summary>
 		private readonly string NAME;
 		/// <summary> 行うスキル </summary>
-		private readonly IActiveSkill SKILL;
+        private IActiveSkill skill;
 		/// <summary> スキルに対象があった場合の対象です </summary>
         private List<IBattleable> targets = new List<IBattleable>();
         /// <summary> 範囲攻撃の場合の対象範囲です </summary>
@@ -28,6 +30,10 @@ namespace BattleSystem{
         /// </summary>
         private readonly long ID;
 
+        private IItem item;
+
+        private bool isSkill;
+
 		/// <summary>
         /// ターゲットが存在する場合のコンストラクタ
         /// </summary>
@@ -36,18 +42,36 @@ namespace BattleSystem{
         /// <param name="id">タスクID</param>
         public BattleTask(long uniqueId,IActiveSkill skill,List<IBattleable> targets,long id){
 			this.OWNER_UNIQUEID = uniqueId;
-			this.SKILL = skill;
-			this.NAME = SKILL.getName ();
+			this.skill = skill;
+			this.NAME = skill.getName ();
             this.ID = id;
             this.targets = targets;
+
+            isSkill = true;
 		}
 
-        public BattleTask(long uniqueId,IActiveSkill skill,FieldPosition targetPos,long id){
+        public BattleTask(long uniqueId, IActiveSkill skill, FieldPosition targetPos,long id){
+
 			this.OWNER_UNIQUEID = uniqueId;
-			this.SKILL = skill;
-			this.NAME = SKILL.getName();
+			this.skill = skill;
+			this.NAME = skill.getName();
 			this.ID = id;
             this.targetPos = targetPos;
+
+            isSkill = true;
+        }
+
+        public BattleTask(long uniqueId, IItem item, IBattleable target, long id) {
+			if (!(target is IPlayable))
+				throw new ArgumentException("added character isn't a playable");
+            
+            this.OWNER_UNIQUEID = uniqueId;
+            this.item = item;
+            this.NAME = item.getName();
+            this.ID = id;
+            targets.Add(target);
+
+            isSkill = false;
         }
 
 		/// <summary>
@@ -59,10 +83,12 @@ namespace BattleSystem{
 		/// <param name="id">タスクID</param>
 		public BattleTask(long uniqueId, IActiveSkill skill, int move, long id) {
             this.OWNER_UNIQUEID = uniqueId;
-            this.SKILL = skill;
+            this.skill = skill;
             this.NAME = skill.getName();
             this.move = move;
             this.ID = id;
+
+            isSkill = true;
         }
 
 		/// <summary>
@@ -70,19 +96,31 @@ namespace BattleSystem{
         /// </summary>
         /// <returns>タスクに設定されているスキル</returns>
 		public IActiveSkill getSkill(){
-			return SKILL;
+            if (!isSkill)
+                throw new InvalidOperationException("task has no skill");
+			return skill;
 		}
+
+        public IItem getItem(){
+            if (isSkill)
+                throw new InvalidOperationException("task has no item");
+            return item;
+        }
 
 		/// <summary>
         /// スキル対象のリストを取得します
         /// </summary>
         /// <returns>スキル対象のリスト</returns>
 		public List<IBattleable> getTargets(){
-            if (!ActiveSkillSupporter.isAffectSkill(SKILL))
-				throw new InvalidOperationException ("this task isn't an action");
-            if (targets.Count < 0)
-                targets = BattleManager.getInstance().getAreaCharacter(targetPos);
-			return targets;
+            if (isSkill) {
+                if (!ActiveSkillSupporter.isAffectSkill(skill))
+                    throw new InvalidOperationException("this task isn't an action");
+                if (targets.Count < 0)
+                    targets = BattleManager.getInstance().getAreaCharacter(targetPos);
+                return targets;
+            }else{
+                return targets;
+            }
 		}
 
 		/// <summary>
@@ -116,6 +154,10 @@ namespace BattleSystem{
 		public string getName(){
 			return this.NAME;
 		}
+
+        public bool getIsSkill(){
+            return isSkill;
+        }
 
         public override bool Equals(object obj) {
             if (!(obj is BattleTask))

@@ -127,10 +127,14 @@ namespace Item {
         public override bool Equals(object obj) {
             //HealItemであり、IDが同値なら等価と判断
             if(!(obj is HealItem)){
+                Debug.Log("into unless");
                 return false;
-            }
+			}
+			Debug.Log("into obj");
 
             HealItem item = (HealItem)obj;
+
+            Debug.Log(item.getId() + " " + this.getId());
 
             return item.getId() == this.getId();
         }

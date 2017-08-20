@@ -5,14 +5,12 @@ using UnityEngine;
 using Character;
 
 namespace Item {
-    public class Inventry {
+    public class Inventory {
 
         /// <summary>
         /// スタック不可なアイテムのリスト
         /// </summary>
         private List<IItem> inventory = new List<IItem>();
-
-
 
         /// <summary>
         /// アイテムをインベントリに追加します
@@ -83,6 +81,8 @@ namespace Item {
             foreach (IItem inventoryItem in inventory) {
                 if (inventoryItem.getCanStack()) {
                     var stack = (ItemStack)inventoryItem;
+                    Debug.Log(inventoryItem.getName());
+                    item = (item is ItemStack) ? ((ItemStack)item).getItem() : item;
                     if (item.Equals(stack.getItem())) {
                         return stack;
                     }

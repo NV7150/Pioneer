@@ -150,8 +150,6 @@ namespace BattleSystem{
 			if (!isBattleing)
 				throw new InvalidOperationException("battle isn't started");
 
-            Debug.Log("into join " + player.getName());
-
             loadContainer(player);
 			player.setIsBattling (true);
 			joinedCharacter [pos].Add (player);
@@ -159,6 +157,7 @@ namespace BattleSystem{
 
 			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/PlayerBattleTaskManager"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
+            Debug.Log("pl " + manager);
 			manager.setPlayer (player);
 			joinedManager.Add (player.getUniqueId(),manager);
 		}

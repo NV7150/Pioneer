@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using Parameter;
 using Character;
@@ -299,6 +300,10 @@ namespace CharaMake {
         /// <returns>生成されたキャラクター</returns>
         public Hero makeCharacter() {
             return new Hero(choseJob, choseHumanity, choseIdentities, null);
+        }
+
+        public void finishCharaMake(){
+            SceneManager.LoadScene("FieldScene");
         }
 
         private enum CharaMakeState {

@@ -81,5 +81,7 @@ namespace Character{
         /// </summary>
         /// <param name="skill"> 追加するスキル </param>
 		void addSkill(ReactionSkill skill);
+
+        Inventory getInventory();
 	}
 }
