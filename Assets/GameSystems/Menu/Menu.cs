@@ -36,7 +36,7 @@ namespace Menus {
         /// <summary> プレイヤーが所属するパーティ </summary>
         Party party;
         /// <summary> PC </summary>
-        private Hero player;
+        private Player player;
 
         /// <summary> アクティブなアイテムビュー </summary>
         MenuItemView itemView;
@@ -59,7 +59,6 @@ namespace Menus {
             useWindowPrefab = (GameObject)Resources.Load("Prefabs/UseWindow");
 
             selectviewContainer = Instantiate((GameObject)Resources.Load("Prefabs/SelectView")).GetComponent<SelectViewContainer>();
-            Debug.Log("selectview instantiated");
             selectviewContainer.transform.position = transform.position;
             selectviewContainer.GetComponent<RectTransform>().sizeDelta -= new Vector2(0,60);
             selectviewContainer.transform.position -= new Vector3(50, 30, 0);
@@ -137,7 +136,7 @@ namespace Menus {
         /// </summary>
         /// <param name="player">プレイヤー</param>
         /// <param name="party">playerが所属するパーティ</param>
-        public void setState(Hero player,Party party){
+        public void setState(Player player,Party party){
             Debug.Log("into index");
 
             this.player = player;

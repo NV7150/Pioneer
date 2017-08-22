@@ -7,10 +7,18 @@ public class PioneerManager{
 
     private List<IObserver> observers = new List<IObserver>();
 
-    private PioneerManager(){}
+    private GameObject resultViewPrefab;
+
+    private PioneerManager(){
+        resultViewPrefab = (GameObject)Resources.Load("Prefabs/ResultView");
+    }
 
     public static PioneerManager getInstance(){
         return INSTANCE;
+    }
+
+    public void resultPrint(){
+        MonoBehaviour.Instantiate(resultViewPrefab);
     }
 
 	public void finished() {
@@ -19,6 +27,7 @@ public class PioneerManager{
             observer.report();
             observer.reset();
         }
+
     }
 
     public void setObserver(IObserver observer){

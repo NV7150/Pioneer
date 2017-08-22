@@ -9,8 +9,6 @@ using MasterData;
 public class CMTest : MonoBehaviour {
     public CharaMakeManager manager;
 
-
-
 	// Use this for initialization
 	void Start () {
 		
@@ -40,6 +38,6 @@ public class CMTest : MonoBehaviour {
 	        HumanityMasterManager.getHumanityFromId(2)
         };
 
-        manager.setDatas(jobs,humanities,identities);
+        //manager.setDatas(jobs,humanities,identities);
     }
 }

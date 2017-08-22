@@ -12,8 +12,7 @@ using Object = System.Object;
 public class Humanity{
     private readonly int
     ID,
-    LEVEL = 1,
-    NUMBER_OF_OBJECT;
+    LEVEL = 1;
 
     private readonly string
     NAME,

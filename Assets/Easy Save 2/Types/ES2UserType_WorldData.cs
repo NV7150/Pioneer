@@ -9,7 +9,8 @@ public class ES2UserType_WorldData : ES2Type
 	{
 		WorldData data = (WorldData)obj;
 		// Add your writer.Write calls here.
-		writer.Write(data.Save);
+		writer.Write(data.Towns);
+		writer.Write(data.WorldLevel);
 
 	}
 	
@@ -24,7 +25,8 @@ public class ES2UserType_WorldData : ES2Type
 	{
 		WorldData data = (WorldData)c;
 		// Add your reader.Read calls here to read the data into the object.
-		data.Save = reader.ReadDictionary<System.Int32,UnityEngine.Vector3>();
+		data.Towns = reader.ReadDictionary<System.Int32,UnityEngine.Vector3>();
+		data.WorldLevel = reader.Read<System.Int32>();
 
 	}
 	

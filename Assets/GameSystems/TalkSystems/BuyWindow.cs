@@ -17,7 +17,7 @@ namespace TalkSystem {
         /// <summary> 商品を表示するnodeのプレファブ </summary>
         GameObject tradeItemNodePrefab;
         /// <summary> 取引に参加するプレイヤー </summary>
-        Hero player;
+        Player player;
         /// <summary> 取引に参加するIFriendlyキャラクター </summary>
         Merchant trader;
         /// <summary> 親となるメッセージウィンドウ </summary>
@@ -40,7 +40,7 @@ namespace TalkSystem {
         /// <param name="player">取引に参加するプレイヤー</param>
         /// <param name="trader">取引に参加するIFriendlyキャラクター</param>
         /// <param name="window">親となるメッセージウィンドウ</param>
-        public void setState(List<IItem> goods, Hero player, IFriendly trader, MassageWindow window) {
+        public void setState(List<IItem> goods, Player player, IFriendly trader, MassageWindow window) {
             tradeItemNodePrefab = (GameObject)Resources.Load("Prefabs/TradeItemNode");
             this.goods = goods;
             foreach (IItem item in goods) {

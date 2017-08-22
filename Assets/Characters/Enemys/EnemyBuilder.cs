@@ -10,6 +10,7 @@ using Item;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using Faction = Parameter.CharacterParameters.Faction;
+using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 using static Parameter.CharacterParameters.BattleAbility;
 
 namespace MasterData{
@@ -41,6 +42,8 @@ namespace MasterData{
 		name,
 		modelName,
 		faction;
+
+        private Dictionary<AttackSkillAttribute, float> attributeResistances= new Dictionary<AttackSkillAttribute, float>();
 
 		//csvによるstring配列から初期化します
 		public EnemyBuilder(string[] parameters){
@@ -105,6 +108,10 @@ namespace MasterData{
 			return maxMp;
 		}
 
+        public Dictionary<AttackSkillAttribute, float> getAttributeRegists(){
+            return new Dictionary<AttackSkillAttribute, float>(attributeResistances);
+        }
+
 		public Dictionary<BattleAbility,int> getAbilities(){
 			return new Dictionary<BattleAbility,int> {
 				{BattleAbility.MFT,mft},
@@ -142,6 +149,11 @@ namespace MasterData{
 			weaponLevel = int.Parse (parameters[16]);
 			faction = parameters [17];
 			modelName = "Models/" + parameters [18];
+
+            var attributes = attributeResistances.Keys;
+            foreach(AttackSkillAttribute attribute in attributes){
+                attributeResistances[attribute] = 1.0f;
+            }
 		}
 
         public void setProgress(EnemyProgress progress){
@@ -153,6 +165,8 @@ namespace MasterData{
 
             weaponLevel += progress.WeponLevel;
             level += progress.Level;
+
+            attributeResistances = progress.AttributeResistances;
         }
 
 		public override string ToString () {

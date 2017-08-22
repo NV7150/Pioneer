@@ -17,9 +17,9 @@ namespace Quest{
         private List<IFriendly> metCharacter = new List<IFriendly>();
         private int killedLevel = 0;
 
-        private Hero player;
+        private Player player;
 
-        public FlagList(Hero player){
+        public FlagList(Player player){
             this.player = player;
 		}
 

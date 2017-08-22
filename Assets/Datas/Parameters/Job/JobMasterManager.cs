@@ -31,6 +31,17 @@ namespace MasterData{
 			throw new ArgumentException ("invlit jobId");
 		}
 
+        public static List<Job> getJobsFromLevel(int level){
+            List<Job> jobs = new List<Job>();
+
+            foreach(Job job in dataTable){
+                if (job.getLevel() == level)
+                    jobs.Add(job);
+            }
+
+            return jobs;
+        }
+
 		#region implemented abstract members of MasterDataManagerBase
 		protected override void addInstance(string[] datas) {
 			dataTable.Add(new Job (datas));

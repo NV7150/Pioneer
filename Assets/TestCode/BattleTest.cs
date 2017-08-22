@@ -10,7 +10,7 @@ using AI;
 
 
 public class BattleTest : MonoBehaviour {
-	public Hero hero;
+	public Player hero;
 	public Enemy en;
 	public EnemyMasterManager manager;
 	public Container con;
@@ -37,7 +37,7 @@ public class BattleTest : MonoBehaviour {
         var list = new List<Identity>(){
             IdentityMasterManager.getIdentityFromId(0)
         };
-        hero = new Hero(JobMasterManager.getJobFromId(0),HumanityMasterManager.getHumanityFromId(0), list,con);
+        //hero = new Player(JobMasterManager.getJobFromId(0),HumanityMasterManager.getHumanityFromId(0), list,con);
 
 		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(0));
 		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(1));

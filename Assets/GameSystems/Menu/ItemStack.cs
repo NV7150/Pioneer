@@ -28,8 +28,6 @@ namespace Item{
                 throw new System.ArgumentException("item " + item.getName() + " can't be stored!");
             
             numberOfStack++;
-
-            UnityEngine.Debug.Log("add stack is " + numberOfStack);
         }
 
         /// <summary>

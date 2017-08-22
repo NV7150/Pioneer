@@ -81,7 +81,6 @@ namespace Item {
             foreach (IItem inventoryItem in inventory) {
                 if (inventoryItem.getCanStack()) {
                     var stack = (ItemStack)inventoryItem;
-                    Debug.Log(inventoryItem.getName());
                     item = (item is ItemStack) ? ((ItemStack)item).getItem() : item;
                     if (item.Equals(stack.getItem())) {
                         return stack;

@@ -9,7 +9,7 @@ using Item;
 namespace TalkSystem{
     public class SellWindow : MonoBehaviour, ITradeWindow {
         /// <summary> 取引に参加しているPC </summary>
-        private Hero player;
+        private Player player;
         /// <summary> 取引に参加しているIFriendlyキャラクター </summary>
         private IFriendly trader;
         /// <summary> playerのインベントリ </summary>
@@ -37,7 +37,7 @@ namespace TalkSystem{
         /// </summary>
         /// <param name="player">取引に参加するPC</param>
         /// <param name="trader">取引に参加するフレンドリキャラクター</param>
-        public void setState(Hero player, IFriendly trader) {
+        public void setState(Player player, IFriendly trader) {
             this.player = player;
             this.trader = trader;
             this.inventry = player.getInventory();

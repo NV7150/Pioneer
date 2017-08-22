@@ -68,6 +68,8 @@ public class TownObserver : IObserver{
         tradedValue = 0;
         tradedTimes = 0;
         totalTradedValue = 0;
+
+        MonoBehaviour.Destroy(TOWN.gameObject);
     }
 
     private bool judgeLevelUpped(){

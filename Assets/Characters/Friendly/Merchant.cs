@@ -164,7 +164,7 @@ namespace Character {
         }
 
         public void talk(IFriendly friendly) {
-            TalkManager.getInstance().trade(massages, failMassage,TRADE_INDEX, GOODS, (Hero)friendly, this);
+            TalkManager.getInstance().trade(massages, failMassage,TRADE_INDEX, GOODS, (Player)friendly, this);
         }
 
 		public int getNumberOfGoods() {

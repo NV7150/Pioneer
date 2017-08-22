@@ -60,7 +60,7 @@ namespace Character{
 		public void setCharacter(ICharacter chara){
 			this.user = chara;
             isBattleable = chara is IBattleable;
-            isPlayer = chara is Hero;
+            isPlayer = chara is Player;
 		}
 
         /// <summary>

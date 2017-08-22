@@ -12,7 +12,7 @@ namespace Quest{
 
         string getFlavorText();
 
-        void activateCompensation(Hero player);
+        void activateCompensation(Player player);
 
         QuestType getQuestType();
 

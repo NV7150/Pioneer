@@ -29,8 +29,12 @@ namespace BattleSystem{
         /// <summary> バトルしているか falseだとBattleManagerのほとんどのメソッドがロックされます </summary>
 		private bool isBattleing = false;
 
+        private int expSum = 0;
+
         private GameObject battleCharacterKeeper;
         private GameObject fieldKeeper;
+
+        private GameObject battleResultViewPrefab;
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -47,6 +51,7 @@ namespace BattleSystem{
 			}
             battleCharacterKeeper = GameObject.Find("BattleCharacterKeeper");
             fieldKeeper = GameObject.Find("FieldKeeper");
+            battleResultViewPrefab = (GameObject)Resources.Load("Prefabs/BattleResultView");
 		}
 
 		/// <summary>
@@ -66,6 +71,10 @@ namespace BattleSystem{
 		public void deadCharacter(IBattleable character){
 			if (!isBattleing)
 				throw new InvalidOperationException ("battle isn't started");
+
+            if(character is Enemy){
+                this.expSum += ((Enemy)character).getGiveExp();
+            }
 
             removeBalFromJoinedCharacter(character);
             character.death();
@@ -98,14 +107,13 @@ namespace BattleSystem{
 		}
 
 		private void finishBattle(){
-            Debug.Log("into finish");
-
 			var uniqueIds = joinedManager.Keys;
 			foreach(long id in uniqueIds){
 				joinedManager [id].win ();
 				joinedManager [id].finished ();
 			}
 			joinedManager.Clear ();
+            this.expSum = 0;
 
 			var fieldPositions = System.Enum.GetValues (typeof(FieldPosition));
 			foreach(FieldPosition pos in fieldPositions){
@@ -113,9 +121,14 @@ namespace BattleSystem{
 			}
 			isBattleing = false;
 
-            SceneManager.LoadScene("FieldScene");
-            fieldKeeper.SetActive(true);
+            BattleResultView view = MonoBehaviour.Instantiate(battleResultViewPrefab).GetComponent<BattleResultView>();
+            view.setExp(expSum);
 		}
+
+        public void backToField(){
+			SceneManager.LoadScene("FieldScene");
+			fieldKeeper.SetActive(true);
+        }
 
 		/// <summary>
         /// 引数に渡したキャラクターをバトルに参加させます
@@ -304,8 +317,6 @@ namespace BattleSystem{
             bal.syncronizePositioin(field.getObjectPosition(nowPos + moveness,bal));
 		}
 
-		
-
 		/// <summary>
 		/// 範囲内のエリア危険レベルのDictionaryを変えします
         /// エリア危険レベルはそのエリアの(敵対キャラクターのレベルの合計 - 味方キャラクターのレベル合計)をまず算出し、その後算出した値が一番小さいものの絶対値を全ての要素に足したものです
@@ -410,6 +421,10 @@ namespace BattleSystem{
                     return joinedManager[id];
             }
             throw new ArgumentException("unknown id " + uniqueId);
+        }
+
+        public int getExp(){
+            return expSum;
         }
 
 	}

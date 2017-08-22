@@ -60,7 +60,6 @@ namespace BattleSystem{
                     break;
                 }
             }
-            manager.finishedTask(task);
 		}
 	}
 }

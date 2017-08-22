@@ -15,9 +15,29 @@ namespace FieldMap {
 
         private GameObject fieldKeeper;
 
+        private WorldObserver observer;
+
+        private int worldLelvel;
+
         private void Awake() {
 			townPrefab = (GameObject)Resources.Load("Models/Town");
 			fieldKeeper = GameObject.Find("FieldKeeper");
+        }
+
+        private void Start() {
+            observer = new WorldObserver(this);
+            if(!WorldCreator.getInstance().getWorldLoaded()){
+                if(WorldCreator.getInstance().getIsLoad()){
+                    id = WorldCreator.getInstance().getLoadWorldId();
+                    loadWorld();
+                }else{
+                    id = WorldCreator.getInstance().getWorldIdDefault() + 1;
+                    WorldCreator.getInstance().setWorldIdDefault(id);
+                    creatWorld();
+                }
+            }
+
+            WorldCreator.getInstance().activetePlayer();
         }
 
         // Update is called once per frame
@@ -26,21 +46,17 @@ namespace FieldMap {
                 depict(0);
             if (Input.GetKeyDown(KeyCode.Z)) {
                 Debug.Log("into keydonz");
-                saveTowns();
+                saveWorld();
             }
           
         }
 
         public void depict(int id){
-			if (ES2.Exists(MasterDataManagerBase.getLoadPass(id, "WorldData"))) {
-                loadTowns();
-            }else{
-                creatTown();
-                this.id = id;
-            }
         }
 
-        private void creatTown() {
+        public void creatWorld() {
+            this.worldLelvel = 0;
+
             int townNumberMin = (townPositions.Count > 5) ? townPositions.Count - 5 : 0;
             int numberOfTown = Random.Range(townNumberMin, townPositions.Count);
             int lowTown = numberOfTown / 3;
@@ -164,9 +180,10 @@ namespace FieldMap {
             throw new System.ArgumentException("unkown townId");
         }
 
-        private void loadTowns(){
+        public void loadWorld(){
 			var data = MasterDataManagerBase.loadSaveData<WorldData>(id, "WorldData");
-			this.towns = data.Save;
+			this.towns = data.Towns;
+            this.worldLelvel = data.WorldLevel;
 
             var ids = towns.Keys;
             foreach(int id in ids){
@@ -179,11 +196,10 @@ namespace FieldMap {
             }
         }
 
-        private void saveTowns(){
-            //ES2.DeleteDefaultFolder();
+        public void saveWorld(){
             var saveData = new WorldData();
-            saveData.Save = this.towns;
-            Debug.Log("sc " + saveData.Save.Keys.Count);
+            saveData.Towns = this.towns;
+            Debug.Log("sc " + saveData.Towns.Keys.Count);
             ObserverHelper.saveToFile<WorldData>(saveData,"WorldData",id);
             foreach(Town town in enableTowns){
                 Debug.Log("<color=blue>into roop1</color>");

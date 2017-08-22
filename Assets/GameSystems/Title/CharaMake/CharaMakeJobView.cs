@@ -51,8 +51,6 @@ namespace CharaMake{
             var friendlyAbilities = job.defaultSettingFriendlyAbility();
             spcText.text = "" + friendlyAbilities[FriendlyAbility.SPC];
             dexText.text = "" + friendlyAbilities[FriendlyAbility.DEX];
-
-            //descriptionText.text = job.get
         }
     }
 }

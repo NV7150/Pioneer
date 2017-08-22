@@ -117,7 +117,7 @@ namespace BattleSystem {
 			BattleTask task = creatTask ();
 			task.getSkill ().action (user,task);
 
-			delay = task.getSkill ().getDelay (user) * 2;
+			delay = task.getSkill ().getDelay (user);
 			state = BattleState.IDLE;
 		}
 

@@ -81,6 +81,8 @@ namespace Character{
 
         private Weapon equipedWeapon;
 
+        private Dictionary<AttackSkillAttribute, float> attributeResistances = new Dictionary<AttackSkillAttribute, float>();
+
         /// <summary>
         ///  <see cref="T:Character.Enemy"/> classのコンストラクタ
         /// </summary>
@@ -113,6 +115,8 @@ namespace Character{
 			activeSkillSet = ActiveSkillSetMasterManager.getActiveSkillSetFromId (builder.getActiveSkillSetId(),this);
 			reactionSkillSet = ReactionSkillSetMasterManager.getReactionSkillSetFromId (builder.getReactionSkillSetId());
 			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,reactionSkillSet);
+
+            attributeResistances = builder.getAttributeRegists();
 		}
 	    
 			
@@ -156,7 +160,8 @@ namespace Character{
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
 			if (dammage < 0)
 				dammage = 0;
-			//あとでじゃい
+            dammage = (int)((float)dammage * attributeResistances[attribute]);
+
 			this.hp -= dammage;
 			if (this.hp < 0)
 				this.hp = 0;

@@ -129,8 +129,8 @@ namespace Character {
 
         public void talk(IFriendly friendly) {
             if(townSetted){
-                if (friendly is Hero) {
-                    var player = (Hero)friendly;
+                if (friendly is Player) {
+                    var player = (Player)friendly;
 
                     if (quest != null) {
                         if (quest.isCleared()) {
@@ -159,7 +159,7 @@ namespace Character {
             TalkManager.getInstance().talk(UNDERTOOK_MASSAGES);
         }
 
-        private void clearedTalk(Hero player){
+        private void clearedTalk(Player player){
             TalkManager.getInstance().talk(CLEAR_MASSAGES);
             quest.activateCompensation(player);
             player.deleteQuest(quest);

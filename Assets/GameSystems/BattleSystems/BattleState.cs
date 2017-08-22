@@ -5,8 +5,10 @@ namespace BattleSystem {
     /// BattleTaskManager上のステート
     /// </summary>
 	public enum BattleState {
-		//ディレイ中
+		//コマンド待ち
 		IDLE,
+        //ディレイ中
+        DELAY,
 		//アクション
 		ACTION
 	}

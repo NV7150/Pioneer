@@ -22,6 +22,17 @@ namespace MasterData {
             throw new ArgumentException("invalid IdentityId");
         }
 
+        public static List<Identity> getIdentitiesFromLevel(int level){
+            List<Identity> identities = new List<Identity>();
+
+            foreach(Identity identity in dataTable){
+                if (identity.getLevel() >= level)
+                    identities.Add(identity);
+            }
+
+            return identities;
+        }
+
         protected override void addInstance(string[] datas) {
             dataTable.Add(new Identity(datas));
         }

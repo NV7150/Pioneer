@@ -61,9 +61,9 @@ namespace Quest {
             INTERNAL_NUMBER = flags.getEnemyKilled(TARGET_ID);
         }
 
-        public void activateCompensation(Hero player) {
+        public void activateCompensation(Player player) {
             if(type == CompentionType.FINISH){
-                
+                PioneerManager.getInstance().resultPrint();
             }else if(type == CompentionType.METAL){
                 player.addMetal(LEVEL * 10 * EXTERMINATION_NUMBER);
             }else{

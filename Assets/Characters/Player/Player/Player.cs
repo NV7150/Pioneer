@@ -19,9 +19,13 @@ using HealSkillAttribute = Skill.ActiveSkillParameters.HealSkillAttribute;
 using FriendlyCharacterType = Parameter.CharacterParameters.FriendlyCharacterType;
 
 namespace Character{
-	public class Hero :IPlayable {
+	public class Player :IPlayable {
 		/// <summary> キャラクターの個を表すID </summary>
 		private long UNIQUE_ID;
+
+        private readonly string NAME;
+
+        private string containerAddress = "Models/Player";
 
 		/// <summary> このキャラクターを取得しているContainerオブジェクト </summary>
 		private Container container;
@@ -35,8 +39,6 @@ namespace Character{
 		/// <summary> このキャラクターの最大MP </summary>
 		private int maxMp;
 
-		/// <summary> 現在のゲームスコア </summary>
-		private int score;
 		/// <summary> キャラクターの取得経験値 </summary>
 		private int exp;
 		/// <summary> キャラクターのレベル </summary>
@@ -53,11 +55,6 @@ namespace Character{
         /// <summary> 使命達成を判定するフラグの記憶インスタンス </summary>
         private FlagList flags;
 
-		/// <summary> キャラクターの職業 </summary>
-		private Job job;
-		/// <summary> このキャラクターの特徴 </summary>
-		private Identity identity;
-
 		/// <summary> プレイヤーの所属派閥 </summary>
 		private Faction faction = Faction.PLAYER;
 
@@ -65,6 +62,8 @@ namespace Character{
         private Weapon weapon;
 		/// <summary> 装備中の防具 </summary>
 		private Armor armor;
+
+        private Job job;
 
         /// <summary> キャラクターが所持しているアイテム(keyをstring以外にする予定) </summary>
         private Inventory inventory = new Inventory();
@@ -81,9 +80,6 @@ namespace Character{
 		/// <summary> ボーナス値を管理するインスタンス </summary>
 		private BonusKeeper bonusKeeper = new BonusKeeper();
 
-		/// <summary> プレイヤーの苦手属性 </summary>
-		private AttackSkillAttribute weakAttribute;
-
         private GameObject menuPrefab;
 
         private Party party = new Party();
@@ -97,8 +93,7 @@ namespace Character{
         /// <see cref="T:Character.Hero"/> classのコンストラクタです
         /// </summary>
         /// <param name="job">職業</param>
-        /// <param name="con">Container</param>
-        public Hero(Job job,Humanity humanity,List<Identity> identities, Container con){
+        public Player(Job job,Humanity humanity,List<Identity> identities,IMissionBuilder mission,string name){
 			Dictionary<BattleAbility,int> battleParameters = job.defaultSettingBattleAbility ();
 			Dictionary<FriendlyAbility,int> friendlyParameters = job.defaultSettingFriendlyAbility ();
 
@@ -118,7 +113,9 @@ namespace Character{
             hp = maxHp;
             mp = maxMp;
 
-			this.container = con;
+            this.NAME = name;
+
+            this.job = job;
 
 			UNIQUE_ID = UniqueIdCreator.creatUniqueId ();
 
@@ -159,8 +156,15 @@ namespace Character{
 
             flags = new FlagList(this);
 
-            camera = GameObject.Find("MainCamera").GetComponent<Camera>();
+            undertakingQuests.Add(mission.build(flags));
 		}
+
+        public void activateContainer(){
+            container = MonoBehaviour.Instantiate((GameObject)Resources.Load(containerAddress)).GetComponent<Container>();
+            container.setCharacter(this);
+            camera = GameObject.Find("PlayerCamera").GetComponent<Camera>();
+        }
+
 
         private void checkAbilities(){
 			var bKeys = Enum.GetValues(typeof(BattleAbility));
@@ -189,13 +193,56 @@ namespace Character{
 		}
 
 		public void levelUp () {
-			throw new NotImplementedException ();
+            var battleAbilityProbalities = job.defaultSettingBattleAbility();
+            var friendlyAbilityProbalities = job.defaultSettingFriendlyAbility();
+            int probalitySum = 0;
+
+            var battleAbilityProbalityKeys = battleAbilityProbalities.Keys;
+            foreach(BattleAbility ability in battleAbilityProbalityKeys)
+                probalitySum += battleAbilityProbalities[ability];
+
+            var friendlyAbilityProbalityKeys = friendlyAbilities.Keys;
+            foreach (FriendlyAbility ability in friendlyAbilityProbalityKeys)
+                probalitySum += friendlyAbilityProbalities[ability];
+
+            for (int i = 0; i < (level / 3 + 1); i++) {
+                int rand = UnityEngine.Random.Range(0, probalitySum);
+
+                foreach (BattleAbility ability in battleAbilityProbalityKeys) {
+                    if (battleAbilityProbalities[ability] >= rand) {
+                        battleAbilities[ability]++;
+                        rand = -1;
+                        break;
+                    } else {
+                        rand -= battleAbilityProbalities[ability];
+                    }
+                }
+
+                if (rand < 0)
+                    continue;
+
+                foreach (FriendlyAbility ability in friendlyAbilityProbalityKeys){
+                    if (friendlyAbilityProbalities[ability] >= rand){
+                        friendlyAbilities[ability]++;
+                        break;
+                    }else{
+                        rand -= friendlyAbilityProbalities[ability];
+                    }
+                }
+            }
+
+            level++;
 		}
 
 		public void addExp (int val) {
-			if (val >= 0)
-				exp += val;
-			throw new ArgumentException ("invalid argent in addExp()");
+			if (val < 0)
+                throw new ArgumentException ("invalid argent in addExp()");
+            
+            exp += val;
+            if(exp <= level * 10){
+                levelUp();
+                exp = 0;
+            }
 		}
 
 		public int getExp () {
@@ -256,11 +303,6 @@ namespace Character{
 		public void dammage (int dammage, AttackSkillAttribute attribute) {
             if (dammage < 0)
                 dammage = 0;
-            
-			if (attribute == AttackSkillAttribute.PHYSICAL)
-				dammage -= getDef ();
-			if(attribute == weakAttribute)
-				dammage = (int)( dammage * 1.5f );
 			
 			this.hp -= dammage;
 
@@ -427,7 +469,6 @@ namespace Character{
 
 		public void act () {
             bonusKeeper.advanceLimit();
-
             if(Input.GetKeyDown(KeyCode.E)){
                 Debug.Log("into inputMenu");
                 GameObject menuObject = MonoBehaviour.Instantiate(menuPrefab,new Vector3(874f, 384f, 0f),new Quaternion(0,0,0,0));
@@ -601,10 +642,13 @@ namespace Character{
         }
 
 		private void searchFront() {
-			Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2);
-			Ray ray = camera.ScreenPointToRay(center);
+			Debug.Log("into search");
+            Ray ray = new Ray(container.transform.position, container.transform.forward); 
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray, out hitInfo, distance)) {
+                Debug.Log("into if");
+
+                Debug.DrawRay(ray.origin,hitInfo.point,Color.red);
 				Container hitContainer = hitInfo.transform.GetComponent<Container>();
 				if (hitContainer != null) {
 					ICharacter character = hitContainer.getCharacter();

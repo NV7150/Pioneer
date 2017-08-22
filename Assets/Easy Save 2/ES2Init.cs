@@ -75,8 +75,8 @@ public class ES2Init : MonoBehaviour
 		ES2TypeManager.types[typeof(FieldMap.Building)] = new ES2UserType_FieldMapBuilding();
 		ES2TypeManager.types[typeof(HealItemProgress)] = new ES2UserType_HealItemProgress();
 		ES2TypeManager.types[typeof(ItemMaterialProgress)] = new ES2UserType_ItemMaterialProgress();
-		ES2TypeManager.types[typeof(WorldData)] = new ES2UserType_WorldData();
 		ES2TypeManager.types[typeof(TownBuilder)] = new ES2UserType_TownBuilder();
+		ES2TypeManager.types[typeof(WorldData)] = new ES2UserType_WorldData();
 
 		ES2.initialised = true;
 	}

@@ -38,7 +38,7 @@ namespace BattleSystem{
         private List<KeyValuePair<IBattleable, AttackSkill>> waitingDecideReactionSkills = new List<KeyValuePair<IBattleable, AttackSkill>>();
 
         /// <summary> 現在のステート </summary>
-        private BattleState battleState = BattleState.ACTION;
+        private BattleState battleState = BattleState.IDLE;
 
         /// <summary> 残りディレイ秒数 </summary>
         private float delay = 0;
@@ -101,15 +101,18 @@ namespace BattleSystem{
         void Update() {
             if (player.getHp() <= 0) {
                 BattleManager.getInstance().deadCharacter(player);
-            }
+            } else {
+                if (needToReaction) {
+                    reactionState();
+                } else if (battleState == BattleState.ACTION) {
+                    actionState();
+                }
 
-            if (needToReaction) {
-                reactionState();
-            } else if (battleState == BattleState.ACTION && tasks.Count > 0) {
-                actionState();
-            }
-            if (battleState == BattleState.IDLE) {
-                idleState();
+                if (battleState == BattleState.IDLE) {
+                    idleState();
+                } else if (battleState == BattleState.DELAY) {
+                    delayState();
+                }
             }
         }
 
@@ -142,26 +145,14 @@ namespace BattleSystem{
             if (runTask.getIsSkill()) {
                 IActiveSkill runSkill = runTask.getSkill();
                 runSkill.action(player, runTask);
-
-                delay = runTask.getSkill().getDelay(player) * 2;
-                maxDelay = delay;
             }else{
                 IItem runItem = runTask.getItem();
                 player.getInventory().useItem(runItem,player);
-
-                float delayBonus = (float)player.getAbilityContainsBonus(BattleAbility.AGI) / 20;
-				delayBonus = (delayBonus < 1.0f) ? delayBonus : 1.0f;
-				delay = 2.0f - delayBonus;
-                maxDelay = delay;
             }
 
             tasks.Remove(runTask);
-            listView.deleteTask(runTask);
-
             battleState = BattleState.IDLE;
-            state.resetProgress();
-
-            updateTargetLine();
+			deleteTargetingLine(player);
         }
 
         /// <summary>
@@ -189,13 +180,37 @@ namespace BattleSystem{
         /// <summary>
         /// ステートがIDLEの時に毎フレーム行う処理
         /// </summary>
-        private void idleState() {
+        private void delayState() {
+            Debug.Log("into delay");
             delay -= Time.deltaTime;
             state.advanceProgress(Time.deltaTime / maxDelay);
             if (delay <= 0) {
                 battleState = BattleState.ACTION;
-                deleteTargetingLine(player);
             }
+        }
+
+        private void idleState(){
+            if(tasks.Count > 0){
+				BattleTask runTask = tasks[0];
+				if (runTask.getIsSkill()) {
+					delay = runTask.getSkill().getDelay(player);
+					maxDelay = delay;
+				} else {
+					float delayBonus = (float)player.getAbilityContainsBonus(BattleAbility.AGI) / 20;
+					delayBonus = (delayBonus < 1.0f) ? delayBonus : 1.0f;
+					delay = 2.0f - delayBonus;
+					maxDelay = delay;
+				}
+
+				listView.deleteTask(runTask);
+
+				state.resetProgress();
+				updateTargetLine();
+
+                runTask.activeteIsProssesing();
+                this.battleState = BattleState.DELAY;
+            }
+                
         }
 
         /// <summary>
@@ -324,7 +339,6 @@ namespace BattleSystem{
         /// ReactionSkillを使用します
         /// </summary>
         private void reaction() {
-            Debug.Log("<color=red>intoreaction</color>");
             ReactionSkill reactionSkill = waitingProgressSkills[0].Key;
             IBattleable attacker = waitingProgressSkills[0].Value.Key;
             AttackSkill skill = waitingProgressSkills[0].Value.Value;
@@ -622,13 +636,24 @@ namespace BattleSystem{
             inputActiveSkillList();
             isInputingBackButton = true;
         }
+
+        private void canselProsessingTask(){
+            
+        }
+
         #region IBattleTaskManager implementation
 
         public void deleteTaskFromTarget(IBattleable target) {
             foreach (BattleTask task in tasks) {
                 foreach (IBattleable bal in task.getTargets()) {
-                    if (bal.Equals(target))
+                    if (bal.Equals(target)) {
+                        if(task.getIsProssesing()){
+                            battleState = BattleState.IDLE;
+                            deleteTargetingLine(player);
+                            state.advanceProgress(1);
+                        }
                         tasks.Remove(task);
+                    }
                 }
             }
         }
@@ -648,7 +673,7 @@ namespace BattleSystem{
         }
 
         public void win() {
-            //(実装)まだです
+            player.addExp(BattleManager.getInstance().getExp());
         }
 
         public void finished() {

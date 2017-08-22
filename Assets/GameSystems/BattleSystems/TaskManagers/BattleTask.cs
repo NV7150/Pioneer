@@ -34,6 +34,8 @@ namespace BattleSystem{
 
         private bool isSkill;
 
+        private bool isProsessing;
+
 		/// <summary>
         /// ターゲットが存在する場合のコンストラクタ
         /// </summary>
@@ -157,6 +159,13 @@ namespace BattleSystem{
 
         public bool getIsSkill(){
             return isSkill;
+        }
+
+        public void activeteIsProssesing(){
+            this.isProsessing = true;
+        }
+        public bool getIsProssesing(){
+            return isProsessing;
         }
 
         public override bool Equals(object obj) {

@@ -7,6 +7,7 @@ using Parameter;
 using Character;
 using Quest;
 using SelectView;
+using MasterData;
 
 namespace CharaMake {
     public class CharaMakeManager : MonoBehaviour {
@@ -149,7 +150,8 @@ namespace CharaMake {
             if (axis != 0) {
                 switch (state) {
                     case CharaMakeState.JOB:
-                        Job job = jobSelectView.moveTo(jobSelectView.getIndex() + axis);
+                        int index = jobSelectView.getIndex() + axis;
+                        Job job = jobSelectView.moveTo(index);
                         jobView.printText(job);
                         break;
 
@@ -174,13 +176,11 @@ namespace CharaMake {
         /// <summary>
         /// データを設定します
         /// </summary>
-        /// <param name="jobs">選択できる職業のリスト</param>
-        /// <param name="humanities">選択できる人間性のリスト</param>
-        /// <param name="identities">選択できる特徴のリスト</param>
-        public void setDatas(List<Job> jobs, List<Humanity> humanities, List<Identity> identities) {
-            this.jobs = jobs;
-            this.humanities = humanities;
-            this.identities = identities;
+        /// <param name="level">世界のレベル</param>
+        public void setDatas(int level) {
+            this.jobs = JobMasterManager.getJobsFromLevel(level);
+            this.humanities = HumanityMasterManager.getHumanitiesFromLevel(level);
+            this.identities = IdentityMasterManager.getIdentitiesFromLevel(level);
             Vector3 viewPos = new Vector3(200, Screen.height / 2);
             selectView = Instantiate(selectViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<SelectViewContainer>();
             selectView.transform.SetParent(CanvasGetter.getCanvas().transform);
@@ -204,6 +204,8 @@ namespace CharaMake {
 			this.jobView = Instantiate(jobViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<CharaMakeJobView>();
 
             jobView.printText(jobSelectView.getElement());
+
+            Debug.Log(jobSelectView + " " + jobSelectView.getIndex());
 
             jobView.transform.SetParent(CanvasGetter.getCanvas().transform);
             state = CharaMakeState.JOB;
@@ -284,6 +286,8 @@ namespace CharaMake {
             Destroy(selectView.gameObject);
             resultView.transform.SetParent(CanvasGetter.getCanvas().transform);
             resultView.setParameters(choseJob, choseHumanity, choseIdentities ,choseMission, this);
+
+            state = CharaMakeState.RESULT;
         }
 
         /// <summary>
@@ -292,14 +296,18 @@ namespace CharaMake {
         /// <param name="name">Name.</param>
         public void nameInputed(string name) {
             this.name = name;
+
+            WorldCreator.getInstance().setPlayer(makeCharacter());
+
+            finishCharaMake();
         }
 
         /// <summary>
         /// キャラクターを生成します
         /// </summary>
         /// <returns>生成されたキャラクター</returns>
-        public Hero makeCharacter() {
-            return new Hero(choseJob, choseHumanity, choseIdentities, null);
+        public Player makeCharacter() {
+            return new Player(choseJob, choseHumanity, choseIdentities,choseMission, name);
         }
 
         public void finishCharaMake(){
