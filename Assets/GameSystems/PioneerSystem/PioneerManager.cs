@@ -18,7 +18,9 @@ public class PioneerManager{
     }
 
     public void resultPrint(){
-        MonoBehaviour.Instantiate(resultViewPrefab);
+        var resultView = MonoBehaviour.Instantiate(resultViewPrefab);
+        resultView.transform.SetParent(CanvasGetter.getCanvas().transform);
+        resultView.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
     }
 
 	public void finished() {
@@ -27,7 +29,7 @@ public class PioneerManager{
             observer.report();
             observer.reset();
         }
-
+        SceneKeeper.deleteScene();
     }
 
     public void setObserver(IObserver observer){

@@ -83,6 +83,8 @@ namespace Character{
 
         private Dictionary<AttackSkillAttribute, float> attributeResistances = new Dictionary<AttackSkillAttribute, float>();
 
+        private float deleteCount = 60f;
+
         /// <summary>
         ///  <see cref="T:Character.Enemy"/> classのコンストラクタ
         /// </summary>
@@ -112,8 +114,8 @@ namespace Character{
 
 			this.UNIQE_ID = UniqueIdCreator.creatUniqueId ();
 
-			activeSkillSet = ActiveSkillSetMasterManager.getActiveSkillSetFromId (builder.getActiveSkillSetId(),this);
-			reactionSkillSet = ReactionSkillSetMasterManager.getReactionSkillSetFromId (builder.getReactionSkillSetId());
+            activeSkillSet = ActiveSkillSetMasterManager.getInstance().getActiveSkillSetFromId (builder.getActiveSkillSetId(),this);
+            reactionSkillSet = ReactionSkillSetMasterManager.getInstance().getReactionSkillSetFromId (builder.getReactionSkillSetId());
 			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,reactionSkillSet);
 
             attributeResistances = builder.getAttributeRegists();
@@ -290,6 +292,10 @@ namespace Character{
 
 		public void act () {
             bonusKeeper.advanceLimit();
+            deleteCount -= Time.deltaTime;
+            if(deleteCount <= 0){
+                MonoBehaviour.Destroy(this.container.gameObject);
+            }
 		}
 
 		public void death () {

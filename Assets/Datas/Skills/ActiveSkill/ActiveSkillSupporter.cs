@@ -135,16 +135,16 @@ namespace Skill {
         public static IActiveSkill getActiveSkill(ActiveSkillType type,int id){
             switch(type){
                 case ActiveSkillType.ATTACK:
-                    return AttackSkillMasterManager.getAttackSkillFromId(id);
+                    return AttackSkillMasterManager.getInstance().getAttackSkillFromId(id);
 
                 case ActiveSkillType.BUF:
-                    return BufSkillMasterManager.getBufSkillFromId(id);
+                    return BufSkillMasterManager.getInstance().getBufSkillFromId(id);
 
                 case ActiveSkillType.DEBUF:
-                    return DebufSkillMasterManager.getDebufSkillFromId(id);
+                    return DebufSkillMasterManager.getInstance().getDebufSkillFromId(id);
 
                 case ActiveSkillType.HEAL:
-                    return HealSkillMasterManager.getHealSkillFromId(id);
+                    return HealSkillMasterManager.getInstance().getHealSkillFromId(id);
 
                 default : throw new NotSupportedException("unkonwn skillType " + type);
             }

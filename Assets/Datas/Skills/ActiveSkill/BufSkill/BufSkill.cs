@@ -19,7 +19,8 @@ namespace Skill {
 			/// <summary> このスキルの射程 </summary>
             RAW_RANGE,
             RAW_BONUS,
-            RAW_COST;
+			RAW_COST,
+    		LEVEL;
 
         private int
 	        bonus,
@@ -52,18 +53,19 @@ namespace Skill {
 		public BufSkill (string[] datas) {
 			this.ID = int.Parse (datas [0]);
 			this.NAME = datas [1];
-            this.RAW_BONUS = int.Parse(datas [2]);
+            this.LEVEL = int.Parse(datas[2]);
+            this.RAW_BONUS = int.Parse(datas [3]);
             this.bonus = RAW_BONUS;
-			this.LIMIT = int.Parse(datas [3]);
-			this.RAW_RANGE = int.Parse (datas[4]);
-			this.RAW_COST = int.Parse (datas[5]);
+			this.LIMIT = int.Parse(datas [4]);
+			this.RAW_RANGE = int.Parse (datas[5]);
+			this.RAW_COST = int.Parse (datas[6]);
             this.cost = RAW_COST;
-			this.RAW_DELAY = float.Parse (datas[6]);
+			this.RAW_DELAY = float.Parse (datas[7]);
             this.delay = RAW_DELAY;
-			setBonusParameter (datas[7]);
-			this.EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[8]);
-			this.DESCRIPTION = datas [9];
-            FLAVOR_TEXT = datas[10];
+			setBonusParameter (datas[8]);
+			this.EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[9]);
+			this.DESCRIPTION = datas [10];
+            FLAVOR_TEXT = datas[11];
 
             this.observer = new BufSkillObserver(ID);
 		}
@@ -159,6 +161,10 @@ namespace Skill {
 
         public string getFlavorText() {
             throw new NotImplementedException();
+        }
+
+        public int getLevel() {
+            return LEVEL;
         }
 
         #endregion

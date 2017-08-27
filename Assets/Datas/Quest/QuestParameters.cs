@@ -7,5 +7,14 @@ namespace Quest {
         public enum QuestType {
             EXTERMINATION
         }
+
+        public enum CompentionType {
+			WEAPON,
+			ARMOR,
+			MATERIAL,
+			HEAL_ITEM,
+			METAL,
+			FINISH
+		}
     }
 }

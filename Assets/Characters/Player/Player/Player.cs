@@ -10,6 +10,8 @@ using Parameter;
 using BattleSystem;
 using Menus;
 using Quest;
+using MasterData;
+using TalkSystem;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
@@ -50,7 +52,7 @@ namespace Character{
 		Dictionary<FriendlyAbility,int> friendlyAbilities = new Dictionary<FriendlyAbility, int>();
 
         /// <summary> このキャラクターの所持金 </summary>
-        private int mt = 0;
+        private int mt = 10000;
 
         /// <summary> 使命達成を判定するフラグの記憶インスタンス </summary>
         private FlagList flags;
@@ -60,6 +62,7 @@ namespace Character{
 
 		/// <summary> 装備中の武器 </summary>
         private Weapon weapon;
+
 		/// <summary> 装備中の防具 </summary>
 		private Armor armor;
 
@@ -86,8 +89,13 @@ namespace Character{
 
         private List<IQuest> undertakingQuests = new List<IQuest>();
 
+        private IQuest mission;
+
         private Camera camera;
+
         private int distance = 10000;
+
+        private Vector3 beforePos;
 
         /// <summary>
         /// <see cref="T:Character.Hero"/> classのコンストラクタです
@@ -97,6 +105,9 @@ namespace Character{
 			Dictionary<BattleAbility,int> battleParameters = job.defaultSettingBattleAbility ();
 			Dictionary<FriendlyAbility,int> friendlyParameters = job.defaultSettingFriendlyAbility ();
 
+            activeSkills.AddRange(job.getActiveSkills());
+            reactionSkills.AddRange(job.getReactionSkills());
+
 			setMft (battleParameters[BattleAbility.MFT]);
 			setFft (battleParameters [BattleAbility.FFT]);
 			setMgp (battleParameters [BattleAbility.MGP]);
@@ -105,11 +116,8 @@ namespace Character{
 			setDex (friendlyParameters [FriendlyAbility.DEX]);
 			setSpc (friendlyParameters [FriendlyAbility.SPC]);
 
-			setMaxHp (battleAbilities[BattleAbility.PHY]);
-			setMaxMp (battleAbilities[BattleAbility.MGP]);
-            //かり
-            setMaxHp(100);
-            setMaxMp(100);
+            setMaxHp(battleAbilities[BattleAbility.PHY] * 3 + 30);
+            setMaxMp(battleAbilities[BattleAbility.MGP] * 5 + 10);
             hp = maxHp;
             mp = maxMp;
 
@@ -119,7 +127,7 @@ namespace Character{
 
 			UNIQUE_ID = UniqueIdCreator.creatUniqueId ();
 
-			this.level = 2;
+			this.level = 1;
 
             menuPrefab = (GameObject)Resources.Load("Prefabs/Menu");
 
@@ -156,13 +164,14 @@ namespace Character{
 
             flags = new FlagList(this);
 
-            undertakingQuests.Add(mission.build(flags));
+            this.mission = mission.build(flags);
+            undertakingQuests.Add(this.mission);
 		}
 
         public void activateContainer(){
             container = MonoBehaviour.Instantiate((GameObject)Resources.Load(containerAddress)).GetComponent<Container>();
             container.setCharacter(this);
-            camera = GameObject.Find("PlayerCamera").GetComponent<Camera>();
+            this.camera = container.GetComponent<PlayerController>().getCamera();
         }
 
 
@@ -232,6 +241,11 @@ namespace Character{
             }
 
             level++;
+
+			setMaxHp(battleAbilities[BattleAbility.PHY] * 3 + 30);
+			setMaxMp(battleAbilities[BattleAbility.MGP] * 5 + 10);
+			hp = maxHp;
+			mp = maxMp;
 		}
 
 		public void addExp (int val) {
@@ -288,7 +302,6 @@ namespace Character{
         }
 
 		public void talk (IFriendly friendly) {
-			throw new NotImplementedException ();
 		}
 		#endregion
 		#region IBattleable implementation
@@ -354,7 +367,7 @@ namespace Character{
 
 		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
 			int atk = battleAbilities [useAbility] + UnityEngine.Random.Range (0,level);
-            if (useWepon)
+            if (useWepon && weapon != null)
                 atk += this.weapon.attackWith();
 			return atk;
 		}
@@ -365,20 +378,34 @@ namespace Character{
 		/// </summary>
 		/// <returns>The def.</returns>
 		public int getDef () {
-//			return armor.getDef() + (this.battleAbilities[BattleAbility.PHY]/4  + this.battleAbilities[BattleAbility.MFT]/4);
-			return 0;
+            int armorDef = (armor != null) ? armor.getDef() : 0;
+            return armorDef + (this.battleAbilities[BattleAbility.PHY]/4  + this.battleAbilities[BattleAbility.MFT]/4);
 		}
 
 		public float getCharacterDelay() {
-            return weapon.getDelay();
+            if (weapon != null) {
+                return weapon.getDelay();
+            }else{
+				float delayBonus = (float)getAbilityContainsBonus(BattleAbility.AGI) / 20;
+				delayBonus = (delayBonus < 1.0f) ? delayBonus : 1.0f;
+				return 2.0f - delayBonus;
+            }
 		}
 
 		public int getCharacterRange() {
-            return weapon.getRange();
+            if (weapon != null) {
+                return weapon.getRange();
+            }else{
+                return 0;
+            }
 		}
 
 		public BattleAbility getCharacterAttackMethod() {
-            return weapon.getWeaponAbility();
+            if (weapon != null) {
+                return weapon.getWeaponAbility();
+            }else{
+                return BattleAbility.MFT;
+            }
 		}
 
 		public void addAbilityBonus(SubBattleAbilityBonus bonus) {
@@ -409,10 +436,6 @@ namespace Character{
 			isReadyToCounter = flag;
 		}
 
-		public void resetBonus () {
-			throw new NotImplementedException ();
-		}
-
 		public int getLevel () {
 			return level;
 		}
@@ -440,7 +463,9 @@ namespace Character{
 			
 		public void encount () {
 			if (!isBattleing) {
-                BattleManager.getInstance().joinBattle(this, FieldPosition.ONE);
+                Debug.Log("<color=red>into enecount</color> " + camera);
+                camera.gameObject.SetActive(false);
+				BattleManager.getInstance().joinBattle(this, FieldPosition.ONE);
 			}
 		}
 
@@ -464,19 +489,36 @@ namespace Character{
         public int getId() {
             throw new InvalidOperationException("hero's getId is called");
         }
+
+        public void resetBonus() {
+            throw new NotImplementedException();
+        }
 		#endregion
 		#region ICharacter implementation
 
 		public void act () {
             bonusKeeper.advanceLimit();
-            if(Input.GetKeyDown(KeyCode.E)){
-                Debug.Log("into inputMenu");
-                GameObject menuObject = MonoBehaviour.Instantiate(menuPrefab,new Vector3(874f, 384f, 0f),new Quaternion(0,0,0,0));
-                Menu menu = menuObject.GetComponent<Menu>();
-                menu.transform.SetParent(CanvasGetter.getCanvas().transform);
-                menu.setState(this,party);
-            }else if(Input.GetKeyDown(KeyCode.Return)){
-                searchFront();
+
+            if (!Menu.getIsDisplaying() && !TalkManager.getInstance().getIsTalking()) {
+                if (Input.GetKeyDown(KeyCode.E)) {
+                    GameObject menuObject = MonoBehaviour.Instantiate(menuPrefab, new Vector3(874f, 384f, 0f), new Quaternion(0, 0, 0, 0));
+                    Menu menu = menuObject.GetComponent<Menu>();
+                    menu.transform.SetParent(CanvasGetter.getCanvas().transform);
+                    menu.setState(this, party);
+                } else if (Input.GetKeyDown(KeyCode.Return)) {
+                    searchFront();
+                }
+            }
+
+
+            ///////test from here////////////
+            if(Input.GetKeyDown(KeyCode.RightShift)){
+                PioneerManager.getInstance().resultPrint();
+            }
+
+            if(Input.GetKey(KeyCode.P)){
+				flags.addEnemyKilled(EnemyMasterManager.getInstance().getEnemyFromId(0));
+				flags.addEnemyKilled(EnemyMasterManager.getInstance().getEnemyFromId(1));
             }
 		}
 
@@ -489,7 +531,7 @@ namespace Character{
 		}
 
 		public string getName(){
-			return "hero";
+            return NAME;
 		}
 		#endregion
 
@@ -659,8 +701,21 @@ namespace Character{
 			}
 		}
 
+        public IQuest getMisssion(){
+            return mission;
+        }
+
 		private void startTalk(IFriendly character) {
             character.talk(this);
 		}
+
+        public void resetPos(){
+            camera.gameObject.SetActive(true);
+            this.container.transform.position = beforePos;
+        }
+
+        public void keepPos(){
+            beforePos = container.transform.position;
+        }
     }
 }

@@ -9,6 +9,8 @@ namespace FieldMap {
         private int id = 0;
         public List<Transform> townPositions;
         private GameObject townPrefab;
+        public Transform missionClientPos;
+        public Terrain terrain;
 
         private Dictionary<int, Vector3> towns = new Dictionary<int, Vector3>();
         private List<Town> enableTowns = new List<Town>();
@@ -17,7 +19,7 @@ namespace FieldMap {
 
         private WorldObserver observer;
 
-        private int worldLelvel;
+        private int worldLevel;
 
         private void Awake() {
 			townPrefab = (GameObject)Resources.Load("Models/Town");
@@ -34,30 +36,22 @@ namespace FieldMap {
                     id = WorldCreator.getInstance().getWorldIdDefault() + 1;
                     WorldCreator.getInstance().setWorldIdDefault(id);
                     creatWorld();
+                    WorldCreator.getInstance().setWorldPass(id);
                 }
+
+                WorldCreator.getInstance().setWorldLoaded(true);
+                WorldCreator.getInstance().activetePlayer(missionClientPos);
+            }else{
+                Debug.Log("into loaded");
+                WorldCreator.getInstance().resetPlayerPos();
             }
 
-            WorldCreator.getInstance().activetePlayer();
-        }
-
-        // Update is called once per frame
-        void Update() {
-            if (Input.GetKeyDown(KeyCode.C))
-                depict(0);
-            if (Input.GetKeyDown(KeyCode.Z)) {
-                Debug.Log("into keydonz");
-                saveWorld();
-            }
-          
-        }
-
-        public void depict(int id){
         }
 
         public void creatWorld() {
-            this.worldLelvel = 0;
+            this.worldLevel = 1;
 
-            int townNumberMin = (townPositions.Count > 5) ? townPositions.Count - 5 : 0;
+            int townNumberMin = (townPositions.Count > 5) ? townPositions.Count - 5 : 1;
             int numberOfTown = Random.Range(townNumberMin, townPositions.Count);
             int lowTown = numberOfTown / 3;
             int middleTown = numberOfTown / 3;
@@ -183,7 +177,7 @@ namespace FieldMap {
         public void loadWorld(){
 			var data = MasterDataManagerBase.loadSaveData<WorldData>(id, "WorldData");
 			this.towns = data.Towns;
-            this.worldLelvel = data.WorldLevel;
+            this.worldLevel = data.WorldLevel;
 
             var ids = towns.Keys;
             foreach(int id in ids){
@@ -199,12 +193,12 @@ namespace FieldMap {
         public void saveWorld(){
             var saveData = new WorldData();
             saveData.Towns = this.towns;
-            Debug.Log("sc " + saveData.Towns.Keys.Count);
+            saveData.WorldLevel = this.worldLevel;
             ObserverHelper.saveToFile<WorldData>(saveData,"WorldData",id);
             foreach(Town town in enableTowns){
-                Debug.Log("<color=blue>into roop1</color>");
                 var builder = town.compressIntoBuilder();
-                ObserverHelper.saveToFile<TownBuilder>(builder,"TownData",town.getId());
+				ObserverHelper.saveToFile<TownBuilder>(builder, "TownData", town.getId());
+                MonoBehaviour.Destroy(town.gameObject);
             }
         }
 

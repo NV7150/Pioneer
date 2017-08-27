@@ -5,6 +5,10 @@ using UnityEngine;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
 using FriendlyAbility = Parameter.CharacterParameters.FriendlyAbility;
+using ActiveSkillType = Skill.ActiveSkillParameters.ActiveSkillType;
+
+using Skill;
+using MasterData;
 
 namespace Parameter{
 	[System.SerializableAttribute]
@@ -31,15 +35,20 @@ namespace Parameter{
 
 		private readonly string
 			/// <summary> 職業名 </summary>
-			name;
+            NAME,
+            DESCRIPTION,
+            FLAVOR_TEXT;
 
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <param name="parameters">csvによるstring配列データ</param>
+        private List<KeyValuePair<ActiveSkillType, int>> activeSkillIds = new List<KeyValuePair<ActiveSkillType, int>>();
+        private List<int> reactionSkillIds = new List<int>();
+
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="parameters">csvによるstring配列データ</param>
 		public Job(string[] parameters){
 			ID = int.Parse (parameters[0]);
-			name = parameters [1];
+			NAME = parameters [1];
             LEVEL = int.Parse(parameters[2]);
 			MFT = int.Parse (parameters[3]);
 			FFT = int.Parse (parameters[4]);
@@ -48,6 +57,22 @@ namespace Parameter{
 			AGI = int.Parse (parameters[7]);
 			DEX = int.Parse (parameters[8]);
 			SPC = int.Parse (parameters[9]);
+
+            DESCRIPTION = parameters[10];
+            FLAVOR_TEXT = parameters[11];
+
+            int index = 12;
+            for (;parameters[index] != "end";index += 2){
+                ActiveSkillType type = (ActiveSkillType)Enum.Parse(typeof(ActiveSkillType), parameters[index]);
+                var skillId = int.Parse(parameters[index + 1]);
+                activeSkillIds.Add(new KeyValuePair<ActiveSkillType, int>(type,skillId));
+            }
+            index++;
+
+            for (; parameters[index] != "end";index++){
+                var id = int.Parse(parameters[index]);
+                reactionSkillIds.Add(id);
+            }
 		}
 
 		/// <summary>
@@ -55,7 +80,7 @@ namespace Parameter{
         /// </summary>
         /// <returns>ジョブ名</returns>
 		public string getName (){
-			return name;
+			return NAME;
 		}
 
         public int getLevel(){
@@ -97,8 +122,32 @@ namespace Parameter{
 			return ID;
 		}
 
+        public List<IActiveSkill> getActiveSkills(){
+            List<IActiveSkill> skills = new List<IActiveSkill>();
+            foreach(var idSet in activeSkillIds)
+                skills.Add(ActiveSkillSupporter.getActiveSkill(idSet.Key,idSet.Value));
+
+            return skills;
+        }
+
+        public List<ReactionSkill> getReactionSkills(){
+            List<ReactionSkill> skills = new List<ReactionSkill>();
+            foreach (int id in reactionSkillIds)
+                skills.Add(ReactionSkillMasterManager.getInstance().getReactionSkillFromId(id));
+
+            return skills;
+        }
+
+        public string getDescription(){
+            return DESCRIPTION;
+        }
+
+        public string getFlavorText(){
+            return FLAVOR_TEXT;
+        }
+
 		public override string ToString () {
-			return "Job " + name;
+			return "Job " + NAME;
 		}
 	}
 }

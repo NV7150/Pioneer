@@ -10,15 +10,18 @@ public class ES2UserType_CharacterCitizen : ES2Type
 		Citizen data = (Citizen)obj;
 		// Add your writer.Write calls here.
 		writer.Write(data.Id);
-        writer.Write(data.ContainerTransfrom);
+        writer.Write(data.ContainerPostion);
+        writer.Write(data.ContainerRotate);
 
 	}
 	
 	public override object Read(ES2Reader reader)
 	{
 		var id = reader.Read<System.Int32>();
-        var containerTransform = reader.Read<Transform>();
-        Citizen data = new Citizen(id, containerTransform);
+        var containerPos = reader.Read<Vector3>();
+        var continerRotate = reader.Read<Quaternion>();
+
+        Citizen data = new Citizen(id, containerPos,continerRotate);
 		return data;
 	}
 
@@ -27,8 +30,10 @@ public class ES2UserType_CharacterCitizen : ES2Type
 
 		// Add your reader.Read calls here to read the data into the object.
 		var id = reader.Read<System.Int32>();
-		var containerTransform = reader.Read<Transform>();
-		Citizen data = new Citizen(id, containerTransform);
+		var containerPos = reader.Read<Vector3>();
+		var continerRotate = reader.Read<Quaternion>();
+
+		Citizen data = new Citizen(id, containerPos, continerRotate);
         Citizen citizen = (Citizen)c;
         citizen = data;
 	}

@@ -8,14 +8,20 @@ using FieldMap;
 
 namespace MasterData {
     public class MerchantMasterManager : MasterDataManagerBase {
-        private static List<MerchantBuiler> dataTable = new List<MerchantBuiler>();
+        private static readonly MerchantMasterManager INSTANCE = new MerchantMasterManager();
 
-        private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/MerchantMasterData");
-            constractedBehaviour(csv);
+        public static MerchantMasterManager getInstance(){
+            return INSTANCE;
         }
 
-        public static Merchant getMerchantFromId(int id,Town livingTown){
+        private MerchantMasterManager(){
+			var csv = (TextAsset)Resources.Load("MasterDatas/MerchantMasterData");
+			constractedBehaviour(csv);
+        }
+
+        private List<MerchantBuiler> dataTable = new List<MerchantBuiler>();
+
+        public Merchant getMerchantFromId(int id,Town livingTown){
             foreach(MerchantBuiler builder in dataTable){
                 if (builder.getId() == id)
                     return builder.build(livingTown);
@@ -23,7 +29,7 @@ namespace MasterData {
             throw new ArgumentException("invalid id");
         }
 
-        public static MerchantBuiler getMerchantBuilderFromId(int id){
+        public MerchantBuiler getMerchantBuilderFromId(int id){
 			foreach (MerchantBuiler builder in dataTable) {
                 if (builder.getId() == id)
                     return builder;

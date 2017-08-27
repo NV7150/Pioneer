@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SelectView{
     public class SelectViewContainer : MonoBehaviour {
@@ -11,6 +12,8 @@ namespace SelectView{
         /// trueだと新たにセレクトビューが生成されない
         /// </summary>
         public bool viewCreated = false;
+
+        public ScrollRect viewRect;
 
         /// <summary>
         /// セレクトビュー新たに生成します
@@ -24,14 +27,13 @@ namespace SelectView{
             if (viewCreated)
                 throw new System.InvalidOperationException("view is created but called creatSelectView again");
             viewCreated = true;
-            return new SelectView<Node, Element>(datas, content, this);
+            return new SelectView<Node, Element>(datas, content, this,viewRect);
         }
 
         /// <summary>
         /// 子ノードを削除します
         /// </summary>
         public void detach() {
-            Debug.Log("detached");
             foreach (Transform child in this.content.transform) {
                 Destroy(child.gameObject);
             }

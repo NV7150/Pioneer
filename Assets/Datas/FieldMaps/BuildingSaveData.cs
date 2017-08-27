@@ -6,30 +6,41 @@ using FieldMap;
 
 public class BuildingSaveData{
 	string buildingModelName;
-	Transform buildingTransfrom;
+    Vector3 buildingPos;
+    Quaternion buildingRotate;
 
     public string BuildingModelName {
         get { return buildingModelName; }
         set { buildingModelName = value; }
     }
 
-    public Transform BuildingTransfrom {
-        get { return buildingTransfrom; }
-        set { buildingTransfrom = value; }
+    public Vector3 BuildingPostion{
+        get { return buildingPos; }
+        set { buildingPos = value; }
+    }
+
+    public Quaternion BuildingRotate{
+        get{ return buildingRotate; }
+        set { buildingRotate = value; }
     }
 
 
     public BuildingSaveData(string modelName, Transform transform){
         buildingModelName = modelName;
-        BuildingTransfrom = transform;
+        buildingPos = transform.position;
+        buildingRotate = transform.rotation;
+    }
+
+    public BuildingSaveData(string modelName, Vector3 pos,Quaternion rotate){
+        this.buildingModelName = modelName;
+        buildingPos = pos;
+        buildingRotate = rotate;
     }
 
     public Building restore(){
-        //Debug.Log("into restore");
         var building = MonoBehaviour.Instantiate((GameObject)Resources.Load("Models/TestRoom"));
-        building.transform.position = BuildingTransfrom.position;
-        building.transform.rotation = BuildingTransfrom.rotation;
-        MonoBehaviour.Destroy(buildingTransfrom.gameObject);
+        building.transform.position = buildingPos;
+        building.transform.rotation = buildingRotate;
         return building.GetComponent<Building>();
     }
 }

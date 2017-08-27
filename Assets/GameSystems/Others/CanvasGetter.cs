@@ -11,7 +11,8 @@ public class CanvasGetter : MonoBehaviour {
     }
 
     private void Start() {
-        SceneManager.activeSceneChanged += OnActiveSceneChanged;
+        if (canvas != null)
+            Destroy(this.gameObject);
     }
 
     // Update is called once per frame
@@ -21,9 +22,6 @@ public class CanvasGetter : MonoBehaviour {
         }
     }
 
-    void OnActiveSceneChanged(Scene prevScene, Scene nextScene) {
-        canvas = null;
-    }
 
     public static GameObject getCanvas() {
         return canvas;

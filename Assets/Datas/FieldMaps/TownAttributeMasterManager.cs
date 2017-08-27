@@ -7,14 +7,20 @@ using FieldMap;
 
 namespace MasterData {
     public class TownAttributeMasterManager : MasterDataManagerBase {
-        private static List<TownAttribute> dataTable = new List<TownAttribute>();
+        private static readonly TownAttributeMasterManager INSTANCE = new TownAttributeMasterManager();
 
-        private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/TownAttributeMasterData");
-            constractedBehaviour(csv);
+        public static TownAttributeMasterManager getInstance(){
+            return INSTANCE;
         }
 
-        public static TownAttribute getTownAttributeFromId(int id){
+		private TownAttributeMasterManager() {
+			var csv = (TextAsset)Resources.Load("MasterDatas/TownAttributeMasterData");
+			constractedBehaviour(csv);
+        }
+
+        private List<TownAttribute> dataTable = new List<TownAttribute>();
+
+        public TownAttribute getTownAttributeFromId(int id){
             foreach(TownAttribute attribute in dataTable){
                 if (attribute.getId() == id)
                     return attribute;
@@ -22,7 +28,7 @@ namespace MasterData {
             throw new ArgumentException("invalid townAttributeId");
         }
 
-        public static TownAttribute getRandomAttribute(){
+        public TownAttribute getRandomAttribute(){
             int rand = UnityEngine.Random.Range(0, dataTable.Count);
             return dataTable[rand];
         }

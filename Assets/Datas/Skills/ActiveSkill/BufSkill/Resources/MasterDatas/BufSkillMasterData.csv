@@ -1,4 +1,7 @@
-id,name,bonus,limit,range,cost,delay,parameter,extent,description,flavorText
-0,氷刃,3,20,1,3,3,ATK,SINGLE,対象の攻撃力を短い間少し上昇させる,氷は武具に憑き、その鋭さを増す。
-1,硬土,3,20,1,3,3,DEF,SINGLE,対象の防御力を短い間少し上昇させる,土は防具に憑き、その硬度を増す。
-2,熱体,1,20,1,3,3,PHY,SINGLE,対象の体力を短い間少し上昇させる,炎は熱を以って、対象の体力を強化する。
+id,name,level,bonus,limit,range,cost,delay,parameter,extent,description,flavorText
+0,炎力,3,5,20,1,5,3,ATK,SINGLE,少しの間、攻撃力を少し増やす,炎は力を授ける
+1,土守,3,5,20,1,5,3,DEF,SINGLE,少しの間、防御力を少し増やす,土は守りを授ける
+2,激炎力,5,10,50,1,15,5,ATK,SINGLE,しばらくの間、攻撃力を増やす,激しき炎は強き力を授ける
+3,優土守,5,10,50,1,15,5,DEF,SINGLE,しばらくの間、防御力を増やす,優しき土は硬い守りを授ける
+4,烈炎力,10,30,90,1,25,7,ATK,SINGLE,かなりの間、攻撃力を大きく増やす,烈々たる炎は打ち砕く力を授ける
+5,母土守,10,30,90,1,25,7,DEF,SINGLE,かなりの間、防御力を大きく増やす,母なる土は耐え抜く守りを授ける

@@ -30,7 +30,7 @@ namespace TalkSystem {
 
         // Use this for initialization
         void Start() {
-            transform.position = new Vector3(Screen.width, Screen.height, 0);
+			transform.position = new Vector3(Screen.width, Screen.height, 0);
         }
 
         /// <summary>
@@ -57,6 +57,8 @@ namespace TalkSystem {
             sellWindow = transform.root.GetComponent<TradeView>().getSellWindow();
             sellWindow.setState(player, trader);
             sellWindow.transform.SetParent(transform.root);
+
+			
         }
 
         /// <summary>

@@ -7,21 +7,26 @@ using Skill;
 
 namespace MasterData {
 	public class AttackSkillMasterManager : MasterDataManagerBase {
-		/// <summary> 生成済みのAttackSkillのリスト </summary>
-		private static List<AttackSkill> dataTable = new List<AttackSkill>();
-        private static Dictionary<int,ActiveAttackSkillProgress> progressTable = new Dictionary<int, ActiveAttackSkillProgress>();
+        private static readonly AttackSkillMasterManager INSTANCE = new AttackSkillMasterManager();
+		private AttackSkillMasterManager() {
+			var csv = Resources.Load("MasterDatas/AttackSkillMasterData") as TextAsset;
+			constractedBehaviour(csv);
+        }
 
-		void Awake(){
-			var csv = Resources.Load ("MasterDatas/AttackSkillMasterData") as TextAsset;
-			constractedBehaviour (csv);
-		}
+        public static AttackSkillMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+		/// <summary> 生成済みのAttackSkillのリスト </summary>
+		private List<AttackSkill> dataTable = new List<AttackSkill>();
+        private Dictionary<int,ActiveAttackSkillProgress> progressTable = new Dictionary<int, ActiveAttackSkillProgress>();
 
 		/// <summary>
 		/// IDからAttackSkillを取得します
 		/// </summary>
 		/// <returns> 結果のAttackSkill </returns>
 		/// <param name="id"> 取得したいスキルのID </param>
-		public static AttackSkill getAttackSkillFromId(int id){
+		public AttackSkill getAttackSkillFromId(int id){
 			foreach(AttackSkill skill in dataTable){
 				if (skill.getId () == id)
 					return skill;
@@ -29,7 +34,7 @@ namespace MasterData {
 			throw new ArgumentException ("invalid AttackSkillId");
 		}
 
-        public static ActiveSkillProgress getAttackSkillProgressFromId(int id) {
+        public ActiveSkillProgress getAttackSkillProgressFromId(int id) {
             return progressTable[id];
 		}
 
@@ -47,6 +52,8 @@ namespace MasterData {
             }else{
                 progressTable.Add(id,new ActiveAttackSkillProgress());
             }
+
+            SkillBookDataManager.getInstance().setData(skill);
 		}
 
         #endregion

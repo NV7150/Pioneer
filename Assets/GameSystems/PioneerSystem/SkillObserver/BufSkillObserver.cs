@@ -26,12 +26,12 @@ public class BufSkillObserver : SkillObserver {
 
     protected override string FileAddress => "BufProgress";
 
-    protected override ActiveSkillProgress progress => BufSkillMasterManager.getProgressFromId(OBSERVE_SKILL_ID);
+    protected override ActiveSkillProgress progress => BufSkillMasterManager.getInstance().getProgressFromId(OBSERVE_SKILL_ID);
 
 	public BufSkillObserver(int id) : base(id) {}
 
 	protected override void setParameter() {
-		observeSkill = BufSkillMasterManager.getBufSkillFromId(OBSERVE_SKILL_ID);
+        observeSkill = BufSkillMasterManager.getInstance().getBufSkillFromId(OBSERVE_SKILL_ID);
 		this.effect = observeSkill.getRawBonus();
 		this.cost = observeSkill.getRawCost();
 		this.delay = observeSkill.getRawDelay();

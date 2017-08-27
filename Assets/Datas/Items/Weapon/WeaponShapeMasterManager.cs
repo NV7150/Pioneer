@@ -7,14 +7,19 @@ using Item;
 
 namespace MasterData {
     public class WeaponShapeMasterManager : MasterDataManagerBase {
-        private static List<WeaponShape> dataTable = new List<WeaponShape>();
-
-        private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/WeaponShapeMasterData");
-            constractedBehaviour(csv);
+        private readonly static WeaponShapeMasterManager INSTANCE = new WeaponShapeMasterManager();
+		private WeaponShapeMasterManager() {
+			var csv = (TextAsset)Resources.Load("MasterDatas/WeaponShapeMasterData");
+			constractedBehaviour(csv);
         }
 
-        public static WeaponShape getShapeFromId(int id){
+        public static WeaponShapeMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+        private List<WeaponShape> dataTable = new List<WeaponShape>();
+
+        public WeaponShape getShapeFromId(int id){
             foreach(WeaponShape shape in dataTable){
                 if (shape.getId() == id)
                     return shape;
@@ -22,7 +27,7 @@ namespace MasterData {
             throw new ArgumentException("invalid shapeId");
         }
 
-        public static int getNumberOfShapes(){
+        public int getNumberOfShapes(){
             return dataTable.Count;
         }
 

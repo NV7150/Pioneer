@@ -17,7 +17,8 @@ namespace Skill {
 			/// <summary> このスキルの射程 </summary>
             RAW_RANGE,
 			/// <summary> このスキルのMPコスト </summary>
-            RAW_COST;
+            RAW_COST,
+            LEVEL;
 
         private int
 	        bonus,
@@ -50,18 +51,19 @@ namespace Skill {
 		public DebufSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
-			RAW_BONUS = int.Parse (datas[2]);
+            LEVEL = int.Parse(datas[2]);
+			RAW_BONUS = int.Parse (datas[3]);
             bonus = RAW_BONUS;
-			LIMIT = float.Parse (datas[3]);
-			RAW_COST = int.Parse (datas[4]);
+			LIMIT = float.Parse (datas[4]);
+			RAW_COST = int.Parse (datas[5]);
             cost = RAW_COST;
-			RAW_RANGE = int.Parse (datas[5]);
-			RAW_DELAY = float.Parse (datas[6]);
+			RAW_RANGE = int.Parse (datas[6]);
+			RAW_DELAY = float.Parse (datas[7]);
             delay = RAW_DELAY;
-			setBonusParameter (datas[7]);
-			EXTENT =(Extent) Enum.Parse (typeof(Extent),datas[8]);
-			DESCRIPTION = datas [9];
-            FLAVOR_TEXT = datas [10];
+			setBonusParameter (datas[8]);
+			EXTENT =(Extent) Enum.Parse (typeof(Extent),datas[9]);
+			DESCRIPTION = datas [10];
+            FLAVOR_TEXT = datas [11];
 		}
 
 		/// <summary>
@@ -154,6 +156,10 @@ namespace Skill {
 
         public string getFlavorText() {
             return FLAVOR_TEXT;
+        }
+
+        public int getLevel() {
+            return LEVEL;
         }
 
         #endregion

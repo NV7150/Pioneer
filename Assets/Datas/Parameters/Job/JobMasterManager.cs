@@ -8,22 +8,29 @@ using Parameter;
 namespace MasterData{
 	[System.SerializableAttribute]
 	public class JobMasterManager : MasterDataManagerBase {
+        private static readonly JobMasterManager INSTANCE = new JobMasterManager();
+
+		private JobMasterManager() {
+			var csv = Resources.Load("MasterDatas/JobMasterData") as TextAsset;
+			constractedBehaviour(csv);
+        }
+
+        public static JobMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+
 		/// <summary>
         /// 登録済みの職業のリスト
         /// </summary>
-		private static List<Job> dataTable = new List<Job>();
-
-		void Awake() {
-			var csv = Resources.Load ("MasterDatas/JobMasterData") as TextAsset;
-			constractedBehaviour (csv);
-		}
+		private List<Job> dataTable = new List<Job>();
 
 		/// <summary>
 		/// IDから職業を取得します
 		/// </summary>
 		/// <returns>指定された職業</returns>
 		/// <param name="id">取得したい職業のID</param>
-		public static Job getJobFromId(int id){
+		public Job getJobFromId(int id){
 			foreach(Job job in dataTable){
 				if (job.getId () == id)
 					return job;
@@ -31,11 +38,12 @@ namespace MasterData{
 			throw new ArgumentException ("invlit jobId");
 		}
 
-        public static List<Job> getJobsFromLevel(int level){
+        public List<Job> getJobsFromLevel(int level){
+            Debug.Log("job " + level);
             List<Job> jobs = new List<Job>();
 
             foreach(Job job in dataTable){
-                if (job.getLevel() == level)
+                if (job.getLevel() <= level)
                     jobs.Add(job);
             }
 

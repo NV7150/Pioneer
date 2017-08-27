@@ -20,7 +20,8 @@ namespace Skill{
 			/// <summary> スキルの防御修正 </summary>
 			DEF,
 			/// <summary> スキルの回避修正 </summary>
-			DODGE;
+			DODGE,
+            LEVEL;
 
         [SerializeField]
         private readonly string
@@ -48,12 +49,13 @@ namespace Skill{
 		public ReactionSkill(string[] datas){
 			ID = int.Parse(datas [0]);
 			NAME = datas [1];
-			DEF = int.Parse (datas[2]);
-			DODGE = int.Parse (datas[3]);
-			IS_READY_TO_COUNTER = (0 == int.Parse (datas [4]));
-			CATEGORY = (ReactionSkillType) Enum.Parse (typeof(ReactionSkillType), datas [5]);
-            DESCRIPTION = datas[6];
-            FLAVOR_TEXT = datas[7];
+            LEVEL = int.Parse(datas[2]);
+			DEF = int.Parse (datas[3]);
+			DODGE = int.Parse (datas[4]);
+			IS_READY_TO_COUNTER = (0 == int.Parse (datas [5]));
+			CATEGORY = (ReactionSkillType) Enum.Parse (typeof(ReactionSkillType), datas [6]);
+            DESCRIPTION = datas[7];
+            FLAVOR_TEXT = datas[8];
 		}
 
         public void addProgress(string[] datas){
@@ -81,6 +83,9 @@ namespace Skill{
             return 0;
 		}
 
+        public int getLevel() {
+            return LEVEL;
+        }
 		#endregion
 
 		/// <summary>
@@ -129,7 +134,6 @@ namespace Skill{
 		public ReactionSkillType getCategory(){
 			return CATEGORY;
 		}
-
 
     }
 }

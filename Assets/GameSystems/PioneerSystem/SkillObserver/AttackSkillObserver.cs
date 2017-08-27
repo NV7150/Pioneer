@@ -24,7 +24,7 @@ public class AttackSkillObserver : SkillObserver {
 
     protected override string FileAddress => "AttackSkillObserver";
 
-    protected override ActiveSkillProgress progress => AttackSkillMasterManager.getAttackSkillProgressFromId(OBSERVE_SKILL_ID);
+    protected override ActiveSkillProgress progress => AttackSkillMasterManager.getInstance().getAttackSkillProgressFromId(OBSERVE_SKILL_ID);
 
 	protected override bool IsAttackSkill => true;
 
@@ -34,8 +34,8 @@ public class AttackSkillObserver : SkillObserver {
     public AttackSkillObserver(int id) : base(id) {}
 
 	protected override void setParameter() {
-		observeSkill = AttackSkillMasterManager.getAttackSkillFromId(OBSERVE_SKILL_ID);
-		this.observeSkill = AttackSkillMasterManager.getAttackSkillFromId(OBSERVE_SKILL_ID);
+        observeSkill = AttackSkillMasterManager.getInstance().getAttackSkillFromId(OBSERVE_SKILL_ID);
+        this.observeSkill = AttackSkillMasterManager.getInstance().getAttackSkillFromId(OBSERVE_SKILL_ID);
 		this.attack = observeSkill.getRawAttack();
 		this.hit = observeSkill.getRawHit();
 		this.cost = observeSkill.getRawCost();

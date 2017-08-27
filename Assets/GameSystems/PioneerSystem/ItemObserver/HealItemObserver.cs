@@ -15,8 +15,8 @@ public class HealItemObserver : ItemObserver {
     public HealItemObserver(int itemId) : base(itemId) {}
 
 	public override void report() {
-		this.healItem = HealItemMasterManager.getHealItemBuilderFromId(OBSERVE_ITEM_ID);
-		HealItemProgress progress = HealItemMasterManager.getProgress(OBSERVE_ITEM_ID);
+        this.healItem = HealItemMasterManager.getInstance().getHealItemBuilderFromId(OBSERVE_ITEM_ID);
+        HealItemProgress progress = HealItemMasterManager.getInstance().getProgress(OBSERVE_ITEM_ID);
         progress.Heal += reportHealValue();
         progress.Level = reportItemLevel(progress.Heal);
         ObserverHelper.saveToFile<HealItemProgress>(progress,  "HealItemProgress", OBSERVE_ITEM_ID);

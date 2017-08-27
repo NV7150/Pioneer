@@ -7,16 +7,22 @@ using Item;
 
 namespace MasterData {
     public class HealItemMasterManager : MasterDataManagerBase {
-        private static List<HealItemBuilder> dataTable = new List<HealItemBuilder>();
-        private static Dictionary<int,HealItemProgress> progressTable = new Dictionary<int, HealItemProgress>();
+        private readonly static HealItemMasterManager INSTANCE = new HealItemMasterManager();
 
-        private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/HealItemMasterData");
+		private HealItemMasterManager() {
+			var csv = (TextAsset)Resources.Load("MasterDatas/HealItemMasterData");
 			constractedBehaviour(csv);
 			updateProgress();
         }
 
-        public static HealItem getHealItemFromId(int id){
+        public static HealItemMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+        private List<HealItemBuilder> dataTable = new List<HealItemBuilder>();
+        private Dictionary<int,HealItemProgress> progressTable = new Dictionary<int, HealItemProgress>();
+
+        public HealItem getHealItemFromId(int id){
             foreach(HealItemBuilder builder in dataTable){
                 if (builder.getId() == id)
                     return builder.build();
@@ -24,7 +30,7 @@ namespace MasterData {
             throw new ArgumentException("invalid healItemId");
         }
 
-		public static HealItemBuilder getHealItemBuilderFromId(int id) {
+		public HealItemBuilder getHealItemBuilderFromId(int id) {
 			foreach (HealItemBuilder builder in dataTable) {
 				if (builder.getId() == id)
                     return builder;
@@ -33,7 +39,7 @@ namespace MasterData {
             
         }
 
-        public static List<HealItem> getHealItemsFromLevel(int level){
+        public List<HealItem> getHealItemsFromLevel(int level){
             var items = new List<HealItem>();
             foreach(HealItemBuilder builder in dataTable){
                 if (builder.getLevel() == level)
@@ -50,7 +56,7 @@ namespace MasterData {
             progressTable.Add(int.Parse(datas[0]),new HealItemProgress());
         }
 
-        public static void updateProgress(){
+        public void updateProgress(){
             foreach(HealItemBuilder builder in dataTable){
                 int id = builder.getId();
                 if (ES2.Exists(getLoadPass(id,"HealItemProgress"))) {
@@ -62,7 +68,7 @@ namespace MasterData {
             }
         }
 
-        public static HealItemProgress getProgress(int id){
+        public HealItemProgress getProgress(int id){
             return progressTable[id];
         }
 

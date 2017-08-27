@@ -98,8 +98,8 @@ namespace MasterData {
             return GoodsType;
         }
 
-		public Merchant build(Town livingTown) {
-			return new Merchant(this, livingTown);
+        public Merchant build(Town livingTown) {
+            return new Merchant(this, livingTown);
 		}
 
         public void addProgress(string[] datas){

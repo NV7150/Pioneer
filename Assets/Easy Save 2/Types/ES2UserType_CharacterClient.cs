@@ -14,7 +14,8 @@ public class ES2UserType_CharacterClient : ES2Type
 		writer.Write(data.Id);
 		writer.Write(data.Abilities);
 		writer.Write(data.Level);
-        writer.Write(data.ContainerTransform);
+        writer.Write(data.ContainerPostion);
+        writer.Write(data.ContainerRotate);
 
 	}
 	
@@ -23,9 +24,9 @@ public class ES2UserType_CharacterClient : ES2Type
 		var id = reader.Read<System.Int32>();
 		var abilities = reader.ReadDictionary<FriendlyAbility, System.Int32>();
 		var level = reader.Read<System.Int32>();
-        var containerTransform = reader.Read<Transform>();
-
-        Client data = new Client(id,abilities,level,containerTransform);
+		var containerPos = reader.Read<Vector3>();
+		var continerRotate = reader.Read<Quaternion>();
+        Client data = new Client(id,abilities,level,containerPos,continerRotate);
 		return data;
 	}
 
@@ -36,9 +37,9 @@ public class ES2UserType_CharacterClient : ES2Type
 		var id = reader.Read<System.Int32>();
 		var abilities = reader.ReadDictionary<FriendlyAbility, System.Int32>();
 		var level = reader.Read<System.Int32>();
-		var containerTransform = reader.Read<Transform>();
-
-		Client data = new Client(id, abilities, level, containerTransform);
+		var containerPos = reader.Read<Vector3>();
+		var continerRotate = reader.Read<Quaternion>();
+		Client data = new Client(id, abilities, level, containerPos, continerRotate);
         client = data;
 	}
 	

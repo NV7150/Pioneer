@@ -10,11 +10,12 @@ public class WorldTop : MonoBehaviour {
 
     private TitleManager title;
 
-    public void setId(int id){
-        this.id = id;
+    public void setState(TitleManager title){
+        this.title = title;
     }
 
-    public void setState(TitleManager title){
+    public void setState(int id ,TitleManager title){
+        this.id = id;
         this.title = title;
     }
 
@@ -24,14 +25,13 @@ public class WorldTop : MonoBehaviour {
             var data = MasterDataManagerBase.loadSaveData<WorldData>(id, "WorldData");
             manager.setDatas(data.WorldLevel);
         }else{
-            Debug.Log("false");
             manager.setDatas(1);
         }
         Destroy(gameObject);
     }
 
     public void back(){
-        title.comeBack();
+        title.loadTitle();
         Destroy(gameObject);
     }
 }

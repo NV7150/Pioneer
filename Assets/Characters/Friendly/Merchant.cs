@@ -49,17 +49,19 @@ namespace Character {
         }
 
 		private Container container;
-        public Transform containerTransform{
-            get { return container.transform; }
-            set{
-                this.container.transform.position = value.position;
-                this.container.transform.rotation = value.rotation;
-            }
-        }
+
+		public Vector3 ContainerPostion {
+			get { return container.transform.position; }
+		}
+
+		public Quaternion ContainerRotate {
+			get { return container.transform.rotation; }
+		}
 
 		private Dictionary<FriendlyAbility, int> abilities = new Dictionary<FriendlyAbility, int>();
         public Dictionary<FriendlyAbility,int> Abilities{
             get { return new Dictionary<FriendlyAbility, int>(abilities); }
+            set{}
         }
 
         public Merchant(MerchantBuiler builder,Town livingTown){
@@ -86,13 +88,13 @@ namespace Character {
             this.livingTown = livingTown;
         }
 
-        public Merchant(int id, int level, int goodsNumber, Dictionary<FriendlyAbility, int> abilities, Transform transform){
+        public Merchant(int id, int level, int goodsNumber, Dictionary<FriendlyAbility, int> abilities, Vector3 pos ,Quaternion rotate){
             this.goodsLevel = level;
             this.numberOfGoods = goodsNumber;
 
             this.abilities = new Dictionary<FriendlyAbility, int>(abilities);
 
-            var builder = MerchantMasterManager.getMerchantBuilderFromId(id);
+            var builder = MerchantMasterManager.getInstance().getMerchantBuilderFromId(id);
 			massages = builder.getMassges();
 			TRADE_INDEX = builder.getStartTradeIndex();
 			UNIQUE_ID = UniqueIdCreator.creatUniqueId();
@@ -100,11 +102,8 @@ namespace Character {
             failMassage = builder.getFailMassage();
 
 			GameObject modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
-            this.container = MonoBehaviour.Instantiate(modelPrefab,transform.position,transform.rotation).GetComponent<Container>();
+            this.container = MonoBehaviour.Instantiate(modelPrefab,pos,rotate).GetComponent<Container>();
 			container.setCharacter(this);
-			MonoBehaviour.Destroy(transform.gameObject);
-
-            Debug.Log("<color=yellow>called</color>");
 
             updateGoods();
         }
@@ -129,12 +128,16 @@ namespace Character {
             throw new NotSupportedException("unkown itemType");
         }
 
-        private List<IItem> creatItem(){
+        private List<IItem> creatItem() {
             switch(GOODS_TYPE){
                 case ItemType.HEAL_ITEM:
                     return ItemHelper.creatRandomLevelHealItem(goodsLevel, numberOfGoods).ConvertAll(c => (IItem)c);
                 case ItemType.ITEM_MATERIAL:
                     return ItemHelper.creatRandomLevelItemMaterial(goodsLevel, numberOfGoods).ConvertAll(c => (IItem)c);
+                case ItemType.SKILL_BOOK:
+                    return ItemHelper.creatRandomLevelSkillBook(goodsLevel, numberOfGoods).ConvertAll(c => (IItem)c);
+                case ItemType.TRADING_ITEM:
+                    return ItemHelper.creatRandomLevelTradeItem(goodsLevel, numberOfGoods).ConvertAll(c => (IItem)c);
 			}
 			throw new NotSupportedException("unkown itemType");
         }

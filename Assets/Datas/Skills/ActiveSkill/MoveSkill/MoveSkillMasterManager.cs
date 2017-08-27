@@ -7,20 +7,26 @@ using Skill;
 
 namespace MasterData {
 	public class MoveSkillMasterManager : MasterDataManagerBase{
-        /// <summary> 登録済みのMoveSkillのリスト </summary>
-		private static List<MoveSkill> dataTable = new List<MoveSkill>();
+        private static readonly MoveSkillMasterManager INSTANCE = new MoveSkillMasterManager();
 
-		void Awake(){
-			var csv = Resources.Load ("MasterDatas/MoveSkillMasterData") as TextAsset;
-			constractedBehaviour (csv);
-		}
+		private MoveSkillMasterManager() {
+			var csv = Resources.Load("MasterDatas/MoveSkillMasterData") as TextAsset;
+			constractedBehaviour(csv);
+        }
+
+        public static MoveSkillMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+        /// <summary> 登録済みのMoveSkillのリスト </summary>
+		private List<MoveSkill> dataTable = new List<MoveSkill>();
 
         /// <summary>
         /// IDからMoveSkillを取得します
         /// </summary>
         /// <returns> 指定されたMoveSkill </returns>
         /// <param name="id"> 取得したいMoveSkillのID </param>
-		public static MoveSkill getMoveSkillFromId(int id){
+		public MoveSkill getMoveSkillFromId(int id){
 			foreach(MoveSkill skill in dataTable){
 				if (skill.getId () == id)
 					return skill;
@@ -30,7 +36,10 @@ namespace MasterData {
 
 		#region implemented abstract members of MasterDataManagerBase
 		protected override void addInstance (string[] datas) {
-			dataTable.Add(new MoveSkill(datas));
+            var skill = new MoveSkill(datas);
+            dataTable.Add(skill);
+
+            SkillBookDataManager.getInstance().setData(skill);
 		}
         #endregion
     }

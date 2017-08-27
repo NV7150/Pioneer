@@ -7,14 +7,19 @@ using Parameter;
 
 namespace MasterData {
     public class IdentityMasterManager : MasterDataManagerBase {
-        private static List<Identity> dataTable = new List<Identity>();
-
-        private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/IdentityMasterData");
-            constractedBehaviour(csv);
+        private static readonly IdentityMasterManager INSTANCE = new IdentityMasterManager();
+        private IdentityMasterManager(){
+			var csv = (TextAsset)Resources.Load("MasterDatas/IdentityMasterData");
+			constractedBehaviour(csv);
         }
 
-        public static Identity getIdentityFromId(int id){
+        public static IdentityMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+        private List<Identity> dataTable = new List<Identity>();
+
+        public Identity getIdentityFromId(int id){
             foreach(Identity identity in dataTable){
                 if (identity.getId() == id)
                     return identity;
@@ -22,7 +27,7 @@ namespace MasterData {
             throw new ArgumentException("invalid IdentityId");
         }
 
-        public static List<Identity> getIdentitiesFromLevel(int level){
+        public List<Identity> getIdentitiesFromLevel(int level){
             List<Identity> identities = new List<Identity>();
 
             foreach(Identity identity in dataTable){

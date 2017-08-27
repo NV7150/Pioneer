@@ -20,7 +20,8 @@ namespace Skill {
 			/// <summary> 射程 </summary>
 			RANGE,
 			/// <summary> MPコスト </summary>
-            RAW_COST;
+            RAW_COST,
+            LEVEL;
 
         private int
             healValue,
@@ -57,18 +58,19 @@ namespace Skill {
 		public HealSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
-			RAW_HEAL_VALUE = int.Parse (datas[2]);
+            LEVEL = int.Parse(datas[2]);
+			RAW_HEAL_VALUE = int.Parse (datas[3]);
             healValue = RAW_HEAL_VALUE;
-			RANGE = int.Parse (datas[3]);
-			RAW_DELAY = float.Parse (datas[4]);
+			RANGE = int.Parse (datas[4]);
+			RAW_DELAY = float.Parse (datas[5]);
             delay = RAW_DELAY;
-			RAW_COST = int.Parse (datas[5]);
+			RAW_COST = int.Parse (datas[6]);
             cost = RAW_COST;
-			ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas [6]);
-			EXTENT = (Extent)Enum.Parse(typeof(Extent),datas [7]);
-			USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility),datas[8]);
-			DESCRIPTION = datas [9];
-            FLAVOR_TEXT = datas[10];
+			ATTRIBUTE = (HealAttribute)Enum.Parse(typeof(HealAttribute),datas [7]);
+			EXTENT = (Extent)Enum.Parse(typeof(Extent),datas [8]);
+			USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility),datas[9]);
+			DESCRIPTION = datas [10];
+            FLAVOR_TEXT = datas[11];
 
             observer = new HealSkillObserver(ID);
 		}
@@ -172,6 +174,10 @@ namespace Skill {
 
         public string getFlavorText() {
             return FLAVOR_TEXT;
+        }
+
+        public int getLevel() {
+            return LEVEL;
         }
 
         #endregion

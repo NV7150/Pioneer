@@ -14,7 +14,8 @@ namespace Skill {
 			/// <summary> 最大移動量 </summary>
 			MOVE,
 			/// <summary> MPコスト </summary>
-			COST;
+			COST,
+            LEVEL;
 
 		private readonly string
 			/// <summary> スキル名 </summary>
@@ -37,12 +38,13 @@ namespace Skill {
 		public MoveSkill (string[] datas) {
 			ID = int.Parse (datas[0]);
 			NAME = datas [1];
-			MOVE = int.Parse (datas [2]);
-			DELAY = float.Parse (datas [3]);
-			COST = int.Parse (datas [4]);
-			USE_ABILITY = (BattleAbility)Enum.Parse(typeof(BattleAbility), datas[5]);
-			DESCRIPTION = datas[6];
-            FLAVOR_TEXT = datas[7];
+            LEVEL = int.Parse(datas[2]);
+			MOVE = int.Parse (datas [3]);
+			DELAY = float.Parse (datas [4]);
+			COST = int.Parse (datas [5]);
+			USE_ABILITY = (BattleAbility)Enum.Parse(typeof(BattleAbility), datas[6]);
+			DESCRIPTION = datas[7];
+            FLAVOR_TEXT = datas[8];
 		}
 
 		/// <summary>
@@ -127,6 +129,10 @@ namespace Skill {
 
         public string getFlavorText() {
             return FLAVOR_TEXT;
+        }
+
+        public int getLevel() {
+            return LEVEL;
         }
 
         #endregion

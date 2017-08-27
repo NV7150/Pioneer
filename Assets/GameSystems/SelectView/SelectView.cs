@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using SelectView;
 
@@ -13,25 +14,30 @@ namespace SelectView {
         /// <summary> 格納されてるSelectViewContainer </summary>
         private SelectViewContainer container;
 
+        private ScrollRect viewRect;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="nodes">追加したいゲームオブジェクトのリスト</param>
         /// <param name="content">スクロールビューのコンテント</param>
         /// <param name="container">格納されているContainer</param>
-        public SelectView(List<Node> nodes, GameObject content, SelectViewContainer container) {
+        public SelectView(List<Node> nodes, GameObject content, SelectViewContainer container,ScrollRect rect) {
             this.content = content;
             this.container = container;
             foreach (Node node in nodes) {
                 node.transform.SetParent(content.transform);
             }
 
-            GameObject cursorObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Prefabs/CursorContainer"));
-            this.cursor = cursorObject.GetComponent<CursorContainer>().creatCursor<Node>();
-            cursorObject.transform.SetParent(container.transform);
+            if (nodes.Count > 0) {
+                GameObject cursorObject = MonoBehaviour.Instantiate((GameObject)Resources.Load("Prefabs/CursorContainer"));
+                this.cursor = cursorObject.GetComponent<CursorContainer>().creatCursor<Node>();
+                cursorObject.transform.SetParent(container.transform);
 
+                cursor.setList(nodes);
+            }
 
-            cursor.setList(nodes);
+            viewRect = rect;
         }
 
         /// <summary>
@@ -48,6 +54,8 @@ namespace SelectView {
         /// <returns>移動先のオブジェクト</returns>
         /// <param name="i">移動させた位置</param>
         public Element moveTo(int i) {
+            viewRect.verticalNormalizedPosition = cursor.getElementNormalizedPos(i);
+            Canvas.ForceUpdateCanvases();
             cursor.moveTo(i);
             return cursor.getNode().getElement();
         }

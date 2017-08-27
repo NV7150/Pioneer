@@ -99,7 +99,7 @@ namespace Parameter{﻿
             }
 
             if(SKILL_TYPE == "REACTION"){
-                player.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(SKILL_ID));
+                player.addSkill(ReactionSkillMasterManager.getInstance().getReactionSkillFromId(SKILL_ID));
                 return;
             }
 

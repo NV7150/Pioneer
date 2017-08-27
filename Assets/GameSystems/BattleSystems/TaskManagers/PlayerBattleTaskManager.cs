@@ -124,7 +124,7 @@ namespace BattleSystem{
             if (reactionLimit <= 0) {
                 var reactionedSkill = waitingProgressSkills[0].Key;
                 reaction();
-                var missReaction = ReactionSkillMasterManager.getReactionSkillFromId(2);
+                var missReaction = ReactionSkillMasterManager.getInstance().getReactionSkillFromId(2);
 
                 if (reactionedSkill.Equals(missReaction)) {
                     reactoinContents.SetActive(false);
@@ -515,7 +515,6 @@ namespace BattleSystem{
         /// </summary>
         /// <param name="user">スキル使用者</param>
         /// <param name="targets">スキル対象者のリスト</param>
-        /// <param name="skill">使用するスキル</param>
         private void drawTargetingLine(IBattleable user, List<IBattleable> targets, string lineName,bool isFriendly) {
             GameObject targetingLinePrefab = (GameObject)Resources.Load("Prefabs/TargetLine");
             GameObject attackerModel = user.getContainer().getModel();
@@ -595,7 +594,7 @@ namespace BattleSystem{
         private void updateProsessingPair() {
             if (!choosingReaction) {
                 if (waitingDecideReactionSkills.Count > 0) {
-                    var missReaction = ReactionSkillMasterManager.getReactionSkillFromId(2);
+                    var missReaction = ReactionSkillMasterManager.getInstance().getReactionSkillFromId(2);
                     var prosessingPair = waitingDecideReactionSkills[0];
                     waitingProgressSkills.Add(new KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>(missReaction, prosessingPair));
                     waitingDecideReactionSkills.Remove(prosessingPair);
@@ -637,10 +636,6 @@ namespace BattleSystem{
             isInputingBackButton = true;
         }
 
-        private void canselProsessingTask(){
-            
-        }
-
         #region IBattleTaskManager implementation
 
         public void deleteTaskFromTarget(IBattleable target) {
@@ -677,6 +672,13 @@ namespace BattleSystem{
         }
 
         public void finished() {
+            var targetLineKeys = targetLines.Keys;
+            foreach(var key in targetLineKeys){
+                foreach(var line in targetLines[key]){
+                    Destroy(line.gameObject);
+                }
+            }
+
             Destroy(view.gameObject);
             Destroy(listView.gameObject);
             Destroy(state.gameObject);

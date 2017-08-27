@@ -62,23 +62,23 @@ namespace Quest{
 
             switch(activeType){
                 case ATTACK:
-                    var targetAttackSkill = AttackSkillMasterManager.getAttackSkillFromId(id);
+                    var targetAttackSkill = AttackSkillMasterManager.getInstance().getAttackSkillFromId(id);
                     return skills.Contains(targetAttackSkill);
 
                  case BUF:
-                    var targetBufSkill = BufSkillMasterManager.getBufSkillFromId(id);
+                    var targetBufSkill = BufSkillMasterManager.getInstance().getBufSkillFromId(id);
                     return skills.Contains(targetBufSkill);
 
                 case DEBUF:
-                    var targetDebufSkill = DebufSkillMasterManager.getDebufSkillFromId(id);
+                    var targetDebufSkill = DebufSkillMasterManager.getInstance().getDebufSkillFromId(id);
                     return skills.Contains(targetDebufSkill);
 
                 case HEAL:
-                    var targetHealSkill = HealSkillMasterManager.getHealSkillFromId(id);
+                    var targetHealSkill = HealSkillMasterManager.getInstance().getHealSkillFromId(id);
                     return skills.Contains(targetHealSkill);
 
                 case MOVE:
-                    var targetMoveSkill = MoveSkillMasterManager.getMoveSkillFromId(id);
+                    var targetMoveSkill = MoveSkillMasterManager.getInstance().getMoveSkillFromId(id);
                     return skills.Contains(targetMoveSkill);
             }
 
@@ -87,7 +87,7 @@ namespace Quest{
 
         public bool hasReactionSkill(int id){
             var skills = player.getReactionSkills();
-            var targetReactionSkill = ReactionSkillMasterManager.getReactionSkillFromId(id);
+            var targetReactionSkill = ReactionSkillMasterManager.getInstance().getReactionSkillFromId(id);
             return skills.Contains(targetReactionSkill);
         }
 

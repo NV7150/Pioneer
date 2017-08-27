@@ -7,16 +7,16 @@ using MasterData;
 namespace FieldMap {
     public static class BuildingHelper{
         public static HouseBuilder getRandomHouse(){
-            int rand = Random.Range(0, HouseMasterManager.getNumberOfHouse());
-            return HouseMasterManager.getHouseBuilderFromId(rand);
+            int rand = Random.Range(0, HouseMasterManager.getInstance().getNumberOfHouse());
+            return HouseMasterManager.getInstance().getHouseBuilderFromId(rand);
         }
 
-        public static ShopBuilder getRandomLevelShop(int level){
+        public static FacilityBuilder getRandomLevelShop(int level){
             //かり
             level = 1;
-            var randomList = ShopMasterManager.getLevelShopsId(level);
+            var randomList = FacilityMasterManager.getInstance().getLevelShopsId(level);
             int rand = Random.Range(0,randomList.Count);
-            return ShopMasterManager.getShopFromId(randomList[rand]);
+            return FacilityMasterManager.getInstance().getShopFromId(randomList[rand]);
         }
     }
 }

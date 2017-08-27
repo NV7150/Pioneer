@@ -23,7 +23,8 @@ namespace Skill {
 			/// <summary> このスキルの命中率 </summary>
             RAW_HIT,
 			/// <summary> このスキルのMPコスト </summary>
-            RAW_COST;
+            RAW_COST,
+            LEVEL;
 
         private int
 	        atk,
@@ -68,30 +69,31 @@ namespace Skill {
 		public AttackSkill (string[] datas) {
 			ID = int.Parse(datas [0]);
 			NAME = datas [1];
-			atk = int.Parse(datas [2]);
+            LEVEL = int.Parse(datas[2]);
+			atk = int.Parse(datas [3]);
             RAW_ATK = atk;
-			RANGE = int.Parse(datas [3]);
-			hit = int.Parse(datas [4]);
+			RANGE = int.Parse(datas [4]);
+			hit = int.Parse(datas [5]);
             RAW_HIT = hit;
-			delay = float.Parse(datas [5]);
+			delay = float.Parse(datas [6]);
             RAW_DELAY = delay;
-			cost = int.Parse (datas[6]);
+			cost = int.Parse (datas[7]);
             RAW_COST = cost;
-			DEPEND_ATK  = (datas[7] == "TRUE");
-			DEPEND_HIT = (datas [8] == "TRUE");
-			DEPEND_RANGE = (datas [9] == "TRUE");
-			DEPEND_DELAY = (datas[10] == "TRUE");
-			ATTRIBUTE = (AttackSkillAttribute)Enum.Parse(typeof(AttackSkillAttribute), datas[11]);
+			DEPEND_ATK  = (datas[8] == "TRUE");
+			DEPEND_HIT = (datas [9] == "TRUE");
+			DEPEND_RANGE = (datas [10] == "TRUE");
+			DEPEND_DELAY = (datas[11] == "TRUE");
+			ATTRIBUTE = (AttackSkillAttribute)Enum.Parse(typeof(AttackSkillAttribute), datas[12]);
 
-			if (datas[12] == "DEPEND") {
+			if (datas[13] == "DEPEND") {
 				DEPEND_ABILITY = true;
 			} else {
-				USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility), datas [12]);
+				USE_ABILITY = (BattleAbility)Enum.Parse (typeof(BattleAbility), datas [13]);
 			}
 
-			EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[13]);
-			DESCRIPTON = datas [14];
-            FLAVOR_TEXT = datas[15];
+			EXTENT = (Extent)Enum.Parse (typeof(Extent),datas[14]);
+			DESCRIPTON = datas [15];
+            FLAVOR_TEXT = datas[16];
 
             observer = new AttackSkillObserver(ID);
 		}
@@ -248,12 +250,14 @@ namespace Skill {
 			return this.ID;
 		}
 
+		public int getLevel() {
+            return LEVEL;
+		}
 		#endregion
 
 		public override string ToString () {
 			return "AttackSkill id:" + ID + " name:" + NAME;
 		}
-
 
     }
 }

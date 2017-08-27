@@ -32,15 +32,23 @@ namespace Character {
 		private Container container;
         private Town livingTown;
 
-        private bool townSetted = false;
+        private bool isActivated = false;
+        private bool isCleard = false;
+        private Player cleardPlayer;
+
+        private bool needTown;
 
         public int Id{
             get { return id; }
         }
 
-        public Transform ContainerTransform{
-            get { return container.transform; }
-        }
+		public Vector3 ContainerPostion {
+			get { return container.transform.position; }
+		}
+
+		public Quaternion ContainerRotate {
+			get { return container.transform.rotation; }
+		}
 
         public Dictionary<FriendlyAbility,int> Abilities{
             get { return new Dictionary<FriendlyAbility, int>(abilities); }
@@ -67,14 +75,17 @@ namespace Character {
 			container.setCharacter(this);
 
             this.livingTown = livingTown;
+
+            needTown = true;
+            isActivated = true;
 		}
 
-        public Client(int id, Dictionary<FriendlyAbility, int> abilities, int level, Transform transfrom){
+        public Client(int id, Dictionary<FriendlyAbility, int> abilities, int level,Vector3 pos , Quaternion rotate){
             this.id = id;
             this.level = level;
             this.abilities = new Dictionary<FriendlyAbility, int>(abilities);
 
-            var builder = ClientMasterManager.getClientBuilderFromId(id);
+            var builder = ClientMasterManager.getInstance().getClientBuilderFromId(id);
 
 			this.NAME = builder.getName();
 			this.MASSAGES = builder.getMassges();
@@ -83,20 +94,55 @@ namespace Character {
 			this.QUEST_TYPE = builder.getQuestType();
 			this.UNIQUE_ID = UniqueIdCreator.creatUniqueId();
 			var modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
-            container = MonoBehaviour.Instantiate(modelPrefab,transfrom.position,transfrom.rotation).GetComponent<Container>();
+            container = MonoBehaviour.Instantiate(modelPrefab,pos,rotate).GetComponent<Container>();
 			container.setCharacter(this);
 
-            MonoBehaviour.Destroy(transfrom.gameObject);
+            needTown = true;
         }
 
+        public Client(IQuest quest, Transform transfrom){
+            Debug.Log("called contractor");
+            this.quest = quest;
+            this.UNIQUE_ID = UniqueIdCreator.creatUniqueId();
+
+            MASSAGES = new List<string>(){
+                "がんばれ"
+            };
+            UNDERTOOK_MASSAGES = new List<string>() {
+                "頑張れ"
+            };
+            CLEAR_MASSAGES = new List<string>(){
+                "おめでとう"
+            };
+
+            var modelPrefab = (GameObject)Resources.Load("Models/MissionClient");
+            container = MonoBehaviour.Instantiate(modelPrefab).GetComponent<Container>();
+            container.setCharacter(this);
+
+            this.container.transform.position = transfrom.position;
+            this.container.transform.rotation = transfrom.rotation;
+
+            MonoBehaviour.Destroy(transfrom.gameObject);
+            isActivated = true;
+            needTown = false;
+        }
 
         public void setTown(Town livingTown){
             this.livingTown = livingTown;
-            townSetted = true;
+            isActivated = true;
         }
 
         public void act() {
-            
+            if (isCleard && !TalkManager.getInstance().getIsTalking()) {
+                quest.activateCompensation(cleardPlayer);
+                cleardPlayer.deleteQuest(quest);
+                cleardPlayer = null;
+				isCleard = false;
+
+                if (needTown) {
+                    livingTown.questCleared(this);
+                 }
+            }
         }
 
         public void death() {
@@ -128,7 +174,7 @@ namespace Character {
         }
 
         public void talk(IFriendly friendly) {
-            if(townSetted){
+            if(isActivated){
                 if (friendly is Player) {
                     var player = (Player)friendly;
 
@@ -161,9 +207,8 @@ namespace Character {
 
         private void clearedTalk(Player player){
             TalkManager.getInstance().talk(CLEAR_MASSAGES);
-            quest.activateCompensation(player);
-            player.deleteQuest(quest);
-            livingTown.questCleared(this);
+            cleardPlayer = player;
+            isCleard = true;
         }
 
         public void levelup(){

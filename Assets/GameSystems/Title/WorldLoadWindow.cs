@@ -10,7 +10,7 @@ public class WorldLoadWindow : MonoBehaviour {
     private TitleManager title;
 
     private void Update() {
-        if(Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.UpArrow)){
+        if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)){
             int axis = getAxis();
 
             selectView.moveTo(selectView.getIndex() + axis);
@@ -33,10 +33,11 @@ public class WorldLoadWindow : MonoBehaviour {
         return axis;
     }
 
-    public void setState(List<int> ids,TitleManager manager){
+	public void setState(List<int> ids, TitleManager manager) {
+		this.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
+
 		selectviewContainer = Instantiate((GameObject)Resources.Load("Prefabs/SelectView")).GetComponent<SelectViewContainer>();
-		selectviewContainer.transform.position = transform.position;
-        selectviewContainer.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
+		selectviewContainer.transform.position = this.transform.position;
 		selectviewContainer.transform.SetParent(transform);
 
         var worldNodePrefab = (GameObject)Resources.Load("Prefabs/WorldLoadNode");

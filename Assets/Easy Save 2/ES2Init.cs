@@ -67,16 +67,15 @@ public class ES2Init : MonoBehaviour
 		ES2TypeManager.types[typeof(UnityEngine.AudioClip)] = new ES2_AudioClip();
 		ES2TypeManager.types[typeof(ActiveAttackSkillProgress)] = new ES2UserType_ActiveAttackSkillProgress();
 		ES2TypeManager.types[typeof(ActiveSkillProgress)] = new ES2UserType_ActiveSkillProgress();
-		ES2TypeManager.types[typeof(BuildingSaveData)] = new ES2UserType_BuildingSaveData();
 		ES2TypeManager.types[typeof(Character.Citizen)] = new ES2UserType_CharacterCitizen();
 		ES2TypeManager.types[typeof(Character.Client)] = new ES2UserType_CharacterClient();
 		ES2TypeManager.types[typeof(Character.Merchant)] = new ES2UserType_CharacterMerchant();
 		ES2TypeManager.types[typeof(EnemyProgress)] = new ES2UserType_EnemyProgress();
-		ES2TypeManager.types[typeof(FieldMap.Building)] = new ES2UserType_FieldMapBuilding();
 		ES2TypeManager.types[typeof(HealItemProgress)] = new ES2UserType_HealItemProgress();
 		ES2TypeManager.types[typeof(ItemMaterialProgress)] = new ES2UserType_ItemMaterialProgress();
 		ES2TypeManager.types[typeof(TownBuilder)] = new ES2UserType_TownBuilder();
 		ES2TypeManager.types[typeof(WorldData)] = new ES2UserType_WorldData();
+		ES2TypeManager.types[typeof(BuildingSaveData)] = new ES2UserType_BuildingSaveData();
 
 		ES2.initialised = true;
 	}

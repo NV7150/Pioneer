@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-using AI;
-using Character;
+﻿using Character;
+using Skill;
 
 namespace AI{
 	public interface IEnemyAIBuilder {

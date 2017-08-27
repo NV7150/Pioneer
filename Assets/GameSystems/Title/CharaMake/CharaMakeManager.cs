@@ -178,9 +178,9 @@ namespace CharaMake {
         /// </summary>
         /// <param name="level">世界のレベル</param>
         public void setDatas(int level) {
-            this.jobs = JobMasterManager.getJobsFromLevel(level);
-            this.humanities = HumanityMasterManager.getHumanitiesFromLevel(level);
-            this.identities = IdentityMasterManager.getIdentitiesFromLevel(level);
+            this.jobs = JobMasterManager.getInstance().getJobsFromLevel(level);
+            this.humanities = HumanityMasterManager.getInstance().getHumanitiesFromLevel(level);
+            this.identities = IdentityMasterManager.getInstance().getIdentitiesFromLevel(level);
             Vector3 viewPos = new Vector3(200, Screen.height / 2);
             selectView = Instantiate(selectViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<SelectViewContainer>();
             selectView.transform.SetParent(CanvasGetter.getCanvas().transform);
@@ -197,6 +197,7 @@ namespace CharaMake {
                 JobNode jobNode = Instantiate(jobNodePrefab).GetComponent<JobNode>();
                 jobNode.setJob(job);
                 jobNodes.Add(jobNode);
+                Debug.Log("into job");
             }
             jobSelectView = selectView.creatSelectView<JobNode, Job>(jobNodes);
 
@@ -204,8 +205,6 @@ namespace CharaMake {
 			this.jobView = Instantiate(jobViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<CharaMakeJobView>();
 
             jobView.printText(jobSelectView.getElement());
-
-            Debug.Log(jobSelectView + " " + jobSelectView.getIndex());
 
             jobView.transform.SetParent(CanvasGetter.getCanvas().transform);
             state = CharaMakeState.JOB;
@@ -261,8 +260,7 @@ namespace CharaMake {
             charamakeLevel += choseHumanity.getLevel();
 
             List<MissionNode> missionNodes = new List<MissionNode>();
-            for (int i = 0; i < 5;i++){
-                Debug.Log("rooped");
+            for (int i = 0; i < 20;i++){
                 IMissionBuilder builder = QuestHelper.getRandomMission(charamakeLevel);
                 var missionNode = Instantiate(missionNodePrefab).GetComponent<MissionNode>();
                 missionNode.setQuest(builder);
@@ -288,6 +286,7 @@ namespace CharaMake {
             resultView.setParameters(choseJob, choseHumanity, choseIdentities ,choseMission, this);
 
             state = CharaMakeState.RESULT;
+
         }
 
         /// <summary>

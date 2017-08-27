@@ -24,6 +24,15 @@
             /// 未実装
             /// </summary>
             SAVE,
+
+            /// <summary>
+            /// クエスト確認画面
+            /// </summary>
+            QUEST,
+
+            /// <summary>
+            /// 目次
+            /// </summary>
             INDEX
         }
     }

@@ -11,7 +11,10 @@ namespace Item{
             ARMOR,
             /// <summary> 回復アイテム </summary>
             HEAL_ITEM,
+            /// <summary> 素材アイテム </summary>
             ITEM_MATERIAL,
+            /// <summary> スキル書 </summary>
+            SKILL_BOOK,
             /// <summary> 換金アイテム </summary>
             TRADING_ITEM
         }
@@ -65,7 +68,6 @@ namespace Item{
             /// 芸術品
             /// </summary>
             ART
-
         }
     }
 }

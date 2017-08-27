@@ -23,19 +23,19 @@ public class CMTest : MonoBehaviour {
 
     private void startMaking(){
         List<Job> jobs = new List<Job>() {
-            JobMasterManager.getJobFromId(0)
+            JobMasterManager.getInstance().getJobFromId(0)
         };
 
         List<Identity> identities = new List<Identity>() {
-	        IdentityMasterManager.getIdentityFromId(0),
-	        IdentityMasterManager.getIdentityFromId(1),
-	        IdentityMasterManager.getIdentityFromId(2)
+	        //IdentityMasterManager.getIdentityFromId(0),
+	        //IdentityMasterManager.getIdentityFromId(1),
+	        //IdentityMasterManager.getIdentityFromId(2)
         };
 
         List<Humanity> humanities = new List<Humanity>() {
-	        HumanityMasterManager.getHumanityFromId(0),
-	        HumanityMasterManager.getHumanityFromId(1),
-	        HumanityMasterManager.getHumanityFromId(2)
+            HumanityMasterManager.getInstance().getHumanityFromId(0),
+            HumanityMasterManager.getInstance().getHumanityFromId(1),
+            HumanityMasterManager.getInstance().getHumanityFromId(2)
         };
 
         //manager.setDatas(jobs,humanities,identities);

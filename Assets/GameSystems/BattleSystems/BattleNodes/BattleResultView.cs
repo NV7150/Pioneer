@@ -7,7 +7,7 @@ namespace BattleSystem {
     public class BattleResultView : MonoBehaviour {
         public Text expText;
         public void setExp(int exp){
-            this.expText.text = "" + exp;
+            this.expText.text = "経験値 : " + exp;
         }
 
         public void finishChose(){

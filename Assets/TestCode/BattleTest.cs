@@ -33,22 +33,22 @@ public class BattleTest : MonoBehaviour {
 	}
 
     private void setBattle(){
-		en = EnemyMasterManager.getEnemyFromId(0);
+        en = EnemyMasterManager.getInstance().getEnemyFromId(0);
         var list = new List<Identity>(){
-            IdentityMasterManager.getIdentityFromId(0)
+            IdentityMasterManager.getInstance().getIdentityFromId(0)
         };
         //hero = new Player(JobMasterManager.getJobFromId(0),HumanityMasterManager.getHumanityFromId(0), list,con);
 
-		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(0));
-		hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(1));
-		hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(0));
-		hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(1));
-		hero.addSkill(MoveSkillMasterManager.getMoveSkillFromId(0));
-		hero.addSkill(BufSkillMasterManager.getBufSkillFromId(0));
-		hero.addSkill(DebufSkillMasterManager.getDebufSkillFromId(0));
-		hero.addSkill(HealSkillMasterManager.getHealSkillFromId(0));
-        hero.addSkill(DebufSkillMasterManager.getDebufSkillFromId(2));
-        hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(7));
+		//hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(0));
+		//hero.addSkill(ReactionSkillMasterManager.getReactionSkillFromId(1));
+  //      hero.addSkill(AttackSkillMasterManager.getInstance().getAttackSkillFromId(0));
+  //      hero.addSkill(AttackSkillMasterManager.getInstance().getAttackSkillFromId(1));
+		//hero.addSkill(MoveSkillMasterManager.getMoveSkillFromId(0));
+		//hero.addSkill(BufSkillMasterManager.getBufSkillFromId(0));
+		//hero.addSkill(DebufSkillMasterManager.getDebufSkillFromId(0));
+		//hero.addSkill(HealSkillMasterManager.getHealSkillFromId(0));
+        //hero.addSkill(DebufSkillMasterManager.getDebufSkillFromId(2));
+        //hero.addSkill(AttackSkillMasterManager.getInstance().getAttackSkillFromId(7));
 
 		con.setCharacter(hero);
     }

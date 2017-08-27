@@ -7,13 +7,19 @@ using Character;
 
 namespace MasterData {
     public class CitizenMasterManager : MasterDataManagerBase {
-        /// <summary> 生成したCitizenBuilderのリスト </summary>
-        public static List<CitizenBuilder> dataTable = new List<CitizenBuilder>();
+        private static readonly CitizenMasterManager INSTANCE = new CitizenMasterManager();
 
-        private void Awake() {
-            TextAsset csv = (TextAsset)Resources.Load("MasterDatas/CitizenMasterData");
-            constractedBehaviour(csv);
+		private CitizenMasterManager() {
+			TextAsset csv = (TextAsset)Resources.Load("MasterDatas/CitizenMasterData");
+			constractedBehaviour(csv);
         }
+
+        public static CitizenMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+        /// <summary> 生成したCitizenBuilderのリスト </summary>
+        public List<CitizenBuilder> dataTable = new List<CitizenBuilder>();
 
         protected override void addInstance(string[] datas) {
             dataTable.Add(new CitizenBuilder(datas));
@@ -24,7 +30,7 @@ namespace MasterData {
         /// </summary>
         /// <returns>指定されたidのCitizen</returns>
         /// <param name="id">取得したいCitizenのid</param>
-        public static Citizen getCitizenFromId(int id){
+        public Citizen getCitizenFromId(int id){
             foreach(CitizenBuilder builder in dataTable){
                 if (builder.getId() == id)
                     return builder.build();
@@ -32,7 +38,7 @@ namespace MasterData {
             throw new ArgumentException("invalid citizenId");
         }
 
-		public static CitizenBuilder getCitizenBuilderFromId(int id) {
+		public CitizenBuilder getCitizenBuilderFromId(int id) {
 			foreach (CitizenBuilder builder in dataTable) {
 				if (builder.getId() == id)
 					return builder;

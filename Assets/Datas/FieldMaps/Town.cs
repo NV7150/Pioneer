@@ -8,6 +8,7 @@ using MasterData;
 using Item;
 
 using ItemAttribute = Item.ItemParameters.ItemAttribute;
+using Random = UnityEngine.Random;
 
 namespace FieldMap {
     public class Town : MonoBehaviour {
@@ -45,8 +46,20 @@ namespace FieldMap {
        
         private List<Client> clients = new List<Client>();
 
+        int creatEnemyCount = 0;
+
         private void Awake() {
             roadPrefab = (GameObject)Resources.Load("Models/road");
+        }
+
+        private void Update() {
+            creatEnemyCount++;
+            if (creatEnemyCount % 10 == 0) {
+                float probality = Random.Range(0, 100);
+                if (probality <= 5f) {
+                    creatEnemy();
+                }
+            }
         }
 
         public void setState(int level, int size, int id){
@@ -56,7 +69,7 @@ namespace FieldMap {
             layRoad();
             buildBuildings();
 
-            this.attribute = TownAttributeMasterManager.getRandomAttribute();
+            this.attribute = TownAttributeMasterManager.getInstance().getRandomAttribute();
             priseMag = attribute.getPriseMag() * UnityEngine.Random.Range(0.8f, 1.2f) + (level - size) / 100;
             this.attributeMag = attribute.getAttributeMags();
             Debug.Log(attribute.getName());
@@ -65,9 +78,8 @@ namespace FieldMap {
         }
 
         public void setState(TownBuilder builder) {
-            Debug.Log("into state");
-            gameObject.transform.position = builder.Transfrom.position;
-            gameObject.transform.rotation = builder.Transfrom.rotation;
+            gameObject.transform.position = builder.Position;
+            gameObject.transform.rotation = builder.Quaternion;
 
             this.direction = builder.Direction;
             layRoad();
@@ -83,7 +95,7 @@ namespace FieldMap {
             this.grid = builder.Grid;
             this.buildingDatas = builder.BuildingDatas;
 
-            this.attribute = TownAttributeMasterManager.getTownAttributeFromId(builder.TownAttributeId);
+            this.attribute = TownAttributeMasterManager.getInstance().getTownAttributeFromId(builder.TownAttributeId);
 
             Debug.Log("attributeMag count " + attributeMag.Count);
 
@@ -104,8 +116,6 @@ namespace FieldMap {
             foreach (IFriendly friendlyCharacter in characters){
                 friendlyCharacter.getContainer().transform.SetParent(transform);
             }
-
-            Destroy(builder.Transfrom.gameObject);
         }
 
         private void layRoad(){
@@ -164,20 +174,31 @@ namespace FieldMap {
                     building = builder.build(pos, character.getUniqueId());
                     characters.Add(character);
                     citizens.Add(character);
+					if (x > 5) {
+						building.transform.Rotate(new Vector3(0, 180, 0));
+					}
                     buildingDatas.Add(new BuildingSaveData(builder.getModelId(),building.transform));
                 } else {
                     var builder = BuildingHelper.getRandomLevelShop(level);
-                    var character = builder.creatMerchant(this);
+                    var character = builder.creatOwner(this);
                     building = builder.build(pos, character.getUniqueId());
 					character.getContainer().transform.position = pos;
 					character.getContainer().transform.SetParent(transform);
                     characters.Add(character);
-                    merchants.Add(character);
+
+                    if (character is Merchant) {
+                        merchants.Add((Merchant)character);
+                    }else if(character is Client){
+                        clients.Add((Client)character);
+                    }else{
+                        throw new InvalidOperationException("character " + character.getName() + " isn't merchent nor client");
+                    }
+					if (x > 5) {
+						building.transform.Rotate(new Vector3(0, 180, 0));
+					}
                     buildingDatas.Add(new BuildingSaveData(builder.getModelId(), building.transform));
                 }
-                if (x > 5) {
-                    building.transform.Rotate(new Vector3(0, 180, 0));
-                }
+
 
                 building.transform.SetParent(transform);
 
@@ -234,7 +255,7 @@ namespace FieldMap {
             creatRandomBuilding();
         }
 
-        public void traded(Merchant merchant,int tradedValue,ItemAttribute attribute){
+        public void traded(IFriendly merchant,int tradedValue,ItemAttribute attribute){
             observer.characterTraded(merchant,tradedValue,attribute);
         }
 
@@ -252,17 +273,40 @@ namespace FieldMap {
             builder.Citizens = new List<Citizen>(citizens);
             builder.Size = size;
             builder.AttributeMag = new Dictionary<ItemAttribute, float>(attributeMag);
-            builder.Transfrom = this.transform;
-            builder.BuildingDatas = this.buildingDatas;
+            builder.Position = transform.position;
+            builder.Quaternion = transform.rotation;
             builder.TownAttributeId = attribute.getId();
             builder.Direction = this.direction;
+            builder.BuildingDatas = this.buildingDatas;
             Array.Copy(grid,builder.Grid,grid.Length);
 
             return builder;
         }
 
         private void creatEnemy(){
-            
+            int enemyId = EnemyHelper.getRandomEnemyFromLevel(level);
+
+            int blankRand = Random.Range(0, 2);
+            float xBlank = (blankRand == 0) ? 50 : 0;
+            float zBlank = (blankRand == 1) ? 50 : 0;
+
+            float xPos = Random.Range(0, 50);
+            int xRand = (Random.Range(0, 2) == 0) ? 1:-1;
+            xPos = (xPos + xBlank) * xRand;
+            xPos += transform.position.x;
+
+            float zPos = Random.Range(0, 50);
+            int zRand = (Random.Range(0, 2) == 0) ? 1 : -1;
+            zPos = (zPos + zBlank) * zRand;
+            zPos += transform.position.z;
+
+            float yPos = Terrain.activeTerrain.terrainData.GetInterpolatedHeight(
+                xPos / Terrain.activeTerrain.terrainData.size.x,
+                zPos / Terrain.activeTerrain.terrainData.size.z
+            );
+
+            var enemy = EnemyMasterManager.getInstance().getEnemyFromId(enemyId);
+            enemy.getContainer().transform.position = new Vector3(xPos, yPos, zPos);
         }
 
         public enum RoadDirection{

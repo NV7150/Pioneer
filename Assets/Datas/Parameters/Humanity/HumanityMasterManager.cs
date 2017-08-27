@@ -5,14 +5,20 @@ using UnityEngine;
 
 namespace MasterData {
     public class HumanityMasterManager : MasterDataManagerBase {
-        private static List<Humanity> dataTable = new List<Humanity>();
+        private static readonly HumanityMasterManager INSTANCE = new HumanityMasterManager();
 
-        private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/HumanityMasterData");
-            constractedBehaviour(csv);
+		private HumanityMasterManager() {
+			var csv = (TextAsset)Resources.Load("MasterDatas/HumanityMasterData");
+			constractedBehaviour(csv);
         }
 
-        public static Humanity getHumanityFromId(int id){
+        public static HumanityMasterManager getInstance(){
+            return INSTANCE;
+        }
+
+        private List<Humanity> dataTable = new List<Humanity>();
+
+        public Humanity getHumanityFromId(int id){
             foreach(Humanity humanity in dataTable){
                 if (humanity.getId() == id)
                     return humanity;
@@ -20,7 +26,7 @@ namespace MasterData {
             throw new ArgumentException("invalid humanityId");
         }
 
-        public static List<Humanity> getHumanitiesFromLevel(int level){
+        public List<Humanity> getHumanitiesFromLevel(int level){
             List<Humanity> humanities = new List<Humanity>();
 
             foreach(Humanity humanity in dataTable){

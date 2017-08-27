@@ -1,6 +1,7 @@
 ﻿using Character;
 
 using QuestType = Quest.QuestParameters.QuestType;
+using CompentionType = Quest.QuestParameters.CompentionType;
 
 namespace Quest{
     public interface IQuest {
@@ -17,5 +18,7 @@ namespace Quest{
         QuestType getQuestType();
 
         Client getQuester();
+
+        CompentionType getCompentionType();
     }
 }

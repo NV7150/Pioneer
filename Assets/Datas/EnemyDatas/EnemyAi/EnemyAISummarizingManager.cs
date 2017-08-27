@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using AI;
 using Character;
+using Skill;
 
 namespace AI {
     /// <summary>

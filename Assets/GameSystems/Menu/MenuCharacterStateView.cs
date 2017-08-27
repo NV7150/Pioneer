@@ -27,6 +27,8 @@ namespace Menus {
         /// <summary> MPを表示させるテキスト </summary>
         public Text mpValue;
 
+        public Text metalText;
+
         /// <summary>
         /// キャラクターのパラメータを表示せます
         /// </summary>
@@ -36,15 +38,17 @@ namespace Menus {
 
             parameterView.setAbilities(character.getLevel(), character.getBattleAbilities(), character.getFriendlyAbilities());
 
-            //武器テキストまだ実装していないので注意
-
-            //weponText.text = "E:" + character.getWepon().getName();
-            //armorText.text = "E:" + character.getArmor().getName();
+            var weapon = character.getWeapon();
+            weaponText.text = (weapon != null) ?  "E:" + weapon.getName() : "武器非装備";
+            var armor = character.getArmor();
+            armorText.text = (armor != null) ? "E:" + armor.getName() : "防具非装備";
 
             hpBar.fillAmount = (float)character.getHp() / (float)character.getMaxHp();
             mpBar.fillAmount = (float)character.getMp() / (float)character.getMaxMp();
             hpValue.text = character.getHp() + "/" + character.getMaxHp();
             mpValue.text = character.getMp() + "/" + character.getMaxMp();
+
+            metalText.text += (character is Player) ? ((Player)character).getMetal() + "mt" : "なし";
         }
 
         /// <summary>

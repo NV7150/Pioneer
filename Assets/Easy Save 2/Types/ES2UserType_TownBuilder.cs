@@ -10,7 +10,6 @@ public class ES2UserType_TownBuilder : ES2Type
 		TownBuilder data = (TownBuilder)obj;
 		// Add your writer.Write calls here.
 		writer.Write(data.Id);
-		writer.Write(data.Transfrom);
 		writer.Write(data.Level);
 		writer.Write(data.Size);
 		writer.Write(data.Citizens);
@@ -22,6 +21,8 @@ public class ES2UserType_TownBuilder : ES2Type
 		writer.Write(data.Grid);
 		writer.Write(data.TownAttributeId);
 		writer.Write(data.Direction);
+		writer.Write(data.Position);
+		writer.Write(data.Quaternion);
 
 	}
 	
@@ -37,7 +38,6 @@ public class ES2UserType_TownBuilder : ES2Type
 		TownBuilder data = (TownBuilder)c;
 		// Add your reader.Read calls here to read the data into the object.
 		data.Id = reader.Read<System.Int32>();
-		data.Transfrom = reader.Read<UnityEngine.Transform>();
 		data.Level = reader.Read<System.Int32>();
 		data.Size = reader.Read<System.Int32>();
 		data.Citizens = reader.ReadList<Character.Citizen>();
@@ -49,6 +49,8 @@ public class ES2UserType_TownBuilder : ES2Type
 		data.Grid = reader.Read2DArray<System.Boolean>();
 		data.TownAttributeId = reader.Read<System.Int32>();
 		data.Direction = reader.Read<FieldMap.Town.RoadDirection>();
+		data.Position = reader.Read<UnityEngine.Vector3>();
+		data.Quaternion = reader.Read<UnityEngine.Quaternion>();
 
 	}
 	

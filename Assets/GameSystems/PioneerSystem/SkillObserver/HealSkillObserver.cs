@@ -24,14 +24,14 @@ public class HealSkillObserver : SkillObserver {
 
     protected override string FileAddress => "HealSkillProgress";
 
-    protected override ActiveSkillProgress progress => HealSkillMasterManager.getHealSkillProgressFromId(OBSERVE_SKILL_ID);
+    protected override ActiveSkillProgress progress => HealSkillMasterManager.getInstance().getHealSkillProgressFromId(OBSERVE_SKILL_ID);
 
     protected override bool IsAttackSkill => false;
 
     public HealSkillObserver(int id) : base(id) {}
 
 	protected override void setParameter() {
-		observeSkill = HealSkillMasterManager.getHealSkillFromId(OBSERVE_SKILL_ID);
+        observeSkill = HealSkillMasterManager.getInstance().getHealSkillFromId(OBSERVE_SKILL_ID);
 		this.heal = observeSkill.getRawHeal();
 		this.cost = observeSkill.getRawCost();
 		this.delay = observeSkill.getRawDelay();

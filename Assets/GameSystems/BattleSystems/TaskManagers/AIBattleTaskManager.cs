@@ -107,7 +107,7 @@ namespace BattleSystem {
 			waitingReactionActiveSkills.Remove(prosessingPair);
 			updateProsessingPair();
 
-            choseReaction = ReactionSkillMasterManager.getReactionSkillFromId(2);
+            choseReaction = ReactionSkillMasterManager.getInstance().getReactionSkillFromId(2);
         }
 
 		/// <summary>

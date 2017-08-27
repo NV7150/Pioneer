@@ -10,27 +10,30 @@ public class ES2UserType_BuildingSaveData : ES2Type
 		BuildingSaveData data = (BuildingSaveData)obj;
 		// Add your writer.Write calls here.
 		writer.Write(data.BuildingModelName);
-		writer.Write(data.BuildingTransfrom);
+		writer.Write(data.BuildingPostion);
+		writer.Write(data.BuildingRotate);
 
 	}
 	
 	public override object Read(ES2Reader reader)
 	{
-
-        var buildingModelName = reader.Read<System.String>();
-        var buildingTransfrom = reader.Read<UnityEngine.Transform>();
-        BuildingSaveData data = new BuildingSaveData(buildingModelName,buildingTransfrom);
+		var buildingModelName = reader.Read<System.String>();
+		var buildingPostion = reader.Read<UnityEngine.Vector3>();
+		var buildingRotate = reader.Read<UnityEngine.Quaternion>();
+        BuildingSaveData data = new BuildingSaveData(buildingModelName,buildingPostion,buildingRotate);
 		return data;
 	}
 
 	public override void Read(ES2Reader reader, object c)
 	{
-		BuildingSaveData data = (BuildingSaveData)c;
+		BuildingSaveData saveData = (BuildingSaveData)c;
 		// Add your reader.Read calls here to read the data into the object.
 		var buildingModelName = reader.Read<System.String>();
-		var buildingTransfrom = reader.Read<UnityEngine.Transform>();
-		BuildingSaveData dataSource = new BuildingSaveData(buildingModelName, buildingTransfrom);
-        data = dataSource;
+		var buildingPostion = reader.Read<UnityEngine.Vector3>();
+		var buildingRotate = reader.Read<UnityEngine.Quaternion>();
+		BuildingSaveData data = new BuildingSaveData(buildingModelName, buildingPostion, buildingRotate);
+        saveData = data;
+
 	}
 	
 	/* ! Don't modify anything below this line ! */

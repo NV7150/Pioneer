@@ -32,4 +32,8 @@ public class PlayerController : MonoBehaviour {
     public void setCanMove(bool flag){
         canMove = flag;
     }
+
+    public Camera getCamera(){
+        return plauyerCamera;
+    }
 }

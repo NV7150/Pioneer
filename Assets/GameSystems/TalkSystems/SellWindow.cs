@@ -13,7 +13,7 @@ namespace TalkSystem{
         /// <summary> 取引に参加しているIFriendlyキャラクター </summary>
         private IFriendly trader;
         /// <summary> playerのインベントリ </summary>
-        private Inventory inventry;
+        private Inventory inventory;
 
         /// <summary> tradeItemNodeのプレファブ </summary>
         private GameObject tradeItemNodePrefab;
@@ -40,13 +40,13 @@ namespace TalkSystem{
         public void setState(Player player, IFriendly trader) {
             this.player = player;
             this.trader = trader;
-            this.inventry = player.getInventory();
+            this.inventory = player.getInventory();
 
             headerText.text = player.getName();
 
             tradeItemNodePrefab = (GameObject)Resources.Load("Prefabs/TradeItemNode");
 
-            foreach (IItem item in inventry.getItems()) {
+            foreach (IItem item in inventory.getItems()) {
                 GameObject nodeObject = Instantiate(tradeItemNodePrefab);
                 TradeItemNode node = nodeObject.GetComponent<TradeItemNode>();
                 node.setGoods(item,TradeHelper.getSellValue(item,player,(Merchant)trader), this);
@@ -59,8 +59,7 @@ namespace TalkSystem{
         /// </summary>
         public void updateItem() {
             detachContents();
-
-            foreach (IItem item in inventry.getItems()) {
+            foreach (IItem item in inventory.getItems()) {
                 GameObject nodeObject = Instantiate(tradeItemNodePrefab);
                 TradeItemNode node = nodeObject.GetComponent<TradeItemNode>();
                 node.setGoods(item, TradeHelper.getSellValue(item, player, (Merchant)trader), this);
@@ -86,10 +85,9 @@ namespace TalkSystem{
         /// <param name="node">選択されたノード</param>
         public void itemChose(IItem item, TradeItemNode node) {
             int itemValue = TradeHelper.getSellValue(item, player, (Merchant)trader);
-            inventry.removeItem(item);
-            //かり
+            inventory.removeItem(item);
             player.addMetal(itemValue);
-            Destroy(node.gameObject);
+            updateItem();
         }
     }
 }

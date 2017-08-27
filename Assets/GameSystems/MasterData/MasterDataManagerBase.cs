@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 namespace MasterData{
-	public abstract class MasterDataManagerBase  : MonoBehaviour {
+	public abstract class MasterDataManagerBase{
 		/// <summary>
         /// 与えられたstring二次配列から指定されたindexにあるデータを抜き出します
         /// </summary>

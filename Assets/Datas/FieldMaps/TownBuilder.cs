@@ -10,7 +10,8 @@ using Item;
 
 public class TownBuilder {
     int id;
-    Transform transfrom;
+    Vector3 position;
+    Quaternion quaternion;
     int level;
     int size;
     List<Citizen> citizens;
@@ -28,11 +29,6 @@ public class TownBuilder {
         set { id = value; }
     }
 
-    public Transform Transfrom {
-        get { return transfrom; }
-
-        set { transfrom = value; }
-    }
 
     public int Level {
         get { return level; }
@@ -100,5 +96,17 @@ public class TownBuilder {
     public Town.RoadDirection Direction{
         get { return this.direction; }
         set { this.direction = value; }
+    }
+
+    public Vector3 Position {
+        get { return position; }
+
+        set { position = value; }
+    }
+
+    public Quaternion Quaternion {
+        get { return quaternion; }
+
+        set { quaternion = value; }
     }
 }

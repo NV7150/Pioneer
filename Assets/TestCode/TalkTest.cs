@@ -9,18 +9,18 @@
 		//	mphItem = HealItemMasterManager.getHealItemFromId(1);
   //          Debug.Log("hph " + hphItem.getHeal());
 		//	hero.addItem(hphItem);
-		//	hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(0));  //      }else if(Input.GetKeyDown(KeyCode.L)){  //          //ClientMasterManager.getClientFromId(0);  //      }else if(Input.GetKeyDown(KeyCode.P)){
-		//	hero.getFlagList().addEnemyKilled(EnemyMasterManager.getEnemyFromId(0));
-		//	hero.getFlagList().addEnemyKilled(EnemyMasterManager.getEnemyFromId(1));  //      }  //      if(Input.GetKeyDown(KeyCode.O)){  //          Debug.Log("called");  //          progressData();  //      }
+		//	hero.addSkill(AttackSkillMasterManager.getAttackSkillFromId(0));  //      }else if(Input.GetKeyDown(KeyCode.L)){  //          //ClientMasterManager.getClientFromId(0);        //if(Input.GetKeyDown(KeyCode.P)){        //    Debug.Log("called");
+        //    hero.getFlagList().addEnemyKilled(EnemyMasterManager.getInstance().getEnemyFromId(0));
+        //    hero.getFlagList().addEnemyKilled(EnemyMasterManager.getInstance().getEnemyFromId(1));        //}        //if(Input.GetKeyDown(KeyCode.O)){        //    Debug.Log("called");        //    progressData();        //}
 
 		//if (Input.GetKeyDown(KeyCode.M)) {
 			//Debug.Log("called");        //    saveTest();        //}        //if(Input.GetKeyDown(KeyCode.Q)){        //    var enmey = EnemyMasterManager.getEnemyFromId(0);        //    enmey.getContainer().transform.position = hero.getContainer().transform.position + new Vector3(10, 0, 10);        //}	}
 
 	private void progressData() {
-        var progress = HealItemMasterManager.getHealItemFromId(0);        for (int i = 0; i < 100; i++)
+        var progress = HealItemMasterManager.getInstance().getHealItemFromId(0);        for (int i = 0; i < 100; i++)
             progress.use(hero);
 	}    private void saveTest(){
 		PioneerManager.getInstance().finished();
-		HealItemMasterManager.updateProgress();
+        HealItemMasterManager.getInstance().updateProgress();
 
-        Debug.Log("heal " + HealItemMasterManager.getHealItemFromId(0).getHeal());    }}
+        Debug.Log("heal " + HealItemMasterManager.getInstance().getHealItemFromId(0).getHeal());    }}

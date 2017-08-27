@@ -7,6 +7,7 @@ using Parameter;
 using Quest;
 
 namespace CharaMake{
+    [System.SerializableAttribute]
     public class CharaMakeResultView : MonoBehaviour {
         /// <summary> 名前 </summary>
         private string name;
@@ -26,11 +27,21 @@ namespace CharaMake{
         public Text humanityText;
         /// <summary> 特徴を表示させるテキストのリスト </summary>
         public List<Text> identityTexts;
+        /// <summary> 使命を表示させるテキスト </summary>
         public Text missionText;
+
+        private readonly int nameMax = 5;
+
+        private string[] deleteWord = new string[]{
+            "\n",
+            "\r",
+            "\t",
+            "\r\n"
+        };
 
         // Use this for initialization
         void Start() {
-            decideButton.interactable = true;
+            decideButton.interactable = false;
             nameField.interactable = true;
         }
 
@@ -54,12 +65,25 @@ namespace CharaMake{
             this.manager = manager;
         }
 
+        private void Update() {
+        }
+
         /// <summary> 
         /// 名前が設定された時の処理 
         /// </summary>
         public void setName() {
-            this.name = nameText.text;
-            decideButton.interactable = true;
+			foreach (var word in deleteWord) {
+				nameField.text = nameField.text.Replace(word, "");
+			}
+
+			if (nameText.text.Length > nameMax)
+				nameField.text = nameField.text.Remove(nameMax);
+
+            if (nameText.text.Length > 0) {
+                name = nameField.text;
+                decideButton.interactable = true;
+            }
+
         }
 
         /// <summary>

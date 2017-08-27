@@ -7,6 +7,7 @@ using Character;
 using Item;
 using Skill;
 using SelectView;
+using Quest;
 
 using MenuContents = Menus.MenuParameters.MenuContents;
 //using static Menus.MenuParameters.MenuContents;
@@ -22,6 +23,7 @@ namespace Menus {
         private SelectView<MenuItemNode, IItem> itemSelectView;
         private SelectView<MenuSkillNode, ISkill> skillSelectView;
         private SelectView<MenuCharacterNode, IPlayable> characterSelectView;
+        private SelectView<MenuQuestNode, IQuest> questSelectView;
 
         //各ノード・ビューのプレファブ
         private GameObject menuIndexNodePrefab;
@@ -32,6 +34,8 @@ namespace Menus {
         private GameObject useWindowPrefab;
         private GameObject menuCharacterNodePrefab;
         private GameObject menuCharacterViewPrefab;
+        private GameObject menuQuestNodePrefab;
+        private GameObject menuQuestViewPrefab;
 
         /// <summary> プレイヤーが所属するパーティ </summary>
         Party party;
@@ -45,7 +49,11 @@ namespace Menus {
         /// <summary> アクティブなステートビュー </summary>
         MenuCharacterStateView stateView;
 
+        MenuQuestView questView;
+
         MenuContents currentContent = MenuContents.INDEX;
+
+        private static bool isDisplaying = false;
 
         // Use this for initialization
         void Awake() {
@@ -57,12 +65,18 @@ namespace Menus {
             menuCharacterNodePrefab = (GameObject)Resources.Load("Prefabs/MenuCharacterNode");
             menuCharacterViewPrefab = (GameObject)Resources.Load("Prefabs/MenuCharacterStateView");
             useWindowPrefab = (GameObject)Resources.Load("Prefabs/UseWindow");
+            menuQuestNodePrefab = (GameObject)Resources.Load("Prefabs/MenuQuestNode");
+            menuQuestViewPrefab = (GameObject)Resources.Load("Prefabs/MenuQuestView");
 
             selectviewContainer = Instantiate((GameObject)Resources.Load("Prefabs/SelectView")).GetComponent<SelectViewContainer>();
             selectviewContainer.transform.position = transform.position;
             selectviewContainer.GetComponent<RectTransform>().sizeDelta -= new Vector2(0,60);
             selectviewContainer.transform.position -= new Vector3(50, 30, 0);
             selectviewContainer.transform.SetParent(transform);
+        }
+
+        private void Start() {
+            isDisplaying = true;
         }
 
         // Update is called once per frame
@@ -128,6 +142,15 @@ namespace Menus {
                         Debug.Log("there are no characters in this party");
                     }
                     break;
+
+                case MenuContents.QUEST:
+                    //try{
+                        var quest = questSelectView.moveTo(questSelectView.getIndex() + axis);
+                        inputQuestView(quest);
+                    //}catch{
+                    //    Debug.Log("there are no quests");
+                    //}
+                    break;
             }
         }
 
@@ -169,7 +192,7 @@ namespace Menus {
         /// <summary>
         /// インデックスが選ばれた時の処理
         /// </summary>
-        public void indexChosen(MenuContents menuContent){
+        private void indexChosen(MenuContents menuContent){
             selectviewContainer.detach();
 
             switch(menuContent){
@@ -184,6 +207,10 @@ namespace Menus {
                     inputSkills();
                     break;
 
+                case MenuContents.QUEST:
+                    inputQuests();
+                    break;
+
                 default:
                     throw new NotSupportedException("unkonwn content " + menuContent);
             }
@@ -194,7 +221,7 @@ namespace Menus {
 		/// <summary>
 		/// パーティのキャラクターをスクロールビューに表示させます
 		/// </summary>
-		public void inputCharacters() {
+		private void inputCharacters() {
             selectviewContainer.detach();
             deleteCursors();
             
@@ -205,9 +232,9 @@ namespace Menus {
                 characterNode.setCharacter(character);
                 characterNodes.Add(characterNode);
             }
-            characterSelectView = selectviewContainer.creatSelectView<MenuCharacterNode, IPlayable>(characterNodes);
 
-            try {
+			try {
+				characterSelectView = selectviewContainer.creatSelectView<MenuCharacterNode, IPlayable>(characterNodes);
                 inputCharacterStateView(characterSelectView.getElement());
             }catch{
                 Debug.Log("there are no characters");
@@ -217,7 +244,7 @@ namespace Menus {
         /// <summary>
         /// キャラクターが選ばれた時の処理
         /// </summary>
-        public void inputCharacterStateView(IPlayable character){
+        private void inputCharacterStateView(IPlayable character){
             if (stateView == null) {
                 GameObject viewObject = Instantiate(menuCharacterViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0));
                 stateView = viewObject.GetComponent<MenuCharacterStateView>();
@@ -229,7 +256,7 @@ namespace Menus {
         /// <summary>
         /// インベントリ内のアイテムをスクロールビューに表示させます
         /// </summary>
-        public void inputItems() {
+        private void inputItems() {
 			selectviewContainer.detach();
 			deleteCursors();
 
@@ -244,11 +271,10 @@ namespace Menus {
                     itemNode.setItem(item);
                 }
                 nodes.Add(itemNode);
-            }
+			}
+			itemSelectView = selectviewContainer.creatSelectView<MenuItemNode, IItem>(nodes);
 
-            itemSelectView = selectviewContainer.creatSelectView<MenuItemNode, IItem>(nodes);
-
-            try { 
+			try {
                 inputItemView(itemSelectView.getElement()); 
             }catch{
                 Debug.Log("there are no items");
@@ -275,7 +301,7 @@ namespace Menus {
 		/// <summary>
 		/// スキルをスクロールビューに表示させます
 		/// </summary>
-		public void inputSkills() {
+		private void inputSkills() {
 			selectviewContainer.detach();
 			deleteCursors();
 
@@ -291,25 +317,57 @@ namespace Menus {
             }
 
             skillSelectView = selectviewContainer.creatSelectView<MenuSkillNode, ISkill>(skillNodes);
-            try {
+			try {
                 inputSkillView(skillSelectView.getElement());
             }catch{
                 Debug.Log("there are no skills");
             }
         }
 
-        /// <summary>
-        /// スキル選択時の処理
-        /// </summary>
-        /// <param name="skill">選択されたスキル</param>
-        public void inputSkillView(ISkill skill){
-            if (skillView == null) {
-                skillView = Instantiate(menuSkillViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuSkillView>();
-                skillView.transform.SetParent(CanvasGetter.getCanvas().transform);
+		/// <summary>
+		/// スキル選択時の処理
+		/// </summary>
+		/// <param name="skill">選択されたスキル</param>
+        private void inputSkillView(ISkill skill) {
+			if (skillView == null) {
+				skillView = Instantiate(menuSkillViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuSkillView>();
+				skillView.transform.SetParent(CanvasGetter.getCanvas().transform);
+			}
+
+            skillView.printSkill(skill);
+		}
+
+        private void inputQuests(){
+            selectviewContainer.detach();
+            deleteCursors();
+
+            List<IQuest> quests = new List<IQuest>();
+            quests.AddRange(player.getUndertakingQuests());
+
+            List<MenuQuestNode> nodes = new List<MenuQuestNode>();
+            foreach(var quest in quests){
+                var questNode = Instantiate(menuQuestNodePrefab).GetComponent<MenuQuestNode>();
+                questNode.setQuest(quest);
+                nodes.Add(questNode);
             }
 
-            skillView.printSkill(skill,this);
+            questSelectView = selectviewContainer.creatSelectView<MenuQuestNode, IQuest>(nodes);
+            try{
+                inputQuestView(questSelectView.getElement());
+            }catch{
+                Debug.Log("there are no quests");
+            }
+
         }
+
+        private void inputQuestView(IQuest quest){
+            if(questView == null){
+                questView = Instantiate(menuQuestViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuQuestView>();
+                questView.transform.SetParent(CanvasGetter.getCanvas().transform);
+            }
+            questView.printQuest(quest);
+        }
+
 
         private void deleteCursors(){
             if (skillSelectView != null)
@@ -341,6 +399,10 @@ namespace Menus {
                 Destroy(stateView.gameObject);
             stateView = null;
 
+            if (questView != null)
+                Destroy(questView.gameObject);
+            questView = null;
+
             inputIndex();
         }
 
@@ -348,8 +410,6 @@ namespace Menus {
         /// 終了が選択された時の処理
         /// </summary>
         public void finishChose(){
-            Debug.Log("into finish");
-
             if(skillView != null )
                 Destroy(skillView.gameObject);
 
@@ -357,16 +417,20 @@ namespace Menus {
                 Destroy(itemView.gameObject);
 
             selectviewContainer.detach();
+            isDisplaying = false;
             Destroy(this.gameObject);
         }
 
         public void cancelChose(){
-            Debug.Log(currentContent);
             if(currentContent == MenuContents.INDEX){
                 finishChose();
             }else{
                 backChose();
             }
+        }
+
+        public static bool getIsDisplaying(){
+            return isDisplaying;
         }
     }
 }

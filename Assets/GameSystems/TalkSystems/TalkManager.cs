@@ -4,4 +4,4 @@
 				massageWindow.transform.SetParent(CanvasGetter.getCanvas().transform);
 				massageWindow.GetComponent<MassageWindow>().setMassageList(massages, failMassage,startTradeIndex, goods, player,trader);
 				isTalking = true;
-			}	        	    }	}}
+			}	        	    }        public bool getIsTalking(){            return isTalking;        }	}}

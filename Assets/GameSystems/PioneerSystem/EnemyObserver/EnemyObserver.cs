@@ -30,7 +30,7 @@ public class EnemyObserver : IObserver {
     }
 
     public void report() {
-        observeEnemyBuilder = EnemyMasterManager.getEnemyBuilderFromId(OBSERVE_ENEMY_ID);
+        observeEnemyBuilder = EnemyMasterManager.getInstance().getEnemyBuilderFromId(OBSERVE_ENEMY_ID);
         var abilities = new Dictionary<BattleAbility, int>();
         var keys = Enum.GetValues(typeof(BattleAbility));
         foreach(BattleAbility ability in keys){
@@ -67,7 +67,7 @@ public class EnemyObserver : IObserver {
             weponLevel = 0;
         }
 
-        var progress = EnemyMasterManager.getProgressFromId(OBSERVE_ENEMY_ID);
+        var progress = EnemyMasterManager.getInstance().getProgressFromId(OBSERVE_ENEMY_ID);
         progress.Abilities = abilities;
         progress.AttributeResistances = attributeTable;
         progress.WeponLevel = weponLevel;

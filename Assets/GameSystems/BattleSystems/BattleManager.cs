@@ -121,8 +121,11 @@ namespace BattleSystem{
 			}
 			isBattleing = false;
 
+
             BattleResultView view = MonoBehaviour.Instantiate(battleResultViewPrefab).GetComponent<BattleResultView>();
             view.setExp(expSum);
+            view.transform.SetParent(CanvasGetter.getCanvas().transform);
+            view.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
 		}
 
         public void backToField(){

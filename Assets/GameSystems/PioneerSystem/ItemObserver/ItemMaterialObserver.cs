@@ -15,8 +15,8 @@ public class ItemMaterialObserver : ItemObserver {
     public ItemMaterialObserver(int itemId) : base(itemId) {}
 
 	public override void report() {
-		material = ItemMaterialMasterManager.getMaterialBuilderFromId(OBSERVE_ITEM_ID);
-        ItemMaterialProgress progress = ItemMaterialMasterManager.getProgress(OBSERVE_ITEM_ID);
+        material = ItemMaterialMasterManager.getInstance().getMaterialBuilderFromId(OBSERVE_ITEM_ID);
+        ItemMaterialProgress progress = ItemMaterialMasterManager.getInstance().getProgress(OBSERVE_ITEM_ID);
         progress.Quality += progressQuality();
         progress.Level = progressLevel(progress.Quality);
 

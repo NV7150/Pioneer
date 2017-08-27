@@ -91,6 +91,9 @@ namespace Character{
             IBattleable userBal = (IBattleable)user;
             //敵対しているかを判定
             if (oppnentBal.isHostility(userBal.getFaction())) {
+                if (userBal is Player)
+                    ((Player)userBal).keepPos();
+
 				//バトル開始していなかったら開始
 				if (!BattleManager.getInstance().getIsBattleing()) {
 					BattleManager.getInstance().startNewBattle();

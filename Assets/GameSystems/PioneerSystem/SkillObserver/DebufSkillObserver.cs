@@ -25,12 +25,12 @@ public class DebufSkillObserver : SkillObserver {
 
     protected override string FileAddress => "DebufSkillProgress";
 
-    protected override ActiveSkillProgress progress => DebufSkillMasterManager.getProgressFromId(OBSERVE_SKILL_ID);
+    protected override ActiveSkillProgress progress => DebufSkillMasterManager.getInstance().getProgressFromId(OBSERVE_SKILL_ID);
 
 	public DebufSkillObserver(int id) : base(id) {}
 
 	protected override void setParameter() {
-		skill = DebufSkillMasterManager.getDebufSkillFromId(OBSERVE_SKILL_ID);
+        skill = DebufSkillMasterManager.getInstance().getDebufSkillFromId(OBSERVE_SKILL_ID);
 		this.effect = skill.getRawBonus();
 		this.cost = skill.getRawCost();
 		this.delay = skill.getRawDelay();

@@ -42,7 +42,7 @@ namespace MasterData {
         }
 
         public Citizen creatCitizen(){
-            return CitizenMasterManager.getCitizenFromId(CITIZEN_ID);
+            return CitizenMasterManager.getInstance().getCitizenFromId(CITIZEN_ID);
         }
     }
 }

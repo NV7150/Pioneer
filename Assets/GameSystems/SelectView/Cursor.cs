@@ -11,6 +11,7 @@ namespace SelectView {
         List<Node> datas = new List<Node>();
         /// <summary> ハイライトしているdatasのインデックス </summary>
         int selecting = 0;
+        int count = 0;
 
         /// <summary> カーソルのゲームオブジェクト </summary>
         CursorContainer container;
@@ -30,6 +31,7 @@ namespace SelectView {
         public void setList(List<Node> datas) {
 			this.datas = datas;
 			Canvas.ForceUpdateCanvases();
+            this.count = datas.Count;
             moveTo(selecting);
         }
 
@@ -40,9 +42,9 @@ namespace SelectView {
         public void moveTo(int i) {
             if (i < datas.Count && i >= 0 ) {
                 selecting = i;
-                Vector3 addValue = new Vector3(-200,0,0);
-                container.transform.position = datas[selecting].transform.position + addValue;
-            }
+			}
+			Vector3 addValue = new Vector3(-200, 0, 0);
+			container.transform.position = datas[selecting].transform.position + addValue;
         }
 
         /// <summary>
@@ -71,6 +73,12 @@ namespace SelectView {
 		public void delete() {
             MonoBehaviour.Destroy(container.gameObject);
             container.cursolDeleted();
+        }
+
+        public float getElementNormalizedPos(int i){
+            int index = count - i;
+            float normalizedPos = (float)index / count;
+            return (normalizedPos < 1) ? normalizedPos : 1;
         }
     }
 }

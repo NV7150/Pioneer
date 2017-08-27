@@ -7,15 +7,20 @@ using Item;
 
 namespace MasterData {
     public class ItemMaterialMasterManager : MasterDataManagerBase {
-        private static List<ItemMaterialBuilder> dataTable = new List<ItemMaterialBuilder>();
-        public static Dictionary<int, ItemMaterialProgress> progressTable = new Dictionary<int, ItemMaterialProgress>();
-
-        private void Awake() {
-            var csv = (TextAsset)Resources.Load("MasterDatas/ItemMaterialMasterData");
-            constractedBehaviour(csv);
+        private static readonly ItemMaterialMasterManager INSTACE = new ItemMaterialMasterManager();
+        public static ItemMaterialMasterManager getInstance(){
+            return INSTACE;
         }
 
-        public static ItemMaterial getMaterialFromId(int id){
+		private ItemMaterialMasterManager() {
+			var csv = (TextAsset)Resources.Load("MasterDatas/ItemMaterialMasterData");
+			constractedBehaviour(csv);
+        }
+
+        private List<ItemMaterialBuilder> dataTable = new List<ItemMaterialBuilder>();
+        public Dictionary<int, ItemMaterialProgress> progressTable = new Dictionary<int, ItemMaterialProgress>();
+
+        public ItemMaterial getMaterialFromId(int id){
             foreach(ItemMaterialBuilder builder in dataTable){
                 if (builder.getId() == id)
                     return builder.build();
@@ -24,7 +29,7 @@ namespace MasterData {
             throw new ArgumentException("invalid MaterialId");
         }
 
-        public static ItemMaterialBuilder getMaterialBuilderFromId(int id) {
+        public ItemMaterialBuilder getMaterialBuilderFromId(int id) {
 			foreach (ItemMaterialBuilder builder in dataTable) {
 				if (builder.getId() == id)
 					return builder;
@@ -33,10 +38,10 @@ namespace MasterData {
 			throw new ArgumentException("invalid MaterialId");
 		}
 
-        public static List<ItemMaterial> getMaterialFromLevel(int level){
+        public List<ItemMaterial> getMaterialFromLevel(int level){
             var materials = new List<ItemMaterial>();
             foreach(ItemMaterialBuilder builder in dataTable){
-                if (builder.getLevel() == level)
+                if (builder.getLevel() <= level)
                     materials.Add(builder.build());
             }
             return materials;
@@ -47,7 +52,7 @@ namespace MasterData {
             dataTable.Add(builder);
         }
 
-        public static void updateProgress(){
+        public void updateProgress(){
             foreach (ItemMaterialBuilder builder in dataTable) {
                 int id = builder.getId();
                 if (ES2.Exists(getLoadPass(id, "ItemProgress"))) {
@@ -58,7 +63,7 @@ namespace MasterData {
             }
         }
 
-        public static ItemMaterialProgress getProgress(int id){
+        public ItemMaterialProgress getProgress(int id){
             return progressTable[id];
         }
     }

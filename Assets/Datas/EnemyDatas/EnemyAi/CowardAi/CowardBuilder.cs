@@ -5,6 +5,7 @@ using System;
 using UnityEditor;
 
 using Character;
+using Skill;
 
 namespace AI{
     /// <summary>

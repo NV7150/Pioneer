@@ -31,5 +31,7 @@ namespace Skill {
         /// </summary>
         /// <returns>コスト</returns>
         int getCost();
+
+        int getLevel();
     }
 }

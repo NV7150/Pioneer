@@ -1,2 +1,2 @@
-id,name,lv,mft,fft,mgp,phy,agi,dex,spc
-0,市民,1,2,2,1,1,1,2,2
+id,name,lv,mft,fft,mgp,phy,agi,dex,spc,description,,スキルID,,,,,
+0,市民,1,2,1,1,1,1,2,2,平均的な性能を持つ最初期職業。,あなたはただの市民だ。特筆することもなく、平凡な才をもつ。,ATTACK,0,end,0,1,end
