@@ -41,19 +41,24 @@ namespace MasterData {
             return progressTable[id];
         }
 
+        public void addProgress(int worldId){
+            foreach (var builder in dataTable) {
+                int id = builder.getId();
+                if (ES2.Exists(getLoadPass(id,worldId, "DebufSkillProgress.txt"))) {
+					var progress = loadSaveData<ActiveSkillProgress>(id, worldId, "DebufProgress.txt");
+					progressTable[id] = progress;
+                }
+            }
+		}
+
 		#region implemented abstract members of MasterDataManagerBase
 		protected override void addInstance (string[] datas) {
             var skill = new DebufSkill(datas);
             dataTable.Add (skill);
             int id = int.Parse(datas[0]);
-            if (ES2.Exists(getLoadPass(id, "DebufSkillProgress.txt"))) {
-                var progress = loadSaveData<ActiveSkillProgress>(int.Parse(datas[0]), "DebufProgress.txt");
-                progressTable.Add(id, progress);
-            }else{
-                progressTable.Add(id,new ActiveSkillProgress());
-            }
 
-            SkillBookDataManager.getInstance().setData(skill);
+			SkillBookDataManager.getInstance().setData(skill);
+			progressTable.Add(int.Parse(datas[0]), new ActiveSkillProgress());
 		}
         #endregion
     }

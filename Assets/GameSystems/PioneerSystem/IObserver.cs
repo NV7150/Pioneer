@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IObserver{
-    void report();
+    void report(int worldId);
     void reset();
 }

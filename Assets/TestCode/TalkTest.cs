@@ -21,6 +21,6 @@
             progress.use(hero);
 	}    private void saveTest(){
 		PioneerManager.getInstance().finished();
-        HealItemMasterManager.getInstance().updateProgress();
+        //HealItemMasterManager.getInstance().updateProgress();
 
         Debug.Log("heal " + HealItemMasterManager.getInstance().getHealItemFromId(0).getHeal());    }}

@@ -22,7 +22,7 @@ public class WorldTop : MonoBehaviour {
 	public void startCharaMake() {
 		CharaMakeManager manager = Instantiate((GameObject)Resources.Load("Prefabs/CharaMakeManager")).GetComponent<CharaMakeManager>();
         if (WorldCreator.getInstance().getIsLoad()) {
-            var data = MasterDataManagerBase.loadSaveData<WorldData>(id, "WorldData");
+            var data = MasterDataManagerBase.loadSaveData<WorldData>(id,id, "WorldData");
             manager.setDatas(data.WorldLevel);
         }else{
             manager.setDatas(1);

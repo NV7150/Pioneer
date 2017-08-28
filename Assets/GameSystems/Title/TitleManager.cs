@@ -8,8 +8,6 @@ public class TitleManager : MonoBehaviour{
     public List<GameObject> titleCompornents;
     public Button newWorldButton;
     public Button loadButton;
-    private int worldIdDefault = 0;
-    public List<int> worldPasses;
 
     private GameObject worldDataNodePrefab;
     private GameObject worldTopPrefab;
@@ -22,8 +20,7 @@ public class TitleManager : MonoBehaviour{
     }
 
     private void Start() {
-        worldPasses = WorldCreator.getInstance().getWorldPasses();
-        loadButton.interactable = (worldPasses.Count > 0);
+        loadButton.interactable = (WorldCreator.getInstance().getWorldPasses().Count > 0);
     }
 
     public void creatWorld(){
@@ -43,7 +40,7 @@ public class TitleManager : MonoBehaviour{
         loadButton.interactable = false;
 
         WorldLoadWindow window = Instantiate(worldLoadWindowPrefab).GetComponent<WorldLoadWindow>();
-        window.setState(worldPasses,this);
+        window.setState(WorldCreator.getInstance().getWorldPasses(),this);
         window.transform.SetParent(transform);
     }
 
@@ -68,7 +65,7 @@ public class TitleManager : MonoBehaviour{
             compornent.SetActive(true);
 		}
 
-        newWorldButton.interactable = true;
-        loadButton.interactable = (worldPasses.Count > 0);
+		newWorldButton.interactable = true;
+		loadButton.interactable = (WorldCreator.getInstance().getWorldPasses().Count > 0);
     }
 }

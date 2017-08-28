@@ -20,15 +20,12 @@ namespace Character{
         private static GameObject battleCharacterKeeper;
 
         private void Awake(){
-            do {
-                fieldKeeper = GameObject.Find("FieldKeeper");
-            } while (fieldKeeper == null);
+            fieldKeeper = GameObject.Find("FieldKeeper");
 
-            do {
-                battleCharacterKeeper = GameObject.Find("BattleCharacterKeeper");
-            } while (battleCharacterKeeper == null);
+            battleCharacterKeeper = GameObject.Find("BattleCharacterKeeper");
 
-            transform.SetParent(fieldKeeper.transform);
+            if (fieldKeeper != null)
+                transform.SetParent(fieldKeeper.transform);
         }
 
         // Use this for initialization
@@ -37,8 +34,23 @@ namespace Character{
 
 		// Update is called once per frame
 		void Update () {
-			if (user == null) {
-			} else {
+            bool isFoundFieldKeeper = (fieldKeeper != null);
+
+            if (!isFoundFieldKeeper) {
+                fieldKeeper = GameObject.Find("FieldKeeper");
+                isFoundFieldKeeper = (fieldKeeper != null);
+                if (isFoundFieldKeeper)
+                    transform.SetParent(fieldKeeper.transform);
+            }
+
+            bool isFoundCharacterKeeper = (battleCharacterKeeper != null);
+            if (!isFoundFieldKeeper) {
+                battleCharacterKeeper = GameObject.Find("BattleCharacterKeeper");
+                isFoundCharacterKeeper = (battleCharacterKeeper != null);
+            }
+                
+                
+            if (user != null && isFoundFieldKeeper && isFoundCharacterKeeper) {
 				user.act ();
 			}
 		}

@@ -12,7 +12,6 @@ namespace MasterData {
 		private HealItemMasterManager() {
 			var csv = (TextAsset)Resources.Load("MasterDatas/HealItemMasterData");
 			constractedBehaviour(csv);
-			updateProgress();
         }
 
         public static HealItemMasterManager getInstance(){
@@ -56,12 +55,12 @@ namespace MasterData {
             progressTable.Add(int.Parse(datas[0]),new HealItemProgress());
         }
 
-        public void updateProgress(){
+        public void addProgress(int worldId){
             foreach(HealItemBuilder builder in dataTable){
                 int id = builder.getId();
-                if (ES2.Exists(getLoadPass(id,"HealItemProgress"))) {
+                if (ES2.Exists(getLoadPass(id,worldId,"HealItemProgress"))) {
                     Debug.Log("into load");
-					var progress = loadSaveData<HealItemProgress>(id, "HealItemProgress");
+                    var progress = loadSaveData<HealItemProgress>(id,worldId, "HealItemProgress");
 					builder.addProgress(progress);
                     progressTable[id] = progress;
                 }

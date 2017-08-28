@@ -32,11 +32,13 @@ namespace FieldMap {
                 if(WorldCreator.getInstance().getIsLoad()){
                     id = WorldCreator.getInstance().getLoadWorldId();
                     loadWorld();
+                    WorldCreator.getInstance().loadProgresses(id);
                 }else{
                     id = WorldCreator.getInstance().getWorldIdDefault() + 1;
                     WorldCreator.getInstance().setWorldIdDefault(id);
                     creatWorld();
                     WorldCreator.getInstance().setWorldPass(id);
+                    Debug.Log("id setted " + id);
                 }
 
                 WorldCreator.getInstance().setWorldLoaded(true);
@@ -75,14 +77,15 @@ namespace FieldMap {
             var levels = shuffleTownLevel(lowTown,middleTown,highTown);
 			var sizes = shuffleTownSize(lowTown, middleTown, highTown);
 
+            int townId = 0;
             for (int i = 0; i < numberOfTown;i++){
                 GameObject townObject = Instantiate(townPrefab, positoins[i],new Quaternion(0, 0, 0, 0));
                 Town town = townObject.GetComponent<Town>();
-                town.setState(getLevel(levels[i]),getSize(sizes[i]),id);
+                town.setState(getLevel(levels[i]),getSize(sizes[i]),townId);
                 enableTowns.Add(town);
                 town.transform.SetParent(fieldKeeper.transform);
                 towns.Add(town.getId(),positoins[i]);
-                id++;
+                townId++;
             }
         }
 
@@ -175,13 +178,13 @@ namespace FieldMap {
         }
 
         public void loadWorld(){
-			var data = MasterDataManagerBase.loadSaveData<WorldData>(id, "WorldData");
+            var data = MasterDataManagerBase.loadSaveData<WorldData>(id,id,"WorldData");
 			this.towns = data.Towns;
             this.worldLevel = data.WorldLevel;
 
             var ids = towns.Keys;
             foreach(int id in ids){
-                var townBuilder = MasterDataManagerBase.loadSaveData<TownBuilder>(id, "TownData");
+                var townBuilder = MasterDataManagerBase.loadSaveData<TownBuilder>(id,this.id, "TownData");
                 GameObject townObject = Instantiate(townPrefab);
 				Town town = townObject.GetComponent<Town>();
                 town.setState(townBuilder);
@@ -194,10 +197,10 @@ namespace FieldMap {
             var saveData = new WorldData();
             saveData.Towns = this.towns;
             saveData.WorldLevel = this.worldLevel;
-            ObserverHelper.saveToFile<WorldData>(saveData,"WorldData",id);
+            ObserverHelper.saveToFile<WorldData>(saveData,"WorldData",id,id);
             foreach(Town town in enableTowns){
                 var builder = town.compressIntoBuilder();
-				ObserverHelper.saveToFile<TownBuilder>(builder, "TownData", town.getId());
+                ObserverHelper.saveToFile<TownBuilder>(builder, "TownData", town.getId(),id);
                 MonoBehaviour.Destroy(town.gameObject);
             }
         }

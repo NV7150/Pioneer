@@ -48,7 +48,7 @@ public abstract class SkillObserver : IObserver {
 		PioneerManager.getInstance().setObserver(this);
 	}
 
-    public void report(){
+    public void report(int worldId){
         progress.Effect += getValueProgress(Effect);
         progress.Cost -= getValueProgress(Cost);
         progress.Delay -= getSpeedProgress(Delay);
@@ -56,9 +56,9 @@ public abstract class SkillObserver : IObserver {
         if (IsAttackSkill) {
             var attackProgress = (ActiveAttackSkillProgress)progress;
 			attackProgress.Hit += Hit;
-            ObserverHelper.saveToFile<ActiveAttackSkillProgress>(attackProgress, FileAddress, OBSERVE_SKILL_ID);
+            ObserverHelper.saveToFile<ActiveAttackSkillProgress>(attackProgress, FileAddress, OBSERVE_SKILL_ID,worldId);
         } else{
-            ObserverHelper.saveToFile<ActiveSkillProgress>(progress, FileAddress,OBSERVE_SKILL_ID);
+            ObserverHelper.saveToFile<ActiveSkillProgress>(progress, FileAddress,OBSERVE_SKILL_ID,worldId);
         }
 
     }

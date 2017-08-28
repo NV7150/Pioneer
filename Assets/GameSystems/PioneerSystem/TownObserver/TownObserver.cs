@@ -36,7 +36,7 @@ public class TownObserver : IObserver{
 		PioneerManager.getInstance().setObserver(this);
     }
 
-    public void report() {
+    public void report(int worldId) {
 
 		if(judgeLevelUpped())
             TOWN.levelUped();
@@ -59,7 +59,7 @@ public class TownObserver : IObserver{
             }
         }
 
-        ObserverHelper.saveToFile<TownBuilder>(TOWN.compressIntoBuilder(),"TownData",townId);
+        ObserverHelper.saveToFile<TownBuilder>(TOWN.compressIntoBuilder(),"TownData",townId,worldId);
     }
 
     public void reset() {

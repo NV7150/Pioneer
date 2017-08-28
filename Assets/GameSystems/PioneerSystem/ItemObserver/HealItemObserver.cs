@@ -14,12 +14,12 @@ public class HealItemObserver : ItemObserver {
     
     public HealItemObserver(int itemId) : base(itemId) {}
 
-	public override void report() {
+	public override void report(int worldId) {
         this.healItem = HealItemMasterManager.getInstance().getHealItemBuilderFromId(OBSERVE_ITEM_ID);
         HealItemProgress progress = HealItemMasterManager.getInstance().getProgress(OBSERVE_ITEM_ID);
         progress.Heal += reportHealValue();
         progress.Level = reportItemLevel(progress.Heal);
-        ObserverHelper.saveToFile<HealItemProgress>(progress,  "HealItemProgress", OBSERVE_ITEM_ID);
+        ObserverHelper.saveToFile<HealItemProgress>(progress,  "HealItemProgress", OBSERVE_ITEM_ID,worldId);
     }
 
     private int reportItemLevel(int healProgress){

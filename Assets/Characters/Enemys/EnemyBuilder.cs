@@ -44,6 +44,7 @@ namespace MasterData{
 		faction;
 
         private Dictionary<AttackSkillAttribute, float> attributeResistances= new Dictionary<AttackSkillAttribute, float>();
+        private EnemyProgress progress;
 
 		//csvによるstring配列から初期化します
 		public EnemyBuilder(string[] parameters){
@@ -166,6 +167,23 @@ namespace MasterData{
             level += progress.Level;
 
             attributeResistances = progress.AttributeResistances;
+            this.progress = progress;
+        }
+
+        public void resetProgress(){
+			mft -= progress.Abilities[MFT];
+			fft -= progress.Abilities[FFT];
+			mgp -= progress.Abilities[MGP];
+			agi -= progress.Abilities[AGI];
+			phy -= progress.Abilities[PHY];
+
+			weaponLevel -= progress.WeponLevel;
+			level -= progress.Level;
+
+			var attributes = attributeResistances.Keys;
+			foreach (AttackSkillAttribute attribute in attributes) {
+				attributeResistances[attribute] = 1.0f;
+			}
         }
 
 		public override string ToString () {

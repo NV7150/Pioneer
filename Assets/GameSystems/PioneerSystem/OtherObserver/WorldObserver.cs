@@ -13,7 +13,7 @@ public class WorldObserver : IObserver {
         PioneerManager.getInstance().setObserver(this);
     }
 
-    public void report() {
+    public void report(int worldId) {
         world.saveWorld();
     }
 

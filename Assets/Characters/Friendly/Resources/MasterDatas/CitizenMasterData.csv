@@ -1,3 +1,2 @@
-id,name,model ID,massages,end
-0,ジョン,Test,ここは始まりの街だよ！,ゆっくりしていってね！,end
-1,マリー,Test,フゥゥゥゥゥゥゥゥゥゥゥゥゥゥゥゥゥゥゥゥ！,イェアァァァァァァァァァァァァァァァ！,end
+id,name,model ID,massages,
+0,ジョン,Merchant,最近は魔物が多くて心配じゃのう・・・,end

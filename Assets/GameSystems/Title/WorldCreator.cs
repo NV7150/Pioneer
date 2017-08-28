@@ -4,6 +4,7 @@ using UnityEngine;
 
 using Character;
 using System;
+using MasterData;
 
 public class WorldCreator : IObserver {
     private readonly static WorldCreator INSTANCE = new WorldCreator();
@@ -55,10 +56,12 @@ public class WorldCreator : IObserver {
     }
 
     public int getWorldIdDefault(){
+        Debug.Log("getted " + worldIdDefault);
         return worldIdDefault;
     }
 
     public void setWorldIdDefault(int id){
+        Debug.Log("setted " + id);
         worldIdDefault = id;
     }
 
@@ -73,6 +76,7 @@ public class WorldCreator : IObserver {
     }
 
     public void setWorldPass(int id){
+        Debug.Log("into " + id);
         worldPasses.Add(id);
     }
 
@@ -84,7 +88,7 @@ public class WorldCreator : IObserver {
         return new List<int>(worldPasses);
     }
 
-	public void report() {
+	public void report(int worldId) {
 		ES2Writer writer = ES2Writer.Create("BasicData");
 		writer.Write(worldPasses, "WorldPass");
 		writer.Write(worldIdDefault, "WorldIdDefault");
@@ -92,4 +96,18 @@ public class WorldCreator : IObserver {
     }
 
     public void reset() {}
+
+    public void loadProgresses(int id){
+        EnemyMasterManager.getInstance().addProgress(id);
+        AttackSkillMasterManager.getInstance().addProgress(id);
+        HealSkillMasterManager.getInstance().addProgress(id);
+        BufSkillMasterManager.getInstance().addProgress(id);
+        DebufSkillMasterManager.getInstance().addProgress(id);
+        HealItemMasterManager.getInstance().addProgress(id);
+        ItemMaterialMasterManager.getInstance().addProgress(id);
+    }
+
+    public Player getPlayer(){
+        return player;
+    }
 }

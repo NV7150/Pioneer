@@ -29,7 +29,7 @@ public class EnemyObserver : IObserver {
         PioneerManager.getInstance().setObserver(this);
     }
 
-    public void report() {
+    public void report(int worldId) {
         observeEnemyBuilder = EnemyMasterManager.getInstance().getEnemyBuilderFromId(OBSERVE_ENEMY_ID);
         var abilities = new Dictionary<BattleAbility, int>();
         var keys = Enum.GetValues(typeof(BattleAbility));
@@ -54,7 +54,7 @@ public class EnemyObserver : IObserver {
         var attributeKeys = Enum.GetValues(typeof(AttackSkillAttribute));
         foreach(AttackSkillAttribute attribute in attributeKeys){
             if(judgeResistanceProsessed(attribute)){
-                attributeTable.Add( attribute,progressResistance(attribute));
+                attributeTable.Add(attribute,progressResistance(attribute));
 			} else {
                 attributeTable.Add(attribute, 0);
             }
@@ -68,10 +68,18 @@ public class EnemyObserver : IObserver {
         }
 
         var progress = EnemyMasterManager.getInstance().getProgressFromId(OBSERVE_ENEMY_ID);
-        progress.Abilities = abilities;
-        progress.AttributeResistances = attributeTable;
-        progress.WeponLevel = weponLevel;
-        ObserverHelper.saveToFile<EnemyProgress>(progress,"EnemyProgress",OBSERVE_ENEMY_ID);
+
+        var abilityKeys = abilities.Keys;
+        foreach(var key in abilityKeys){
+            progress.Abilities[key] += abilities[key];
+        }
+
+        foreach(AttackSkillAttribute key in attributeKeys){
+            progress.AttributeResistances[key] += attributeTable[key];
+        }
+
+        progress.WeponLevel += weponLevel;
+        ObserverHelper.saveToFile<EnemyProgress>(progress,"EnemyProgress",OBSERVE_ENEMY_ID,worldId);
     }
 
     public void reset(){

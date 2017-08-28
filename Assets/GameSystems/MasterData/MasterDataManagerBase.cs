@@ -37,13 +37,13 @@ namespace MasterData{
         /// <param name="id">取得したいもののID</param>
         /// <param name="fileName">記録ファイルのアドレス</param>
         /// <typeparam name="E">セーブデータのクラスの型</typeparam>
-        public static E loadSaveData<E>(int id ,string fileName){
-            ES2Reader reader = ES2Reader.Create(getLoadPass(id,fileName));
+        public static E loadSaveData<E>(int id,int worldId ,string fileName){
+            ES2Reader reader = ES2Reader.Create(getLoadPass(id,worldId,fileName));
             return reader.Read<E>("" + id);
 		}
 
-        public static string getLoadPass(int id, string fileName){
-            return getLoadPassExceptTag(fileName) + "?tag=" + id;
+        public static string getLoadPass(int id,int worldId, string fileName){
+            return getLoadPassExceptTag(fileName) + "?tag=" + id + "" + worldId;
         }
 
         public static string getLoadPassExceptTag(string fileName){

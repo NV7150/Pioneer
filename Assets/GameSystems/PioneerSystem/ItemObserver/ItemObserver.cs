@@ -18,6 +18,6 @@ public abstract class ItemObserver : IObserver{
         useFrequency++;
     }
 
-	public abstract void report();
+	public abstract void report(int worldId);
 	public abstract void reset();
 }

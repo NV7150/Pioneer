@@ -293,7 +293,7 @@ namespace Character{
 		public void act () {
             bonusKeeper.advanceLimit();
             deleteCount -= Time.deltaTime;
-            if(deleteCount <= 0){
+            if(deleteCount <= 0 && !isBattling){
                 MonoBehaviour.Destroy(this.container.gameObject);
             }
 		}

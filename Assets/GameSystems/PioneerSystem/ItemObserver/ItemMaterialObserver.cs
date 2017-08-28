@@ -14,13 +14,13 @@ public class ItemMaterialObserver : ItemObserver {
 
     public ItemMaterialObserver(int itemId) : base(itemId) {}
 
-	public override void report() {
+	public override void report(int worldId) {
         material = ItemMaterialMasterManager.getInstance().getMaterialBuilderFromId(OBSERVE_ITEM_ID);
         ItemMaterialProgress progress = ItemMaterialMasterManager.getInstance().getProgress(OBSERVE_ITEM_ID);
         progress.Quality += progressQuality();
         progress.Level = progressLevel(progress.Quality);
 
-        ObserverHelper.saveToFile<ItemMaterialProgress>(progress,"ItemMaterialProgress",OBSERVE_ITEM_ID);
+        ObserverHelper.saveToFile<ItemMaterialProgress>(progress,"ItemMaterialProgress",OBSERVE_ITEM_ID,worldId);
     }
 
     private int progressLevel(float qualityPlus){

@@ -26,7 +26,7 @@ public class PioneerManager{
 	public void finished() {
 		ES2.DeleteDefaultFolder();
         foreach(IObserver observer in observers){
-            observer.report();
+            observer.report(WorldCreator.getInstance().getLoadWorldId());
             observer.reset();
         }
         SceneKeeper.deleteScene();

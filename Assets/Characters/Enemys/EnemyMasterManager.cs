@@ -74,19 +74,23 @@ namespace MasterData{
             return progressTable[id];
         }
 
+        public void addProgress(int worldId){
+            foreach(var builder in dataTable){
+                int id = builder.getId();
+                if (ES2.Exists(getLoadPass(id,worldId, "EnemyProgress.txt"))) {
+                    var progress = loadSaveData<EnemyProgress>(id,worldId, "EnemyProgress.txt");
+					builder.setProgress(progress);
+					progressTable[id] =  progress;
+				}
+            }
+        }
+
 		#region implemented abstract members of MasterDataManagerBase
 
 		protected override void addInstance (string[] datas) {
             var builder = new EnemyBuilder(datas);
-            dataTable.Add (builder);
-            int id = int.Parse(datas[0]);
-            if (ES2.Exists(getLoadPass(id, "EnemyProgress.txt"))) {
-                var progress = loadSaveData<EnemyProgress>(id, "EnemyProgress.txt");
-                builder.setProgress(progress);
-                progressTable.Add(id, progress);
-            }else{
-                progressTable.Add(id,new EnemyProgress());
-            }
+			dataTable.Add(builder);
+            progressTable.Add(int.Parse(datas[0]), new EnemyProgress());
 		}
 
         #endregion

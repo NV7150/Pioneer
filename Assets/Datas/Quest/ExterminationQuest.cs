@@ -145,8 +145,9 @@ namespace Quest {
 			this.LEVEL = 1;
 
 			var ids = EnemyMasterManager.getInstance().getEnemyIdsFromLevel(LEVEL);
+            Debug.Log(ids.Count);
 			int idRand = UnityEngine.Random.Range(0, ids.Count);
-			this.TARGET_ID = ids[idRand];
+            this.TARGET_ID = idRand;
 
 			EXTERMINATION_NUMBER = LEVEL + UnityEngine.Random.Range(10, 15);
 

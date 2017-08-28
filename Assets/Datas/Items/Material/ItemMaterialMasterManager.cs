@@ -50,15 +50,16 @@ namespace MasterData {
         protected override void addInstance(string[] datas) {
             var builder = new ItemMaterialBuilder(datas);
             dataTable.Add(builder);
+            progressTable.Add(int.Parse(datas[0]),new ItemMaterialProgress());
         }
 
-        public void updateProgress(){
+        public void addProgress(int worldId){
             foreach (ItemMaterialBuilder builder in dataTable) {
                 int id = builder.getId();
-                if (ES2.Exists(getLoadPass(id, "ItemProgress"))) {
-                    var progress = loadSaveData<ItemMaterialProgress>(id, "ItemProgress");
+                if (ES2.Exists(getLoadPass(id,worldId, "ItemProgress"))) {
+                    var progress = loadSaveData<ItemMaterialProgress>(id,worldId, "ItemProgress");
                     builder.addProgress(progress);
-                    progressTable.Add(id, progress);
+                    progressTable[id] = progress;
                 }
             }
         }

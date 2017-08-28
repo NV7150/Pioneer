@@ -129,7 +129,6 @@ namespace AI {
             foreach (ActiveSkillCategory category in categories) {
                 int probality = probalityTable[category] + probalityBonus[category];
                 if (choose < probality || choose == 0) {
-                    //					Debug.Log (activeSkills.getSkillFromSkillCategory(category).getName());
                     return activeSkills.getSkillFromSkillCategory(category);
                 }
                 choose -= probalityTable[category] + probalityBonus[category];
@@ -258,17 +257,15 @@ namespace AI {
 					sumLevel += target.getLevel();
 				}
 			}
-			//乱数を出す
-			int choose = UnityEngine.Random.Range(0, sumLevel) + 1;
 
-			//最終判定
-			//弱い敵を積極的に殴るので、レベル合計-レベルが可能性値です
-			foreach (IBattleable target in hostalityTargets) {
-				int probality = sumLevel - target.getLevel();
-				if (probality >= choose || probality <= 0)
-					return target;
-				choose -= probality;
-			}
+            //最終判定：計算可能な形式の変数にする
+            Dictionary<int, int> levelTable = new Dictionary<int, int>();
+            for (int i = 0; i < hostalityTargets.Count;i++){
+                levelTable.Add(i,hostalityTargets[i].getLevel());
+            }
+
+            return hostalityTargets[MathHelper.getRandomKeyLowerOrderProbality(levelTable)];
+
 			throw new InvalidOperationException("Cannot decideHostileSingleTarget.");
 		}
 
@@ -477,24 +474,16 @@ namespace AI {
         private int recession(MoveSkill useSkill) {
 			//エリア危険性レベルを取得
 			Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user, useSkill.getMove(user));
+			Dictionary<int, int> dangerLevelIntegerTable = new Dictionary<int, int>();
 			var keys = areaDangerLevelTable.Keys;
 			int sumDangerLevel = 0;
 			foreach (FieldPosition pos in keys) {
 				sumDangerLevel += areaDangerLevelTable[pos];
+                dangerLevelIntegerTable.Add((int)pos,areaDangerLevelTable[pos]);
 			}
 
             //最終判定：レベルが低いところへ
-			int rand = UnityEngine.Random.Range(0, sumDangerLevel);
-
-			foreach (FieldPosition pos in keys) {
-                if (areaDangerLevelTable[pos] >= (sumDangerLevel - rand)) {
-					FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
-					return pos - nowPos;
-				} else {
-					rand += areaDangerLevelTable[pos];
-				}
-			}
-            throw new InvalidOperationException("cannot dicide recession move");
+            return MathHelper.getRandomKeyLowerOrderProbality(dangerLevelIntegerTable);
         }
 
         /// <summary>

@@ -160,7 +160,7 @@ namespace Skill {
 		}
 
         public string getFlavorText() {
-            throw new NotImplementedException();
+            return "";
         }
 
         public int getLevel() {
