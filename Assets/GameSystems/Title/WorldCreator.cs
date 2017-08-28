@@ -64,6 +64,7 @@ public class WorldCreator : IObserver {
 
     public void activetePlayer(Transform transfrom){
         player.activateContainer();
+        player.getContainer().transform.position = transfrom.position;
         var client = new Client(player.getMisssion(),transfrom);
     }
 

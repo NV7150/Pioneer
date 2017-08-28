@@ -1,2 +1,2 @@
-id,name,model name,spc,dex,level,questType,"massage(request,undertaking,cleared)",,,,,,,
-0,男,Test,1,1,1,EXTERMINATION,困った,ので、なんかたおしてこい,end,たおせよ,はやく,end,たおしたな,end
+id,name,model name,spc,dex,level,questType,"massage(request,undertaking,cleared)",,,,,,,,
+0,男,Test,1,1,1,EXTERMINATION,最近魔物が多くて大変なんです・・・,お願いです、何体か倒してもらえませんか？,クエストが追加された,end,お願いします！,end,ありがとうございます！,これがお礼です！,end

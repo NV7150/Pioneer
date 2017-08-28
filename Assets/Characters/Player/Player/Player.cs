@@ -505,7 +505,7 @@ namespace Character{
                     Menu menu = menuObject.GetComponent<Menu>();
                     menu.transform.SetParent(CanvasGetter.getCanvas().transform);
                     menu.setState(this, party);
-                } else if (Input.GetKeyDown(KeyCode.Return)) {
+                } else if (Input.GetKeyDown(KeyCode.Mouse0)) {
                     searchFront();
                 }
             }
@@ -684,12 +684,9 @@ namespace Character{
         }
 
 		private void searchFront() {
-			Debug.Log("into search");
-            Ray ray = new Ray(container.transform.position, container.transform.forward); 
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray, out hitInfo, distance)) {
-                Debug.Log("into if");
-
                 Debug.DrawRay(ray.origin,hitInfo.point,Color.red);
 				Container hitContainer = hitInfo.transform.GetComponent<Container>();
 				if (hitContainer != null) {

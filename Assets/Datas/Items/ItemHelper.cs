@@ -30,6 +30,7 @@ namespace Item {
         public static Weapon creatRandomLevelWeapon(int level,IFriendly creator = null, float qualityBonus = 0){
             int numberOfWeponShape = WeaponShapeMasterManager.getInstance().getNumberOfShapes();
             int shpeRand = Random.Range(0, numberOfWeponShape);
+            Debug.Log(shpeRand + " " + numberOfWeponShape);
             WeaponShape shape = WeaponShapeMasterManager.getInstance().getShapeFromId(shpeRand);
 
             var weponMaterials = ItemMaterialMasterManager.getInstance().getMaterialFromLevel(level);
@@ -59,7 +60,7 @@ namespace Item {
         }
 
         public static Armor creatRandomLevelArmor(int level,IFriendly creator = null, float qualityBonus = 0){
-            int numberOfWeponShape = WeaponShapeMasterManager.getInstance().getNumberOfShapes();
+            int numberOfWeponShape = ArmorShapeMasterManager.getInstance().getNumberOfShapes();
             int shpeRand = Random.Range(0, numberOfWeponShape);
             ArmorShape shape = ArmorShapeMasterManager.getInstance().getShapeFromId(shpeRand);
 
@@ -89,7 +90,7 @@ namespace Item {
         public static List<HealItem> creatRandomLevelHealItem(int level,int orderNumber){
             var healItems = new List<HealItem>();
             var registeredHealItemsList = HealItemMasterManager.getInstance().getHealItemsFromLevel(level);
-            for (int i = 0;i < orderNumber && registeredHealItemsList.Count >= 0;i++){
+            for (int i = 0;i < orderNumber && registeredHealItemsList.Count > 0;i++){
                 int rand = Random.Range(0,registeredHealItemsList.Count);
                 healItems.Add(registeredHealItemsList[rand]);
                 registeredHealItemsList.Remove(registeredHealItemsList[rand]);
@@ -100,7 +101,7 @@ namespace Item {
         public static List<ItemMaterial> creatRandomLevelItemMaterial(int level, int orderNumber) {
             var materials = new List<ItemMaterial>();
             var registeredMaterialsList = ItemMaterialMasterManager.getInstance().getMaterialFromLevel(level);
-			for (int i = 0; i < orderNumber && registeredMaterialsList.Count >= 0; i++) {
+			for (int i = 0; i < orderNumber && registeredMaterialsList.Count > 0; i++) {
 				int rand = Random.Range(0, registeredMaterialsList.Count);
 				materials.Add(registeredMaterialsList[rand]);
 				registeredMaterialsList.Remove(registeredMaterialsList[rand]);
@@ -111,7 +112,7 @@ namespace Item {
         public static List<TradeItem> creatRandomLevelTradeItem(int level, int orderNumber){
             var tradeItems = new List<TradeItem>();
             var reagisteredTradeItemList = TradeItemMasterManager.getInstance().getTradeItemsFromLevel(level);
-            for (int i = 0; i < orderNumber && reagisteredTradeItemList.Count >= 0; i++){
+            for (int i = 0; i < orderNumber && reagisteredTradeItemList.Count > 0; i++){
                 int rand = Random.Range(0, reagisteredTradeItemList.Count);
                 tradeItems.Add(reagisteredTradeItemList[rand]);
                 reagisteredTradeItemList.Remove(reagisteredTradeItemList[rand]);
@@ -122,7 +123,7 @@ namespace Item {
         public static List<SkillBook> creatRandomLevelSkillBook(int level, int orderNumber) {
             var skillBooks = new List<SkillBook>();
             var reagisteredSkillBookList = SkillBookDataManager.getInstance().getSkillBooksFromLevel(level);
-			for (int i = 0; i < orderNumber && reagisteredSkillBookList.Count >= 0; i++) {
+			for (int i = 0; i < orderNumber && reagisteredSkillBookList.Count > 0; i++) {
 				int rand = Random.Range(0, reagisteredSkillBookList.Count);
 				skillBooks.Add(reagisteredSkillBookList[rand]);
 				reagisteredSkillBookList.Remove(reagisteredSkillBookList[rand]);

@@ -12,7 +12,7 @@ public class ScreenShot : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetKeyDown(KeyCode.Space)){
-			Application.CaptureScreenshot(Application.dataPath + "/" + System.DateTime.Now.ToString(format) +".png");
+			//Application.CaptureScreenshot(Application.dataPath + "/" + System.DateTime.Now.ToString(format) +".png");
 		}
 	}
 }

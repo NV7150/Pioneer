@@ -18,7 +18,9 @@ namespace AI {
 		/// <summary>
         /// シングルトンです
         /// </summary>
-		private EnemyAISummarizingManager () {}
+		private EnemyAISummarizingManager () {
+            summarizingAI.Add(CowardBuilder.getInstance());
+        }
 
 		/// <summary>
         /// 唯一のインスタンスを取得します

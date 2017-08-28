@@ -1,3 +1,8 @@
-id,name,aiId,maxHp,maxMp,mft,fft,phy,mgp,agi,def,level,normalDropId,rareDropId,activeSkillSetId,passiveSkillSetId,weponId,faction,modelName
-0,ゴブリン,0,10,5,2,0,1,0,2,0,1,0,0,0,0,3,ENEMY,Test
-1,スライム,0,5,5,1,1,0,0,1,0,1,0,0,0,0,0,ENEMY,Test
+id,name,aiId,maxHp,maxMp,mft,fft,phy,mgp,agi,def,level,normalDropId,rareDropId,activeSkillSetId,reactionSkillSetId,faction,modelName
+0,ゴブリン,0,10,5,2,0,1,0,2,0,1,0,0,0,0,ENEMY,Goblin
+1,スライム,0,5,5,1,1,0,0,1,0,1,0,0,0,0,ENEMY,Slime
+2,スケルトン,0,10,5,2,0,1,1,1,0,1,0,0,1,0,ENEMY,Skeleton
+3,ゴブリンウォーリア,0,30,5,3,0,2,0,2,5,3,0,0,1,0,ENEMY,G_Warrior
+4,スケルトンウィッチ,0,10,30,1,0,1,3,1,0,5,0,0,2,0,ENEMY,S_Witch
+5,スケルトンアーチャー,0,20,10,1,2,0,0,1,3,5,0,0,3,0,ENEMY,S_Archer
+6,ゴブリンライダー,0,70,10,5,3,4,3,6,10,10,0,0,4,1,ENEMY,G_Rider

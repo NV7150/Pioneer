@@ -61,7 +61,6 @@ namespace Character {
 		private Dictionary<FriendlyAbility, int> abilities = new Dictionary<FriendlyAbility, int>();
         public Dictionary<FriendlyAbility,int> Abilities{
             get { return new Dictionary<FriendlyAbility, int>(abilities); }
-            set{}
         }
 
         public Merchant(MerchantBuiler builder,Town livingTown){
@@ -70,6 +69,11 @@ namespace Character {
             GameObject modelPrefab = (GameObject)Resources.Load("Models/" + builder.getModelId());
             container = MonoBehaviour.Instantiate(modelPrefab).GetComponent<Container>();
             container.setCharacter(this);
+            var yPos = Terrain.activeTerrain.terrainData.GetInterpolatedHeight(
+                container.transform.position.x,
+                container.transform.position.z
+            );
+            container.transform.position = new Vector3(container.transform.position.x, yPos, container.transform.position.z);
 
             massages = builder.getMassges();
             TRADE_INDEX = builder.getStartTradeIndex();
@@ -136,7 +140,7 @@ namespace Character {
                     return ItemHelper.creatRandomLevelItemMaterial(goodsLevel, numberOfGoods).ConvertAll(c => (IItem)c);
                 case ItemType.SKILL_BOOK:
                     return ItemHelper.creatRandomLevelSkillBook(goodsLevel, numberOfGoods).ConvertAll(c => (IItem)c);
-                case ItemType.TRADING_ITEM:
+                case ItemType.TRADE_ITEM:
                     return ItemHelper.creatRandomLevelTradeItem(goodsLevel, numberOfGoods).ConvertAll(c => (IItem)c);
 			}
 			throw new NotSupportedException("unkown itemType");

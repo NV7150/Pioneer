@@ -11,17 +11,14 @@ namespace AI{
     /// <summary>
     /// cowardを生成するビルダー
     /// </summary>
-	[InitializeOnLoad]
-	public class CowardBuilder : IEnemyAIBuilder {
+    public class CowardBuilder : IEnemyAIBuilder {
+        private static CowardBuilder INSTANCE = new CowardBuilder(); 
 
 		private CowardBuilder(){}
 
-		/// <summary>
-        /// ゲーム開始時に自身をEnemyAiSummarizingManagerに登録します
-        /// </summary>
-		static CowardBuilder(){
-			EnemyAISummarizingManager.getInstance ().addAi (new CowardBuilder());	
-		}
+        public static CowardBuilder getInstance(){
+            return INSTANCE;
+        }
 
 		#region IEnemyAIBuilder implementation
 		public IEnemyAI build (IBattleable bal,ActiveSkillSet activeSKills,ReactionSkillSet passiveSkills) {

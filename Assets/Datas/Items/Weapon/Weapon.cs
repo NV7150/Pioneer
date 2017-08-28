@@ -53,7 +53,7 @@ namespace Item {
             CLASSIFICATION_CODE = shape.getId() + material.getId();
             BASE_ATTACK = shape.getAttack();
             RANGE = shape.getRange();
-            BASE_VALUE = material.getItemValue();
+            BASE_VALUE = material.getItemValue() + shape.getValue();
             MASS = shape.getMass() + material.getMass();
             BASE_HIT = shape.getHit();
             NAME = material.getName() + "の" + shape.getName();

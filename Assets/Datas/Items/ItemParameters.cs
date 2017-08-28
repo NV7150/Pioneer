@@ -16,7 +16,7 @@ namespace Item{
             /// <summary> スキル書 </summary>
             SKILL_BOOK,
             /// <summary> 換金アイテム </summary>
-            TRADING_ITEM
+            TRADE_ITEM
         }
 
         public enum ItemAttribute{

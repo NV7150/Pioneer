@@ -17,7 +17,7 @@ namespace Item {
             /// <summary> 防具の防御力への修正値 </summary>
             BASE_DEF,
             /// <summary> アイテムの基本価格 </summary>
-            ITEM_VALUE,
+        BASE_VALUE,
             HEAVINESS,
             MASS;
 
@@ -44,7 +44,7 @@ namespace Item {
         public Armor(ArmorShape shape, ItemMaterial material, float quality){
             CLASSIFICATION_CODE = shape.getId() + material.getId();
             BASE_DEF = shape.getDef();
-            ITEM_VALUE = shape.getItemValue();
+            BASE_VALUE = shape.getItemValue() + material.getItemValue();
             DELAY_DISTURB_MAG = shape.getDelayDisturbMag();
             DODGE_DISTURB_MAG = shape.getDodgeDisturbMag();
             MAGIC_DISTURB_MAG = shape.getMagicDisturbMag();
@@ -115,8 +115,9 @@ namespace Item {
 			return MASS;
 		}
 
-		public int getItemValue(){
-			return ITEM_VALUE;
+		public int getItemValue() {
+			int itemValue = (int)((float)BASE_VALUE * (quality / 100));
+			return itemValue;
 		}
 
         public void use(IPlayable user) {

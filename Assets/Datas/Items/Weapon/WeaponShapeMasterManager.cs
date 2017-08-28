@@ -24,7 +24,7 @@ namespace MasterData {
                 if (shape.getId() == id)
                     return shape;
             }
-            throw new ArgumentException("invalid shapeId");
+            throw new ArgumentException("invalid shapeId " + id);
         }
 
         public int getNumberOfShapes(){

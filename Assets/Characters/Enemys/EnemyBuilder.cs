@@ -146,9 +146,8 @@ namespace MasterData{
 			rareDropId = int.Parse (parameters [13]);
 			activeSkillSetId = int.Parse (parameters [14]);
 			reactionSkillSetId = int.Parse (parameters[15]);
-			weaponLevel = int.Parse (parameters[16]);
-			faction = parameters [17];
-			modelName = "Models/" + parameters [18];
+			faction = parameters [16];
+			modelName = "Models/" + parameters [17];
 
             var attributes = attributeResistances.Keys;
             foreach(AttackSkillAttribute attribute in attributes){

@@ -56,7 +56,7 @@ namespace Item {
         }
 
         public ItemType getItemType() {
-            return ItemType.TRADING_ITEM;
+            return ItemType.TRADE_ITEM;
         }
 
         public int getItemValue() {

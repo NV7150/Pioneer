@@ -89,7 +89,7 @@ namespace AI {
 
             List<ActiveSkillCategory> categories = new List<ActiveSkillCategory>(probalityBonus.Keys);
 
-            //スキルの射程内に何もいない時、ボーナス値を使って可能性値を0にします。
+            //スキルの射程内に何もいない、またはコスト外の時、ボーナス値を使って可能性値を0にします。
             foreach (ActiveSkillCategory category in categories) {
                 IActiveSkill categorySkill = activeSkills.getSkillFromSkillCategory(category);
 
@@ -97,8 +97,11 @@ namespace AI {
                     continue;
 
                 int range = ActiveSkillSupporter.searchRange(categorySkill, user);
+                bool isInRange = BattleManager.getInstance().sumFromAreaTo(user, range) > 0;
 
-                if (BattleManager.getInstance().sumFromAreaTo(user, range) <= 0) {
+                bool canUse = categorySkill.getCost() <= user.getMp();
+
+                if (!isInRange || !canUse) {
                     probalityBonus[category] = -1 * probalityTable[category];
                 }
             }

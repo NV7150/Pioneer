@@ -119,12 +119,12 @@ namespace FieldMap {
         }
 
         private void layRoad(){
-            Instantiate(roadPrefab,transform.position,new Quaternion(0,0,0,0)).transform.SetParent(transform);
-            for (int i = 0; i < 10; i++){
-                grid[4, i] = true;
-                grid[5, i] = true;
-                grid[6, i] = true;
-            }
+            //Instantiate(roadPrefab,transform.position,new Quaternion(0,0,0,0)).transform.SetParent(transform);
+            //for (int i = 0; i < 10; i++){
+            //    grid[4, i] = true;
+            //    grid[5, i] = true;
+            //    grid[6, i] = true;
+            //}
         }
 
         private bool judgeBuild(int x,int z){
@@ -176,7 +176,10 @@ namespace FieldMap {
                     citizens.Add(character);
 					if (x > 5) {
 						building.transform.Rotate(new Vector3(0, 180, 0));
-					}
+						character.getContainer().transform.Rotate(new Vector3(0, -90, 0));
+                    }else{
+                        character.getContainer().transform.Rotate(new Vector3(0, 90, 0));
+                    }
                     buildingDatas.Add(new BuildingSaveData(builder.getModelId(),building.transform));
                 } else {
                     var builder = BuildingHelper.getRandomLevelShop(level);
@@ -195,7 +198,10 @@ namespace FieldMap {
                     }
 					if (x > 5) {
 						building.transform.Rotate(new Vector3(0, 180, 0));
-					}
+                        character.getContainer().transform.Rotate(new Vector3(0, -90, 0));
+					} else {
+						character.getContainer().transform.Rotate(new Vector3(0, 90, 0));
+                    }
                     buildingDatas.Add(new BuildingSaveData(builder.getModelId(), building.transform));
                 }
 

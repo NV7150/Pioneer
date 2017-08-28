@@ -92,6 +92,10 @@ namespace Skill {
 		public IActiveSkill getSkillFromSkillCategory(ActiveSkillCategory category){
 			return skillSet[category];
 		}
+
+        public int getCost(ActiveSkillCategory category){
+            return skillSet[category].getCost();
+        }
 	}
 }
 
