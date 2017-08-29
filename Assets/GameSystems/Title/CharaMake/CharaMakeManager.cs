@@ -183,7 +183,8 @@ namespace CharaMake {
             this.identities = IdentityMasterManager.getInstance().getIdentitiesFromLevel(level);
             Vector3 viewPos = new Vector3(200, Screen.height / 2);
             selectView = Instantiate(selectViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<SelectViewContainer>();
-            selectView.transform.SetParent(CanvasGetter.getCanvas().transform);
+            Debug.Log(CanvasGetter.getCanvasElement().transform);
+            selectView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
 
             inputJob();
         }
@@ -197,7 +198,6 @@ namespace CharaMake {
                 JobNode jobNode = Instantiate(jobNodePrefab).GetComponent<JobNode>();
                 jobNode.setJob(job);
                 jobNodes.Add(jobNode);
-                Debug.Log("into job");
             }
             jobSelectView = selectView.creatSelectView<JobNode, Job>(jobNodes);
 
@@ -206,7 +206,7 @@ namespace CharaMake {
 
             jobView.printText(jobSelectView.getElement());
 
-            jobView.transform.SetParent(CanvasGetter.getCanvas().transform);
+            jobView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
             state = CharaMakeState.JOB;
         }
 
@@ -225,7 +225,7 @@ namespace CharaMake {
             Vector3 viewPos = new Vector3(712f, Screen.height / 2);
             this.parameterView = Instantiate(parameterViewPrefab,viewPos,new Quaternion(0,0,0,0)).GetComponent<CharaMakeParameterView>();
 
-            parameterView.transform.SetParent(CanvasGetter.getCanvas().transform);
+            parameterView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
 
             var printHumanity = humanitySelectView.getElement();
 			parameterView.printText(printHumanity.getName(), printHumanity.getDescription(), printHumanity.getFlavorText());
@@ -282,7 +282,7 @@ namespace CharaMake {
 
             CharaMakeResultView resultView = Instantiate(resultViewPrefab, viewPos, new Quaternion(0, 0, 0, 0)).GetComponent<CharaMakeResultView>();
             Destroy(selectView.gameObject);
-            resultView.transform.SetParent(CanvasGetter.getCanvas().transform);
+            resultView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
             resultView.setParameters(choseJob, choseHumanity, choseIdentities ,choseMission, this);
 
             state = CharaMakeState.RESULT;

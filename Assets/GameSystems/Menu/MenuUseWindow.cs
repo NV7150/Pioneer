@@ -62,9 +62,7 @@ namespace Menus {
         /// キャンセルが選ばれた時の処理
         /// </summary>
 		public void cancelChose() {
-			CanvasGetter.getCanvas().GetComponent<CanvasGroup>().interactable = true;
-            CanvasGetter.getCanvas().GetComponent<CanvasGroup>().blocksRaycasts = true;
-            transform.root.GetComponent<CanvasGroup>().blocksRaycasts = false;
+            view.finishUsing();
             Destroy(gameObject);
         }
     }

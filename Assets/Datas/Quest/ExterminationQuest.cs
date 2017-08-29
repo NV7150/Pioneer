@@ -49,9 +49,9 @@ namespace Quest {
 
             var targetName = EnemyMasterManager.getInstance().getEnemyBuilderFromId(TARGET_ID).getName();
 
-            NAME = "討伐依頼";
-            DESCRIPTION = targetName + "を" + EXTERMINATION_NUMBER;
-            FLAVOR_TEXT = "最近問題になっている" + targetName + "を駆除する依頼";
+            NAME = "駆除依頼";
+            DESCRIPTION = targetName + "を" + EXTERMINATION_NUMBER + "匹倒す";
+            FLAVOR_TEXT = "最近問題になっている" + targetName + "を駆除しよう";
 		}
 
         public ExterminationQuest(ExterminationMissonBuilder builder, FlagList flags){
@@ -70,7 +70,7 @@ namespace Quest {
 
         public void activateCompensation(Player player) {
             if(compentionType == CompentionType.FINISH){
-                PioneerManager.getInstance().resultPrint();
+                PioneerManager.getInstance().missionClearPrint();
             }else if(compentionType == CompentionType.METAL){
                 player.addMetal(LEVEL * 10 * EXTERMINATION_NUMBER);
             }else{
@@ -145,7 +145,6 @@ namespace Quest {
 			this.LEVEL = 1;
 
 			var ids = EnemyMasterManager.getInstance().getEnemyIdsFromLevel(LEVEL);
-            Debug.Log(ids.Count);
 			int idRand = UnityEngine.Random.Range(0, ids.Count);
             this.TARGET_ID = idRand;
 

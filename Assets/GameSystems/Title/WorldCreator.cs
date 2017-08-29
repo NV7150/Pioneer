@@ -56,19 +56,18 @@ public class WorldCreator : IObserver {
     }
 
     public int getWorldIdDefault(){
-        Debug.Log("getted " + worldIdDefault);
         return worldIdDefault;
     }
 
     public void setWorldIdDefault(int id){
-        Debug.Log("setted " + id);
         worldIdDefault = id;
     }
 
-    public void activetePlayer(Transform transfrom){
-        player.activateContainer();
+	public void activetePlayer(Transform transfrom) {
+		var client = new Client(player.getMisssion(), transfrom);
+		player.activateContainer();
+		transfrom.position += new Vector3(0, 0, 20);
         player.getContainer().transform.position = transfrom.position;
-        var client = new Client(player.getMisssion(),transfrom);
     }
 
     public void setPlayer(Player player){
@@ -76,7 +75,6 @@ public class WorldCreator : IObserver {
     }
 
     public void setWorldPass(int id){
-        Debug.Log("into " + id);
         worldPasses.Add(id);
     }
 

@@ -32,7 +32,7 @@ namespace MasterData {
         public List<int> getLevelShopsId(int level){
             var ids = new List<int>();
             foreach(FacilityBuilder builder in dataTable){
-                if (builder.getLevel() == level)
+                if (builder.getLevel() <= level)
                     ids.Add(builder.getId());
             }
             return ids;

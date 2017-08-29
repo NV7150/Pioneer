@@ -19,7 +19,7 @@
 			if (tradeViewPrefab == null) {
 				tradeViewPrefab = (GameObject)Resources.Load("Prefabs/TradeView");	        }		}	    /// <summary>	    /// 取引を開始します	    /// </summary>	    private void startTrade() {	        GameObject tradeViewNode = MonoBehaviour.Instantiate(tradeViewPrefab);	        BuyWindow buyWindow = tradeViewNode.GetComponent<TradeView>().getBuyWindow();
 	        buyWindow.setState(tradegoods, player, trader,this);
-	        tradeViewNode.transform.SetParent(CanvasGetter.getCanvas().transform);	        float posX = (Screen.width / 2 - tradeViewNode.GetComponent<RectTransform>().sizeDelta.x / 2);
+	        tradeViewNode.transform.SetParent(CanvasGetter.getCanvasElement().transform);	        float posX = (Screen.width / 2 - tradeViewNode.GetComponent<RectTransform>().sizeDelta.x / 2);
 	        tradeViewNode.transform.localPosition = new Vector3(posX, 0, 0);	        Canvas.ForceUpdateCanvases();
 			isTrading = true;            massagePrinting = false;            GameObject metalViewObject = MonoBehaviour.Instantiate(metalViewPrefab,new Vector3(150,(Screen.height - 100)),new Quaternion(0,0,0,0));            metalView = metalViewObject.GetComponent<MetalView>();            metalView.setNumber(player);            metalView.transform.SetParent(buyWindow.transform);
 	    }	    /// <summary>	    /// 取引が必要かを判断し、必要なら開始します	    /// </summary>	    private void judgeTrade(){
@@ -27,7 +27,7 @@
 				startTrade();
 			}	    }	    /// <summary>	    /// テキストを表示するコルーチン	    /// </summary>	    /// <returns>コルーチンのIEnumertor</returns>	    private IEnumerator showText(string massage) {	        massagePrinting = true;	        printingMassage = massage;	        for(int i = 0;i <= massage.Length; i++) {	            yield return new WaitForSeconds(0.1f);	            massageTextObject.text = massage.Substring(0,i);	        }	        massagePrinting = false;
 	        if (!isTrading) {
-	            judgeTrade();	        }	    }	    /// <summary>	    /// コルーチンを停止して全文字表示します	    /// </summary>	    private void cancelPrint() {	        Debug.Log("<color=red>cancel!</color>");	        StopCoroutine(printCoroutine);
+	            judgeTrade();	        }	    }	    /// <summary>	    /// コルーチンを停止して全文字表示します	    /// </summary>	    private void cancelPrint() {	        StopCoroutine(printCoroutine);
 			massagePrinting = false;
 			massageTextObject.text = printingMassage;	    }	    /// <summary>	    /// 表示するメッセージを設定します	    /// </summary>	    /// <param name="massages">表示するメッセージのリスト</param>	    public void setMassageList(List<string> massages) {	        massageList = massages;	    }	    /// <summary>	    /// 取引する場合のメッセージを設定します	    /// </summary>	    /// <param name="massages">表示するメッセージのリスト</param>	    /// <param name="tradeIndex">取引するインデックス</param>	    /// <param name="goods">商品のリスト</param>	    /// <param name="player">取引に参加するプレイヤー</param>	    /// <param name="trader">取引に参加するIFriendlyキャラクター</param>	    public void setMassageList(List<string> massages, string failMassage,int tradeIndex,List<IItem> goods, Player player, IFriendly trader) {
 	        massageList = massages;

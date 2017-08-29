@@ -38,13 +38,11 @@ namespace FieldMap {
                     WorldCreator.getInstance().setWorldIdDefault(id);
                     creatWorld();
                     WorldCreator.getInstance().setWorldPass(id);
-                    Debug.Log("id setted " + id);
                 }
 
                 WorldCreator.getInstance().setWorldLoaded(true);
                 WorldCreator.getInstance().activetePlayer(missionClientPos);
             }else{
-                Debug.Log("into loaded");
                 WorldCreator.getInstance().resetPlayerPos();
             }
 

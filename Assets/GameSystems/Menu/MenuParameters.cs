@@ -20,15 +20,14 @@
             ITEM,
 
             /// <summary>
-            /// セーブ画面
-            /// 未実装
-            /// </summary>
-            SAVE,
-
-            /// <summary>
             /// クエスト確認画面
             /// </summary>
             QUEST,
+
+			/// <summary>
+			/// タイトルに戻る
+			/// </summary>
+			TITLE,
 
             /// <summary>
             /// 目次

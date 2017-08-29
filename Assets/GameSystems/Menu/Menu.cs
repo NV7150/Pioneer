@@ -36,6 +36,7 @@ namespace Menus {
         private GameObject menuCharacterViewPrefab;
         private GameObject menuQuestNodePrefab;
         private GameObject menuQuestViewPrefab;
+        private GameObject menuBackWindowPrefab;
 
         /// <summary> プレイヤーが所属するパーティ </summary>
         Party party;
@@ -55,6 +56,8 @@ namespace Menus {
 
         private static bool isDisplaying = false;
 
+        private bool isWindowInputing = false;
+
         // Use this for initialization
         void Awake() {
             menuIndexNodePrefab = (GameObject)Resources.Load("Prefabs/MenuIndexNode");
@@ -67,6 +70,7 @@ namespace Menus {
             useWindowPrefab = (GameObject)Resources.Load("Prefabs/UseWindow");
             menuQuestNodePrefab = (GameObject)Resources.Load("Prefabs/MenuQuestNode");
             menuQuestViewPrefab = (GameObject)Resources.Load("Prefabs/MenuQuestView");
+            menuBackWindowPrefab = (GameObject)Resources.Load("Prefabs/BackWindow");
 
             selectviewContainer = Instantiate((GameObject)Resources.Load("Prefabs/SelectView")).GetComponent<SelectViewContainer>();
             selectviewContainer.transform.position = transform.position;
@@ -81,7 +85,7 @@ namespace Menus {
 
         // Update is called once per frame
         void Update() {
-            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)) {
+            if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.UpArrow)) && !isWindowInputing) {
                 int axis = getAxis();
 
                 if (axis != 0) {
@@ -89,7 +93,7 @@ namespace Menus {
                 }
             }
 
-            if(Input.GetKeyDown(KeyCode.Return) && currentContent == MenuContents.INDEX){
+            if((Input.GetKeyDown(KeyCode.Return) && currentContent == MenuContents.INDEX) && !isWindowInputing) {
                 indexChosen(indexSelectView.getElement());
             }
 		}
@@ -144,14 +148,22 @@ namespace Menus {
                     break;
 
                 case MenuContents.QUEST:
-                    //try{
+                    try{
                         var quest = questSelectView.moveTo(questSelectView.getIndex() + axis);
                         inputQuestView(quest);
-                    //}catch{
-                    //    Debug.Log("there are no quests");
-                    //}
+                    }catch{
+                        Debug.Log("there are no quests");
+                    }
                     break;
             }
+        }
+
+        private void inputBackWindow(){
+            var window = Instantiate(menuBackWindowPrefab);
+            window.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
+            window.transform.SetParent(CanvasGetter.getCanvasElement().transform);
+            window.GetComponent<BackWindow>().setState(this);
+            deleteCursors();
         }
 
         /// <summary>
@@ -211,6 +223,10 @@ namespace Menus {
                     inputQuests();
                     break;
 
+				case MenuContents.TITLE:
+					inputBackWindow();
+					break;
+
                 default:
                     throw new NotSupportedException("unkonwn content " + menuContent);
             }
@@ -248,7 +264,7 @@ namespace Menus {
             if (stateView == null) {
                 GameObject viewObject = Instantiate(menuCharacterViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0));
                 stateView = viewObject.GetComponent<MenuCharacterStateView>();
-                stateView.transform.SetParent(CanvasGetter.getCanvas().transform);
+                stateView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
             }
             stateView.setCharacter(character);
         }
@@ -287,15 +303,9 @@ namespace Menus {
         private void inputItemView(IItem item){
             if (itemView == null) {
                 itemView = Instantiate(menuItemViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuItemView>();
-                itemView.transform.SetParent(CanvasGetter.getCanvas().transform);
+                itemView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
             }
-
-            foreach(var character in party.getParty()){
-                Debug.Log(character.getName());
-            }
-
             itemView.setItem(item,party,this);
-            
         }
 
 		/// <summary>
@@ -331,7 +341,7 @@ namespace Menus {
         private void inputSkillView(ISkill skill) {
 			if (skillView == null) {
 				skillView = Instantiate(menuSkillViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuSkillView>();
-				skillView.transform.SetParent(CanvasGetter.getCanvas().transform);
+				skillView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
 			}
 
             skillView.printSkill(skill);
@@ -346,6 +356,7 @@ namespace Menus {
 
             List<MenuQuestNode> nodes = new List<MenuQuestNode>();
             foreach(var quest in quests){
+                Debug.Log("into " + quest);
                 var questNode = Instantiate(menuQuestNodePrefab).GetComponent<MenuQuestNode>();
                 questNode.setQuest(quest);
                 nodes.Add(questNode);
@@ -363,7 +374,7 @@ namespace Menus {
         private void inputQuestView(IQuest quest){
             if(questView == null){
                 questView = Instantiate(menuQuestViewPrefab, new Vector3(312, 384, 0), new Quaternion(0, 0, 0, 0)).GetComponent<MenuQuestView>();
-                questView.transform.SetParent(CanvasGetter.getCanvas().transform);
+                questView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
             }
             questView.printQuest(quest);
         }
@@ -381,6 +392,9 @@ namespace Menus {
 
             if (characterSelectView != null)
                 characterSelectView.delete();
+
+            if (questSelectView != null)
+                questSelectView.delete();
         }
 
         /// <summary>
@@ -422,15 +436,25 @@ namespace Menus {
         }
 
         public void cancelChose(){
-            if(currentContent == MenuContents.INDEX){
-                finishChose();
-            }else{
-                backChose();
+            if (!isWindowInputing) {
+                if (currentContent == MenuContents.INDEX) {
+                    finishChose();
+                } else {
+                    backChose();
+                }
             }
         }
 
         public static bool getIsDisplaying(){
             return isDisplaying;
+        }
+
+        public void setIsWindowInputing(bool flag){
+            isWindowInputing = flag;
+        }
+
+        public void setIsDisplaying(bool flag){
+            isDisplaying = flag;
         }
     }
 }

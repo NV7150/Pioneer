@@ -30,7 +30,6 @@ namespace Item {
         public static Weapon creatRandomLevelWeapon(int level,IFriendly creator = null, float qualityBonus = 0){
             int numberOfWeponShape = WeaponShapeMasterManager.getInstance().getNumberOfShapes();
             int shpeRand = Random.Range(0, numberOfWeponShape);
-            Debug.Log(shpeRand + " " + numberOfWeponShape);
             WeaponShape shape = WeaponShapeMasterManager.getInstance().getShapeFromId(shpeRand);
 
             var weponMaterials = ItemMaterialMasterManager.getInstance().getMaterialFromLevel(level);

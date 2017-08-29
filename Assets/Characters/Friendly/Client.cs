@@ -101,7 +101,6 @@ namespace Character {
         }
 
         public Client(IQuest quest, Transform transfrom){
-            Debug.Log("called contractor");
             this.quest = quest;
             this.UNIQUE_ID = UniqueIdCreator.creatUniqueId();
 
@@ -122,7 +121,6 @@ namespace Character {
             this.container.transform.position = transfrom.position;
             this.container.transform.rotation = transfrom.rotation;
 
-            MonoBehaviour.Destroy(transfrom.gameObject);
             isActivated = true;
             needTown = false;
         }
@@ -185,7 +183,7 @@ namespace Character {
                             undertakingTalk();
                         }
                     } else {
-                        requestTalk(player.getFlagList());
+                        requestTalk(player);
                     }
                 }
             }
@@ -196,9 +194,10 @@ namespace Character {
             return quest;
         }
 
-        private void requestTalk(FlagList flags){
+        private void requestTalk(Player player){
             TalkManager.getInstance().talk(MASSAGES);
-            creatQuest(flags);
+            var createdQuest = creatQuest(player.getFlagList());
+            player.undertake(createdQuest);
         }
 
         private void undertakingTalk(){

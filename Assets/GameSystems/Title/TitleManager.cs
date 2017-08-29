@@ -53,12 +53,13 @@ public class TitleManager : MonoBehaviour{
         WorldCreator.getInstance().setLoadWorldId(id);
 		WorldTop top = Instantiate(worldTopPrefab).GetComponent<WorldTop>();
         top.setState(id,this);
-        top.transform.SetParent(CanvasGetter.getCanvas().transform);
+        top.transform.SetParent(CanvasGetter.getCanvasElement().transform);
         top.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
 
     }
 
     public void loadTitle(){
+        CanvasGetter.detachCanvasElement();
         WorldCreator.getInstance().setIsLoad(false);
 
 		foreach (var compornent in titleCompornents) {

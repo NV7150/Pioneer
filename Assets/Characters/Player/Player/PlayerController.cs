@@ -13,22 +13,27 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
         if (canMove) {
             if (Input.GetKeyDown(KeyCode.W)) {
-                animator.SetBool("Running",true);
-            }else if(Input.GetKeyUp(KeyCode.W)){
+                animator.SetBool("Running", true);
+            } else if (Input.GetKeyUp(KeyCode.W)) {
                 animator.SetBool("Running", false);
-            }
-            /* else if (Input.GetKey(KeyCode.A)) {
-                container.transform.position += container.transform.right * -1.0f;
-            } else if (Input.GetKey(KeyCode.D)) {
-                container.transform.position += container.transform.right * 1.0f;
-            } else if (Input.GetKey(KeyCode.S)) {
-                container.transform.position += container.transform.forward * -1.0f;
-            }*/
+            } else if (Input.GetKeyDown(KeyCode.A)) {
+                animator.SetBool("WalkLeft", true);
+            }else if(Input.GetKeyUp(KeyCode.A)){
+                animator.SetBool("WalkLeft", false);
+			} else if (Input.GetKeyDown(KeyCode.D)) {
+				animator.SetBool("WalkRight", true);
+            } else if (Input.GetKeyUp(KeyCode.D)) {
+                animator.SetBool("WalkRight", false);
+			} else if (Input.GetKeyDown(KeyCode.S)) {
+				animator.SetBool("WalkBack", true);
+            }else if (Input.GetKeyUp(KeyCode.S)) {
+                animator.SetBool("WalkBack", false);
+    		}
 
-            if(Input.GetKey(KeyCode.RightArrow)){
-                container.transform.Rotate(new Vector3(0,1,0));
+		if(Input.GetKey(KeyCode.RightArrow)){
+                container.transform.Rotate(new Vector3(0, 2.5f,0));
             }else if(Input.GetKey(KeyCode.LeftArrow)){
-                container.transform.Rotate(new Vector3(0,-1,0));
+                container.transform.Rotate(new Vector3(0, -2.5f,0));
             }
         }
 	}

@@ -17,19 +17,37 @@ public class PioneerManager{
         return INSTANCE;
     }
 
-    public void resultPrint(){
-        var resultView = MonoBehaviour.Instantiate(resultViewPrefab);
-        resultView.transform.SetParent(CanvasGetter.getCanvas().transform);
-        resultView.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
+    public void missionClearPrint(){
+        var view = inputResultView();
+        view.setText("使命達成!");
+    }
+
+	public void deathPrint() {
+		var view = inputResultView();
+		view.setText("ゲームオーバー!");
+    }
+
+	private ResultView inputResultView() {
+		var resultView = MonoBehaviour.Instantiate(resultViewPrefab);
+		resultView.transform.SetParent(CanvasGetter.getCanvasElement().transform);
+		resultView.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
+        return resultView.GetComponent<ResultView>();
     }
 
 	public void finished() {
-		ES2.DeleteDefaultFolder();
         foreach(IObserver observer in observers){
             observer.report(WorldCreator.getInstance().getLoadWorldId());
             observer.reset();
         }
         SceneKeeper.deleteScene();
+    }
+
+	public void retire() {
+		foreach (IObserver observer in observers) {
+			observer.reset();
+		}
+		SceneKeeper.deleteScene();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
     }
 
     public void setObserver(IObserver observer){

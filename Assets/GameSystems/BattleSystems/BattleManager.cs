@@ -124,7 +124,7 @@ namespace BattleSystem{
 
             BattleResultView view = MonoBehaviour.Instantiate(battleResultViewPrefab).GetComponent<BattleResultView>();
             view.setExp(expSum);
-            view.transform.SetParent(CanvasGetter.getCanvas().transform);
+            view.transform.SetParent(CanvasGetter.getCanvasElement().transform);
             view.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
 		}
 
@@ -142,8 +142,6 @@ namespace BattleSystem{
 		public void joinBattle(IBattleable bal,FieldPosition pos,IEnemyAI ai){
 			if (!isBattleing)
 				throw new InvalidOperationException("battle isn't started");
-
-            Debug.Log("into battle " + bal.getName());
 
             loadContainer(bal);
 			bal.setIsBattling (true);
@@ -173,7 +171,6 @@ namespace BattleSystem{
 
 			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/PlayerBattleTaskManager"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
-            Debug.Log("pl " + manager);
 			manager.setPlayer (player);
 			joinedManager.Add (player.getUniqueId(),manager);
 		}

@@ -39,7 +39,6 @@ namespace MasterData{
 		}
 
         public List<Job> getJobsFromLevel(int level){
-            Debug.Log("job " + level);
             List<Job> jobs = new List<Job>();
 
             foreach(Job job in dataTable){

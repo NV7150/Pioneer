@@ -604,7 +604,6 @@ namespace BattleSystem{
                     reactionLimit = prosessingPair.Value.getDelay(prosessingPair.Key);
                     needToReaction = true;
                     choosingReaction = true;
-                    Debug.Log("1" + waitingProgressSkills[0].Key.getName());
                 } else if (waitingProgressSkills.Count <= 0) {
                     needToReaction = false;
                 }

@@ -38,12 +38,8 @@ namespace Menus {
         /// <summary> 担当するアイテムがスタックを持つかのフラグ </summary>
         private bool hasStack;
 
-        /// <summary> ウィンドウを表示するカンヴァス </summary>
-        private Canvas frontCanvas;
-
         // Use this for initialization
         void Awake() {
-			frontCanvas = GameObject.Find("FrontCanvas").GetComponent<Canvas>();
             menuUseWindowPrefab = (GameObject)Resources.Load("Prefabs/MenuUseWindow");
         }
 
@@ -76,7 +72,6 @@ namespace Menus {
             if(ItemHelper.isEquipment(item)){
                 string text = "品質 " + (int)ItemHelper.searchQuality(item);
                 qualityText.text = text;
-                Debug.Log(text);
 			}
 			this.party = targets;
 
@@ -94,11 +89,9 @@ namespace Menus {
         public void useChose(){
             Vector3 windowPos = new Vector3(Screen.width / 2, Screen.height / 2, 0);
             MenuUseWindow useWindow = Instantiate(menuUseWindowPrefab,windowPos,new Quaternion(0,0,0,0)).GetComponent<MenuUseWindow>();
-            useWindow.transform.SetParent(frontCanvas.transform);
-            frontCanvas.GetComponent<CanvasGroup>().blocksRaycasts = true;
-            CanvasGetter.getCanvas().GetComponent<CanvasGroup>().interactable = false;
-            CanvasGetter.getCanvas().GetComponent<CanvasGroup>().blocksRaycasts = false;
+            useWindow.transform.SetParent(CanvasGetter.getCanvasElement().transform);
             useWindow.setState(this,item,party);
+            menu.setIsWindowInputing(true);
         }
 
 		/// <summary>
@@ -120,11 +113,8 @@ namespace Menus {
             Debug.Log("into useChosen " + item.getName());
         }
 
-        /// <summary>
-        /// 削除が選ばれた時の処理
-        /// </summary>
-        public void deleteChosen(){
-            //Destroy(gameObject);
+        public void finishUsing(){
+            menu.setIsWindowInputing(false);
         }
     }
 }

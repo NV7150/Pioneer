@@ -463,7 +463,6 @@ namespace Character{
 			
 		public void encount () {
 			if (!isBattleing) {
-                Debug.Log("<color=red>into enecount</color> " + camera);
                 camera.gameObject.SetActive(false);
 				BattleManager.getInstance().joinBattle(this, FieldPosition.ONE);
 			}
@@ -499,21 +498,22 @@ namespace Character{
 		public void act () {
             bonusKeeper.advanceLimit();
 
+            Debug.Log(TalkManager.getInstance().getIsTalking() + " ");
             if (!Menu.getIsDisplaying() && !TalkManager.getInstance().getIsTalking()) {
                 if (Input.GetKeyDown(KeyCode.E)) {
                     GameObject menuObject = MonoBehaviour.Instantiate(menuPrefab, new Vector3(874f, 384f, 0f), new Quaternion(0, 0, 0, 0));
                     Menu menu = menuObject.GetComponent<Menu>();
-                    menu.transform.SetParent(CanvasGetter.getCanvas().transform);
+                    menu.transform.SetParent(CanvasGetter.getCanvasElement().transform);
                     menu.setState(this, party);
-                } else if (Input.GetKeyDown(KeyCode.Mouse0)) {
+                } else if (Input.GetKeyDown(KeyCode.Mouse0) && !TalkManager.getInstance().getIsTalking()) {
+                    Debug.Log("into if");
                     searchFront();
                 }
             }
 
-
             ///////test from here////////////
             if(Input.GetKeyDown(KeyCode.RightShift)){
-                PioneerManager.getInstance().resultPrint();
+                PioneerManager.getInstance().missionClearPrint();
             }
 
             if(Input.GetKey(KeyCode.P)){
@@ -523,7 +523,7 @@ namespace Character{
 		}
 
 		public void death () {
-			Debug.Log ("game over!");
+            PioneerManager.getInstance().deathPrint();
 		}
 
 		public long getUniqueId () {
@@ -550,10 +550,12 @@ namespace Character{
         }
 
         public void undertake(IQuest quest){
+            Debug.Log("undertake " + quest.getName());
             this.undertakingQuests.Add(quest);
         }
 
-        public void deleteQuest(IQuest quest){
+		public void deleteQuest(IQuest quest) {
+			Debug.Log("dlelte " + quest.getName());
             this.undertakingQuests.Remove(quest);
         }
 
@@ -684,9 +686,12 @@ namespace Character{
         }
 
 		private void searchFront() {
+            Debug.Log("into search");
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hitInfo;
+            Debug.Log("into front " + camera.transform.position);
 			if (Physics.Raycast(ray, out hitInfo, distance)) {
+                Debug.Log("into rayCast");
                 Debug.DrawRay(ray.origin,hitInfo.point,Color.red);
 				Container hitContainer = hitInfo.transform.GetComponent<Container>();
 				if (hitContainer != null) {

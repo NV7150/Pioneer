@@ -72,7 +72,6 @@ namespace FieldMap {
             this.attribute = TownAttributeMasterManager.getInstance().getRandomAttribute();
             priseMag = attribute.getPriseMag() * UnityEngine.Random.Range(0.8f, 1.2f) + (level - size) / 100;
             this.attributeMag = attribute.getAttributeMags();
-            Debug.Log(attribute.getName());
 
             observer = new TownObserver(this);
         }
@@ -164,14 +163,19 @@ namespace FieldMap {
                 float zPosAdds = (z - grid.GetLength(1) / 2) * GRID_SIZE;
                 Vector3 pos = transform.position + new Vector3(xPosAdds, 0, zPosAdds);
 
-                int rand = UnityEngine.Random.Range(0, 2);
+                int rand = UnityEngine.Random.Range(0, 4);
                 Building building;
                 if (rand == 0) {
                     var builder = BuildingHelper.getRandomHouse();
-                    var character = builder.creatCitizen();
+					var character = builder.creatCitizen();
+					building = builder.build(pos, character.getUniqueId());
+                    float y = Terrain.activeTerrain.terrainData.GetInterpolatedHeight(
+                        pos.x / Terrain.activeTerrain.terrainData.size.x,
+                        pos.z / Terrain.activeTerrain.terrainData.size.z
+					);
+					pos = new Vector3(pos.x, y, pos.z);
 					character.getContainer().transform.position = pos;
                     character.getContainer().transform.SetParent(transform);
-                    building = builder.build(pos, character.getUniqueId());
                     characters.Add(character);
                     citizens.Add(character);
 					if (x > 5) {
@@ -182,9 +186,14 @@ namespace FieldMap {
                     }
                     buildingDatas.Add(new BuildingSaveData(builder.getModelId(),building.transform));
                 } else {
-                    var builder = BuildingHelper.getRandomLevelShop(level);
+                    var builder = BuildingHelper.getRandomLevelFacility(level);
                     var character = builder.creatOwner(this);
                     building = builder.build(pos, character.getUniqueId());
+					float y = Terrain.activeTerrain.terrainData.GetInterpolatedHeight(
+						pos.x / Terrain.activeTerrain.terrainData.size.x,
+						pos.z / Terrain.activeTerrain.terrainData.size.z
+					);
+                    pos = new Vector3(pos.x, y, pos.z);
 					character.getContainer().transform.position = pos;
 					character.getContainer().transform.SetParent(transform);
                     characters.Add(character);

@@ -11,9 +11,7 @@ namespace FieldMap {
             return HouseMasterManager.getInstance().getHouseBuilderFromId(rand);
         }
 
-        public static FacilityBuilder getRandomLevelShop(int level){
-            //かり
-            level = 1;
+        public static FacilityBuilder getRandomLevelFacility(int level){
             var randomList = FacilityMasterManager.getInstance().getLevelShopsId(level);
             int rand = Random.Range(0,randomList.Count);
             return FacilityMasterManager.getInstance().getShopFromId(randomList[rand]);
