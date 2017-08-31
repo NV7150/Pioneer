@@ -10,7 +10,7 @@ namespace MasterData {
         private readonly static FacilityMasterManager INSTANCE = new FacilityMasterManager();
 
 		private FacilityMasterManager() {
-			var csv = (TextAsset)Resources.Load("MasterDatas/ShopMasterData");
+			var csv = (TextAsset)Resources.Load("MasterDatas/FacilityMasterData");
 			constractedBehaviour(csv);
             
         }

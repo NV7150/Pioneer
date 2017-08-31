@@ -119,6 +119,10 @@ namespace Item {
             return quality;
         }
 
+        public int getHit(){
+            return BASE_HIT;
+        }
+
 		#region IItem implementation
 
         public int getId(){

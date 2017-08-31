@@ -1,12 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
-
-using Character;
+﻿using Character;
 using Skill;
 
-namespace AI{
+namespace AI {
     /// <summary>
     /// cowardを生成するビルダー
     /// </summary>

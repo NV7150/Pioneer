@@ -44,6 +44,8 @@ namespace Skill {
 		/// <summary> スキルの効果範囲 </summary>
 		private readonly Extent EXTENT;
 
+        private DebufSkillObserver observer;
+
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
@@ -64,6 +66,8 @@ namespace Skill {
 			EXTENT =(Extent) Enum.Parse (typeof(Extent),datas[9]);
 			DESCRIPTION = datas [10];
             FLAVOR_TEXT = datas [11];
+
+            observer = new DebufSkillObserver(ID);
 		}
 
 		/// <summary>
@@ -117,7 +121,8 @@ namespace Skill {
 		public void action (IBattleable actioner, BattleTask task) {
 			if (ActiveSkillSupporter.canUseAffectSkill(actioner, task.getTargets(), this))
 				return;
-            
+
+            observer.used();
 			setBounsToCharacter (task.getTargets());
             actioner.minusMp (cost);
 		}

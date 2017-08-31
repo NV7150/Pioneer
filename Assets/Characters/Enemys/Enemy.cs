@@ -45,7 +45,7 @@ namespace Character{
 			MODEL_ID;
 
 		/// <summary> このキャラクターの能力値のDictonary </summary>
-		private Dictionary<BattleAbility,int> abilities = new Dictionary<CharacterParameters.BattleAbility, int>();
+		private Dictionary<BattleAbility,int> abilities = new Dictionary<BattleAbility, int>();
 
 		/// <summary> このキャラクターの現在HP </summary>
 		private int hp;
@@ -85,6 +85,8 @@ namespace Character{
 
         private float deleteCount = 60f;
 
+        private EnemyObserver observer;
+
         /// <summary>
         ///  <see cref="T:Character.Enemy"/> classのコンストラクタ
         /// </summary>
@@ -119,6 +121,7 @@ namespace Character{
 			this.ai = EnemyAISummarizingManager.getInstance ().getAiFromId (builder.getAiId(),this,activeSkillSet,reactionSkillSet);
 
             attributeResistances = builder.getAttributeRegists();
+            observer = new EnemyObserver(ID);
 		}
 	    
 			
@@ -148,7 +151,6 @@ namespace Character{
         }
 
         public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
-			//もっとくふうすする予定
             int atk = getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,10 + LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
             if (useWepon)
                 atk += (equipedWeapon != null) ? equipedWeapon.attackWith() : 0;
@@ -164,6 +166,7 @@ namespace Character{
 				dammage = 0;
             dammage = (int)((float)dammage * attributeResistances[attribute]);
 
+            observer.dammaged(attribute);
 			this.hp -= dammage;
 			if (this.hp < 0)
 				this.hp = 0;
@@ -197,8 +200,10 @@ namespace Character{
 			return getAbilityContainsBonus(BattleAbility.AGI);
 		}
 
-		public int getHit (BattleAbility useAbility) {
-            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range (1,11);
+        public int getHit (BattleAbility useAbility,bool useWeapon) {
+            int hitBonus = (useWeapon) ? (equipedWeapon != null) ? equipedWeapon.getHit() : 0 : 0;
+
+            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range (1,11) + hitBonus;
 		}
 
 		public int getHeal (BattleAbility useAbility) {
@@ -299,6 +304,7 @@ namespace Character{
 		}
 
 		public void death () {
+            observer.killed();
 			MonoBehaviour.Destroy (container);
 		}
 
@@ -339,6 +345,10 @@ namespace Character{
 		public IItem getDrop(){
 			throw new NotSupportedException ();
 		}
+
+        public void progressAboutAttack(int madeDammage){
+            observer.attacked(madeDammage);
+        }
 
 		public override string ToString () {
 			return "Enemy " + this.NAME + " No. " + this.UNIQE_ID;

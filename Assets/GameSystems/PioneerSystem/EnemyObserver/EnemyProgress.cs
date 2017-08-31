@@ -3,13 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using BattleAbility = Parameter.CharacterParameters.BattleAbility;
-using AttackAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
+using AttackSkillAttribute = Skill.ActiveSkillParameters.AttackSkillAttribute;
 
 public class EnemyProgress{
+    public EnemyProgress(){
+        var abilityKeys = System.Enum.GetValues(typeof(AttackSkillAttribute));
+        foreach(BattleAbility key in abilityKeys){
+            abilities.Add(key,0);
+        }
+
+        var attributeKeys = System.Enum.GetValues(typeof(AttackSkillAttribute));
+        foreach(AttackSkillAttribute key in attributeKeys){
+            attributeResistances.Add(key, 1.0f);
+        }
+
+    }
+
+
     /// <summary>
     /// 能力値の成長値
     /// </summary>
-    private Dictionary<BattleAbility, int> abilities;
+    private Dictionary<BattleAbility, int> abilities = new Dictionary<BattleAbility, int>();
     public Dictionary<BattleAbility, int> Abilities{
         get{ return new Dictionary<BattleAbility, int>(abilities); }
         set{ 
@@ -21,9 +35,9 @@ public class EnemyProgress{
     /// <summary>
     /// 各属性への耐性(%形式)
     /// </summary>
-    private Dictionary<AttackAttribute, float> attributeResistances;
-    public Dictionary<AttackAttribute, float> AttributeResistances{
-        get { return new Dictionary<AttackAttribute, float>(attributeResistances); }
+    private Dictionary<AttackSkillAttribute, float> attributeResistances = new Dictionary<AttackSkillAttribute, float>();
+    public Dictionary<AttackSkillAttribute, float> AttributeResistances{
+        get { return new Dictionary<AttackSkillAttribute, float>(attributeResistances); }
         set { 
             if (attributeResistances == null) 
                 attributeResistances = value; 

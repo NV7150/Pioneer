@@ -97,6 +97,8 @@ namespace Character{
 
         private Vector3 beforePos;
 
+        private PlayerController controller;
+
         /// <summary>
         /// <see cref="T:Character.Hero"/> classのコンストラクタです
         /// </summary>
@@ -167,6 +169,10 @@ namespace Character{
             this.mission = mission.build(flags);
             undertakingQuests.Add(this.mission);
 		}
+
+        public void setController(PlayerController controller){
+            this.controller = controller;
+        }
 
         public void activateContainer(){
             container = MonoBehaviour.Instantiate((GameObject)Resources.Load(containerAddress)).GetComponent<Container>();
@@ -301,8 +307,7 @@ namespace Character{
             return friendlyAbilities[ability];
         }
 
-		public void talk (IFriendly friendly) {
-		}
+		public void talk (IFriendly friendly) {}
 		#endregion
 		#region IBattleable implementation
 		public int getHp () {
@@ -362,7 +367,8 @@ namespace Character{
         }
 
 		public int getAbilityContainsBonus(BattleAbility ability) {
-            return battleAbilities[ability] + bonusKeeper.getBonus(ability);
+            float probality = (armor != null && ability == BattleAbility.MGP) ? armor.getMagicDistaubeMag() : 1.0f; 
+            return (int)((battleAbilities[ability] + bonusKeeper.getBonus(ability)) * probality);
 		}
 
 		public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
@@ -428,8 +434,9 @@ namespace Character{
             return getAbilityContainsBonus(BattleAbility.AGI);
 		}
 
-		public int getHit (BattleAbility useAbility) {
-            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range (1,11);
+        public int getHit (BattleAbility useAbility,bool useWeapon) {
+            int hitBonus = (useWeapon) ? (weapon != null) ? weapon.getHit() : 0 : 0;
+            return getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range (1,11) + hitBonus;
 		}
 
 		public void setIsReadyToCounter (bool flag) {
@@ -465,6 +472,7 @@ namespace Character{
 			if (!isBattleing) {
                 camera.gameObject.SetActive(false);
 				BattleManager.getInstance().joinBattle(this, FieldPosition.ONE);
+                controller.setCanMove(false);
 			}
 		}
 
@@ -498,7 +506,6 @@ namespace Character{
 		public void act () {
             bonusKeeper.advanceLimit();
 
-            Debug.Log(TalkManager.getInstance().getIsTalking() + " ");
             if (!Menu.getIsDisplaying() && !TalkManager.getInstance().getIsTalking()) {
                 if (Input.GetKeyDown(KeyCode.E)) {
                     GameObject menuObject = MonoBehaviour.Instantiate(menuPrefab, new Vector3(874f, 384f, 0f), new Quaternion(0, 0, 0, 0));
@@ -708,6 +715,10 @@ namespace Character{
 
         public void keepPos(){
             beforePos = container.transform.position;
+        }
+
+        public void moveEnable(){
+            controller.setCanMove(true);
         }
     }
 }

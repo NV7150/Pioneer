@@ -20,13 +20,18 @@ public class EnemyObserver : IObserver {
     private int killedNumber = 0;
     private int madeDammage = 0;
     private int attackedTimes = 0;
-    private Dictionary<ActiveSkillCategory, int> categoryUsedTimes = new Dictionary<ActiveSkillCategory, int>();
+    //private Dictionary<ActiveSkillCategory, int> categoryUsedTimes = new Dictionary<ActiveSkillCategory, int>();
     private Dictionary<AttackSkillAttribute, int> dammagedAttributeTimes = new Dictionary<AttackSkillAttribute, int>();
     private int killedPlayer = 0;
 
     public EnemyObserver(int observeEnemyId){
         this.OBSERVE_ENEMY_ID = observeEnemyId;
         PioneerManager.getInstance().setObserver(this);
+
+        var keys = Enum.GetValues(typeof(AttackSkillAttribute));
+        foreach(var key in keys){
+            dammagedAttributeTimes.Add((AttackSkillAttribute)key,0);
+        }
     }
 
     public void report(int worldId) {
@@ -87,7 +92,7 @@ public class EnemyObserver : IObserver {
 		madeDammage = 0;
 		attackedTimes = 0;
 		killedPlayer = 0;
-        categoryUsedTimes.Clear();
+        //categoryUsedTimes.Clear();
         dammagedAttributeTimes.Clear();
     }
 
@@ -150,8 +155,7 @@ public class EnemyObserver : IObserver {
         dammagedAttributeTimes[attribute]++;
     }
 
-    public void attacked(ActiveSkillCategory category,int dammage){
-        categoryUsedTimes[category]++;
+    public void attacked(int dammage){
         madeDammage += dammage;
         attackedTimes++;
     }

@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using Character;
+
 public class PlayerController : MonoBehaviour {
     public GameObject container;
     public Camera plauyerCamera;
     public Animator animator;
 
     private bool canMove = true;
-	
-	// Update is called once per frame
-	void Update () {
+
+    private void Start() {
+        ((Player)container.GetComponent<Container>().getCharacter()).setController(this);
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (canMove) {
             if (Input.GetKeyDown(KeyCode.W)) {
                 animator.SetBool("Running", true);
@@ -30,11 +36,16 @@ public class PlayerController : MonoBehaviour {
                 animator.SetBool("WalkBack", false);
     		}
 
-		if(Input.GetKey(KeyCode.RightArrow)){
+    		if(Input.GetKey(KeyCode.RightArrow)){
                 container.transform.Rotate(new Vector3(0, 2.5f,0));
             }else if(Input.GetKey(KeyCode.LeftArrow)){
                 container.transform.Rotate(new Vector3(0, -2.5f,0));
             }
+        }else{
+            animator.SetBool("Running", false);
+            animator.SetBool("WalkLeft", false);
+            animator.SetBool("WalkRight", false);
+            animator.SetBool("WalkBack", false);
         }
 	}
 

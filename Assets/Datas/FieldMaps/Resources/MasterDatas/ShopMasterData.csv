@@ -1,5 +1,0 @@
-id,name,level,owner id,model id,ownerType
-0,武器屋,1,0,TestRoom,MERCHANT
-1,防具屋,1,1,TestRoom,MERCHANT
-2,ジャンク店,1,2,TestRoom,MERCHANT
-3,クエストや,1,0,TestRoom,CLIENT

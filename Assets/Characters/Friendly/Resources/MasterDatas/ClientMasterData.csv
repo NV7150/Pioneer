@@ -1,2 +1,4 @@
 id,name,model name,spc,dex,level,questType,"massage(request,undertaking,cleared)",,,,,,,,
-0,男,Merchant,1,1,1,EXTERMINATION,最近魔物が多くて大変なんです・・・,お願いです、何体か倒してもらえませんか？,クエストが追加された,end,お願いします！,end,ありがとうございます！,これがお礼です！,end
+0,男A,Merchant,2,5,1,EXTERMINATION,最近魔物が多くて大変なんです・・・,お願いです、何体か倒してもらえませんか？,クエストが追加された,end,お願いします！,end,ありがとうございます！,これがお礼です！,end
+1,男B,Merchant,4,10,5,EXTERMINATION,おうにいちゃん、旅人かい？,そうかいそうかい、ならここの周りの魔物、何体か倒してくれねぇか？,クエストが追加された,end,どうだい？順調かい？,end,ありがとよ！,これは少しの気持ちだ。,end
+2,男C,Merchant,6,15,10,EXTERMINATION,助けてください！魔物どもから貢物を要求されてるんです！,何体か倒せば黙ると思いますが・・・,クエストが追加された,end,恐ろしや恐ろしや・・・,end,あ、ありがとうございます！,助かりました。これが報酬です！,end

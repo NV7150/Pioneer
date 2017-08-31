@@ -14,6 +14,7 @@ public class WorldObserver : IObserver {
     }
 
     public void report(int worldId) {
+        world.levelUpWorld();
         world.saveWorld();
     }
 

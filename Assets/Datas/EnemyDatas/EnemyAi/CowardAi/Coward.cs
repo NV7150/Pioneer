@@ -496,7 +496,7 @@ namespace AI {
             Dictionary<ReactionSkillType, float> riskTable = new Dictionary<ReactionSkillType, float>();
 
             //ダメージからのリスク:攻撃側の攻撃力/現在HP
-            int atk = skill.getAtk(attacker);
+            int atk = skill.getAtkWithoutProgress(attacker); 
             atk = (atk > 0) ? atk : 1;
             int hp = user.getHp();
             hp = (hp > 0) ? hp : 1;

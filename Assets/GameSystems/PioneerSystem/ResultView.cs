@@ -12,6 +12,7 @@ public class ResultView : MonoBehaviour {
     }
 
     public void finishPlaying(){
+        Debug.Log("called");
         PioneerManager.getInstance().finished();
         SceneManager.LoadScene("Title");
         Destroy(gameObject);

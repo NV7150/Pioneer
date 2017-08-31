@@ -30,7 +30,7 @@ namespace MasterData {
             List<Humanity> humanities = new List<Humanity>();
 
             foreach(Humanity humanity in dataTable){
-                if(humanity.getLevel() >= level){
+                if(humanity.getLevel() <= level){
                     humanities.Add(humanity);
                 }
             }

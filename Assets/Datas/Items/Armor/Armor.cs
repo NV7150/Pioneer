@@ -89,6 +89,10 @@ namespace Item {
             return delayCorrection;
 		}
 
+        public float getMagicDistaubeMag(){
+            return MAGIC_DISTURB_MAG;
+        }
+
         /// <summary>
         /// 防具のIDを取得します
         /// </summary>

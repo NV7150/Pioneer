@@ -1,0 +1,14 @@
+id,name,level,owner id,model id,ownerType
+0,武器屋,1,0,TestRoom,MERCHANT
+1,防具屋,1,1,TestRoom,MERCHANT
+2,ジャンク店,1,2,TestRoom,MERCHANT
+3,クエスト屋,1,0,TestRoom,CLIENT
+4,薬屋,1,4,TestRoom,MERCHANT
+5,交易店,1,3,TestRoom,MERCHANT
+6,良武器屋,5,5,TestRoom,MERCHANT
+7,良防具屋,5,6,TestRoom,MERCHANT
+8,良ジャンク店,5,7,TestRoom,MERCHANT
+9,良クエスト屋,5,1,TestRoom,CLIENT
+10,良薬屋,5,9,TestRoom,MERCHANT
+11,良交易店,5,8,TestRoom,MERCHANT
+12,優クエスト屋,10,2,TestRoom,CLIENT

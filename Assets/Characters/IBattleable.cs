@@ -77,15 +77,14 @@ namespace Character{
 		/// <param name="ability">取得したい能力値</param>
 		int getAbilityContainsBonus(BattleAbility ability);
 
-		/// <summary>
+        /// <summary>
         /// 攻撃力を取得します
-        /// この返し値は武器の攻撃力は含みません
-        /// getWeponを使用して武器を取得し、それのgetAtkを呼び出してください
         /// </summary>
         /// <returns>攻撃力</returns>
         /// <param name="attribute">攻撃の属性</param>
         /// <param name="useAbility">使用する能力値</param>
-		int getAtk(AttackSkillAttribute attribute,BattleAbility useAbility,bool useWepon);
+        /// <param name="useWepon">武器を使用するか</param>
+        int getAtk(AttackSkillAttribute attribute, BattleAbility useAbility, bool useWepon);
 
 		/// <summary>
 		/// 回復値を取得します(能動側)
@@ -106,7 +105,7 @@ namespace Character{
 		/// </summary>
 		/// <returns>命中値</returns>
 		/// <param name="useAbility">使用するBattleAbility</param>
-		int getHit(BattleAbility useAbility);
+        int getHit(BattleAbility useAbility,bool useWeapon);
 
 		/// <summary>
 		/// 回避値を取得します

@@ -150,9 +150,9 @@ namespace MasterData{
 			faction = parameters [16];
 			modelName = "Models/" + parameters [17];
 
-            var attributes = attributeResistances.Keys;
+            var attributes = Enum.GetValues(typeof(AttackSkillAttribute));
             foreach(AttackSkillAttribute attribute in attributes){
-                attributeResistances[attribute] = 1.0f;
+                attributeResistances.Add(attribute, 1.0f);
             }
 		}
 

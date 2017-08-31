@@ -44,6 +44,7 @@ namespace FieldMap {
                 WorldCreator.getInstance().activetePlayer(missionClientPos);
             }else{
                 WorldCreator.getInstance().resetPlayerPos();
+                WorldCreator.getInstance().getPlayer().moveEnable();
             }
 
         }
@@ -201,6 +202,10 @@ namespace FieldMap {
                 ObserverHelper.saveToFile<TownBuilder>(builder, "TownData", town.getId(),id);
                 MonoBehaviour.Destroy(town.gameObject);
             }
+        }
+
+        public void levelUpWorld(){
+            this.worldLevel++;
         }
 
         private enum TownLevelDigest{

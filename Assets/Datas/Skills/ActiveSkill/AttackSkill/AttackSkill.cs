@@ -107,7 +107,7 @@ namespace Skill {
 		private void attack(IBattleable bal,List<IBattleable> targets){
 			if (targets.Count <= 0)
 				throw new InvalidOperationException ("invlid battleTask operation");
-
+            
 			foreach (IBattleable target in targets) {
                 //対象のリアクション
                 IBattleTaskManager targetManager = BattleManager.getInstance().getTaskManager(target.getUniqueId());
@@ -120,19 +120,29 @@ namespace Skill {
 		/// </summary>
 		/// <returns> 攻撃力 </returns>
 		public int getAtk(IBattleable actioner){
-            return atk + actioner.getAtk (getAttackSkillAttribute(),getUseAbility(actioner),DEPEND_ATK);
+            int dammage = atk + actioner.getAtk(getAttackSkillAttribute(), getUseAbility(actioner), DEPEND_ATK);
+            if(actioner is Enemy){
+                ((Enemy)actioner).progressAboutAttack(dammage);
+            }
+            return dammage;
 		}
+
+		/// <summary>
+		/// 攻撃力を取得します
+        /// ただしこのメソッドは成長カウントを行いません
+		/// </summary>
+		/// <returns> 攻撃力 </returns>
+		public int getAtkWithoutProgress(IBattleable actioner) {
+			return atk + actioner.getAtk(getAttackSkillAttribute(), getUseAbility(actioner), DEPEND_ATK);
+            
+        }
 
 		/// <summary>
 		/// 命中力を取得します
 		/// </summary>
 		/// <returns> 命中力 </returns>
 		public int getHit(IBattleable actioner){
-			int bonus = 0;
-			if (DEPEND_HIT) {
-//				bonus += actioner.getWepon ().getHit();
-			}
-			return hit + actioner.getHit(getUseAbility(actioner)) + bonus;
+            return hit + actioner.getHit(getUseAbility(actioner),DEPEND_HIT);
 		}
 
 		/// <summary>
