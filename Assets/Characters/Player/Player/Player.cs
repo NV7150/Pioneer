@@ -510,16 +510,6 @@ namespace Character{
                     searchFront();
                 }
             }
-
-            ///////test from here////////////
-            if(Input.GetKeyDown(KeyCode.RightShift)){
-                PioneerManager.getInstance().missionClearPrint();
-            }
-
-            if(Input.GetKey(KeyCode.P)){
-				flags.addEnemyKilled(EnemyMasterManager.getInstance().getEnemyFromId(0));
-				flags.addEnemyKilled(EnemyMasterManager.getInstance().getEnemyFromId(1));
-            }
 		}
 
 		public void death () {
