@@ -27,8 +27,8 @@ namespace FieldMap {
         }
 
         private void Start() {
-            observer = new WorldObserver(this);
-            if(!WorldCreator.getInstance().getWorldLoaded()){
+			if (!WorldCreator.getInstance().getWorldLoaded()) {
+				observer = new WorldObserver(this);
                 if(WorldCreator.getInstance().getIsLoad()){
                     id = WorldCreator.getInstance().getLoadWorldId();
                     loadWorld();

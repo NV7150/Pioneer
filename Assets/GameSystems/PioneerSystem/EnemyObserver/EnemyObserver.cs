@@ -92,8 +92,11 @@ public class EnemyObserver : IObserver {
 		madeDammage = 0;
 		attackedTimes = 0;
 		killedPlayer = 0;
-        //categoryUsedTimes.Clear();
-        dammagedAttributeTimes.Clear();
+		//categoryUsedTimes.Clear();
+		var keys = Enum.GetValues(typeof(AttackSkillAttribute));
+        foreach (AttackSkillAttribute key in keys) {
+            dammagedAttributeTimes[key] = 0;
+		}
     }
 
     private bool judgeAttackAbilityProgressed() {

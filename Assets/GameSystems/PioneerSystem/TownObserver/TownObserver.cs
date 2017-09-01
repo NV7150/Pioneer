@@ -68,6 +68,7 @@ public class TownObserver : IObserver{
         tradedValue = 0;
         tradedTimes = 0;
         totalTradedValue = 0;
+        PioneerManager.getInstance().removeObserver(this);
     }
 
     private bool judgeLevelUpped(){

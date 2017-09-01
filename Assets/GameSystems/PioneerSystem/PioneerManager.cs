@@ -7,6 +7,8 @@ public class PioneerManager{
 
     private List<IObserver> observers = new List<IObserver>();
 
+    private List<IObserver> waitForRemoves = new List<IObserver>();
+
     private GameObject resultViewPrefab;
 
     private PioneerManager(){
@@ -39,6 +41,11 @@ public class PioneerManager{
             observer.report(WorldCreator.getInstance().getLoadWorldId());
             observer.reset();
         }
+        foreach(IObserver observer in waitForRemoves){
+            observers.Remove(observer);
+        }
+        waitForRemoves.Clear();
+
         SceneKeeper.deleteScene();
     }
 
@@ -52,5 +59,9 @@ public class PioneerManager{
 
     public void setObserver(IObserver observer){
         observers.Add(observer);
+    }
+
+    public void removeObserver(IObserver observer){
+        waitForRemoves.Add(observer);
     }
 }

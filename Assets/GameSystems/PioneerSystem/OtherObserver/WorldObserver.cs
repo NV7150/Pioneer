@@ -20,5 +20,6 @@ public class WorldObserver : IObserver {
 
     public void reset() {
         WorldCreator.getInstance().setWorldLoaded(false);
+        PioneerManager.getInstance().removeObserver(this);
     }
 }

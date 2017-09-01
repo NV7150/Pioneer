@@ -145,6 +145,8 @@ namespace Skill {
 
                 case ActiveSkillType.HEAL:
                     return HealSkillMasterManager.getInstance().getHealSkillFromId(id);
+                case ActiveSkillType.MOVE:
+                    return MoveSkillMasterManager.getInstance().getMoveSkillFromId(id);
 
                 default : throw new NotSupportedException("unkonwn skillType " + type);
             }

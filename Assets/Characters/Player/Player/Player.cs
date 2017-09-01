@@ -52,7 +52,7 @@ namespace Character{
 		Dictionary<FriendlyAbility,int> friendlyAbilities = new Dictionary<FriendlyAbility, int>();
 
         /// <summary> このキャラクターの所持金 </summary>
-        private int mt = 10000;
+        private int mt = 500;
 
         /// <summary> 使命達成を判定するフラグの記憶インスタンス </summary>
         private FlagList flags;

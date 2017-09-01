@@ -668,7 +668,6 @@ namespace BattleSystem{
 
         public void win() {
             player.addExp(BattleManager.getInstance().getExp());
-            ((Player)player).moveEnable();
         }
 
         public void finished() {

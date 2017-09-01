@@ -115,6 +115,8 @@ namespace FieldMap {
             foreach (IFriendly friendlyCharacter in characters){
                 friendlyCharacter.getContainer().transform.SetParent(transform);
             }
+
+            observer = new TownObserver(this);
         }
 
         private void layRoad(){
