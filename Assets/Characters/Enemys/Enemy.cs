@@ -102,11 +102,11 @@ namespace Character{
 			this.MODEL_ID = builder.getModelName ();
 			this.FACTION = builder.getFaction ();
 
-			this.MAX_HP = 100;
+            this.MAX_HP = builder.getMaxHp();
 
-			this.MAX_MP = this.abilities [BattleAbility.MGP] * 2 + LV;
+            this.MAX_MP = builder.getMaxMp();
 
-			this.hp = 100;
+            this.hp = MAX_HP;
 			this.mp = MAX_MP;
 
 			GameObject prefab = (GameObject)Resources.Load(MODEL_ID);
@@ -151,7 +151,7 @@ namespace Character{
         }
 
         public int getAtk (AttackSkillAttribute attribute, BattleAbility useAbility,bool useWepon) {
-            int atk = getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,10 + LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
+            int atk = getAbilityContainsBonus(useAbility) + UnityEngine.Random.Range(0,LV) + bonusKeeper.getBonus(SubBattleAbility.ATK);
             if (useWepon)
                 atk += (equipedWeapon != null) ? equipedWeapon.attackWith() : 0;
             return atk;

@@ -90,9 +90,9 @@ namespace BattleSystem{
             view.transform.SetParent(battleView.transform);
             reactoinContents.SetActive(false);
 
-            GameObject taskView = GameObject.Find("Canvas/TaskView");
             GameObject battleListNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleTaskListView"));
-            battleListNode.transform.SetParent(taskView.transform);
+            Debug.Log(battleListNode);
+            battleListNode.transform.SetParent(battleView.transform);
             listView = battleListNode.GetComponent<BattleTaskListView>();
             listView.setManager(this);
         }

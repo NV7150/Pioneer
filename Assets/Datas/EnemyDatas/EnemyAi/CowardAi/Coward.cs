@@ -25,7 +25,7 @@ namespace AI {
             { ActiveSkillCategory.DANGER, 0 },
             { ActiveSkillCategory.POWER, 8 },
             { ActiveSkillCategory.FULL_POWER,3 },
-            { ActiveSkillCategory.SUPPORT, 10 },
+            { ActiveSkillCategory.SUPPORT, 10},
             { ActiveSkillCategory.HEAL, 10 },
             { ActiveSkillCategory.MOVE,0}
         };
@@ -186,7 +186,8 @@ namespace AI {
                 //敵対勢力→論外
                 if (!target.isHostility(user.getFaction())) {
                     //HPの減った割合が可能性値
-                    float probality = 1 - (float)target.getHp() / (float)target.getMaxHp();
+                    float probality = 1 - ((float)target.getHp() / (float)target.getMaxHp());
+                    probality = (probality <= 0) ? 0.001f : probality;
                     characterAndProbalities.Add(probality,target);
                     sumProbality += probality;
                 }
@@ -197,10 +198,10 @@ namespace AI {
             var probalities = characterAndProbalities.Keys;
 
             foreach (float probality in probalities){
-                if(probality > rand){
+                if(probality >= rand){
                     return characterAndProbalities[probality];
                 }else{
-                    rand += probality;
+                    rand -= probality;
                 }
             }
             throw new InvalidOperationException("cannot decideHealTarget");
@@ -220,16 +221,20 @@ namespace AI {
 
 			foreach (IBattleable target in targets) {
 				if (!target.isHostility(user.getFaction())) {
+                    Debug.Log("into hos");
 					//レベルが高いほど選択可能性が高い
 					targetsAndProbality.Add(target.getLevel(), target);
 					sumFriendlyLevel += target.getLevel();
+                    Debug.Log("sum " + sumFriendlyLevel + "lv " + target.getLevel());
 				}
 			}
+
 			//乱数判定
 			int random = UnityEngine.Random.Range(0, sumFriendlyLevel);
+            Debug.Log("rand " + random);
 			var probalities = targetsAndProbality.Keys;
 			foreach (int probality in probalities) {
-				if (probality < random) {
+				if (probality >= random) {
 					return targetsAndProbality[probality];
 				} else {
 					random -= probality;
