@@ -42,6 +42,7 @@ namespace BattleSystem{
 
         /// <summary> 残りディレイ秒数 </summary>
         private float delay = 0;
+
         private float maxDelay;
         /// <summary> 残りリアクソン制限時間 </summary>
         private float reactionLimit = 0;
@@ -69,7 +70,15 @@ namespace BattleSystem{
 
         private List<KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>> waitingProgressSkills = new List<KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>>();
 
-        private bool choosingReaction = false;
+        /// <summary>
+        /// waitingProgressSkillsの更新が必要かのフラグ
+        /// </summary>
+        private bool needToProgressReaction = true;
+
+        /// <summary>
+        /// リアクションスキルのリストが画面に表示されているかのフラグ
+        /// </summary>
+        private bool reactionInputed = false;
 
         private IItem choseItem;
 
@@ -78,6 +87,12 @@ namespace BattleSystem{
         private GameObject battleItemNodePrefab;
 
         private GameObject managerStateNodePrefab;
+
+        private KeyCode reactionKeyCode;
+
+        public BattleTaskManagerHeader header;
+
+        private bool moving = true;
 
         private void Awake() {
             battleItemNodePrefab = (GameObject)Resources.Load("Prefabs/BattleItemNode");
@@ -102,16 +117,31 @@ namespace BattleSystem{
             if (player.getHp() <= 0) {
                 BattleManager.getInstance().deadCharacter(player);
             } else {
-                if (needToReaction) {
-                    reactionState();
-                } else if (battleState == BattleState.ACTION) {
-                    actionState();
+                if(Input.GetKeyDown(KeyCode.Space)){
+                    Debug.Log("into down");
+                    if(moving){
+                        BattleManager.getInstance().stopTaskManagers();
+                    }else{
+                        BattleManager.getInstance().moveTaskManagers();
+                    }
                 }
 
-                if (battleState == BattleState.IDLE) {
-                    idleState();
-                } else if (battleState == BattleState.DELAY) {
-                    delayState();
+                if (moving) {
+                    if (Input.GetKeyDown(reactionKeyCode) && needToReaction && !reactionInputed) {
+                        inputReactionSkillList();
+                    }
+
+                    if (needToReaction) {
+                        reactionState();
+                    } else if (battleState == BattleState.ACTION) {
+                        actionState();
+                    }
+
+                    if (battleState == BattleState.IDLE) {
+                        idleState();
+                    } else if (battleState == BattleState.DELAY) {
+                        delayState();
+                    }
                 }
             }
         }
@@ -131,7 +161,7 @@ namespace BattleSystem{
                     contents.SetActive(true);
                     detachReactionContents();
                     backButton.gameObject.SetActive(isInputingBackButton);
-                    choosingReaction = false;
+                    needToProgressReaction = true;
                     updateProsessingPair();
                 }
             }
@@ -194,13 +224,12 @@ namespace BattleSystem{
 				BattleTask runTask = tasks[0];
 				if (runTask.getIsSkill()) {
 					delay = runTask.getSkill().getDelay(player);
-					maxDelay = delay;
 				} else {
 					float delayBonus = (float)player.getAbilityContainsBonus(BattleAbility.AGI) / 20;
 					delayBonus = (delayBonus < 1.0f) ? delayBonus : 1.0f;
 					delay = 2.0f - delayBonus;
-					maxDelay = delay;
 				}
+				maxDelay = delay;
 
 				listView.deleteTask(runTask);
 
@@ -217,7 +246,8 @@ namespace BattleSystem{
         /// プレイヤーをマネージャに設定します
         /// </summary>
         /// <param name="player">Player.</param>
-        public void setPlayer(IPlayable player) {
+        /// <param name="reactionKey">リアクションに割り当てらたキー</param>
+        public void setPlayer(IPlayable player,KeyCode reactionKey) {
             this.player = player;
             GameObject stateView = GameObject.Find("Canvas/StateView");
             GameObject stateNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleStateNode"));
@@ -227,15 +257,17 @@ namespace BattleSystem{
             state.setUser(player);
             goingPos = BattleManager.getInstance().searchCharacter(player);
             inputActiveSkillList();
+
+            this.reactionKeyCode = reactionKey;
         }
 
         /// <summary>
         /// タスクを追加します
         /// </summary>
-        /// <param name="addTask">Add task.</param>
-        private void addTask(BattleTask addTask) {
-            tasks.Add(addTask);
-            listView.setTask(addTask);
+        /// <param name="addedTask">Add task.</param>
+        private void addTask(BattleTask addedTask) {
+            tasks.Add(addedTask);
+            listView.setTask(addedTask);
 
             battletaskIdCount++;
 
@@ -311,9 +343,7 @@ namespace BattleSystem{
         public void moveAreaChose(int move) {
             int moveAmount = move;
             BattleTask addingTask = new BattleTask(player.getUniqueId(), chosenActiveSkill, move, battletaskIdCount);
-            Debug.Log("before " + goingPos + "move " + move);
             goingPos += move;
-            Debug.Log(goingPos + " , " + move);
             addTask(addingTask);
         }
 
@@ -322,7 +352,6 @@ namespace BattleSystem{
         /// </summary>
         /// <param name="chosenSkill">選択されたReactionSkill</param>
         public void reactionChose(ReactionSkill chosenSkill) {
-            Debug.Log("<color=greeen>into reactionChose</color>");
             waitingProgressSkills[0] = new KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>(chosenSkill, waitingProgressSkills[0].Value);
 
             reactoinContents.SetActive(false);
@@ -330,9 +359,10 @@ namespace BattleSystem{
             detachReactionContents();
 
             backButton.gameObject.SetActive(isInputingBackButton);
-            choosingReaction = false;
+            needToProgressReaction = true;
             updateProsessingPair();
-            Debug.Log("<color=blue>into chosen</color>" + waitingProgressSkills[0].Key.getName() + "" + waitingProgressSkills[0].Value.Key.getName());
+
+            reactionInputed = false;
         }
 
         /// <summary>
@@ -347,7 +377,7 @@ namespace BattleSystem{
             int hit = skill.getHit(attacker);
             reactionSkill.reaction(player, atk, hit, skill.getAttackSkillAttribute());
             waitingProgressSkills.Remove(waitingProgressSkills[0]);
-            choosingReaction = false;
+            needToProgressReaction = true;
             updateProsessingPair();
         }
 
@@ -412,11 +442,11 @@ namespace BattleSystem{
             isInputingBackButton = true;
 
 			foreach (IBattleable target in targets) {
-				bool inputOnlyPlayable = currentManagerState == ManagerState.ITEM;
-				if (!(target is IPlayable) && inputOnlyPlayable)
+                bool inputOnlyFriendly = currentManagerState == ManagerState.ITEM;
+                if (!(target.isHostility(player.getFaction())) && inputOnlyFriendly)
 					continue;
                 
-                bool inputSelf = inputOnlyPlayable || !chosenActiveSkill.isFriendly();
+                bool inputSelf = inputOnlyFriendly || chosenActiveSkill.isFriendly();
                 if (target.Equals(player) && !inputSelf)
                     continue;
 
@@ -424,7 +454,6 @@ namespace BattleSystem{
                 node.GetComponent<TargetNode>().setState(target, this);
                 node.transform.SetParent(contents.transform);
             }
-
         }
 
         /// <summary>
@@ -490,6 +519,9 @@ namespace BattleSystem{
                 node.transform.SetParent(reactoinContents.transform);
             }
             reactoinContents.SetActive(true);
+
+            reactionInputed = true;
+            deleteAlert();
         }
 
         private void inputItemList() {
@@ -586,28 +618,38 @@ namespace BattleSystem{
                 Destroy(child.gameObject);
             }
             reactoinContents.transform.DetachChildren();
+            reactionInputed = false;
         }
 
         /// <summary>
         /// リアクション処理中のスキルを更新します
         /// </summary>
         private void updateProsessingPair() {
-            if (!choosingReaction) {
+            if (needToProgressReaction) {
                 if (waitingDecideReactionSkills.Count > 0) {
                     var missReaction = ReactionSkillMasterManager.getInstance().getReactionSkillFromId(2);
                     var prosessingPair = waitingDecideReactionSkills[0];
                     waitingProgressSkills.Add(new KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>(missReaction, prosessingPair));
                     waitingDecideReactionSkills.Remove(prosessingPair);
 
-                    inputReactionSkillList();
+                    Debug.Log("into before ra");
+                    reactionAlert();
 
+                    needToProgressReaction = false;
                     reactionLimit = prosessingPair.Value.getDelay(prosessingPair.Key);
                     needToReaction = true;
-                    choosingReaction = true;
                 } else if (waitingProgressSkills.Count <= 0) {
                     needToReaction = false;
                 }
             }
+        }
+
+        private void reactionAlert(){
+            header.changeBlinkState(true);
+        }
+
+        private void deleteAlert(){
+            header.changeBlinkState(false);
         }
 
         /// <summary>
@@ -681,6 +723,15 @@ namespace BattleSystem{
             Destroy(view.gameObject);
             Destroy(listView.gameObject);
             Destroy(state.gameObject);
+        }
+
+        public void stop() {
+            Debug.Log("into stop");
+            moving = false;
+        }
+
+        public void move() {
+            moving = true;
         }
         #endregion
 

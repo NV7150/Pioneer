@@ -29,6 +29,10 @@ namespace BattleSystem {
 
 		/// <summary> 死亡時の処理です </summary>
 		void finished();
+
+        void stop();
+
+        void move();
 	}
 }
 

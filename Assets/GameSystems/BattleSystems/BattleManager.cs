@@ -158,21 +158,21 @@ namespace BattleSystem{
 		/// <summary>
 		/// 引数に渡したキャラクターをバトルに参加させます
 		/// </summary>
-		/// <param name="player">参加させるキャラクター</param>
+		/// <param name="playable">参加させるキャラクター</param>
 		/// <param name="pos">参加させる位置</param>
-		public void joinBattle(IPlayable player,FieldPosition pos){
+        public void joinBattle(IPlayable playable,FieldPosition pos){
 			if (!isBattleing)
 				throw new InvalidOperationException("battle isn't started");
 
-            loadContainer(player);
-			player.setIsBattling (true);
-			joinedCharacter [pos].Add (player);
-            player.syncronizePositioin(field.getObjectPosition(pos,player));
+            loadContainer(playable);
+			playable.setIsBattling (true);
+			joinedCharacter [pos].Add (playable);
+            playable.syncronizePositioin(field.getObjectPosition(pos,playable));
 
 			GameObject view = MonoBehaviour.Instantiate ((GameObject)Resources.Load ("Prefabs/PlayerBattleTaskManager"));
 			PlayerBattleTaskManager manager =  view.GetComponent<PlayerBattleTaskManager> ();
-			manager.setPlayer (player);
-			joinedManager.Add (player.getUniqueId(),manager);
+            manager.setPlayer (playable,KeyCode.R);
+			joinedManager.Add (playable.getUniqueId(),manager);
 		}
 
         private void loadContainer(IBattleable bal){
@@ -318,7 +318,7 @@ namespace BattleSystem{
 		}
 
 		/// <summary>
-		/// 範囲内のエリア危険レベルのDictionaryを変えします
+		/// 範囲内のエリア危険レベルのDictionaryを返えします
         /// エリア危険レベルはそのエリアの(敵対キャラクターのレベルの合計 - 味方キャラクターのレベル合計)をまず算出し、その後算出した値が一番小さいものの絶対値を全ての要素に足したものです
 		/// </summary>
 		/// <returns>エリア危険レベルのDictionary</returns>
@@ -425,6 +425,22 @@ namespace BattleSystem{
 
         public int getExp(){
             return expSum;
+        }
+
+        public void stopTaskManagers(){
+            var keys = joinedManager.Keys;
+            Debug.Log("into stop");
+            foreach(var key in keys){
+                Debug.Log("into roop");
+                joinedManager[key].stop();
+            }
+        }
+
+        public void moveTaskManagers(){
+			var keys = joinedManager.Keys;
+			foreach (var key in keys) {
+                joinedManager[key].move();
+			}
         }
 
 	}

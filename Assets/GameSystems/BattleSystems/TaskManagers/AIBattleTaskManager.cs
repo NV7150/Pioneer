@@ -43,8 +43,10 @@ namespace BattleSystem {
 
         private ReactionSkill choseReaction;
 
+        private bool moving = true;
+
 		void Update(){
-			if (isReady) {
+            if (isReady && moving) {
 				if (needToReaction) {
 					reactionState ();
 				} else if (state == BattleState.ACTION) {
@@ -222,7 +224,15 @@ namespace BattleSystem {
 		public void finished () {
 			MonoBehaviour.Destroy (gameObject);
 		}
-		#endregion
-	}
+
+        public void stop() {
+            moving = false;
+        }
+
+        public void move() {
+            moving = true;
+        }
+        #endregion
+    }
 }
 
