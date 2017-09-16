@@ -52,7 +52,7 @@ namespace BattleSystem {
 			if (delay <= 0)
 				throw new ArgumentException("invalid value");
 
-            progressRectangle.fillAmount = (progressRectangle.fillAmount < 1.0f) ? progressRectangle.fillAmount + delay : progressRectangle.fillAmount;
+            progressRectangle.fillAmount = delay;
 			cheakColor();
 		}
 

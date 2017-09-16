@@ -280,13 +280,11 @@ namespace Character{
 		}
 
 		public void addAbilityBonus (BattleAbilityBonus bonus) {
-            Debug.Log("called");
 			bonusKeeper.setBonus (bonus);
 		}
 
 
 		public void addSubAbilityBonus (SubBattleAbilityBonus bonus) {
-            Debug.Log("called");
 			bonusKeeper.setBonus (bonus);
 		}
 

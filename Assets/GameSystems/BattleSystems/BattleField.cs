@@ -46,7 +46,7 @@ namespace BattleSystem{
 		/// <returns>ポジションの座標</returns>
 		/// <param name="position">Going.</param>
         public Vector3 getObjectPosition(FieldPosition position,IBattleable bal) {
-            
+
             //空いている座標を検索し、その座標をrandomSetに格納
             List<KeyValuePair<int, int>> randomSet = new List<KeyValuePair<int, int>>();
 

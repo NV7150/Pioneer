@@ -57,6 +57,7 @@ namespace Skill {
 			FieldPosition nowPos = BattleManager.getInstance ().searchCharacter (actioner);
 			int moveAmountMax = Enum.GetNames (typeof(FieldPosition)).Length - (int)nowPos;
 			int moveAmountMin = -1 * (int)nowPos;
+            UnityEngine.Debug.Log("moveness" + move);
             if (moveAmountMax < move||moveAmountMin > move)
                 throw new ArgumentException ("invalid moveNess" + move);
 

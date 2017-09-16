@@ -128,7 +128,7 @@ namespace AI {
             int choose = UnityEngine.Random.Range(0, sum);
             foreach (ActiveSkillCategory category in categories) {
                 int probality = probalityTable[category] + probalityBonus[category];
-                if (choose < probality || choose == 0) {
+                if (choose < probality) {
                     return activeSkills.getSkillFromSkillCategory(category);
                 }
                 choose -= probalityTable[category] + probalityBonus[category];
@@ -450,6 +450,7 @@ namespace AI {
         /// <returns>移動量</returns>
         /// <param name="useSkill">使用するスキル</param>
         private int advance(MoveSkill useSkill) {
+            Debug.Log("into advance");
             //エリア危険性レベルを取得
             Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user, useSkill.getMove(user));
             var keys = areaDangerLevelTable.Keys;
@@ -463,7 +464,11 @@ namespace AI {
             foreach(FieldPosition pos in keys){
                 if(areaDangerLevelTable[pos] >= rand){
                     FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
-                    return pos - nowPos;
+                    int move = pos - nowPos;
+                    Debug.Log("going pos " + pos + "now pos " + nowPos + "move " + move);
+                    //move = BattleManager.getInstance().restructionPositionValue(nowPos, move);
+                    Debug.Log("move " + move);
+                    return move;
                 }else{
                     rand -= areaDangerLevelTable[pos];
                 }
@@ -487,8 +492,11 @@ namespace AI {
                 dangerLevelIntegerTable.Add((int)pos,areaDangerLevelTable[pos]);
 			}
 
-            //最終判定：レベルが低いところへ
-            return MathHelper.getRandomKeyLowerOrderProbality(dangerLevelIntegerTable);
+			//最終判定：レベルが低いところへ
+			FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
+            int move = MathHelper.getRandomKeyLowerOrderProbality(dangerLevelIntegerTable) - (int)nowPos;
+			//move = move = BattleManager.getInstance().restructionPositionValue(nowPos, move);
+			return move;
         }
 
         /// <summary>

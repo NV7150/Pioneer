@@ -37,7 +37,6 @@ public class BattleTaskManagerHeader : MonoBehaviour {
     }
 
     public void changeBlinkState(bool state){
-        Debug.Log("changed");
         this.needToBlink = state;
     }
 }

@@ -513,7 +513,6 @@ namespace Character{
                     menu.transform.SetParent(CanvasGetter.getCanvasElement().transform);
                     menu.setState(this, party);
                 } else if (Input.GetKeyDown(KeyCode.Mouse0) && !TalkManager.getInstance().getIsTalking()) {
-                    Debug.Log("into if");
                     searchFront();
                 }
             }
@@ -683,13 +682,9 @@ namespace Character{
         }
 
 		private void searchFront() {
-            Debug.Log("into search");
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hitInfo;
-            Debug.Log("into front " + camera.transform.position);
+			RaycastHit hitInfo; 
 			if (Physics.Raycast(ray, out hitInfo, distance)) {
-                Debug.Log("into rayCast");
-                Debug.DrawRay(ray.origin,hitInfo.point,Color.red);
 				Container hitContainer = hitInfo.transform.GetComponent<Container>();
 				if (hitContainer != null) {
 					ICharacter character = hitContainer.getCharacter();

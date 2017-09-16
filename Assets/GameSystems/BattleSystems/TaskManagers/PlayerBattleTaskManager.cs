@@ -94,6 +94,8 @@ namespace BattleSystem{
 
         private bool moving = true;
 
+        public Button reactionButton;
+
         private void Awake() {
             battleItemNodePrefab = (GameObject)Resources.Load("Prefabs/BattleItemNode");
             managerStateNodePrefab = (GameObject)Resources.Load("Prefabs/ManagerStateNode");
@@ -106,7 +108,6 @@ namespace BattleSystem{
             reactoinContents.SetActive(false);
 
             GameObject battleListNode = Instantiate((GameObject)Resources.Load("Prefabs/BattleTaskListView"));
-            Debug.Log(battleListNode);
             battleListNode.transform.SetParent(battleView.transform);
             listView = battleListNode.GetComponent<BattleTaskListView>();
             listView.setManager(this);
@@ -118,22 +119,18 @@ namespace BattleSystem{
                 BattleManager.getInstance().deadCharacter(player);
             } else {
                 if(Input.GetKeyDown(KeyCode.Space)){
-                    Debug.Log("into down");
-                    if(moving){
-                        BattleManager.getInstance().stopTaskManagers();
-                    }else{
-                        BattleManager.getInstance().moveTaskManagers();
-                    }
+                    BattleManager.getInstance().changeProgressing();
                 }
 
                 if (moving) {
-                    if (Input.GetKeyDown(reactionKeyCode) && needToReaction && !reactionInputed) {
-                        inputReactionSkillList();
-                    }
+					if (Input.GetKeyDown(reactionKeyCode) && needToReaction && !reactionInputed) {
+						inputReactionSkillList();
+					}
 
                     if (needToReaction) {
                         reactionState();
-                    } else if (battleState == BattleState.ACTION) {
+                    }
+                    if (battleState == BattleState.ACTION) {
                         actionState();
                     }
 
@@ -172,9 +169,14 @@ namespace BattleSystem{
         /// </summary>
         private void actionState() {
             BattleTask runTask = tasks[0];
+            Debug.Log("run " + runTask.getName());
             if (runTask.getIsSkill()) {
                 IActiveSkill runSkill = runTask.getSkill();
                 runSkill.action(player, runTask);
+                if(ActiveSkillSupporter.isAffectSkill(runSkill)){
+                    Debug.Log("into isAffect");
+                    deleteTargetingLine(player);
+                }
             }else{
                 IItem runItem = runTask.getItem();
                 player.getInventory().useItem(runItem,player);
@@ -182,7 +184,6 @@ namespace BattleSystem{
 
             tasks.Remove(runTask);
             battleState = BattleState.IDLE;
-			deleteTargetingLine(player);
         }
 
         /// <summary>
@@ -211,9 +212,8 @@ namespace BattleSystem{
         /// ステートがIDLEの時に毎フレーム行う処理
         /// </summary>
         private void delayState() {
-            Debug.Log("into delay");
             delay -= Time.deltaTime;
-            state.advanceProgress(Time.deltaTime / maxDelay);
+            state.advanceProgress((maxDelay - delay)/ maxDelay);
             if (delay <= 0) {
                 battleState = BattleState.ACTION;
             }
@@ -266,6 +266,7 @@ namespace BattleSystem{
         /// </summary>
         /// <param name="addedTask">Add task.</param>
         private void addTask(BattleTask addedTask) {
+            Debug.Log("added " + addedTask.getName());
             tasks.Add(addedTask);
             listView.setTask(addedTask);
 
@@ -522,6 +523,8 @@ namespace BattleSystem{
 
             reactionInputed = true;
             deleteAlert();
+
+            reactionButton.enabled = false;
         }
 
         private void inputItemList() {
@@ -632,14 +635,16 @@ namespace BattleSystem{
                     waitingProgressSkills.Add(new KeyValuePair<ReactionSkill, KeyValuePair<IBattleable, AttackSkill>>(missReaction, prosessingPair));
                     waitingDecideReactionSkills.Remove(prosessingPair);
 
-                    Debug.Log("into before ra");
                     reactionAlert();
 
                     needToProgressReaction = false;
                     reactionLimit = prosessingPair.Value.getDelay(prosessingPair.Key);
                     needToReaction = true;
+
+                    reactionButton.enabled = true;
                 } else if (waitingProgressSkills.Count <= 0) {
                     needToReaction = false;
+                    deleteAlert();
                 }
             }
         }
@@ -667,6 +672,7 @@ namespace BattleSystem{
             if (ActiveSkillSupporter.isAffectSkill(task.getSkill())) {
                 deleteTargetingLine(player);
             }
+            tasks.Remove(task);
         }
 
         /// <summary>
@@ -685,7 +691,9 @@ namespace BattleSystem{
                     if (bal.Equals(target)) {
                         if(task.getIsProssesing()){
                             battleState = BattleState.IDLE;
-                            deleteTargetingLine(player);
+                            if (ActiveSkillSupporter.isAffectSkill(task.getSkill())) {
+                                deleteTargetingLine(player);
+                            }
                             state.advanceProgress(1);
                         }
                         tasks.Remove(task);
@@ -726,12 +734,17 @@ namespace BattleSystem{
         }
 
         public void stop() {
-            Debug.Log("into stop");
             moving = false;
         }
 
         public void move() {
             moving = true;
+        }
+
+        public void reactionButtonPushed(){
+            if(needToReaction && !reactionInputed) {
+				inputReactionSkillList();
+			}
         }
         #endregion
 

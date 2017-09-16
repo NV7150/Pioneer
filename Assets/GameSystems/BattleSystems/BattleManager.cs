@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
 
 using Character;
 using Skill;
@@ -35,6 +36,9 @@ namespace BattleSystem{
         private GameObject fieldKeeper;
 
         private GameObject battleResultViewPrefab;
+        private GameObject progressButtonPrefab;
+
+        private bool isProgressing = true;
 
 		//唯一のインスタンスを取得します
 		public static BattleManager getInstance(){
@@ -52,6 +56,7 @@ namespace BattleSystem{
             battleCharacterKeeper = GameObject.Find("BattleCharacterKeeper");
             fieldKeeper = GameObject.Find("FieldKeeper");
             battleResultViewPrefab = (GameObject)Resources.Load("Prefabs/BattleResultView");
+            progressButtonPrefab = (GameObject)Resources.Load("Prefabs/ProgressButton");
 		}
 
 		/// <summary>
@@ -62,6 +67,8 @@ namespace BattleSystem{
 			isBattleing = true;
 			fieldKeeper.SetActive(false);
 			SceneManager.LoadScene("BattleScene");
+            var button = MonoBehaviour.Instantiate(progressButtonPrefab,new Vector3(Screen.width - 100,Screen.height - 100),new Quaternion(0,0,0,0));
+            button.transform.SetParent(CanvasGetter.getCanvasElement().transform);
 		}
 
         /// <summary>
@@ -151,7 +158,6 @@ namespace BattleSystem{
 			AIBattleTaskManager manager = MonoBehaviour.Instantiate ((GameObject)Resources.Load("Prefabs/AIBattleManager")).GetComponent<AIBattleTaskManager>();
             manager.transform.SetParent(bal.getContainer().transform);
 			manager.setCharacter (bal,ai);
-            Debug.Log(manager);
 			joinedManager.Add (bal.getUniqueId(),manager);
 		}
 
@@ -314,7 +320,7 @@ namespace BattleSystem{
 			joinedCharacter [nowPos].Remove (bal);
 			joinedCharacter [movePos].Add (bal);
 
-            bal.syncronizePositioin(field.getObjectPosition(nowPos + moveness,bal));
+            bal.syncronizePositioin(field.getObjectPosition(movePos,bal));
 		}
 
 		/// <summary>
@@ -427,20 +433,33 @@ namespace BattleSystem{
             return expSum;
         }
 
-        public void stopTaskManagers(){
+        private void stopTaskManagers(){
             var keys = joinedManager.Keys;
-            Debug.Log("into stop");
+            isProgressing = false;
             foreach(var key in keys){
-                Debug.Log("into roop");
                 joinedManager[key].stop();
             }
         }
 
-        public void moveTaskManagers(){
+        private void moveTaskManagers(){
 			var keys = joinedManager.Keys;
+            isProgressing = true;
 			foreach (var key in keys) {
                 joinedManager[key].move();
 			}
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void changeProgressing(){
+            if(isProgressing){
+                stopTaskManagers();
+            }else{
+                moveTaskManagers();
+            }
+        }
+
+        public bool getIsProgressing(){
+            return isProgressing;
         }
 
 	}
