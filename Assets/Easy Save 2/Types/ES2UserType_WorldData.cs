@@ -11,6 +11,7 @@ public class ES2UserType_WorldData : ES2Type
 		// Add your writer.Write calls here.
 		writer.Write(data.Towns);
 		writer.Write(data.WorldLevel);
+		writer.Write(data.WorldName);
 
 	}
 	
@@ -27,6 +28,7 @@ public class ES2UserType_WorldData : ES2Type
 		// Add your reader.Read calls here to read the data into the object.
 		data.Towns = reader.ReadDictionary<System.Int32,UnityEngine.Vector3>();
 		data.WorldLevel = reader.Read<System.Int32>();
+		data.WorldName = reader.Read<System.String>();
 
 	}
 	

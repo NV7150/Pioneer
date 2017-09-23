@@ -20,7 +20,7 @@ public class TitleManager : MonoBehaviour{
     }
 
     private void Start() {
-        loadButton.interactable = (WorldCreator.getInstance().getWorldPasses().Count > 0);
+        loadButton.interactable = (WorldCreatFlugHelper.getInstance().getWorldPasses().Count > 0);
     }
 
     public void creatWorld(){
@@ -28,9 +28,9 @@ public class TitleManager : MonoBehaviour{
             compornent.SetActive(false);
         }
 
-		WorldCreator.getInstance().setIsLoad(false);
+		WorldCreatFlugHelper.getInstance().setIsLoad(false);
 		WorldTop top = Instantiate(worldTopPrefab).GetComponent<WorldTop>();
-        top.setState(this);
+		top.setState(this);
         top.transform.SetParent(transform);
         top.transform.position = transform.position;
     }
@@ -40,7 +40,7 @@ public class TitleManager : MonoBehaviour{
         loadButton.interactable = false;
 
         WorldLoadWindow window = Instantiate(worldLoadWindowPrefab).GetComponent<WorldLoadWindow>();
-        window.setState(WorldCreator.getInstance().getWorldPasses(),this);
+        window.setState(WorldCreatFlugHelper.getInstance().getWorldPasses(),this);
         window.transform.SetParent(transform);
     }
 
@@ -49,8 +49,8 @@ public class TitleManager : MonoBehaviour{
 			compornent.SetActive(false);
 		}
 
-        WorldCreator.getInstance().setIsLoad(true);
-        WorldCreator.getInstance().setLoadWorldId(id);
+        WorldCreatFlugHelper.getInstance().setIsLoad(true);
+        WorldCreatFlugHelper.getInstance().setLoadWorldId(id);
 		WorldTop top = Instantiate(worldTopPrefab).GetComponent<WorldTop>();
         top.setState(id,this);
         top.transform.SetParent(CanvasGetter.getCanvasElement().transform);
@@ -60,13 +60,23 @@ public class TitleManager : MonoBehaviour{
 
     public void loadTitle(){
         CanvasGetter.detachCanvasElement();
-        WorldCreator.getInstance().setIsLoad(false);
+        WorldCreatFlugHelper.getInstance().setIsLoad(false);
 
 		foreach (var compornent in titleCompornents) {
             compornent.SetActive(true);
 		}
 
 		newWorldButton.interactable = true;
-		loadButton.interactable = (WorldCreator.getInstance().getWorldPasses().Count > 0);
+		loadButton.interactable = (WorldCreatFlugHelper.getInstance().getWorldPasses().Count > 0);
+    }
+
+	public void loadWorldTop() {
+		CanvasGetter.detachCanvasElement();
+
+        WorldCreatFlugHelper.getInstance().setIsLoad(true);
+		WorldTop top = Instantiate(worldTopPrefab).GetComponent<WorldTop>();
+        top.setState(WorldCreatFlugHelper.getInstance().getLoadWorldId(), this);
+		top.transform.SetParent(CanvasGetter.getCanvasElement().transform);
+		top.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
     }
 }

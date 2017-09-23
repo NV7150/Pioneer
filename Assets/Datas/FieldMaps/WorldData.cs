@@ -15,4 +15,10 @@ public class WorldData{
         set { worldLevel = value; }
     }
 
+    private string worldName;
+    public string WorldName{
+        get { return worldName; }
+        set { worldName = value; }
+    }
+
 }

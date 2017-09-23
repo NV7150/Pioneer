@@ -295,9 +295,7 @@ namespace CharaMake {
         /// <param name="name">Name.</param>
         public void nameInputed(string name) {
             this.name = name;
-
-            WorldCreator.getInstance().setPlayer(makeCharacter());
-
+            WorldCreatFlugHelper.getInstance().setPlayer(makeCharacter());
             finishCharaMake();
         }
 
@@ -310,7 +308,9 @@ namespace CharaMake {
         }
 
         public void finishCharaMake(){
-            SceneManager.LoadScene("FieldScene");
+            Destroy(gameObject);
+            TitleLoader.getInstance().titleCameraUnable();
+            WorldCreatFlugHelper.getInstance().setIsNeedToLoadWorld(true);
         }
 
         private enum CharaMakeState {

@@ -274,8 +274,6 @@ namespace BattleSystem{
 
             chosenActiveSkill = null;
             inputActiveSkillList();
-
-            updateTargetLine();
         }
 
         /// <summary>
@@ -669,7 +667,7 @@ namespace BattleSystem{
             if (task.getSkill().getActiveSkillType() == ActiveSkillType.MOVE) {
                 goingPos -= task.getMove();
             }
-            if (ActiveSkillSupporter.isAffectSkill(task.getSkill())) {
+            if (ActiveSkillSupporter.isAffectSkill(task.getSkill()) && task.getIsProssesing()) {
                 deleteTargetingLine(player);
             }
             tasks.Remove(task);

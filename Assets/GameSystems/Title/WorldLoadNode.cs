@@ -12,7 +12,8 @@ public class WorldLoadNode : MonoBehaviour,INode<int> {
 
     public void setId(int id){
         this.id = id;
-        text.text = "ワールド" + id;
+        var worldName = MasterData.MasterDataManagerBase.loadSaveData<WorldData>(id, id, "WorldData").WorldName;
+        text.text = worldName;
     }
 
     public int getElement() {

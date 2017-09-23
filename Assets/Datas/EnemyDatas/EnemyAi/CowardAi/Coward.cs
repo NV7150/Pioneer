@@ -409,7 +409,7 @@ namespace AI {
         /// <param name="useSkill">使用するスキル</param>
         private FieldPosition decideHostileAreaTarget(IActiveSkill useSkill){
             int range = ActiveSkillSupporter.searchRange(useSkill,user);
-            Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user,range);
+            Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getRawAreaDangerLevelTableInRange(user,range);
 			var keys = areaDangerLevelTable.Keys;
 			int sumDangerLevel = 0;
 			foreach (FieldPosition pos in keys) {
@@ -450,7 +450,6 @@ namespace AI {
         /// <returns>移動量</returns>
         /// <param name="useSkill">使用するスキル</param>
         private int advance(MoveSkill useSkill) {
-            Debug.Log("into advance");
             //エリア危険性レベルを取得
             Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user, useSkill.getMove(user));
             var keys = areaDangerLevelTable.Keys;
@@ -465,9 +464,7 @@ namespace AI {
                 if(areaDangerLevelTable[pos] >= rand){
                     FieldPosition nowPos = BattleManager.getInstance().searchCharacter(user);
                     int move = pos - nowPos;
-                    Debug.Log("going pos " + pos + "now pos " + nowPos + "move " + move);
-                    //move = BattleManager.getInstance().restructionPositionValue(nowPos, move);
-                    Debug.Log("move " + move);
+
                     return move;
                 }else{
                     rand -= areaDangerLevelTable[pos];
@@ -482,6 +479,7 @@ namespace AI {
         /// <returns>移動量</returns>
         /// <param name="useSkill">使用するスキル</param>
         private int recession(MoveSkill useSkill) {
+            Debug.Log("reacession");
 			//エリア危険性レベルを取得
 			Dictionary<FieldPosition, int> areaDangerLevelTable = BattleManager.getInstance().getAreaDangerLevelTableInRange(user, useSkill.getMove(user));
 			Dictionary<int, int> dangerLevelIntegerTable = new Dictionary<int, int>();

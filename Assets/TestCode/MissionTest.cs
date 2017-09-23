@@ -10,7 +10,7 @@ public class MissionTest : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        player = WorldCreator.getInstance().getPlayer();
+        player = WorldCreatFlugHelper.getInstance().getPlayer();
 	}
 	
 	// Update is called once per frame

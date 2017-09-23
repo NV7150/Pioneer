@@ -4,8 +4,10 @@ id,name,dex,spc,lv,個数,goodsType,model ID,failText,introduction,trade,postTex
 2,素材屋,5,3,1,5,ITEM_MATERIAL,Merchant,おうにいちゃん金ねーじゃんかよ,おらおら見てけよ,trade,あんがっとさん！,end,end
 3,交易店,5,3,1,5,TRADE_ITEM,Merchant,・・・チッ,よってらっしゃい見てらっしゃい！,trade,まいどあり！,end,end
 4,薬屋,5,3,1,5,HEAL_ITEM,Merchant,それでこの商品は売れませんね。,見てってください。,trade,お買い上げどうも。,end,end
-5,熟練の武器屋,10,7,1,5,WEAPON,Merchant,金が足りないぞ！,うちの武器は一級品だよ！,trade,武器は装備しないと意味がないぞ！,気をつけろよ！,end
-6,熟練の防具屋,10,7,1,5,ARMOR,Merchant,買う金が足りていませんよ。,何が必要ですか？,trade,どうもありがとうございました。,end,end
-7,熟練の素材屋,10,7,1,5,ITEM_MATERIAL,Merchant,おうにいちゃん金ねーじゃんかよ,おらおらどんどん見てけよ,trade,あんがっとさん！,end,end
-8,熟練の交易店,10,7,1,5,TRADE_ITEM,Merchant,・・・チッ,もっとよってらっしゃい見てらっしゃい！,trade,まいどあり！,end,end
-9,熟練の薬屋,10,7,1,5,HEAL_ITEM,Merchant,それでこの商品は売れませんね。,どんどん見てってください。,trade,お買い上げどうも。,end,end
+5,熟練の武器屋,10,7,5,5,WEAPON,Merchant,金が足りないぞ！,うちの武器は一級品だよ！,trade,武器は装備しないと意味がないぞ！,気をつけろよ！,end
+6,熟練の防具屋,10,7,5,5,ARMOR,Merchant,買う金が足りていませんよ。,何が必要ですか？,trade,どうもありがとうございました。,end,end
+7,熟練の素材屋,10,7,5,5,ITEM_MATERIAL,Merchant,おうにいちゃん金ねーじゃんかよ,おらおらどんどん見てけよ,trade,あんがっとさん！,end,end
+8,熟練の交易店,10,7,5,5,TRADE_ITEM,Merchant,・・・チッ,もっとよってらっしゃい見てらっしゃい！,trade,まいどあり！,end,end
+9,熟練の薬屋,10,7,5,5,HEAL_ITEM,Merchant,それでこの商品は売れませんね。,どんどん見てってください。,trade,お買い上げどうも。,end,end
+10,本屋,5,3,1,5,SKILL_BOOK,Merchant,お金、足りませんが・・・,欲しいもの、ありますか・・・？,trade,スキル書は読まないとただの本なので・・・,いい読書を,end
+11,熟練の本屋,10,7,5,5,SKILL_BOOK,Merchant,お金、足りませんが・・・,何か・・・欲しいもの、ありますか・・・？,trade,スキル書は読まないとただの本なので・・・,いい読書を,end

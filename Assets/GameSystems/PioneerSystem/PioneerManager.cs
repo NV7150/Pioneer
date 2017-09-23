@@ -38,7 +38,7 @@ public class PioneerManager{
 
 	public void finished() {
         foreach(IObserver observer in observers){
-            observer.report(WorldCreator.getInstance().getLoadWorldId());
+            observer.report(WorldCreatFlugHelper.getInstance().getLoadWorldId());
             observer.reset();
         }
         foreach(IObserver observer in waitForRemoves){
@@ -46,15 +46,24 @@ public class PioneerManager{
         }
         waitForRemoves.Clear();
 
-        SceneKeeper.deleteScene();
+		SceneKeeper.deleteScene();
+        WorldCreatFlugHelper.getInstance().setIsNeedToBackToTop(true);
+		TitleLoader.getInstance().setTitleLoad(true);
     }
 
 	public void retire() {
 		foreach (IObserver observer in observers) {
 			observer.reset();
 		}
+
+		foreach (IObserver observer in waitForRemoves) {
+			observers.Remove(observer);
+		}
+		waitForRemoves.Clear();
+
 		SceneKeeper.deleteScene();
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+        WorldCreatFlugHelper.getInstance().setIsNeedToBackToTop(false);
+        TitleLoader.getInstance().setTitleLoad(true);
     }
 
     public void setObserver(IObserver observer){

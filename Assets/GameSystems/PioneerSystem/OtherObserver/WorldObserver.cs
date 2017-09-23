@@ -14,12 +14,14 @@ public class WorldObserver : IObserver {
     }
 
     public void report(int worldId) {
+        Debug.Log("called report world");
         world.levelUpWorld();
         world.saveWorld();
     }
 
     public void reset() {
-        WorldCreator.getInstance().setWorldLoaded(false);
+        world.resetWorld();
+        WorldCreatFlugHelper.getInstance().setWorldLoaded(false);
         PioneerManager.getInstance().removeObserver(this);
     }
 }

@@ -12,3 +12,5 @@ id,name,level,owner id,model id,ownerType
 10,良薬屋,5,9,TestRoom,MERCHANT
 11,良交易店,5,8,TestRoom,MERCHANT
 12,優クエスト屋,10,2,TestRoom,CLIENT
+13,本屋,1,10,TestRoom,MERCHANT
+14,良本屋,5,11,TestRoom,MERCHANT

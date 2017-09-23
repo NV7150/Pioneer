@@ -31,7 +31,7 @@ namespace MasterData {
             List<Identity> identities = new List<Identity>();
 
             foreach(Identity identity in dataTable){
-                if (identity.getLevel() >= level)
+                if (identity.getLevel() <= level)
                     identities.Add(identity);
             }
 

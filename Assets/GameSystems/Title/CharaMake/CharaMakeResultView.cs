@@ -30,15 +30,6 @@ namespace CharaMake{
         /// <summary> 使命を表示させるテキスト </summary>
         public Text missionText;
 
-        private readonly int nameMax = 5;
-
-        private string[] deleteWord = new string[]{
-            "\n",
-            "\r",
-            "\t",
-            "\r\n"
-        };
-
         // Use this for initialization
         void Start() {
             decideButton.interactable = false;
@@ -72,12 +63,8 @@ namespace CharaMake{
         /// 名前が設定された時の処理 
         /// </summary>
         public void setName() {
-			foreach (var word in deleteWord) {
-				nameField.text = nameField.text.Replace(word, "");
-			}
-
-			if (nameText.text.Length > nameMax)
-				nameField.text = nameField.text.Remove(nameMax);
+            nameField = TextInputHelper.getText(nameField);
+            nameText.text = nameField.text;
 
             if (nameText.text.Length > 0) {
                 name = nameField.text;

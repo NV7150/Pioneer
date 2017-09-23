@@ -38,12 +38,12 @@ namespace MasterData{
         /// <param name="fileName">記録ファイルのアドレス</param>
         /// <typeparam name="E">セーブデータのクラスの型</typeparam>
         public static E loadSaveData<E>(int id,int worldId ,string fileName){
-            ES2Reader reader = ES2Reader.Create(getLoadPass(id,worldId,fileName));
-            return reader.Read<E>("" + id);
+            ES2Reader reader = ES2Reader.Create(getLoadPassExceptTag(fileName));
+            return reader.Read<E>(worldId + "" + id);
 		}
 
         public static string getLoadPass(int id,int worldId, string fileName){
-            return getLoadPassExceptTag(fileName) + "?tag=" + id + "" + worldId;
+            return getLoadPassExceptTag(fileName) + "?tag=" + worldId + "" + id;
         }
 
         public static string getLoadPassExceptTag(string fileName){

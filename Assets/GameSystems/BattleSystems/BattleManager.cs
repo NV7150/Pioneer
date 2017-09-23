@@ -333,30 +333,83 @@ namespace BattleSystem{
 		public Dictionary<FieldPosition,int> getAreaDangerLevelTableInRange(IBattleable bal,int range){
             Dictionary<FieldPosition, int> dangerLevelTable = new Dictionary<FieldPosition, int>();
             FieldPosition nowPos = searchCharacter(bal);
-            int index = restructionPositionValue(nowPos, -range);
-            int maxPos = restructionPositionValue(nowPos, range);
+            int minIndex = restructionPositionValue(nowPos, -range);
+            int maxIndex = restructionPositionValue(nowPos, range);
             int minAreaLevel = 0;
-            for (;index <= maxPos;index++){
-                var characters = getAreaCharacter((FieldPosition)index);
-                int areaLevel = 0;
-                foreach(IBattleable character in characters){
-                    if(character.isHostility(bal.getFaction())){
-                        areaLevel += character.getLevel();
-                    }else{
-                        areaLevel -= character.getLevel();
-                    }
-                }
+            for (int i = minIndex; i <= maxIndex; i++)
+                dangerLevelTable.Add((FieldPosition)i, 0);
+
+            Debug.Log("ddc " + dangerLevelTable.Count);
+
+			//最小エリアと最大エリアの総和計算。便宜上/2する。
+			for (int i = 0; i < minIndex; i++)
+                dangerLevelTable[(FieldPosition)minIndex] += (getAreaDangerLevel(bal.getFaction(), (FieldPosition)i) / 2);
+
+            for (int i = maxIndex; i < Enum.GetNames(typeof(FieldPosition)).Length; i++)
+                dangerLevelTable[(FieldPosition)maxIndex] += (getAreaDangerLevel(bal.getFaction(), (FieldPosition)i) / 2);
+            
+            //レンジ内の危険度計
+            for (int i = minIndex; i < maxIndex;i++){
+                int areaLevel = getAreaDangerLevel(bal.getFaction(),(FieldPosition)i);
                 if (areaLevel < minAreaLevel) {
                     minAreaLevel = areaLevel;
                 }
-                dangerLevelTable.Add((FieldPosition)index,areaLevel);
+                dangerLevelTable[(FieldPosition)i] += areaLevel;
             }
+
             var keys = new Dictionary<FieldPosition,int>(dangerLevelTable).Keys;
             foreach(FieldPosition pos in keys){
-                dangerLevelTable[pos] += -minAreaLevel;
+                dangerLevelTable[pos] -= minAreaLevel;
             }
+
             return dangerLevelTable;
-        } 
+        }
+
+		/// <summary>
+		/// 指定された範囲内の危険度を計算します
+		/// Rawでないのとの違いは、指定範囲外の危険度を考慮しない点です
+		/// </summary>
+		/// <returns>エリア危険レベルのDictionary</returns>
+		/// <param name="bal">起点となるキャラクター</param>
+		/// <param name="range">検索範囲</param>
+		public Dictionary<FieldPosition,int> getRawAreaDangerLevelTableInRange(IBattleable bal, int range){
+			Dictionary<FieldPosition, int> dangerLevelTable = new Dictionary<FieldPosition, int>();
+			FieldPosition nowPos = searchCharacter(bal);
+			int minIndex = restructionPositionValue(nowPos, -range);
+			int maxIndex = restructionPositionValue(nowPos, range);
+			int minAreaLevel = 0;
+            for (int i = minIndex; i < minIndex; i++)
+				dangerLevelTable.Add((FieldPosition)i, 0);
+
+			//レンジ内の危険度計算
+            for (int i = minIndex; i < minIndex; i++) {
+				int areaLevel = getAreaDangerLevel(bal.getFaction(), (FieldPosition)i);
+				if (areaLevel < minAreaLevel) {
+					minAreaLevel = areaLevel;
+				}
+				dangerLevelTable[(FieldPosition)i] += areaLevel;
+			}
+
+			var keys = new Dictionary<FieldPosition, int>(dangerLevelTable).Keys;
+			foreach (FieldPosition pos in keys) {
+				dangerLevelTable[pos] -= minAreaLevel;
+			}
+
+			return dangerLevelTable;
+        }
+
+        private int getAreaDangerLevel(Faction faction,FieldPosition pos){
+            var characters = getAreaCharacter(pos);
+			int areaLevel = 0;
+			foreach (IBattleable character in characters) {
+                if (character.isHostility(faction)) {
+					areaLevel += character.getLevel();
+				} else {
+					areaLevel -= character.getLevel();
+				}
+			}
+            return areaLevel;
+        }
 
 		/// <summary>
         /// 与えられたキャラクターの位置を検索します

@@ -21,33 +21,43 @@ namespace FieldMap {
 
         private int worldLevel;
 
+        private string worldName;
+
         private void Awake() {
 			townPrefab = (GameObject)Resources.Load("Models/Town");
 			fieldKeeper = GameObject.Find("FieldKeeper");
         }
 
         private void Start() {
-			if (!WorldCreator.getInstance().getWorldLoaded()) {
-				observer = new WorldObserver(this);
-                if(WorldCreator.getInstance().getIsLoad()){
-                    id = WorldCreator.getInstance().getLoadWorldId();
-                    loadWorld();
-                    WorldCreator.getInstance().loadProgresses(id);
-                }else{
-                    id = WorldCreator.getInstance().getWorldIdDefault() + 1;
-                    WorldCreator.getInstance().setWorldIdDefault(id);
-                    creatWorld();
-                    WorldCreator.getInstance().setWorldPass(id);
-                }
+			
+        }
 
-                WorldCreator.getInstance().setWorldLoaded(true);
-                WorldCreator.getInstance().activetePlayer(missionClientPos);
-            }else{
-                WorldCreator.getInstance().resetPlayerPos();
-                WorldCreator.getInstance().getPlayer().moveEnable();
+        private void Update(){
+            if (WorldCreatFlugHelper.getInstance().getIsNeedToLoadWorld()) {
+                if (!WorldCreatFlugHelper.getInstance().getWorldLoaded()) {
+                    observer = new WorldObserver(this);
+                    if (WorldCreatFlugHelper.getInstance().getIsLoad()) {
+                        id = WorldCreatFlugHelper.getInstance().getLoadWorldId();
+                        loadWorld();
+						WorldCreatFlugHelper.getInstance().loadProgresses(id);
+						worldName = WorldCreatFlugHelper.getInstance().getInputingWorldName();
+                    } else {
+                        id = WorldCreatFlugHelper.getInstance().getWorldIdDefault() + 1;
+                        WorldCreatFlugHelper.getInstance().setWorldIdDefault(id);
+						creatWorld();
+						WorldCreatFlugHelper.getInstance().setWorldPass(id);
+                        worldName = WorldCreatFlugHelper.getInstance().getInputingWorldName();
+                    }
+                    WorldCreatFlugHelper.getInstance().setWorldLoaded(true);
+                    WorldCreatFlugHelper.getInstance().activetePlayer(missionClientPos);
+                } else {
+                    WorldCreatFlugHelper.getInstance().resetPlayerPos();
+                    WorldCreatFlugHelper.getInstance().getPlayer().moveEnable();
+                }
+                WorldCreatFlugHelper.getInstance().setIsNeedToLoadWorld(false);
             }
 
-        }
+		}
 
         public void creatWorld() {
             this.worldLevel = 1;
@@ -180,6 +190,7 @@ namespace FieldMap {
             var data = MasterDataManagerBase.loadSaveData<WorldData>(id,id,"WorldData");
 			this.towns = data.Towns;
             this.worldLevel = data.WorldLevel;
+            this.worldName = data.WorldName;
 
             var ids = towns.Keys;
             foreach(int id in ids){
@@ -196,6 +207,7 @@ namespace FieldMap {
             var saveData = new WorldData();
             saveData.Towns = this.towns;
             saveData.WorldLevel = this.worldLevel;
+            saveData.WorldName = this.worldName;
             ObserverHelper.saveToFile<WorldData>(saveData,"WorldData",id,id);
             foreach(Town town in enableTowns){
                 var builder = town.compressIntoBuilder();
@@ -206,6 +218,23 @@ namespace FieldMap {
 
         public void levelUpWorld(){
             this.worldLevel++;
+        }
+
+        public void resetWorld(){
+            towns.Clear();
+            enableTowns.Clear();
+        }
+
+        public int getWorldLevel(){
+            return worldLevel;
+        }
+
+        public string getWorldName(){
+            return worldName;
+        }
+
+        public void setWorldname(string name){
+            worldName = name;
         }
 
         private enum TownLevelDigest{
